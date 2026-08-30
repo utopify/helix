@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/govern/quality-rules.json",
+  "title": "HELIX Govern: Data Quality Rule Library",
+  "description": "A starter library of data quality rules organized by HELIX domain. Institutions adopt, adapt, and extend these rules for their context. Each rule includes a severity, a plain-language description, and a machine-testable expression.",
+  "version": "0.1",
+  "rule_severity_definitions": {
+    "critical": "Data cannot be trusted for any purpose if this rule fails. Blocks downstream processing.",
+    "high": "Data may produce incorrect reports or compliance filings. Requires remediation within 48 hours.",
+    "medium": "Data is usable but quality is degraded. Should be remediated within one business cycle (term/month).",
+    "low": "Cosmetic or enrichment issue. Address during routine maintenance."
+  },
+  "domains": {
+    "student_identity": {
+      "domain": "Student Identity",
+      "resources": [
+        "Student"
+      ],
+      "rules": [
+        {
+          "rule_id": "SI-001",
+          "name": "Student must have at least one identifier",
+          "severity": "critical",
+          "description": "Every Student resource must have at least one entry in the identifiers array. A student without any identifier cannot be linked across systems.",
+          "expression": "len(student.identifiers) >= 1",
+          "remediation": "Check ERP source for missing ID assignment. Escalate to Registrar if no ID exists."
+        },
+        {
+          "rule_id": "SI-002",
+          "name": "Student status must be a valid HELIX code",
+          "severity": "critical",
+          "description": "The status field must contain a value from the helix/student-status terminology.",
+          "expression": "student.status IN helix/student-status.codes",
+          "remediation": "Review ERP-to-HELIX status mapping in Bridge. Unmapped codes must be resolved."
+        },
+        {
+          "rule_id": "SI-003",
+          "name": "Student name must have family and given name",
+          "severity": "high",
+          "description": "Every Student must have a non-empty family name and given name.",
+          "expression": "student.name.family IS NOT NULL AND student.name.given IS NOT NULL",
+          "remediation": "Check ERP person record. Some international students may have single-name conventions \u2014 document institutional policy for handling."
+        },
+        {
+          "rule_id": "SI-004",
+          "name": "Birth date must be reasonable",
+          "severity": "medium",
+          "description": "Birth date must be between 100 years ago and 14 years ago (typical minimum enrollment age).",
+          "expression": "student.birth_date BETWEEN (today - 100 years) AND (today - 14 years)",
+          "remediation": "Likely a data entry error. Review ERP source record."
+        },
+        {
+          "rule_id": "SI-005",
+          "name": "No duplicate helix_id",
+          "severity": "critical",
+          "description": "Every Student resource must have a globally unique helix_id. Duplicates indicate a key generation or merge failure.",
+          "expression": "COUNT(student.helix_id) == 1 per helix_id",
+          "remediation": "Investigate UUID generation logic. Check for duplicate person records in ERP."
+        }
+      ]
+    },
+    "enrollment": {
+      "domain": "Enrollment",
+      "resources": [
+        "Enrollment",
+        "AcademicPeriod",
+        "CourseSection"
+      ],
+      "rules": [
+        {
+          "rule_id": "EN-001",
+          "name": "Enrollment must reference a valid student",
+          "severity": "critical",
+          "description": "student_ref must resolve to an existing Student resource.",
+          "expression": "EXISTS(Student WHERE helix_id = enrollment.student_ref)",
+          "remediation": "Student record may not have been loaded yet (sequencing issue) or PIDM/EmplID mapping failed."
+        },
+        {
+          "rule_id": "EN-002",
+          "name": "Enrollment must reference a valid academic period",
+          "severity": "critical",
+          "description": "academic_period_ref must resolve to an existing AcademicPeriod resource.",
+          "expression": "EXISTS(AcademicPeriod WHERE helix_id = enrollment.academic_period_ref)",
+          "remediation": "AcademicPeriod may not have been loaded. Load periods before enrollments."
+        },
+        {
+          "rule_id": "EN-003",
+          "name": "Completed enrollment must have a grade",
+          "severity": "high",
+          "description": "If enrollment_status is 'completed', the grade field must not be null.",
+          "expression": "IF enrollment.enrollment_status == 'completed' THEN enrollment.grade IS NOT NULL",
+          "remediation": "Grade may not have been posted yet in ERP, or transcript record is missing."
+        },
+        {
+          "rule_id": "EN-004",
+          "name": "Credit hours attempted must be positive",
+          "severity": "high",
+          "description": "credit_hours_attempted must be greater than zero for non-audit enrollments.",
+          "expression": "IF enrollment.grade_mode != 'audit' THEN enrollment.credit_hours_attempted > 0",
+          "remediation": "Check course catalog credit hour assignment. Zero-credit courses should be flagged for review."
+        },
+        {
+          "rule_id": "EN-005",
+          "name": "Enrollment status must have valid census-date context",
+          "severity": "high",
+          "description": "An enrollment with status 'enrolled' should exist in a period where the census date has passed. Before census, status should be 'registered'.",
+          "expression": "IF enrollment.enrollment_status == 'enrolled' THEN AcademicPeriod.census_date <= today",
+          "remediation": "Review enrollment status transition logic in Bridge mapping. Pre-census records should use 'registered'."
+        },
+        {
+          "rule_id": "EN-006",
+          "name": "Dropped enrollment should have a drop date",
+          "severity": "medium",
+          "description": "If enrollment_status is 'dropped' or 'withdrawn', drop_date should be populated.",
+          "expression": "IF enrollment.enrollment_status IN ('dropped', 'withdrawn') THEN enrollment.drop_date IS NOT NULL",
+          "remediation": "Check ERP registration audit trail for the drop/withdrawal date."
+        }
+      ]
+    },
+    "financial_aid": {
+      "domain": "Financial Aid",
+      "resources": [
+        "FinAidAward"
+      ],
+      "rules": [
+        {
+          "rule_id": "FA-001",
+          "name": "Award amount must be non-negative",
+          "severity": "critical",
+          "description": "amount_offered, amount_accepted, and amount_disbursed must all be >= 0.",
+          "expression": "fin_aid_award.amount_offered >= 0 AND fin_aid_award.amount_accepted >= 0 AND fin_aid_award.amount_disbursed >= 0",
+          "remediation": "Negative amounts may indicate returns or adjustments. Model these as separate transactions or use a return flag."
+        },
+        {
+          "rule_id": "FA-002",
+          "name": "Disbursed amount cannot exceed accepted amount",
+          "severity": "high",
+          "description": "The amount disbursed should not exceed the amount the student accepted.",
+          "expression": "fin_aid_award.amount_disbursed <= fin_aid_award.amount_accepted",
+          "remediation": "Possible data timing issue (disbursement posted before acceptance update). Verify in ERP."
+        },
+        {
+          "rule_id": "FA-003",
+          "name": "Disbursed award must have a disbursement date",
+          "severity": "high",
+          "description": "If award_status is 'disbursed', disbursement_date must be populated.",
+          "expression": "IF fin_aid_award.award_status == 'disbursed' THEN fin_aid_award.disbursement_date IS NOT NULL",
+          "remediation": "Check ERP disbursement records for missing date."
+        },
+        {
+          "rule_id": "FA-004",
+          "name": "Award must reference a valid student",
+          "severity": "critical",
+          "description": "student_ref must resolve to an existing Student resource.",
+          "expression": "EXISTS(Student WHERE helix_id = fin_aid_award.student_ref)",
+          "remediation": "Student record may not have been loaded. Load students before financial aid."
+        },
+        {
+          "rule_id": "FA-005",
+          "name": "Award type must be a valid HELIX code",
+          "severity": "critical",
+          "description": "award_type must contain a value from the helix/award-type terminology.",
+          "expression": "fin_aid_award.award_type IN helix/award-type.codes",
+          "remediation": "Review ERP fund-to-HELIX award type mapping in Bridge."
+        }
+      ]
+    },
+    "academic_structure": {
+      "domain": "Academic Structure",
+      "resources": [
+        "Course",
+        "CourseSection",
+        "Program",
+        "Institution"
+      ],
+      "rules": [
+        {
+          "rule_id": "AS-001",
+          "name": "Course section must reference a valid course",
+          "severity": "critical",
+          "description": "course_ref must resolve to an existing Course resource.",
+          "expression": "EXISTS(Course WHERE helix_id = course_section.course_ref)",
+          "remediation": "Course catalog record may not have been loaded. Load courses before sections."
+        },
+        {
+          "rule_id": "AS-002",
+          "name": "Active course section must have valid schedule or delivery mode",
+          "severity": "medium",
+          "description": "An active section should have either a schedule (days + times) or a delivery_mode of 'online_asynchronous'.",
+          "expression": "IF course_section.section_status == 'active' THEN (course_section.schedule IS NOT NULL OR course_section.delivery_mode == 'online_asynchronous')",
+          "remediation": "Schedule data may not have been mapped from ERP. Check Bridge mapping for meeting pattern extraction."
+        },
+        {
+          "rule_id": "AS-003",
+          "name": "Program must have a CIP code (US institutions)",
+          "severity": "medium",
+          "description": "US institutions should have a CIP code on every degree-granting program for IPEDS reporting.",
+          "expression": "IF institution.country == 'US' AND program.program_type == 'major' THEN program.cip_code IS NOT NULL",
+          "remediation": "Check institutional program inventory against NCES CIP code database."
+        }
+      ]
+    },
+    "outcomes": {
+      "domain": "Outcomes",
+      "resources": [
+        "Degree"
+      ],
+      "rules": [
+        {
+          "rule_id": "OC-001",
+          "name": "Degree must reference a valid student and program",
+          "severity": "critical",
+          "description": "student_ref and program_ref must resolve to existing resources.",
+          "expression": "EXISTS(Student WHERE helix_id = degree.student_ref) AND EXISTS(Program WHERE helix_id = degree.program_ref)",
+          "remediation": "Ensure student and program records are loaded before degree records."
+        },
+        {
+          "rule_id": "OC-002",
+          "name": "Conferral date must not be in the future",
+          "severity": "high",
+          "description": "A conferred degree should have a conferral_date on or before today.",
+          "expression": "degree.conferral_date <= today",
+          "remediation": "Future dates may indicate a projected conferral. Use Student.status='enrolled' until degree is actually conferred."
+        },
+        {
+          "rule_id": "OC-003",
+          "name": "Cumulative GPA must be in valid range",
+          "severity": "medium",
+          "description": "If populated, cumulative_gpa should be between 0.0 and 4.0 (or institutional maximum).",
+          "expression": "degree.cumulative_gpa >= 0.0 AND degree.cumulative_gpa <= 4.0",
+          "remediation": "Some institutions use 5.0 or other scales. Adjust via Implementation Profile."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Student",
+  "description": "Maps Workday Student business objects to the HELIX Student resource. Workday is cloud-native; data is accessed via RaaS (Report-as-a-Service), Workday REST API, or Prism Analytics rather than direct database tables.",
+  "source_system": "workday",
+  "target_resource": "Student",
+  "version": "0.1",
+  "architecture_notes": "Workday Student uses a unified person model shared with HCM. A student is a 'Person' with a 'Student' role. Data is extracted via: (1) RaaS custom reports exposed as REST endpoints, (2) Workday REST API /students endpoint, (3) Prism Analytics datasets for bulk/lake ingestion, (4) Workday Data Cloud zero-copy integration with AWS (announced June 2026) for direct governed access without ETL.",
+  "source_objects": [
+    {
+      "object": "Person",
+      "description": "Core person record. Unified across HCM and Student. Contains name, demographics, contact info."
+    },
+    {
+      "object": "Student",
+      "description": "Student role on a Person. Contains student-specific attributes, academic status, programs."
+    },
+    {
+      "object": "Academic Affiliation",
+      "description": "Student's relationship to an academic unit. Status, level, class standing."
+    },
+    {
+      "object": "Citizenship Status",
+      "description": "Citizenship and nationality records."
+    },
+    {
+      "object": "Universal Identifier",
+      "description": "External IDs (student ID, national ID, etc.) assigned to a person."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Workday_ID (WID)",
+      "notes": "Every Workday object has a unique WID (Workday ID). Use the Person WID as the stable key."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "identifiers[].system='workday'",
+      "source": "Person.Workday_ID (WID)",
+      "transformation": "Direct map. The WID is Workday's internal globally unique identifier."
+    },
+    {
+      "helix_attribute": "identifiers[].system='student_id'",
+      "source": "Universal Identifier (type='Student_ID')",
+      "transformation": "Direct map. The institution-assigned student ID, configured as a Universal Identifier type in Workday.",
+      "notes": "Workday allows multiple ID types per person. Filter by ID Type = 'Student_ID' or the institution's configured equivalent."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "Person.Name_Data.Last_Name",
+      "transformation": "Direct map. Use the 'Legal' name type (Usage_Type = 'Legal')."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "Person.Name_Data.First_Name",
+      "transformation": "Direct map. Legal name."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "Person.Name_Data.Middle_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "Person.Name_Data.Title (Salutation)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "Person.Name_Data.Suffix",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.preferred",
+      "source": "Person.Name_Data.First_Name (where Usage_Type = 'Preferred')",
+      "transformation": "Use the Preferred name type if configured; null otherwise.",
+      "notes": "Workday natively supports preferred name as a separate name record with Usage_Type = 'Preferred'."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "Person.Date_of_Birth",
+      "transformation": "Cast to ISO 8601 date (YYYY-MM-DD)"
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "Person.Gender",
+      "transformation": "Map Workday gender reference IDs to HELIX: 'Male'\u2192'male', 'Female'\u2192'female', 'Not_Declared'\u2192'unknown'. Workday supports configurable gender identity options.",
+      "notes": "Workday tenants may have custom gender identity values configured. Map the reference ID, not the display label."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Academic Affiliation.Academic_Status",
+      "transformation": "Map Workday academic status to HELIX: 'Active'\u2192'enrolled', 'Inactive'\u2192'withdrawn', 'Graduated'\u2192'graduated', 'Leave_of_Absence'\u2192'leave_of_absence', 'Admitted'\u2192'admitted'. Use the current (most recent effective-dated) affiliation.",
+      "notes": "Workday tracks status at the Academic Affiliation level. A student may have multiple affiliations (undergrad, grad). Use the primary or most recent."
+    },
+    {
+      "helix_attribute": "residency",
+      "source": "Student.Residency_Status or Fee_Assessment.Residency",
+      "transformation": "Map Workday residency values to HELIX enum. Workday residency is often tied to fee assessment.",
+      "notes": "Residency in Workday Student is configurable per tenant. Common values: 'In_State', 'Out_of_State', 'International'."
+    },
+    {
+      "helix_attribute": "citizenship_country",
+      "source": "Citizenship_Status.Country",
+      "transformation": "Map Workday country reference ID to ISO 3166-1 alpha-2. Workday uses ISO 3166-1 alpha-3 internally (e.g., 'USA'\u2192'US')."
+    },
+    {
+      "helix_attribute": "first_generation_flag",
+      "source": "Student.Custom_Field or Student_Recruiting.First_Generation",
+      "transformation": "Map: true/false. Implementation depends on institutional configuration.",
+      "notes": "No standard Workday field for first-generation. Typically captured via a custom object or student recruiting data."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.updated_at",
+      "source": "Person.Last_Modified or Student.Last_Modified",
+      "transformation": "Use the most recent modification timestamp across source objects"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Workday RaaS (Report-as-a-Service)",
+      "description": "Build a custom report in Workday Report Writer that joins Person + Student + Academic Affiliation objects. Expose as a REST endpoint. Supports JSON, CSV, XML output. Ideal for scheduled incremental extracts.",
+      "notes": "Most common extraction method for Workday Student data today."
+    },
+    {
+      "method": "Workday REST API",
+      "description": "Use the /students resource from Workday's Student REST API (v1+). Returns JSON. Supports paging and field selection. Good for real-time integration.",
+      "notes": "Requires API Client configuration and OAuth 2.0 setup in Workday."
+    },
+    {
+      "method": "Workday Prism Analytics",
+      "description": "Export datasets from Prism Analytics for bulk ingestion into a data lake. Prism can combine Workday data with external sources.",
+      "notes": "Good for analytics-first use cases but adds a layer of abstraction."
+    },
+    {
+      "method": "Workday Data Cloud (Zero-Copy with AWS)",
+      "description": "Announced June 2026. Bi-directional zero-copy access to Workday's governed data layer directly from AWS services (Athena, Redshift, SageMaker). No ETL pipeline required. Data stays governed in Workday.",
+      "notes": "Early access as of mid-2026, GA expected later in 2026. This is the most HELIX-aligned extraction path \u2014 governed data, no movement, lake-ready."
+    }
+  ]
+}

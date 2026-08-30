@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/govern/roles.json",
+  "title": "HELIX Govern: Data Governance Role Definitions",
+  "description": "Standard governance roles for higher education institutions adopting HELIX. Institutions map these roles to their organizational structure. A single person may hold multiple roles; a single role may be shared across people.",
+  "version": "0.1",
+  "roles": [
+    {
+      "role": "Data Trustee",
+      "scope": "Institution",
+      "description": "Senior executive (VP, Provost, CFO) with ultimate accountability for a data domain. Approves policies, resolves cross-domain disputes, and champions data governance at the cabinet level.",
+      "typical_titles": [
+        "Provost",
+        "VP for Student Affairs",
+        "CFO",
+        "VP for Research",
+        "CIO"
+      ],
+      "responsibilities": [
+        "Approve data policies for their domain",
+        "Resolve data definition disputes that Data Stewards cannot settle",
+        "Ensure adequate resources for governance within their domain",
+        "Champion data literacy and governance culture"
+      ],
+      "helix_domains": [
+        "All \u2014 one trustee per major domain"
+      ]
+    },
+    {
+      "role": "Chief Data Officer (CDO)",
+      "scope": "Institution",
+      "description": "Senior leader responsible for the institution's overall data strategy, governance program, and HELIX adoption. May report to the CIO, Provost, or President depending on institutional structure.",
+      "typical_titles": [
+        "Chief Data Officer",
+        "AVP for Data & Analytics",
+        "Director of Institutional Data Governance"
+      ],
+      "responsibilities": [
+        "Own the institutional data governance framework",
+        "Coordinate HELIX adoption across domains",
+        "Establish and maintain the data governance council",
+        "Oversee data quality, classification, and compliance programs",
+        "Report governance health metrics to leadership"
+      ],
+      "helix_domains": [
+        "Cross-domain"
+      ]
+    },
+    {
+      "role": "Data Steward",
+      "scope": "Domain",
+      "description": "Functional expert who defines, documents, and maintains data definitions and quality rules within a specific domain (enrollment, financial aid, HR, etc.). The steward is the authoritative voice on 'what does this data mean?' for their domain.",
+      "typical_titles": [
+        "University Registrar",
+        "Director of Financial Aid",
+        "Director of Institutional Research",
+        "Director of HR Systems",
+        "Director of Advancement Services"
+      ],
+      "responsibilities": [
+        "Define and maintain business definitions for HELIX resources in their domain",
+        "Validate HELIX terminology code sets against institutional reality",
+        "Establish and monitor data quality rules",
+        "Approve access requests for confidential/restricted data in their domain",
+        "Resolve data quality issues escalated by Data Custodians",
+        "Participate in the data governance council"
+      ],
+      "helix_domains": [
+        "Student Identity",
+        "Enrollment",
+        "Financial Aid",
+        "Academic Structure",
+        "Outcomes",
+        "HR",
+        "Research",
+        "Advancement"
+      ]
+    },
+    {
+      "role": "Data Custodian",
+      "scope": "System/Technical",
+      "description": "Technical role responsible for the physical management, security, and operational quality of data in systems and the data lake. Implements the policies defined by Data Stewards.",
+      "typical_titles": [
+        "DBA",
+        "Data Engineer",
+        "ETL Developer",
+        "Cloud Data Architect",
+        "BI Developer"
+      ],
+      "responsibilities": [
+        "Implement HELIX Bridge mappings from ERP to data lake",
+        "Enforce data classification and access controls (per HELIX meta.classification)",
+        "Monitor data quality metrics and alert Stewards on failures",
+        "Maintain data lineage documentation",
+        "Execute schema migrations when HELIX Core versions up",
+        "Manage backup, retention, and disaster recovery for governed data"
+      ],
+      "helix_domains": [
+        "Technical \u2014 spans all domains"
+      ]
+    },
+    {
+      "role": "Data Consumer",
+      "scope": "Individual/Team",
+      "description": "Any person who accesses HELIX-governed data for analysis, reporting, research, or decision-making. Consumers are responsible for using data appropriately within their authorized scope.",
+      "typical_titles": [
+        "Analyst",
+        "Institutional Researcher",
+        "Faculty Researcher",
+        "Department Head",
+        "Dean",
+        "Enrollment Manager"
+      ],
+      "responsibilities": [
+        "Use data within authorized scope and classification level",
+        "Report data quality issues to the appropriate Data Steward",
+        "Complete data literacy training as required by the institution",
+        "Cite data sources and acknowledge governance context in reports",
+        "Do not redistribute restricted/confidential data outside authorized channels"
+      ],
+      "helix_domains": [
+        "As authorized"
+      ]
+    },
+    {
+      "role": "HELIX Champion",
+      "scope": "Institution / Community",
+      "description": "An individual who advocates for HELIX adoption, contributes back to the open framework, and serves as a community resource. This is a recognition role, not a job title.",
+      "typical_titles": [
+        "Any of the above \u2014 this is an overlay role"
+      ],
+      "responsibilities": [
+        "Evangelize HELIX within their institution and professional networks",
+        "Contribute ERP mappings, profiles, or extensions back to the HELIX community",
+        "Participate in HELIX community reviews and feedback cycles",
+        "Serve as a reference contact for institutions exploring HELIX adoption"
+      ],
+      "helix_domains": [
+        "Community"
+      ]
+    }
+  ]
+}

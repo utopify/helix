@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/govern/domain-taxonomy.json",
+  "title": "HELIX Govern: Data Domain Taxonomy",
+  "description": "Standard data domains for higher education institutions. Each domain has a designated Data Trustee and one or more Data Stewards. Used to organize governance responsibilities and align with HELIX Core resources.",
+  "version": "0.1",
+  "domains": [
+    {
+      "domain": "Student Identity",
+      "description": "Person records, biographical data, contact information, identifiers, and demographic attributes for students.",
+      "helix_resources": [
+        "Student",
+        "Person",
+        "Identifier"
+      ],
+      "typical_trustee": "VP for Student Affairs or Provost",
+      "typical_steward": "University Registrar",
+      "regulatory_context": [
+        "FERPA (US)",
+        "GDPR (EU)",
+        "Privacy Act (AU)"
+      ],
+      "default_classification": "confidential"
+    },
+    {
+      "domain": "Enrollment & Registration",
+      "description": "Course registrations, enrollment statuses, waitlists, grading, and credit hour tracking.",
+      "helix_resources": [
+        "Enrollment",
+        "Registration"
+      ],
+      "typical_trustee": "Provost",
+      "typical_steward": "University Registrar",
+      "regulatory_context": [
+        "FERPA (US)",
+        "IPEDS/NCES reporting",
+        "State reporting mandates"
+      ],
+      "default_classification": "confidential"
+    },
+    {
+      "domain": "Academic Structure",
+      "description": "Institutions, academic organizations (colleges, schools, departments), programs, courses, course sections, and academic periods.",
+      "helix_resources": [
+        "Institution",
+        "AcademicOrg",
+        "Program",
+        "Course",
+        "CourseSection",
+        "AcademicPeriod"
+      ],
+      "typical_trustee": "Provost",
+      "typical_steward": "Director of Curriculum / Registrar",
+      "regulatory_context": [
+        "Accreditation bodies",
+        "CIP codes (NCES)",
+        "State program approval"
+      ],
+      "default_classification": "internal"
+    },
+    {
+      "domain": "Financial Aid",
+      "description": "Aid applications, awards, disbursements, satisfactory academic progress, and compliance reporting.",
+      "helix_resources": [
+        "FinAidAward",
+        "FinAidApplication",
+        "Disbursement"
+      ],
+      "typical_trustee": "VP for Enrollment Management or CFO",
+      "typical_steward": "Director of Financial Aid",
+      "regulatory_context": [
+        "Title IV (US)",
+        "FISAP reporting",
+        "State aid programs",
+        "FERPA"
+      ],
+      "default_classification": "confidential"
+    },
+    {
+      "domain": "Outcomes & Credentials",
+      "description": "Degrees conferred, certificates, credentials, transcripts, and graduation metrics.",
+      "helix_resources": [
+        "Degree",
+        "GradeRecord",
+        "Credential"
+      ],
+      "typical_trustee": "Provost",
+      "typical_steward": "University Registrar",
+      "regulatory_context": [
+        "IPEDS Completions",
+        "Accreditation",
+        "State performance funding"
+      ],
+      "default_classification": "confidential"
+    },
+    {
+      "domain": "Human Resources",
+      "description": "Employee records, positions, compensation, benefits, and workforce analytics. Covers faculty, staff, and student employees.",
+      "helix_resources": [
+        "(Future: Employee, Position, Appointment)"
+      ],
+      "typical_trustee": "VP for Human Resources / CHRO",
+      "typical_steward": "Director of HR Systems / HRIS Manager",
+      "regulatory_context": [
+        "FLSA",
+        "EEOC",
+        "ACA",
+        "IPEDS HR Survey"
+      ],
+      "default_classification": "confidential",
+      "status": "Planned for HELIX Core v0.2"
+    },
+    {
+      "domain": "Finance & General Ledger",
+      "description": "Chart of accounts, transactions, budgets, procurement, and financial reporting.",
+      "helix_resources": [
+        "(Future: GLTransaction, Budget, Account)"
+      ],
+      "typical_trustee": "CFO / VP for Finance",
+      "typical_steward": "Controller / Director of Financial Systems",
+      "regulatory_context": [
+        "GASB/FASB",
+        "A-133 Single Audit",
+        "State appropriations reporting"
+      ],
+      "default_classification": "internal",
+      "status": "Planned for HELIX Core v0.2"
+    },
+    {
+      "domain": "Research Administration",
+      "description": "Grants, contracts, research compliance, IRB, and sponsored program financial management.",
+      "helix_resources": [
+        "(Future: Grant, ResearchProject, PI)"
+      ],
+      "typical_trustee": "VP for Research",
+      "typical_steward": "Director of Sponsored Programs / Research Compliance Officer",
+      "regulatory_context": [
+        "2 CFR 200 (Uniform Guidance)",
+        "NSF/NIH reporting",
+        "Export controls"
+      ],
+      "default_classification": "confidential",
+      "status": "Planned for HELIX Core v0.3"
+    },
+    {
+      "domain": "Advancement & Alumni",
+      "description": "Donor records, gifts, pledges, campaigns, alumni relations, and constituent engagement.",
+      "helix_resources": [
+        "(Future: Constituent, Gift, Campaign)"
+      ],
+      "typical_trustee": "VP for Advancement / VP for University Relations",
+      "typical_steward": "Director of Advancement Services / CRM Manager",
+      "regulatory_context": [
+        "IRS charitable contribution rules",
+        "CASE reporting standards"
+      ],
+      "default_classification": "confidential",
+      "status": "Planned for HELIX Core v0.3"
+    }
+  ]
+}

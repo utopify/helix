@@ -1,0 +1,101 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Enrollment",
+  "description": "Maps Workday Student course registration objects to the HELIX Enrollment resource.",
+  "source_system": "workday",
+  "target_resource": "Enrollment",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Student Course Registration",
+      "description": "A student's registration in a course section. Contains status, dates, grading basis."
+    },
+    {
+      "object": "Student Course Grade",
+      "description": "Final grade record for a completed registration."
+    },
+    {
+      "object": "Course Section",
+      "description": "A specific offering of a course in an academic period. Used for section reference resolution."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Student_Course_Registration.WID"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student_Course_Registration.Student (reference)",
+      "transformation": "Resolve the Student reference WID to HELIX Student.helix_id"
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "source": "Student_Course_Registration.Course_Section (reference)",
+      "transformation": "Resolve the Course_Section reference WID to HELIX CourseSection.helix_id"
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Student_Course_Registration.Academic_Period (reference)",
+      "transformation": "Resolve the Academic_Period reference WID to HELIX AcademicPeriod.helix_id"
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "Student_Course_Registration.Registration_Status",
+      "transformation": "Map Workday registration status to HELIX: 'Registered'\u2192'registered', 'Enrolled'\u2192'enrolled', 'Waitlisted'\u2192'waitlisted', 'Dropped'\u2192'dropped', 'Withdrawn'\u2192'withdrawn'. If Student_Course_Grade exists with final grade \u2192 'completed'.",
+      "notes": "Workday distinguishes 'Registered' (before term start) from 'Enrolled' (confirmed after census). The exact status values are tenant-configurable."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "Student_Course_Registration.Registration_Date",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "drop_date",
+      "source": "Student_Course_Registration.Drop_Date",
+      "transformation": "Cast to ISO 8601 date. Null if not dropped."
+    },
+    {
+      "helix_attribute": "credit_hours_attempted",
+      "source": "Student_Course_Registration.Credit_Units or Course_Section.Credit_Units_Minimum",
+      "transformation": "Direct map. Workday uses 'Credit Units' terminology."
+    },
+    {
+      "helix_attribute": "credit_hours_earned",
+      "source": "Student_Course_Grade.Credit_Units_Earned",
+      "transformation": "Direct map from grade record. Null if course not yet completed."
+    },
+    {
+      "helix_attribute": "grade",
+      "source": "Student_Course_Grade.Grade",
+      "transformation": "Direct map. The official final grade reference ID. Null if in progress."
+    },
+    {
+      "helix_attribute": "grade_points",
+      "source": "Student_Course_Grade.Quality_Points or calculated from Grade \u00d7 Credit_Units",
+      "transformation": "Direct map or calculate. Depends on institutional Workday configuration."
+    },
+    {
+      "helix_attribute": "grade_mode",
+      "source": "Student_Course_Registration.Grading_Basis",
+      "transformation": "Map Workday grading basis to HELIX: 'Letter_Grade'\u2192'standard', 'Pass_Fail'\u2192'pass_fail', 'Audit'\u2192'audit', 'Satisfactory_Unsatisfactory'\u2192'satisfactory_unsatisfactory'.",
+      "notes": "Grading basis reference IDs are configurable per tenant."
+    },
+    {
+      "helix_attribute": "repeat_flag",
+      "source": "Student_Course_Registration.Repeat_Indicator",
+      "transformation": "Direct map: true/false"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

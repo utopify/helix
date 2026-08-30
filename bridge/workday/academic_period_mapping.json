@@ -1,0 +1,83 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 AcademicPeriod",
+  "description": "Maps Workday Student academic period objects to the HELIX AcademicPeriod resource.",
+  "source_system": "workday",
+  "target_resource": "AcademicPeriod",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Academic Period",
+      "description": "A defined period of academic activity in Workday. Includes terms, sessions, and sub-terms."
+    },
+    {
+      "object": "Academic Calendar",
+      "description": "The calendar structure that contains academic periods. Defines the institution's term pattern."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Academic_Period.WID"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "period_type",
+      "source": "Academic_Period.Academic_Period_Type",
+      "transformation": "Map Workday period types to HELIX: 'Semester'\u2192'semester', 'Quarter'\u2192'quarter', 'Trimester'\u2192'trimester', 'Session'\u2192'session', 'Sub_Term'\u2192'mini_term'. Reference IDs are tenant-configurable.",
+      "notes": "Workday has a clean period type concept. Mapping is more straightforward than Banner or PeopleSoft."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "Academic_Period.Academic_Period_ID or Reference_ID",
+      "transformation": "Direct map. Workday's reference ID for the period (e.g., 'Fall_2026', '2026-2027_Semester_1').",
+      "notes": "Workday reference IDs are institution-configured. Less constrained than Banner's YYYYMM pattern."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "Academic_Period.Name",
+      "transformation": "Direct map (e.g., 'Fall 2026')"
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Academic_Period.Academic_Year (reference)",
+      "transformation": "Resolve Academic_Year reference to YYYY-YYYY format."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Academic_Period.Start_Date",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Academic_Period.End_Date",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "census_date",
+      "source": "Academic_Period.Census_Date or Academic_Period.Enrollment_Freeze_Date",
+      "transformation": "Cast to ISO 8601 date. Workday may use 'Enrollment Freeze Date' as the census equivalent.",
+      "notes": "Field name varies by Workday Student version and tenant configuration. Confirm the field used for official enrollment snapshot."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Derived",
+      "transformation": "true if current date is between start_date and end_date"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

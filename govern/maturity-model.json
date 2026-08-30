@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/govern/maturity-model.json",
+  "title": "HELIX Govern: Data Governance Maturity Model",
+  "description": "A self-assessment framework for higher education institutions to evaluate their data governance maturity across five dimensions. Aligned with HELIX conformance levels.",
+  "version": "0.1",
+  "dimensions": [
+    {
+      "dimension": "Data Model & Standards",
+      "description": "How well the institution has adopted shared data definitions and standards.",
+      "levels": {
+        "1_initial": "No shared data model. Each system and department defines data independently. Terminology varies across reports.",
+        "2_developing": "Awareness of HELIX Core exists. Some teams reference HELIX resources as a conceptual model but data lake does not conform.",
+        "3_defined": "Data lake silver layer maps to HELIX Core schemas for at least 3 core domains. HELIX terminology code sets are used for key attributes. Validation passes for core resources.",
+        "4_managed": "All core domains map to HELIX Core. Schema evolution process is in place. New resources are contributed back to the community. Extension points are used for institution-specific attributes.",
+        "5_optimizing": "Full HELIX Core conformance. Institution serves as a reference implementation. Cross-institutional data sharing is possible with minimal additional mapping."
+      }
+    },
+    {
+      "dimension": "Governance Organization",
+      "description": "The presence and effectiveness of governance roles, councils, and decision-making processes.",
+      "levels": {
+        "1_initial": "No formal governance roles. Data decisions are ad hoc, made by whoever is closest to the system.",
+        "2_developing": "Some governance roles exist informally. A data governance council may have been proposed but does not meet regularly.",
+        "3_defined": "HELIX Govern roles are mapped to institutional positions. A data governance council meets regularly. Domain stewards are identified for core domains.",
+        "4_managed": "Governance roles have clear authority and accountability. Escalation paths are documented. Stewards actively maintain HELIX resource definitions and quality rules. CDO reports governance health metrics.",
+        "5_optimizing": "Governance is embedded in institutional culture. Data literacy programs are widespread. Governance decisions are informed by metrics and continuous improvement."
+      }
+    },
+    {
+      "dimension": "Data Quality",
+      "description": "The systematic measurement and improvement of data quality.",
+      "levels": {
+        "1_initial": "Data quality is unknown or anecdotal. Issues are discovered reactively when reports look wrong.",
+        "2_developing": "Some data quality checks exist in ETL pipelines but are not systematic. No quality dashboards or SLAs.",
+        "3_defined": "HELIX quality rules are implemented for core domains. Quality metrics are measured and visible. Critical rule failures block downstream processing.",
+        "4_managed": "Quality SLAs are established per domain. Root cause analysis is performed for quality failures. Quality trends are tracked over time. Stewards review quality dashboards monthly.",
+        "5_optimizing": "Predictive quality monitoring. Automated remediation for common issues. Quality is measured at the source (ERP) and at each transformation layer. Institution contributes quality patterns back to HELIX community."
+      }
+    },
+    {
+      "dimension": "Data Classification & Security",
+      "description": "How data is classified, access is controlled, and compliance obligations are met.",
+      "levels": {
+        "1_initial": "No formal classification. Access is based on system permissions inherited from ERP. FERPA compliance is handled ad hoc.",
+        "2_developing": "Awareness of classification tiers exists. Some sensitive data is tagged but classification is inconsistent across systems.",
+        "3_defined": "HELIX data classification tiers (public, internal, confidential, restricted) are applied to all resources via the meta block. Access policies are documented per classification level.",
+        "4_managed": "Classification is enforced automatically in the data lake (e.g., column-level access controls based on meta.classification). Access auditing is in place. FERPA/GDPR compliance is demonstrable.",
+        "5_optimizing": "Dynamic classification that adjusts based on context (e.g., aggregated data may be lower classification than individual records). Privacy-preserving analytics (differential privacy, synthetic data) are available."
+      }
+    },
+    {
+      "dimension": "Data Literacy & Culture",
+      "description": "The institution's investment in data skills, data-informed decision-making, and governance culture.",
+      "levels": {
+        "1_initial": "Data use is limited to a few technical staff. Most decisions are based on intuition or anecdote.",
+        "2_developing": "Interest in data-informed decision-making exists at the leadership level. Some training programs are available.",
+        "3_defined": "Data literacy training is available and encouraged. Key stakeholders understand HELIX resource definitions and can interpret quality metrics. Self-service analytics tools are deployed.",
+        "4_managed": "Data literacy is expected as a competency for leadership roles. Faculty and staff regularly use governed data for decisions. Governance participation is recognized in performance evaluations.",
+        "5_optimizing": "Data is a strategic asset recognized at the board level. The institution publishes open data sets. Research and teaching incorporate institutional data. Data literacy is part of student learning outcomes."
+      }
+    }
+  ],
+  "assessment_guidance": {
+    "how_to_use": "For each dimension, select the level that best describes the institution's CURRENT state. Be honest \u2014 this is a diagnostic tool, not a scorecard. Most institutions beginning their HELIX journey will be at levels 1-2 across most dimensions.",
+    "scoring": "There is no single score. The value is in identifying which dimensions need the most attention and creating a roadmap for improvement.",
+    "frequency": "Assess annually, or when a major data initiative (ERP migration, lake implementation, governance program launch) begins or completes.",
+    "helix_conformance_alignment": {
+      "Explorer (Level 1)": "Typically levels 1-2 across most dimensions",
+      "Aligned (Level 2)": "Level 3 in Data Model & Standards; levels 2-3 elsewhere",
+      "Governed (Level 3)": "Level 3+ across all dimensions",
+      "Contributor (Level 4)": "Level 4+ in Data Model & Standards; level 3+ elsewhere",
+      "Champion (Level 5)": "Level 4-5 across all dimensions"
+    }
+  }
+}
