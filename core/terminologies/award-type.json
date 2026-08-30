@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/award-type.json",
+  "title": "HELIX Terminology: Financial Aid Award Type",
+  "description": "Standard types of financial aid awards. Used by the FinAidAward resource 'award_type' attribute.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/award-type"
+    },
+    "version": {
+      "const": "0.1"
+    }
+  },
+  "codes": [
+    {
+      "code": "grant",
+      "display": "Grant",
+      "definition": "Gift aid that does not need to be repaid (e.g., Pell Grant)"
+    },
+    {
+      "code": "scholarship",
+      "display": "Scholarship",
+      "definition": "Merit- or criteria-based gift aid that does not need to be repaid"
+    },
+    {
+      "code": "loan_subsidized",
+      "display": "Subsidized Loan",
+      "definition": "Need-based loan where the government pays interest while student is enrolled"
+    },
+    {
+      "code": "loan_unsubsidized",
+      "display": "Unsubsidized Loan",
+      "definition": "Non-need-based loan where interest accrues from disbursement"
+    },
+    {
+      "code": "loan_plus",
+      "display": "PLUS Loan",
+      "definition": "Federal loan for parents of dependent undergrads or graduate/professional students"
+    },
+    {
+      "code": "loan_private",
+      "display": "Private Loan",
+      "definition": "Loan from a private lender, not part of federal programs"
+    },
+    {
+      "code": "work_study",
+      "display": "Work-Study",
+      "definition": "Earnings from a federally or institutionally funded part-time employment program"
+    },
+    {
+      "code": "waiver",
+      "display": "Tuition Waiver",
+      "definition": "Full or partial waiver of tuition or fees"
+    },
+    {
+      "code": "fellowship",
+      "display": "Fellowship",
+      "definition": "Financial support for graduate students, typically for research or academic merit"
+    },
+    {
+      "code": "assistantship",
+      "display": "Assistantship",
+      "definition": "Graduate teaching or research assistantship with stipend and/or tuition remission"
+    },
+    {
+      "code": "other",
+      "display": "Other",
+      "definition": "An award type not covered by the standard codes"
+    }
+  ]
+}

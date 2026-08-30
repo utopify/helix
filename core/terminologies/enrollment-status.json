@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/enrollment-status.json",
+  "title": "HELIX Terminology: Enrollment Status",
+  "description": "Standard statuses for a student's registration in a course section. Used by the Enrollment resource 'enrollment_status' attribute.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/enrollment-status"
+    },
+    "version": {
+      "const": "0.1"
+    }
+  },
+  "codes": [
+    {
+      "code": "registered",
+      "display": "Registered",
+      "definition": "Student has registered but the term has not started or census has not passed"
+    },
+    {
+      "code": "waitlisted",
+      "display": "Waitlisted",
+      "definition": "Student is on a waitlist for the section"
+    },
+    {
+      "code": "enrolled",
+      "display": "Enrolled",
+      "definition": "Student is confirmed enrolled (post-census or post-start)"
+    },
+    {
+      "code": "dropped",
+      "display": "Dropped",
+      "definition": "Student dropped the course before the institution's drop deadline (typically no record on transcript)"
+    },
+    {
+      "code": "withdrawn",
+      "display": "Withdrawn",
+      "definition": "Student withdrew after the drop deadline (typically a 'W' on transcript)"
+    },
+    {
+      "code": "completed",
+      "display": "Completed",
+      "definition": "Student completed the course and received a final grade"
+    },
+    {
+      "code": "incomplete",
+      "display": "Incomplete",
+      "definition": "Student received an incomplete grade with a deadline for completion"
+    },
+    {
+      "code": "auditing",
+      "display": "Auditing",
+      "definition": "Student is attending the course without receiving credit or a grade"
+    }
+  ]
+}

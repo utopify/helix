@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/grade-mode.json",
+  "title": "HELIX Terminology: Grade Mode",
+  "description": "Standard grading modes for course enrollments. Used by the Enrollment resource 'grade_mode' attribute.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/grade-mode"
+    },
+    "version": {
+      "const": "0.1"
+    }
+  },
+  "codes": [
+    {
+      "code": "standard",
+      "display": "Standard Letter Grade",
+      "definition": "Traditional A-F grading scale with GPA impact"
+    },
+    {
+      "code": "pass_fail",
+      "display": "Pass/Fail",
+      "definition": "Binary pass or fail with no GPA impact"
+    },
+    {
+      "code": "audit",
+      "display": "Audit",
+      "definition": "No grade or credit awarded; student attends for learning only"
+    },
+    {
+      "code": "satisfactory_unsatisfactory",
+      "display": "Satisfactory/Unsatisfactory",
+      "definition": "S/U grading, common for graduate research hours or clinical rotations"
+    },
+    {
+      "code": "other",
+      "display": "Other",
+      "definition": "An institution-specific grading mode. Document in extensions."
+    }
+  ]
+}

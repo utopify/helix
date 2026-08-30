@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/course_section.json",
+  "title": "HELIX CourseSection Resource",
+  "description": "A specific offering of a course in an academic period \u2014 with instructor, schedule, location, and capacity.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "course_ref",
+    "academic_period_ref",
+    "section_number"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "course_ref": {
+      "type": "string",
+      "description": "HELIX ID of the parent Course resource"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod"
+    },
+    "section_number": {
+      "type": "string",
+      "description": "Section identifier (e.g., '001', 'A')"
+    },
+    "crn": {
+      "type": "string",
+      "description": "Course Reference Number or equivalent registration code"
+    },
+    "title_override": {
+      "type": "string",
+      "description": "Section-specific title if different from catalog course"
+    },
+    "delivery_mode": {
+      "type": "string",
+      "enum": [
+        "in_person",
+        "online_synchronous",
+        "online_asynchronous",
+        "hybrid",
+        "hyflex",
+        "other"
+      ]
+    },
+    "campus": {
+      "type": "string"
+    },
+    "building": {
+      "type": "string"
+    },
+    "room": {
+      "type": "string"
+    },
+    "instructors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary",
+              "teaching_assistant",
+              "other"
+            ]
+          },
+          "employee_ref": {
+            "type": "string",
+            "description": "HELIX ID or identifier for the instructor"
+          }
+        }
+      }
+    },
+    "max_enrollment": {
+      "type": "integer"
+    },
+    "actual_enrollment": {
+      "type": "integer"
+    },
+    "waitlist_capacity": {
+      "type": "integer"
+    },
+    "credit_hours": {
+      "type": "number"
+    },
+    "section_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "cancelled",
+        "closed",
+        "pending"
+      ]
+    },
+    "schedule": {
+      "type": "object",
+      "description": "Meeting pattern",
+      "properties": {
+        "days": {
+          "type": "string",
+          "description": "Meeting days (e.g., 'MWF', 'TR')"
+        },
+        "start_time": {
+          "type": "string",
+          "format": "time"
+        },
+        "end_time": {
+          "type": "string",
+          "format": "time"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/institution.json",
+  "title": "HELIX Institution Resource",
+  "description": "A higher education institution \u2014 university, college, community college, or system office.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "name",
+    "institution_type",
+    "country"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Globally unique HELIX identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Official institution name"
+    },
+    "short_name": {
+      "type": "string",
+      "description": "Common abbreviation (e.g., 'OSU', 'MIT')"
+    },
+    "identifiers": {
+      "type": "array",
+      "description": "External identifiers (IPEDS UnitID, OPEID, HESA UKPRN, etc.)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "description": "Identifier system (e.g., 'ipeds', 'opeid', 'ukprn')"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "institution_type": {
+      "type": "string",
+      "enum": [
+        "university",
+        "college",
+        "community_college",
+        "technical_college",
+        "system_office",
+        "other"
+      ]
+    },
+    "carnegie_classification": {
+      "type": "string",
+      "description": "Carnegie Classification code (US institutions)"
+    },
+    "country": {
+      "type": "string",
+      "format": "iso-3166-1-alpha-2"
+    },
+    "state_province": {
+      "type": "string",
+      "description": "State, province, or region"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "IANA timezone (e.g., 'America/New_York')"
+    },
+    "erp_system": {
+      "type": "string",
+      "description": "Primary SIS/ERP platform",
+      "enum": [
+        "banner",
+        "peoplesoft",
+        "workday",
+        "colleague",
+        "jenzabar",
+        "other"
+      ]
+    },
+    "website": {
+      "type": "string",
+      "format": "uri"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

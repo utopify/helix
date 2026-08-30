@@ -1,0 +1,129 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Student",
+  "description": "Maps Ellucian Banner SIS tables to the HELIX Student resource.",
+  "source_system": "banner",
+  "target_resource": "Student",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "SPRIDEN",
+      "description": "Person Identification/Name. Primary identity table."
+    },
+    {
+      "table": "SPBPERS",
+      "description": "Person Biographical. Demographics, birth date, gender."
+    },
+    {
+      "table": "SGBSTDN",
+      "description": "Student General. Student-level attributes, status, residency."
+    },
+    {
+      "table": "GOBINTL",
+      "description": "International Person. Citizenship, visa info for international students."
+    },
+    {
+      "table": "GORADID",
+      "description": "Additional Identification. Additional ID types (SSN, etc.)"
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Generate a deterministic UUID from institution_id + SPRIDEN_PIDM, or assign on first load",
+      "notes": "PIDM is Banner's internal person key. Not exposed externally."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "identifiers[].system='banner'",
+      "source": "SPRIDEN.SPRIDEN_ID",
+      "transformation": "Direct map. This is the Banner student ID (e.g., '900123456')",
+      "notes": "SPRIDEN_ID is the institution-assigned ID. SPRIDEN_PIDM is internal only."
+    },
+    {
+      "helix_attribute": "identifiers[].system='banner_pidm'",
+      "source": "SPRIDEN.SPRIDEN_PIDM",
+      "transformation": "Direct map. Retain for internal cross-referencing.",
+      "notes": "PIDM is the master key across all Banner tables."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "SPRIDEN.SPRIDEN_LAST_NAME",
+      "transformation": "Direct map. Use current record (SPRIDEN_CHANGE_IND IS NULL)."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "SPRIDEN.SPRIDEN_FIRST_NAME",
+      "transformation": "Direct map. Use current record."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "SPRIDEN.SPRIDEN_MI",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "SPBPERS.SPBPERS_NAME_PREFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "SPBPERS.SPBPERS_NAME_SUFFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "SPBPERS.SPBPERS_BIRTH_DATE",
+      "transformation": "Cast to ISO 8601 date (YYYY-MM-DD)"
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "SPBPERS.SPBPERS_SEX",
+      "transformation": "Map Banner codes: 'M'\u2192'male', 'F'\u2192'female', 'N'\u2192'nonbinary', null\u2192'unknown'. Bind to helix/gender terminology.",
+      "notes": "Banner 9.x added SPBPERS_GNDR_CODE for expanded gender identity. Prefer that if available."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "SGBSTDN.SGBSTDN_STST_CODE",
+      "transformation": "Map Banner student status codes to HELIX: 'AS'\u2192'enrolled', 'IS'\u2192'leave_of_absence', 'EX'\u2192'withdrawn'. Requires institution-specific code mapping.",
+      "notes": "Use the most recent SGBSTDN record (max SGBSTDN_TERM_CODE_EFF)."
+    },
+    {
+      "helix_attribute": "residency",
+      "source": "SGBSTDN.SGBSTDN_RESD_CODE",
+      "transformation": "Map Banner residency codes to HELIX enum: typically 'R'\u2192'in_state', 'N'\u2192'out_of_state', 'I'\u2192'international'. Institution-specific.",
+      "notes": "Banner residency codes are institution-defined in STVRESD."
+    },
+    {
+      "helix_attribute": "citizenship_country",
+      "source": "GOBINTL.GOBINTL_NATN_CODE_LEGAL",
+      "transformation": "Map Banner nation code (STVNATN) to ISO 3166-1 alpha-2"
+    },
+    {
+      "helix_attribute": "first_generation_flag",
+      "source": "SGBSTDN.SGBSTDN_FIRST_GEN_IND or SARADAP.SARADAP_FIRST_GEN_IND",
+      "transformation": "Map: 'Y'\u2192true, 'N'/null\u2192false",
+      "notes": "Availability depends on Banner version and institutional configuration."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.updated_at",
+      "source": "SPRIDEN.SPRIDEN_ACTIVITY_DATE or SGBSTDN.SGBSTDN_ACTIVITY_DATE",
+      "transformation": "Use the most recent activity date across source tables"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential' (student PII is FERPA-protected)"
+    }
+  ]
+}

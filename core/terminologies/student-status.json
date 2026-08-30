@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/student-status.json",
+  "title": "HELIX Terminology: Student Status",
+  "description": "Standard lifecycle statuses for a student at an institution. Used by the Student resource 'status' attribute.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/student-status"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "codes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "codes": [
+    {
+      "code": "prospective",
+      "display": "Prospective",
+      "definition": "Person has expressed interest but has not applied"
+    },
+    {
+      "code": "applicant",
+      "display": "Applicant",
+      "definition": "Person has submitted an application for admission"
+    },
+    {
+      "code": "admitted",
+      "display": "Admitted",
+      "definition": "Application accepted; student has not yet enrolled"
+    },
+    {
+      "code": "enrolled",
+      "display": "Enrolled",
+      "definition": "Student is actively registered in courses for a current or future term"
+    },
+    {
+      "code": "leave_of_absence",
+      "display": "Leave of Absence",
+      "definition": "Student has an approved leave and intends to return"
+    },
+    {
+      "code": "withdrawn",
+      "display": "Withdrawn",
+      "definition": "Student has voluntarily or administratively separated from the institution"
+    },
+    {
+      "code": "graduated",
+      "display": "Graduated",
+      "definition": "Student has been conferred a degree, certificate, or credential"
+    },
+    {
+      "code": "deceased",
+      "display": "Deceased",
+      "definition": "Student is deceased. Record retained for historical and compliance purposes."
+    }
+  ]
+}

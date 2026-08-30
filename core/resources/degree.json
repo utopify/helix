@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/degree.json",
+  "title": "HELIX Degree Resource",
+  "description": "A degree, certificate, or credential conferred upon a student.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "institution_id",
+    "program_ref",
+    "conferral_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Program"
+    },
+    "degree_type": {
+      "type": "string",
+      "description": "Degree designation (e.g., 'BS', 'MA', 'PhD')"
+    },
+    "degree_level": {
+      "type": "string",
+      "enum": [
+        "associate",
+        "bachelors",
+        "masters",
+        "doctoral",
+        "professional",
+        "certificate",
+        "other"
+      ]
+    },
+    "major": {
+      "type": "string"
+    },
+    "minor": {
+      "type": "string"
+    },
+    "concentration": {
+      "type": "string"
+    },
+    "conferral_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "conferral_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod of conferral"
+    },
+    "honors": {
+      "type": "string",
+      "enum": [
+        "summa_cum_laude",
+        "magna_cum_laude",
+        "cum_laude",
+        "with_distinction",
+        "with_honors",
+        "none",
+        "other"
+      ]
+    },
+    "cumulative_gpa": {
+      "type": "number"
+    },
+    "total_credit_hours_earned": {
+      "type": "number"
+    },
+    "thesis_title": {
+      "type": "string"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

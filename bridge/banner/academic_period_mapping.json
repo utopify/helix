@@ -1,0 +1,82 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 AcademicPeriod",
+  "description": "Maps Ellucian Banner term validation tables to the HELIX AcademicPeriod resource.",
+  "source_system": "banner",
+  "target_resource": "AcademicPeriod",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "STVTERM",
+      "description": "Term Validation. Master list of terms with codes and descriptions."
+    },
+    {
+      "table": "SOBPTRM",
+      "description": "Term Part-of-Term. Sub-term/session definitions with start/end dates."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + STVTERM_CODE"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "period_type",
+      "source": "STVTERM_CODE pattern + institutional configuration",
+      "transformation": "Derive from term code pattern or institutional calendar type. Most Banner shops: '10'=Fall semester, '20'=Spring semester, '30'=Summer. Map to 'semester', 'quarter', etc.",
+      "notes": "Banner term codes follow YYYYMM convention at most institutions but this is not enforced by the system."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "STVTERM.STVTERM_CODE",
+      "transformation": "Direct map (e.g., '202610')"
+    },
+    {
+      "helix_attribute": "name",
+      "source": "STVTERM.STVTERM_DESC",
+      "transformation": "Direct map (e.g., 'Fall 2026')"
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "STVTERM.STVTERM_ACYR_CODE",
+      "transformation": "Map Banner ACYR to YYYY-YYYY format. Banner stores as '2627' \u2192 '2026-2027'."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "STVTERM.STVTERM_START_DATE",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "STVTERM.STVTERM_END_DATE",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "census_date",
+      "source": "SOBPTRM.SOBPTRM_CENSUS_DT (for full-term part-of-term)",
+      "transformation": "Cast to ISO 8601 date. Use the full-term part-of-term record (typically SOBPTRM_PTRM_CODE = '1').",
+      "notes": "Census date is critical for official enrollment reporting (IPEDS, state). Some institutions store this differently."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Derived",
+      "transformation": "true if current date is between start_date and end_date, false otherwise"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

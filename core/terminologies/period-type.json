@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/period-type.json",
+  "title": "HELIX Terminology: Academic Period Type",
+  "description": "Standard types of academic periods. Used by the AcademicPeriod resource 'period_type' attribute.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/period-type"
+    },
+    "version": {
+      "const": "0.1"
+    }
+  },
+  "codes": [
+    {
+      "code": "semester",
+      "display": "Semester",
+      "definition": "A ~15-week academic term (typically Fall, Spring). Most common in US institutions."
+    },
+    {
+      "code": "quarter",
+      "display": "Quarter",
+      "definition": "A ~10-week academic term (typically Fall, Winter, Spring, Summer)"
+    },
+    {
+      "code": "trimester",
+      "display": "Trimester",
+      "definition": "A ~13-week term dividing the year into three periods"
+    },
+    {
+      "code": "session",
+      "display": "Session",
+      "definition": "A sub-term or accelerated term within a semester or quarter"
+    },
+    {
+      "code": "mini_term",
+      "display": "Mini-Term",
+      "definition": "A short-duration term (e.g., May term, Winterim, 8-week session)"
+    },
+    {
+      "code": "academic_year",
+      "display": "Academic Year",
+      "definition": "A full academic year container (e.g., '2026-2027'). Used for annual financial aid and reporting."
+    },
+    {
+      "code": "other",
+      "display": "Other",
+      "definition": "A period type not covered by the standard codes. Document in extensions."
+    }
+  ]
+}

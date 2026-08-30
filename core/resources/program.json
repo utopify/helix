@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/program.json",
+  "title": "HELIX Program Resource",
+  "description": "An academic program \u2014 degree, certificate, or credential track that a student pursues.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "name",
+    "program_type",
+    "degree_level"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "description": "Institution's program code"
+    },
+    "name": {
+      "type": "string",
+      "description": "Official program name (e.g., 'Computer Science')"
+    },
+    "degree_type": {
+      "type": "string",
+      "description": "Degree designation (e.g., 'BS', 'BA', 'MS', 'PhD', 'AAS')"
+    },
+    "degree_level": {
+      "type": "string",
+      "enum": [
+        "associate",
+        "bachelors",
+        "masters",
+        "doctoral",
+        "professional",
+        "certificate",
+        "non_degree",
+        "other"
+      ]
+    },
+    "program_type": {
+      "type": "string",
+      "enum": [
+        "major",
+        "minor",
+        "concentration",
+        "certificate",
+        "credential",
+        "other"
+      ]
+    },
+    "cip_code": {
+      "type": "string",
+      "description": "NCES Classification of Instructional Programs code (e.g., '11.0701')"
+    },
+    "academic_org_ref": {
+      "type": "string",
+      "description": "HELIX ID of the owning college/school/department"
+    },
+    "total_credit_hours_required": {
+      "type": "number"
+    },
+    "is_active": {
+      "type": "boolean"
+    },
+    "accreditation_body": {
+      "type": "string",
+      "description": "External accreditor if program-level accreditation exists"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

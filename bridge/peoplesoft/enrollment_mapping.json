@@ -1,0 +1,100 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft Campus Solutions \u2192 Enrollment",
+  "description": "Maps Oracle PeopleSoft Campus Solutions enrollment tables to the HELIX Enrollment resource.",
+  "source_system": "peoplesoft",
+  "target_resource": "Enrollment",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_ENRL",
+      "description": "Student enrollment. One row per student per class per term."
+    },
+    {
+      "table": "PS_CLASS_TBL",
+      "description": "Class schedule. Section details, capacity, schedule."
+    },
+    {
+      "table": "PS_TERM_TBL",
+      "description": "Term definition. Start/end dates, census dates."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + STRM + CLASS_NBR"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_ENRL.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id via EMPLID lookup"
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "source": "PS_STDNT_ENRL.CLASS_NBR + PS_STDNT_ENRL.STRM",
+      "transformation": "Resolve to HELIX CourseSection.helix_id via CLASS_NBR + term lookup"
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_ENRL.STRM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id via STRM lookup"
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "PS_STDNT_ENRL.STDNT_ENRL_STATUS + PS_STDNT_ENRL.ENRL_STATUS_REASON",
+      "transformation": "Map PeopleSoft status codes: 'E'\u2192'enrolled', 'W'\u2192'waitlisted', 'D'\u2192'dropped'. If CRSE_GRADE_OFF is populated and status='E' \u2192 'completed'. 'V'\u2192'auditing'.",
+      "notes": "PeopleSoft enrollment status is simpler than Banner. Dropped vs. withdrawn may require checking ENRL_STATUS_REASON or ENRL_DROP_DT against institutional deadlines."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "PS_STDNT_ENRL.ENRL_ADD_DT",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "drop_date",
+      "source": "PS_STDNT_ENRL.ENRL_DROP_DT",
+      "transformation": "Cast to ISO 8601 date. Null if not dropped."
+    },
+    {
+      "helix_attribute": "credit_hours_attempted",
+      "source": "PS_STDNT_ENRL.UNT_TAKEN",
+      "transformation": "Direct map"
+    },
+    {
+      "helix_attribute": "credit_hours_earned",
+      "source": "PS_STDNT_ENRL.UNT_EARNED",
+      "transformation": "Direct map. Zero or null if course not yet completed."
+    },
+    {
+      "helix_attribute": "grade",
+      "source": "PS_STDNT_ENRL.CRSE_GRADE_OFF",
+      "transformation": "Direct map. Official grade. Null if in progress."
+    },
+    {
+      "helix_attribute": "grade_points",
+      "source": "PS_STDNT_ENRL.GRADE_POINTS",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "grade_mode",
+      "source": "PS_STDNT_ENRL.GRADING_BASIS_ENRL",
+      "transformation": "Map PeopleSoft grading basis: 'GRD'\u2192'standard', 'PNP'\u2192'pass_fail', 'AUD'\u2192'audit', 'SUS'\u2192'satisfactory_unsatisfactory'. Codes in GRADING_BASIS table."
+    },
+    {
+      "helix_attribute": "repeat_flag",
+      "source": "PS_STDNT_ENRL.REPEAT_CODE",
+      "transformation": "Map: non-null/non-blank \u2192 true, null/blank \u2192 false"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/data-classification.json",
+  "title": "HELIX Terminology: Data Classification",
+  "description": "Standard data classification tiers used in the HELIX meta block. Part of HELIX Govern.",
+  "type": "object",
+  "properties": {
+    "code_system": {
+      "const": "helix/data-classification"
+    },
+    "version": {
+      "const": "0.1"
+    }
+  },
+  "codes": [
+    {
+      "code": "public",
+      "display": "Public",
+      "definition": "Data approved for unrestricted public access (e.g., course catalog, institution name)"
+    },
+    {
+      "code": "internal",
+      "display": "Internal",
+      "definition": "Data intended for institutional use only (e.g., enrollment counts, section capacity)"
+    },
+    {
+      "code": "confidential",
+      "display": "Confidential",
+      "definition": "Data protected by regulation or policy (e.g., student PII, grades, financial aid). FERPA-protected data falls here at minimum."
+    },
+    {
+      "code": "restricted",
+      "display": "Restricted",
+      "definition": "Highly sensitive data requiring strict access controls (e.g., SSN, health records, disciplinary records)"
+    }
+  ]
+}

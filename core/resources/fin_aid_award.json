@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/fin_aid_award.json",
+  "title": "HELIX FinAidAward Resource",
+  "description": "A financial aid award offered or disbursed to a student for an academic period.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_period_ref",
+    "award_type",
+    "fund_source",
+    "award_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student resource"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod"
+    },
+    "award_type": {
+      "type": "string",
+      "enum": [
+        "grant",
+        "scholarship",
+        "loan_subsidized",
+        "loan_unsubsidized",
+        "loan_plus",
+        "loan_private",
+        "work_study",
+        "waiver",
+        "fellowship",
+        "assistantship",
+        "other"
+      ]
+    },
+    "fund_source": {
+      "type": "string",
+      "enum": [
+        "federal",
+        "state",
+        "institutional",
+        "private",
+        "employer",
+        "other"
+      ]
+    },
+    "fund_name": {
+      "type": "string",
+      "description": "Specific fund or program name (e.g., 'Federal Pell Grant', 'Dean's Scholarship')"
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Institution's internal fund code"
+    },
+    "award_status": {
+      "type": "string",
+      "enum": [
+        "offered",
+        "accepted",
+        "declined",
+        "cancelled",
+        "disbursed",
+        "returned"
+      ]
+    },
+    "amount_offered": {
+      "type": "number",
+      "description": "Amount offered in local currency"
+    },
+    "amount_accepted": {
+      "type": "number"
+    },
+    "amount_disbursed": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "ISO 4217 currency code"
+    },
+    "disbursement_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "need_based_flag": {
+      "type": "boolean"
+    },
+    "merit_based_flag": {
+      "type": "boolean"
+    },
+    "efc": {
+      "type": "number",
+      "description": "Expected Family Contribution / Student Aid Index at time of award"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Enrollment",
+  "description": "Maps Ellucian Banner SIS registration tables to the HELIX Enrollment resource.",
+  "source_system": "banner",
+  "target_resource": "Enrollment",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "SFRSTCR",
+      "description": "Student Course Registration. One row per student per CRN per term."
+    },
+    {
+      "table": "SHRTCKN",
+      "description": "Course History/Transcript. Final grades and credit hours earned."
+    },
+    {
+      "table": "SSBSECT",
+      "description": "Section Base. Section details (used for course_section_ref resolution)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SFRSTCR_PIDM + SFRSTCR_TERM_CODE + SFRSTCR_CRN"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "SFRSTCR.SFRSTCR_PIDM",
+      "transformation": "Resolve to HELIX Student.helix_id via PIDM lookup"
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "source": "SFRSTCR.SFRSTCR_CRN + SFRSTCR.SFRSTCR_TERM_CODE",
+      "transformation": "Resolve to HELIX CourseSection.helix_id via CRN + term lookup against SSBSECT"
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "SFRSTCR.SFRSTCR_TERM_CODE",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id via term code lookup"
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "SFRSTCR.SFRSTCR_RSTS_CODE",
+      "transformation": "Map Banner registration status codes: 'RE','RW','RA'\u2192'registered', 'WL'\u2192'waitlisted', 'DD','DW'\u2192'dropped', 'W'\u2192'withdrawn', 'AU'\u2192'auditing'. Post-grading: if SHRTCKN exists with final grade \u2192 'completed'. Institution-specific codes in STVRSTS.",
+      "notes": "Use the most recent SFRSTCR record per PIDM+TERM+CRN (max SFRSTCR_SEQ_NUMB)."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "SFRSTCR.SFRSTCR_ADD_DATE or SFRSTCR.SFRSTCR_ACTIVITY_DATE",
+      "transformation": "Cast to ISO 8601 date. Use earliest registration activity for the CRN."
+    },
+    {
+      "helix_attribute": "drop_date",
+      "source": "SFRSTCR.SFRSTCR_ACTIVITY_DATE (where SFRSTCR_RSTS_CODE in drop/withdraw codes)",
+      "transformation": "Cast to ISO 8601 date. Null if not dropped/withdrawn."
+    },
+    {
+      "helix_attribute": "credit_hours_attempted",
+      "source": "SFRSTCR.SFRSTCR_CREDIT_HR",
+      "transformation": "Direct map"
+    },
+    {
+      "helix_attribute": "credit_hours_earned",
+      "source": "SHRTCKN.SHRTCKN_CREDIT_HR_EARNED",
+      "transformation": "Direct map from transcript. Null if course not yet completed."
+    },
+    {
+      "helix_attribute": "grade",
+      "source": "SHRTCKN.SHRTCKN_GRDE_CODE",
+      "transformation": "Direct map from transcript. Null if in progress."
+    },
+    {
+      "helix_attribute": "grade_points",
+      "source": "SHRTCKN.SHRTCKN_QUALITY_POINTS",
+      "transformation": "Direct map. Quality points = grade value \u00d7 credit hours."
+    },
+    {
+      "helix_attribute": "grade_mode",
+      "source": "SFRSTCR.SFRSTCR_GMOD_CODE",
+      "transformation": "Map Banner grade mode codes to HELIX: 'S'\u2192'standard', 'P'\u2192'pass_fail', 'A'\u2192'audit'. Institution-specific codes in STVGMOD."
+    },
+    {
+      "helix_attribute": "repeat_flag",
+      "source": "SHRTCKN.SHRTCKN_REPEAT_IND",
+      "transformation": "Map: 'I','E','X'\u2192true, null\u2192false. Institution repeat rules vary."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

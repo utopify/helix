@@ -1,0 +1,130 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft Campus Solutions \u2192 Student",
+  "description": "Maps Oracle PeopleSoft Campus Solutions tables to the HELIX Student resource.",
+  "source_system": "peoplesoft",
+  "target_resource": "Student",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_PERSONAL_DATA",
+      "description": "Person biographical data. Birth date, gender."
+    },
+    {
+      "table": "PS_NAMES",
+      "description": "Person names. Supports name history and types."
+    },
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Student career term. Academic status, load, GPA per career per term."
+    },
+    {
+      "table": "PS_RESIDENCY",
+      "description": "Student residency status for tuition purposes."
+    },
+    {
+      "table": "PS_CITIZENSHIP",
+      "description": "Citizenship records."
+    },
+    {
+      "table": "PS_PERSON",
+      "description": "Core person record. EmplID assignment."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "identifiers[].system='peoplesoft'",
+      "source": "PS_PERSON.EMPLID",
+      "transformation": "Direct map. EmplID is PeopleSoft's universal person key.",
+      "notes": "EmplID is used across all PeopleSoft modules (HCM, CS, Financials). A single person has one EmplID."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "PS_NAMES.LAST_NAME",
+      "transformation": "Direct map. Use current effective-dated row (max EFFDT where EFFDT <= SYSDATE, NAME_TYPE = 'PRI')."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "PS_NAMES.FIRST_NAME",
+      "transformation": "Direct map. Use current primary name record."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "PS_NAMES.MIDDLE_NAME",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "PS_NAMES.NAME_PREFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "PS_NAMES.NAME_SUFFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.preferred",
+      "source": "PS_NAMES.FIRST_NAME (where NAME_TYPE = 'PRF')",
+      "transformation": "Use preferred name row if it exists; null otherwise."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "PS_PERSONAL_DATA.BIRTHDATE",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "PS_PERSONAL_DATA.SEX",
+      "transformation": "Map PeopleSoft codes: 'M'\u2192'male', 'F'\u2192'female', 'U'\u2192'unknown'. Newer versions may have PS_GENDER_IDENTITY for expanded options."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "PS_STDNT_CAR_TERM.ACAD_PROG_STATUS",
+      "transformation": "Map PeopleSoft academic program status to HELIX: 'AC'\u2192'enrolled', 'LA'\u2192'leave_of_absence', 'DC'\u2192'withdrawn', 'CM'\u2192'graduated'. Use most recent career term row.",
+      "notes": "PeopleSoft tracks status at the career+program level. A student can have multiple careers (UGRD, GRAD). Consider the primary or most recent."
+    },
+    {
+      "helix_attribute": "residency",
+      "source": "PS_RESIDENCY.RESIDENCY",
+      "transformation": "Map PeopleSoft residency codes to HELIX: 'RES'\u2192'in_state', 'NRES'\u2192'out_of_state', 'INTL'\u2192'international'. Institution-specific codes in RESIDENCY table.",
+      "notes": "Use effective-dated row for the relevant term."
+    },
+    {
+      "helix_attribute": "citizenship_country",
+      "source": "PS_CITIZENSHIP.COUNTRY",
+      "transformation": "Map PeopleSoft country code to ISO 3166-1 alpha-2. PeopleSoft uses 3-char codes (e.g., 'USA'\u2192'US')."
+    },
+    {
+      "helix_attribute": "first_generation_flag",
+      "source": "PS_ADM_APPL_DATA.FIRST_GEN_STUDENT or institution-specific field",
+      "transformation": "Map: 'Y'\u2192true, 'N'/null\u2192false",
+      "notes": "PeopleSoft does not have a standard first-gen field in all versions. Often added as a custom field."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.updated_at",
+      "source": "PS_NAMES.LASTUPDDTTM or PS_STDNT_CAR_TERM.LASTUPDDTTM",
+      "transformation": "Use the most recent timestamp across source tables"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

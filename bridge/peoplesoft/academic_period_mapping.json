@@ -1,0 +1,82 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft Campus Solutions \u2192 AcademicPeriod",
+  "description": "Maps Oracle PeopleSoft Campus Solutions term tables to the HELIX AcademicPeriod resource.",
+  "source_system": "peoplesoft",
+  "target_resource": "AcademicPeriod",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_TERM_TBL",
+      "description": "Term definition. Master list of terms with dates and attributes."
+    },
+    {
+      "table": "PS_SESSION_TBL",
+      "description": "Session definitions within terms. Sub-term/session start and end dates."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + STRM"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "period_type",
+      "source": "PS_TERM_TBL.TERM_CATEGORY or ACAD_CAREER + institutional pattern",
+      "transformation": "PeopleSoft STRM follows a 4-digit pattern: first digit = century, second digit = decade/year, third-fourth = term within year. Map: '1'\u2192'spring/semester', '5'\u2192'summer', '9'\u2192'fall/semester'. Derive type from institutional calendar (semester, quarter, etc.).",
+      "notes": "STRM decoding is institution-specific. Common patterns: 2261=Spring 2026, 2265=Summer 2026, 2269=Fall 2026."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "PS_TERM_TBL.STRM",
+      "transformation": "Direct map (e.g., '2269')"
+    },
+    {
+      "helix_attribute": "name",
+      "source": "PS_TERM_TBL.DESCR",
+      "transformation": "Direct map (e.g., 'Fall 2026')"
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_TERM_TBL.ACAD_YEAR",
+      "transformation": "Map to YYYY-YYYY format. PeopleSoft stores as '2026' \u2192 '2026-2027' (requires convention mapping)."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "PS_TERM_TBL.TERM_BEGIN_DT",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "PS_TERM_TBL.TERM_END_DT",
+      "transformation": "Cast to ISO 8601 date"
+    },
+    {
+      "helix_attribute": "census_date",
+      "source": "PS_SESSION_TBL.CENSUS_DT (for primary session, typically SESSION_CODE = '1' or 'REG')",
+      "transformation": "Cast to ISO 8601 date.",
+      "notes": "Census date lives at the session level in PeopleSoft, not the term level. Use the primary/regular session."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Derived",
+      "transformation": "true if current date is between start_date and end_date"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

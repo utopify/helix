@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/course.json",
+  "title": "HELIX Course Resource",
+  "description": "A catalog-level course definition. Distinct from CourseSection, which is a specific offering in a term.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "subject_code",
+    "course_number",
+    "title"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "subject_code": {
+      "type": "string",
+      "description": "Department/subject prefix (e.g., 'CS', 'ECON', 'BIOL')"
+    },
+    "course_number": {
+      "type": "string",
+      "description": "Catalog number (e.g., '101', '4500')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Official course title"
+    },
+    "description": {
+      "type": "string"
+    },
+    "credit_hours_min": {
+      "type": "number",
+      "description": "Minimum credit hours (for variable-credit courses)"
+    },
+    "credit_hours_max": {
+      "type": "number",
+      "description": "Maximum credit hours"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "undergraduate_lower",
+        "undergraduate_upper",
+        "graduate",
+        "doctoral",
+        "professional",
+        "non_credit",
+        "other"
+      ]
+    },
+    "academic_org_ref": {
+      "type": "string",
+      "description": "HELIX ID of the owning academic organization/department"
+    },
+    "is_active": {
+      "type": "boolean"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}
