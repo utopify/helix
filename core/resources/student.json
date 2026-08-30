@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/student.json",
+  "title": "HELIX Student Resource",
+  "description": "A person enrolled or admitted at a higher education institution.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "identifiers",
+    "status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Globally unique HELIX identifier"
+    },
+    "institution_id": {
+      "type": "string",
+      "description": "HELIX identifier for the institution (references Institution resource)"
+    },
+    "identifiers": {
+      "type": "array",
+      "description": "All known identifiers for this student across systems",
+      "items": {
+        "type": "object",
+        "required": [
+          "system",
+          "value",
+          "type"
+        ],
+        "properties": {
+          "system": {
+            "type": "string",
+            "description": "Source system (e.g., 'banner', 'peoplesoft', 'national_id')"
+          },
+          "value": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "institutional_id",
+              "national_id",
+              "ssn_last4",
+              "login",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "name": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string"
+        },
+        "given": {
+          "type": "string"
+        },
+        "middle": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        },
+        "preferred": {
+          "type": "string"
+        }
+      }
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "gender": {
+      "type": "string",
+      "description": "Bound to HELIX terminology: helix/gender"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current lifecycle status. Bound to HELIX terminology: helix/student-status",
+      "enum": [
+        "prospective",
+        "applicant",
+        "admitted",
+        "enrolled",
+        "leave_of_absence",
+        "withdrawn",
+        "graduated",
+        "deceased"
+      ]
+    },
+    "first_generation_flag": {
+      "type": "boolean"
+    },
+    "citizenship_country": {
+      "type": "string",
+      "format": "iso-3166-1-alpha-2"
+    },
+    "residency": {
+      "type": "string",
+      "enum": [
+        "in_state",
+        "out_of_state",
+        "international",
+        "unknown"
+      ]
+    },
+    "demographics": {
+      "type": "object",
+      "description": "Extension point for institution- or country-specific demographic attributes"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/academic_period.json",
+  "title": "HELIX AcademicPeriod Resource",
+  "description": "A defined period of academic activity (term, semester, quarter, session).",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "period_type",
+    "code",
+    "start_date",
+    "end_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": [
+        "semester",
+        "quarter",
+        "trimester",
+        "session",
+        "mini_term",
+        "academic_year",
+        "other"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "description": "Institution's native term code (e.g., '202610', 'Fall 2026')"
+    },
+    "name": {
+      "type": "string"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Academic year in YYYY-YYYY format (e.g., '2026-2027')"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "census_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}

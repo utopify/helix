@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/enrollment.json",
+  "title": "HELIX Enrollment Resource",
+  "description": "A student's registration in a specific course section during an academic period.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "course_section_ref",
+    "academic_period_ref",
+    "enrollment_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student resource"
+    },
+    "course_section_ref": {
+      "type": "string",
+      "description": "HELIX ID of the CourseSection resource"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod resource"
+    },
+    "enrollment_status": {
+      "type": "string",
+      "enum": [
+        "registered",
+        "waitlisted",
+        "enrolled",
+        "dropped",
+        "withdrawn",
+        "completed",
+        "incomplete",
+        "auditing"
+      ]
+    },
+    "enrollment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "drop_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "credit_hours_attempted": {
+      "type": "number"
+    },
+    "credit_hours_earned": {
+      "type": "number"
+    },
+    "grade": {
+      "type": "string",
+      "description": "Final grade. Bound to institution's HELIX grade terminology profile."
+    },
+    "grade_points": {
+      "type": "number"
+    },
+    "grade_mode": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "pass_fail",
+        "audit",
+        "satisfactory_unsatisfactory",
+        "other"
+      ]
+    },
+    "repeat_flag": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    }
+  }
+}
