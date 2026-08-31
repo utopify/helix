@@ -5,7 +5,7 @@ Thank you for your interest in contributing to HELIX. This framework exists beca
 ## Current State
 
 HELIX v0.1 includes:
-- **15 canonical resources** across 6 domains (Identity, Academic Structure, Enrollment, Financial Aid, Outcomes, Student Services)
+- **15 foundational resources** across 6 domains (Identity, Academic Structure, Enrollment, Financial Aid, Outcomes, Student Services)
 - **18 terminology code sets** standardizing values across resources
 - **4 ERP Bridge mappings** (Banner, PeopleSoft, Workday, Colleague) covering Student, Enrollment, and AcademicPeriod
 - **Governance framework** with 6 roles, 22 quality rules, a 5-dimension maturity model, and a 9-domain taxonomy
@@ -33,7 +33,7 @@ Open a [GitHub Issue](../../issues) with your thoughts:
 
 ### Contribute ERP Mappings (HELIX Bridge)
 
-If you have experience mapping data from a specific ERP to a canonical model, we especially welcome:
+If you have experience mapping data from a specific ERP to a foundational model, we especially welcome:
 
 - **New resource mappings** for existing ERPs (e.g., Banner-to-HELIX for CourseSection, Program, FinAidAward)
 - **New ERP systems** (Jenzabar, Unit4, Tribal, Campus Management, etc.)

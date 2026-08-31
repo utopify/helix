@@ -20,7 +20,7 @@
 ### Step 2: What's your TARGET?
 
 - **Data Lake / Lakehouse** → Your HELIX Bridge mapping IS the migration plan. Map source → HELIX Core → Iceberg/Parquet.
-- **Another ERP** (e.g., PeopleSoft → Workday) → Use HELIX as the intermediate canonical model. Map source → HELIX Core, then HELIX Core → target. Both Bridge mappings are already built.
+- **Another ERP** (e.g., PeopleSoft → Workday) → Use HELIX as the intermediate foundational model. Map source → HELIX Core, then HELIX Core → target. Both Bridge mappings are already built.
 - **Analytics Platform** (QuickSight, Tableau, Power BI) → Land in HELIX Core shape in your lake. The consistent schema means your dashboards work regardless of source.
 - **AI/ML Models** → HELIX Core resources are your feature store input. Train once, apply across institutions.
 
@@ -35,7 +35,7 @@ Traditional migration: **Source A → (custom mapping) → Target B**
 HELIX migration: **Source A → HELIX Core → Target B**
 - Each system needs ONE mapping (to/from HELIX Core)
 - 4 ERPs = 4 Bridge mappings, then any target is already covered
-- The canonical layer absorbs the complexity
+- The foundational layer absorbs the complexity
 
 ```
    Banner ──────┐
@@ -262,7 +262,7 @@ HELIX migration: **Source A → HELIX Core → Target B**
 
 If you're moving to **Workday Financials**, the chartfield → worktag mapping is the core of your migration. HELIX normalizes these into a standard structure that maps to either system.
 
-If you're moving to a **data lake**, land the chartfield combinations as dimensions in your star schema, with HELIX as the canonical attribute names.
+If you're moving to a **data lake**, land the chartfield combinations as dimensions in your star schema, with HELIX as the foundational attribute names.
 
 ---
 
@@ -387,7 +387,7 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 HELIX Bridge currently covers Banner, PeopleSoft, Workday, and Colleague. If your ERP isn't listed:
 
 1. **Check the [CONTRIBUTING guide](../CONTRIBUTING.md)** — we actively seek mapping contributions for Jenzabar, Unit4, Tribal, Campus Management, and others
-2. **Use HELIX Core as your target schema** — even without a pre-built Bridge, the canonical resource definitions give you the target shape. Build your own mapping and contribute it back.
+2. **Use HELIX Core as your target schema** — even without a pre-built Bridge, the foundational resource definitions give you the target shape. Build your own mapping and contribute it back.
 3. **Open a GitHub Issue** requesting your ERP — this helps us prioritize community demand
 
 ---

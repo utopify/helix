@@ -75,7 +75,7 @@
           "Metadata"
         ],
         "summary": "Server capability statement",
-        "description": "Returns the server's HELIX conformance level, supported resources, supported HELIX Core version, and available operations. Equivalent to FHIR's CapabilityStatement.",
+        "description": "Returns the server's HELIX conformance level, supported resources, supported HELIX Core version, and available operations. Describes the server's supported resources, operations, and conformance level.",
         "responses": {
           "200": {
             "description": "Server metadata",
@@ -716,7 +716,7 @@
           "Bulk Export"
         ],
         "summary": "Bulk export resources for data lake ingestion",
-        "description": "Initiates an asynchronous bulk export of one or more resource types. Returns NDJSON (newline-delimited JSON) files. Modeled after FHIR's $export operation.\n\nThe server returns a 202 Accepted with a Content-Location header pointing to a status endpoint. Poll the status endpoint until the export is complete, then download the resulting NDJSON files.",
+        "description": "Initiates an asynchronous bulk export of one or more resource types. Returns NDJSON (newline-delimited JSON) files. Async bulk export operation.\n\nThe server returns a 202 Accepted with a Content-Location header pointing to a status endpoint. Poll the status endpoint until the export is complete, then download the resulting NDJSON files.",
         "parameters": [
           {
             "name": "_type",

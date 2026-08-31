@@ -41,7 +41,7 @@ HELIX Connect defines a REST API specification (OpenAPI 3.1) for exposing HELIX-
 
 ## Bulk Export
 
-Modeled after FHIR's `$export` operation:
+Async bulk export operation:
 1. `GET /$export?_type=Student,Enrollment&_since=2026-01-01` → 202 Accepted
 2. Poll `/$export-status/{id}` until complete
 3. Download NDJSON or Parquet files per resource type

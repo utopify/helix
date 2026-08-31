@@ -17,7 +17,7 @@ Comprehensive reference documentation for the HELIX framework.
 
 **I'm migrating ERPs or building a data lake:** Start with the [Migration Adventure Guide](migration-adventure-guide.md) — it routes you by source system, target, and module.
 
-**I'm a data architect:** Start with the [Resource Catalog](resource-catalog.md) to understand the canonical data model, then review the [Terminology Catalog](terminology-catalog.md) for standardized code sets.
+**I'm a data architect:** Start with the [Resource Catalog](resource-catalog.md) to understand the foundational data model, then review the [Terminology Catalog](terminology-catalog.md) for standardized code sets.
 
 **I'm implementing HELIX at my institution:** Start with the [Bridge Reference](bridge-reference.md) to find your ERP's mapping templates.
 

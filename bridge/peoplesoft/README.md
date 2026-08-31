@@ -10,7 +10,7 @@ Comprehensive mapping templates from Oracle PeopleSoft to HELIX Core resources, 
 | **Financials (FSCM)** | `fin/` | 9 | 82% | General ledger, AP, AR/student financials, purchasing, budgets, grants, assets, expenses, contracts |
 | **Human Capital Management** | `hcm/` | 12 | 80% | Employee records, positions, compensation, benefits, payroll, time, recruiting, absence, performance, job classification, position budgeting, learning |
 
-**Total: 40 PeopleSoft mappings** — the most comprehensive open PeopleSoft-to-canonical mapping library available.
+**Total: 40 PeopleSoft mappings** — the most comprehensive open PeopleSoft-to-foundational mapping library available.
 
 ## Architecture Notes
 

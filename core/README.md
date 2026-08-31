@@ -1,6 +1,6 @@
 # HELIX Core
 
-Canonical resource definitions, terminology code sets, and examples.
+Foundational resource definitions, terminology code sets, and examples.
 
 - `resources/` — JSON Schema definitions for each HELIX resource
 - `terminologies/` — Standard code sets (enrollment status, student status, period types, etc.)

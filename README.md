@@ -4,7 +4,7 @@
 
 > What if every university spoke the same data language?
 
-HELIX is an open framework of canonical data models, governance standards, and ERP mapping templates that eliminate integration friction in higher education, worldwide.
+HELIX is an open framework of foundational data models, governance standards, and ERP mapping templates that eliminate integration friction in higher education, worldwide.
 
 ---
 
@@ -24,7 +24,7 @@ The result: billions of dollars spent globally on redundant integration work, in
 
 ## The Vision
 
-HELIX provides higher education with what FHIR gave healthcare: a shared, open, technology-neutral vocabulary of linked data objects that any system can produce, consume, and trust.
+HELIX provides higher education with a shared, open, technology-neutral vocabulary of linked data objects that any system can produce, consume, and trust.
 
 When an institution adopts HELIX:
 
@@ -53,7 +53,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 │   │  The data     │  │  The API &    │  │  The governance   │  │
 │   │  model.       │  │  exchange     │  │  framework.       │  │
 │   │               │  │  standard.    │  │                   │  │
-│   │  15 canonical │  │               │  │  Roles, rules,    │  │
+│   │  15 foundational │  │               │  │  Roles, rules,    │  │
 │   │  resources,   │  │  16 REST      │  │  classification,  │  │
 │   │  18 termi-    │  │  endpoints,   │  │  quality, and     │  │
 │   │  nology code  │  │  bulk export, │  │  maturity         │  │
@@ -75,7 +75,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | 15 canonical resource definitions (JSON Schema) and 18 terminology code sets | Data architects, data engineers, analytics teams |
+| **HELIX Core** | 15 foundational resource definitions (JSON Schema) and 18 terminology code sets | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
 | **HELIX Bridge** | ERP-specific mapping templates: Banner (3), PeopleSoft (40 across CS/FIN/HCM), Workday (3), Colleague (3) | Implementation teams, system integrators |
@@ -84,7 +84,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 ## HELIX Core: Resources (v0.1)
 
-15 canonical resources across 6 domains:
+15 foundational resources across 6 domains:
 
 | Domain | Resources |
 |--------|-----------|
@@ -177,9 +177,8 @@ Institutions adopt HELIX progressively:
 | **PESC** | Transcript/enrollment XML | Narrow scope. HELIX is broader. |
 | **1EdTech** | Learning tool interoperability | Complementary. Covers LMS, not ERP/SIS. |
 | **HESA** (UK) / **TCSI** (AU) | Country-specific reporting | Natural HELIX Implementation Profiles |
-| **FHIR** (HL7) | Healthcare interoperability | Architectural inspiration |
 
-HELIX fills the gap none of them cover: **the ERP-to-lake canonical data model with embedded governance.**
+HELIX fills the gap none of them cover: **the ERP-to-lake foundational data model with embedded governance.**
 
 ---
 

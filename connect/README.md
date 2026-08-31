@@ -37,7 +37,7 @@ A HELIX Connect server exposes REST endpoints for all HELIX Core resources. Any 
 
 - **Pagination**: Token-based (not offset-based) for consistency across large datasets
 - **Incremental sync**: `updated_since` parameter on list endpoints enables delta loads
-- **Bulk export**: Async pattern modeled after FHIR's `$export` operation. Supports NDJSON (required) and Parquet (optional, recommended for lake ingestion)
+- **Bulk export**: Async pattern async bulk export operation. Supports NDJSON (required) and Parquet (optional, recommended for lake ingestion)
 - **Security**: OAuth 2.0 (recommended) or API key. Scopes map to HELIX data classification levels (`helix:read:confidential`, `helix:read:restricted`)
 - **Validation endpoint**: Submit any resource payload and get back schema + terminology validation results
 

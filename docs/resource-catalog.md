@@ -1,6 +1,6 @@
 # HELIX Core: Resource Catalog
 
-**HELIX Core v0.1** defines **15 canonical resources** across 6 domains.
+**HELIX Core v0.1** defines **15 foundational resources** across 6 domains.
 
 Each resource is a JSON Schema definition that describes a standardized data object any higher education institution can map to, regardless of their ERP system.
 
