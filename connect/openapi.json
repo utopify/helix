@@ -1,0 +1,1249 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HELIX Connect API",
+    "description": "OpenAPI specification for a HELIX-conformant server. Defines the REST endpoints that any institution can implement to expose their data in HELIX Core resource format, regardless of the underlying ERP system.\n\nA conformant server exposes read endpoints for HELIX Core resources and a bulk export endpoint for data lake ingestion. Write endpoints are optional and intended for institutions that want to accept inbound data (e.g., from transfer partners or cross-institutional data sharing).",
+    "version": "0.1.0",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "contact": {
+      "name": "HELIX Open Framework",
+      "url": "https://github.com/utopify/helix"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{institution}.edu/helix/v1",
+      "description": "Institutional HELIX Connect server",
+      "variables": {
+        "institution": {
+          "default": "demo",
+          "description": "Institution's domain prefix"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "oauth2": []
+    },
+    {
+      "apiKey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Students",
+      "description": "Student identity resources"
+    },
+    {
+      "name": "Enrollment",
+      "description": "Course registration and enrollment resources"
+    },
+    {
+      "name": "Academic Structure",
+      "description": "Courses, sections, programs, and periods"
+    },
+    {
+      "name": "Financial Aid",
+      "description": "Financial aid award resources"
+    },
+    {
+      "name": "Outcomes",
+      "description": "Degrees, credentials, and completion resources"
+    },
+    {
+      "name": "Bulk Export",
+      "description": "Bulk data export for lake ingestion"
+    },
+    {
+      "name": "Metadata",
+      "description": "Server capability and conformance information"
+    },
+    {
+      "name": "Validation",
+      "description": "Resource validation endpoints"
+    }
+  ],
+  "paths": {
+    "/metadata": {
+      "get": {
+        "operationId": "getServerMetadata",
+        "tags": [
+          "Metadata"
+        ],
+        "summary": "Server capability statement",
+        "description": "Returns the server's HELIX conformance level, supported resources, supported HELIX Core version, and available operations. Equivalent to FHIR's CapabilityStatement.",
+        "responses": {
+          "200": {
+            "description": "Server metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerMetadata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students": {
+      "get": {
+        "operationId": "listStudents",
+        "tags": [
+          "Students"
+        ],
+        "summary": "List or search students",
+        "description": "Returns a paginated list of Student resources. Supports filtering by status, institution, and identifiers.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "$ref": "#/components/parameters/updatedSince"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "prospective",
+                "applicant",
+                "admitted",
+                "enrolled",
+                "leave_of_absence",
+                "withdrawn",
+                "graduated",
+                "deceased"
+              ]
+            },
+            "description": "Filter by student lifecycle status"
+          },
+          {
+            "name": "identifier",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by identifier value (e.g., student ID, banner PIDM)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of students",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/students/{helix_id}": {
+      "get": {
+        "operationId": "getStudent",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Get a single student",
+        "description": "Returns the Student resource for the given HELIX ID.",
+        "parameters": [
+          {
+            "name": "helix_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/students/{helix_id}/enrollments": {
+      "get": {
+        "operationId": "getStudentEnrollments",
+        "tags": [
+          "Students",
+          "Enrollment"
+        ],
+        "summary": "Get enrollments for a student",
+        "description": "Returns all Enrollment resources for the given student. Supports filtering by academic period and status.",
+        "parameters": [
+          {
+            "name": "helix_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "academic_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by academic period HELIX ID"
+          },
+          {
+            "name": "enrollment_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by enrollment status"
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of enrollments for the student",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/{helix_id}/financial-aid": {
+      "get": {
+        "operationId": "getStudentFinancialAid",
+        "tags": [
+          "Students",
+          "Financial Aid"
+        ],
+        "summary": "Get financial aid awards for a student",
+        "parameters": [
+          {
+            "name": "helix_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "academic_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "award_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of financial aid awards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinAidAwardList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/{helix_id}/degrees": {
+      "get": {
+        "operationId": "getStudentDegrees",
+        "tags": [
+          "Students",
+          "Outcomes"
+        ],
+        "summary": "Get degrees conferred to a student",
+        "parameters": [
+          {
+            "name": "helix_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of degrees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DegreeList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/enrollments": {
+      "get": {
+        "operationId": "listEnrollments",
+        "tags": [
+          "Enrollment"
+        ],
+        "summary": "List or search enrollments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "$ref": "#/components/parameters/updatedSince"
+          },
+          {
+            "name": "academic_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "enrollment_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "course_section_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of enrollments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/academic-periods": {
+      "get": {
+        "operationId": "listAcademicPeriods",
+        "tags": [
+          "Academic Structure"
+        ],
+        "summary": "List academic periods",
+        "parameters": [
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "period_type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of academic periods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcademicPeriodList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "operationId": "listCourses",
+        "tags": [
+          "Academic Structure"
+        ],
+        "summary": "List catalog courses",
+        "parameters": [
+          {
+            "name": "subject_code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by subject/department code"
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course-sections": {
+      "get": {
+        "operationId": "listCourseSections",
+        "tags": [
+          "Academic Structure"
+        ],
+        "summary": "List course sections",
+        "parameters": [
+          {
+            "name": "academic_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "course_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "delivery_mode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "section_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of course sections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseSectionList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/programs": {
+      "get": {
+        "operationId": "listPrograms",
+        "tags": [
+          "Academic Structure"
+        ],
+        "summary": "List academic programs",
+        "parameters": [
+          {
+            "name": "degree_level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "program_type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of programs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgramList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/financial-aid-awards": {
+      "get": {
+        "operationId": "listFinAidAwards",
+        "tags": [
+          "Financial Aid"
+        ],
+        "summary": "List financial aid awards",
+        "parameters": [
+          {
+            "name": "academic_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "award_type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "award_status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fund_source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "$ref": "#/components/parameters/updatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of financial aid awards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinAidAwardList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/degrees": {
+      "get": {
+        "operationId": "listDegrees",
+        "tags": [
+          "Outcomes"
+        ],
+        "summary": "List conferred degrees",
+        "parameters": [
+          {
+            "name": "conferral_period_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "degree_level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "program_ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "$ref": "#/components/parameters/updatedSince"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of degrees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DegreeList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/$export": {
+      "get": {
+        "operationId": "bulkExport",
+        "tags": [
+          "Bulk Export"
+        ],
+        "summary": "Bulk export resources for data lake ingestion",
+        "description": "Initiates an asynchronous bulk export of one or more resource types. Returns NDJSON (newline-delimited JSON) files. Modeled after FHIR's $export operation.\n\nThe server returns a 202 Accepted with a Content-Location header pointing to a status endpoint. Poll the status endpoint until the export is complete, then download the resulting NDJSON files.",
+        "parameters": [
+          {
+            "name": "_type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated list of resource types to export (e.g., 'Student,Enrollment'). If omitted, all supported resources are exported.",
+            "example": "Student,Enrollment,AcademicPeriod"
+          },
+          {
+            "name": "_since",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only include resources updated after this timestamp. Enables incremental exports."
+          },
+          {
+            "name": "_outputFormat",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ndjson",
+                "parquet"
+              ],
+              "default": "ndjson"
+            },
+            "description": "Output format. NDJSON is required for conformance. Parquet is optional but recommended for lake ingestion."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Export initiated. Poll the Content-Location URL for status.",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "description": "URL to poll for export status"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent exports. Retry after the indicated delay."
+          }
+        }
+      }
+    },
+    "/$export-status/{export_id}": {
+      "get": {
+        "operationId": "getExportStatus",
+        "tags": [
+          "Bulk Export"
+        ],
+        "summary": "Check bulk export status",
+        "parameters": [
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export complete. Response includes download URLs for each resource type.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportResult"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Export still in progress. Retry after the indicated delay."
+          }
+        }
+      }
+    },
+    "/validate": {
+      "post": {
+        "operationId": "validateResource",
+        "tags": [
+          "Validation"
+        ],
+        "summary": "Validate a resource against HELIX Core schemas",
+        "description": "Submit any HELIX resource payload and receive validation results against the corresponding JSON Schema and terminology bindings.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "resource_type",
+                  "resource"
+                ],
+                "properties": {
+                  "resource_type": {
+                    "type": "string",
+                    "enum": [
+                      "Student",
+                      "Enrollment",
+                      "AcademicPeriod",
+                      "Course",
+                      "CourseSection",
+                      "Program",
+                      "FinAidAward",
+                      "Degree",
+                      "Institution"
+                    ],
+                    "description": "The HELIX resource type to validate against"
+                  },
+                  "resource": {
+                    "type": "object",
+                    "description": "The resource payload to validate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "pageSize": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "description": "Number of resources per page"
+      },
+      "pageToken": {
+        "name": "page_token",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Opaque token for the next page of results"
+      },
+      "updatedSince": {
+        "name": "updated_since",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": "Only return resources updated after this timestamp (for incremental sync)"
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Authentication required. Provide a valid OAuth2 token or API key."
+      },
+      "Forbidden": {
+        "description": "Insufficient permissions. The requested resource or data classification level is not authorized for this client."
+      },
+      "NotFound": {
+        "description": "Resource not found for the given HELIX ID."
+      }
+    },
+    "schemas": {
+      "ServerMetadata": {
+        "type": "object",
+        "properties": {
+          "helix_version": {
+            "type": "string",
+            "example": "0.1",
+            "description": "HELIX Core spec version this server conforms to"
+          },
+          "conformance_level": {
+            "type": "string",
+            "enum": [
+              "explorer",
+              "aligned",
+              "governed",
+              "contributor",
+              "champion"
+            ]
+          },
+          "institution": {
+            "type": "string",
+            "description": "Institution name"
+          },
+          "institution_helix_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supported_resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Student",
+              "Enrollment",
+              "AcademicPeriod",
+              "Course",
+              "CourseSection",
+              "Program",
+              "FinAidAward",
+              "Degree"
+            ]
+          },
+          "supported_operations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "read",
+                "search",
+                "export",
+                "validate",
+                "write"
+              ]
+            },
+            "description": "Operations this server supports. 'read' and 'search' are required. 'export' and 'validate' are recommended. 'write' is optional."
+          },
+          "source_system": {
+            "type": "string",
+            "description": "Underlying ERP (e.g., 'banner', 'peoplesoft', 'workday')"
+          },
+          "bulk_export_formats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ndjson",
+                "parquet"
+              ]
+            },
+            "description": "Supported bulk export formats"
+          }
+        }
+      },
+      "Student": {
+        "$ref": "https://helixedu.org/core/resources/student.json"
+      },
+      "StudentList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Student"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string",
+            "description": "Token for the next page, null if no more results"
+          }
+        }
+      },
+      "EnrollmentList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/enrollment.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "AcademicPeriodList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/academic_period.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "CourseList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/course.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "CourseSectionList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/course_section.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ProgramList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/program.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "FinAidAwardList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/fin_aid_award.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "DegreeList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "https://helixedu.org/core/resources/degree.json"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ExportResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in_progress",
+              "error"
+            ]
+          },
+          "request_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completion_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "output": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "resource_type": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Download URL for the NDJSON or Parquet file"
+                },
+                "count": {
+                  "type": "integer",
+                  "description": "Number of resources in the file"
+                },
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "ndjson",
+                    "parquet"
+                  ]
+                }
+              }
+            }
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if status is 'error'"
+          }
+        }
+      },
+      "ValidationResult": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "resource_type": {
+            "type": "string"
+          },
+          "helix_version": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "JSON path to the invalid field (e.g., '$.status')"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "error",
+                    "warning"
+                  ]
+                }
+              }
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 with institution's identity provider. Recommended for production.",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://{institution}.edu/oauth2/token",
+            "scopes": {
+              "helix:read": "Read access to HELIX resources",
+              "helix:export": "Bulk export access",
+              "helix:write": "Write access to HELIX resources (optional)",
+              "helix:validate": "Resource validation access",
+              "helix:read:confidential": "Read access to confidential-classified resources",
+              "helix:read:restricted": "Read access to restricted-classified resources"
+            }
+          }
+        }
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-HELIX-API-Key",
+        "description": "API key for simplified authentication. Suitable for development and internal use."
+      }
+    }
+  }
+}
