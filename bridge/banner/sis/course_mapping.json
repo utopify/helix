@@ -1,0 +1,95 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Course",
+  "source_system": "banner",
+  "module": "Student - Catalog",
+  "target_resource": "Course",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SCBCRSE",
+      "description": "Course catalog base. Subject, course number, title, credit hours, level, college, department. Effective-term dated."
+    },
+    {
+      "table": "SCBDESC",
+      "description": "Course description. Long text catalog description (may be in SCBCRSE.SCBCRSE_LONG_TITLE or separate SCBDESC table depending on version)."
+    },
+    {
+      "table": "SCRLEVL",
+      "description": "Course level restrictions. Defines which student levels (UG, GR) can enroll."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SCBCRSE_SUBJ_CODE + SCBCRSE_CRSE_NUMB."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration."
+    },
+    {
+      "helix_attribute": "subject_code",
+      "source": "SCBCRSE.SCBCRSE_SUBJ_CODE",
+      "transformation": "Direct map (e.g., 'CS', 'ENGL', 'BIOL')."
+    },
+    {
+      "helix_attribute": "course_number",
+      "source": "SCBCRSE.SCBCRSE_CRSE_NUMB",
+      "transformation": "Direct map (e.g., '1100', '4500')."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "SCBCRSE.SCBCRSE_TITLE",
+      "transformation": "Direct map. Use current effective-term row (max SCBCRSE_EFF_TERM where EFF_TERM <= current term)."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "SCBDESC.SCBDESC_TEXT_NARRATIVE or SCBCRSE long description",
+      "transformation": "Concatenate text blocks if multi-row."
+    },
+    {
+      "helix_attribute": "credit_hours_min",
+      "source": "SCBCRSE.SCBCRSE_CREDIT_HR_LOW",
+      "transformation": "Direct map. Minimum credits for variable-credit courses."
+    },
+    {
+      "helix_attribute": "credit_hours_max",
+      "source": "SCBCRSE.SCBCRSE_CREDIT_HR_HIGH",
+      "transformation": "Direct map. For fixed-credit courses, same as min."
+    },
+    {
+      "helix_attribute": "level",
+      "source": "SCBCRSE.SCBCRSE_LEVL_CODE or derived from course number",
+      "transformation": "Map Banner level codes via STVLEVL: 'UG'\u2192derive from number (1000-2999='undergraduate_lower', 3000-4999='undergraduate_upper'), 'GR'\u2192'graduate', 'DR'\u2192'doctoral'."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "source": "SCBCRSE.SCBCRSE_DEPT_CODE",
+      "transformation": "Resolve department code to HELIX AcademicOrg.helix_id via STVDEPT."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "SCBCRSE.SCBCRSE_CRSE_STATUS_IND",
+      "transformation": "Map: 'A'\u2192true, 'C'/'I'\u2192false. Use current effective-term row."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "SCBCRSE.SCBCRSE_EFF_TERM \u2192 STVTERM.STVTERM_START_DATE",
+      "transformation": "Resolve effective term code to term start date."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'public'"
+    }
+  ]
+}

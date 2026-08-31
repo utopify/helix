@@ -1,0 +1,162 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner HR \u2192 Employee",
+  "source_system": "banner",
+  "module": "Human Resources",
+  "target_resource": "Employee (planned)",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "PEBEMPL",
+      "description": "Employee base. Hire date, termination date, first work date, employee status, employee class, benefits category. One row per employee (current state)."
+    },
+    {
+      "table": "NBRBJOB",
+      "description": "Employee job detail. Position, title, department, salary, FTE, hours, supervisor, job change history. Effective-dated (multiple rows per employee over time)."
+    },
+    {
+      "table": "NBBPOSN",
+      "description": "Position base. Position number, title, budget, FTE, department, org, pay grade, status. One row per position."
+    },
+    {
+      "table": "PTRECLS",
+      "description": "Employee class validation. Defines employee classes (faculty full-time, faculty part-time, staff exempt, staff non-exempt, student, temp, etc.)."
+    },
+    {
+      "table": "SPRIDEN",
+      "description": "Person identification (shared with student module). Name, ID, PIDM."
+    },
+    {
+      "table": "SPBPERS",
+      "description": "Person biographical (shared). Birth date, gender, ethnicity, veteran status."
+    },
+    {
+      "table": "FTVORGN",
+      "description": "Finance organization. Org hierarchy codes linked to positions for financial reporting."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PEBEMPL_PIDM + NBRBJOB_POSN (to handle multiple concurrent jobs)."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "PEBEMPL.PEBEMPL_PIDM",
+      "transformation": "Resolve to HELIX Person.helix_id. Same PIDM used across student and HR modules."
+    },
+    {
+      "helix_attribute": "employee_id",
+      "source": "SPRIDEN.SPRIDEN_ID (where PIDM = PEBEMPL_PIDM)",
+      "transformation": "Institution-assigned ID. Same ID as the person's Banner ID."
+    },
+    {
+      "helix_attribute": "hire_date",
+      "source": "PEBEMPL.PEBEMPL_FIRST_HIRE_DATE",
+      "transformation": "Cast to ISO 8601. Original hire date."
+    },
+    {
+      "helix_attribute": "termination_date",
+      "source": "PEBEMPL.PEBEMPL_TERM_DATE",
+      "transformation": "Cast to ISO 8601. Null if active."
+    },
+    {
+      "helix_attribute": "employment_status",
+      "source": "PEBEMPL.PEBEMPL_EMPL_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'T'\u2192'terminated', 'R'\u2192'retired', 'D'\u2192'deceased', 'L'\u2192'leave'. Via PTREMST."
+    },
+    {
+      "helix_attribute": "employee_class",
+      "source": "PEBEMPL.PEBEMPL_ECLS_CODE \u2192 PTRECLS.PTRECLS_DESC",
+      "transformation": "Map Banner employee class to category. PTRECLS defines classes: faculty FT/PT, staff exempt/non-exempt, student employee, GA/TA, temp, adjunct. Critical for IPEDS."
+    },
+    {
+      "helix_attribute": "job_code",
+      "source": "NBRBJOB.NBRBJOB_JCRE_CODE (job change reason) or position-based",
+      "transformation": "Banner uses position-centric model. Job classification derives from the position (NBBPOSN) rather than a separate job code table like PeopleSoft."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "NBRBJOB.NBRBJOB_DESC (job title) or NBBPOSN.NBBPOSN_TITLE",
+      "transformation": "Job-level title override, or position title if no override."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "NBRBJOB.NBRBJOB_ORGN_CODE_TS \u2192 FTVORGN.FTVORGN_TITLE",
+      "transformation": "Timesheet org code \u2192 organization description. Maps to department."
+    },
+    {
+      "helix_attribute": "position_number",
+      "source": "NBRBJOB.NBRBJOB_POSN",
+      "transformation": "Direct map. Links to NBBPOSN position master."
+    },
+    {
+      "helix_attribute": "reports_to",
+      "source": "NBRBJOB.NBRBJOB_SUPERVISOR_PIDM \u2192 SPRIDEN",
+      "transformation": "Resolve supervisor PIDM to name."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "NBRBJOB.NBRBJOB_FTE",
+      "transformation": "Direct map. 1.0 = full-time."
+    },
+    {
+      "helix_attribute": "annual_salary",
+      "source": "NBRBJOB.NBRBJOB_ANN_SALARY",
+      "transformation": "Direct map. Annualized salary."
+    },
+    {
+      "helix_attribute": "hourly_rate",
+      "source": "NBRBJOB.NBRBJOB_PER_PAY_SALARY / hours calculation",
+      "transformation": "Derived from per-pay-period salary and hours. Or use position pay rate."
+    },
+    {
+      "helix_attribute": "pay_grade",
+      "source": "NBBPOSN.NBBPOSN_PGRP_CODE (pay grade)",
+      "transformation": "Direct map. Links to pay grade table for salary ranges."
+    },
+    {
+      "helix_attribute": "flsa_status",
+      "source": "NBBPOSN.NBBPOSN_FLSA_IND or PTRECLS classification",
+      "transformation": "Map: 'E'\u2192'exempt', 'N'\u2192'nonexempt'."
+    },
+    {
+      "helix_attribute": "action",
+      "source": "NBRBJOB.NBRBJOB_JCRE_CODE (most recent job change reason)",
+      "transformation": "Map Banner job change reasons to actions: 'HIRE'\u2192'hire', 'PROM'\u2192'promotion', 'TERM'\u2192'termination', 'TRAN'\u2192'transfer', 'REHI'\u2192'rehire', 'SALA'\u2192'salary_change'. Via PTRJCRE."
+    },
+    {
+      "helix_attribute": "action_date",
+      "source": "NBRBJOB.NBRBJOB_EFFECTIVE_DATE",
+      "transformation": "Most recent effective date."
+    },
+    {
+      "helix_attribute": "is_faculty",
+      "source": "PTRECLS.PTRECLS_BUDG_BASIS = 'Faculty' or derived from ECLS code",
+      "transformation": "Derived from employee class. true for faculty employee classes."
+    },
+    {
+      "helix_attribute": "faculty_rank",
+      "source": "SIRASGN-linked data or institutional custom fields",
+      "transformation": "Banner doesn't have a standard faculty rank table like PeopleSoft. Often tracked via employee class codes (separate PTRECLS codes for professor, associate, assistant, instructor, lecturer) or institution-specific custom fields."
+    },
+    {
+      "helix_attribute": "tenure_status",
+      "source": "Institution-specific field or PEBEMPL custom attribute",
+      "transformation": "Banner does not have a standard tenure tracking table. Typically implemented as: (1) custom PEBEMPL user-defined field, (2) PTRECLS employee class code that implies tenure track, or (3) third-party faculty activity tracking system (e.g., Digital Measures/Watermark)."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Banner HR uses a position-centric model: NBBPOSN defines positions, NBRBJOB assigns employees to positions. This differs from PeopleSoft's job-record-centric model (PS_JOB). NBRBJOB is effective-dated \u2014 current row = max NBRBJOB_EFFECTIVE_DATE \u2264 today. A single employee can have multiple NBRBJOB records for concurrent positions (e.g., faculty member with an administrative appointment). The shared PIDM between student and HR modules means Banner natively handles the 'faculty who are also students' scenario."
+}

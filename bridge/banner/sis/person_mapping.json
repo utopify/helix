@@ -1,0 +1,175 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Person",
+  "source_system": "banner",
+  "module": "General / Student",
+  "target_resource": "Person",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SPRIDEN",
+      "description": "Person Identification/Name. Primary identity table. PIDM (internal key), ID (visible), names. Supports name history via SPRIDEN_CHANGE_IND."
+    },
+    {
+      "table": "SPBPERS",
+      "description": "Person Biographical. Birth date, gender, ethnicity flags, marital status, citizenship, religion, veteran status, deceased info."
+    },
+    {
+      "table": "GORRACE",
+      "description": "Race code validation table. Defines valid race codes per federal reporting categories."
+    },
+    {
+      "table": "GORPRAC",
+      "description": "Person race. Multi-valued: one row per race selection per person. Links PIDM to GORRACE codes."
+    },
+    {
+      "table": "GOREMAL",
+      "description": "Email addresses. Multiple email types per person (institutional, personal, business) with preferred flag."
+    },
+    {
+      "table": "SPRADDR",
+      "description": "Person address. Multiple address types (permanent, mailing, campus, billing) with effective dates."
+    },
+    {
+      "table": "SPRTELE",
+      "description": "Person telephone. Multiple phone types (cell, home, business) with primary flag."
+    },
+    {
+      "table": "GORADID",
+      "description": "Additional identification. Alternate IDs (SSN, prior IDs, external IDs) by type."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SPRIDEN_PIDM."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration."
+    },
+    {
+      "helix_attribute": "identifiers[].system='banner'",
+      "source": "SPRIDEN.SPRIDEN_ID",
+      "transformation": "Direct map. Institution-assigned Banner ID (e.g., '900123456')."
+    },
+    {
+      "helix_attribute": "identifiers[].system='banner_pidm'",
+      "source": "SPRIDEN.SPRIDEN_PIDM",
+      "transformation": "Direct map. Internal master key across all Banner tables. Never displayed to end users."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "SPRIDEN.SPRIDEN_LAST_NAME",
+      "transformation": "Use current record (SPRIDEN_CHANGE_IND IS NULL)."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "SPRIDEN.SPRIDEN_FIRST_NAME",
+      "transformation": "Use current record."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "SPRIDEN.SPRIDEN_MI",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "SPBPERS.SPBPERS_NAME_PREFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "SPBPERS.SPBPERS_NAME_SUFFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.preferred_first",
+      "source": "SPBPERS.SPBPERS_PREF_FIRST_NAME (Banner 9.x+)",
+      "transformation": "Direct map. Preferred first name field added in Banner 9.x. Null on older versions."
+    },
+    {
+      "helix_attribute": "name.former_names[]",
+      "source": "SPRIDEN (rows where SPRIDEN_CHANGE_IND IS NOT NULL)",
+      "transformation": "Previous name records. SPRIDEN_CHANGE_IND = 'I' (ID change) or 'N' (name change). Historical rows provide name change audit trail."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "SPBPERS.SPBPERS_BIRTH_DATE",
+      "transformation": "Cast to ISO 8601 date."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "SPBPERS.SPBPERS_SEX",
+      "transformation": "Map: 'M'\u2192'male', 'F'\u2192'female'. Banner 9.x added SPBPERS_GNDR_CODE for expanded gender identity."
+    },
+    {
+      "helix_attribute": "gender_identity",
+      "source": "SPBPERS.SPBPERS_GNDR_CODE (Banner 9.x+)",
+      "transformation": "Map Banner gender identity codes to helix/gender-identity. Only in Banner 9.x and later."
+    },
+    {
+      "helix_attribute": "pronouns",
+      "source": "SPBPERS.SPBPERS_PRONOUN_CODE (Banner 9.x+)",
+      "transformation": "Direct map. Pronoun support added in recent Banner versions."
+    },
+    {
+      "helix_attribute": "ethnicity[]",
+      "source": "GORPRAC.GORPRAC_RACE_CDE \u2192 GORRACE",
+      "transformation": "Multi-valued: one GORPRAC row per selected race. Map GORPRAC_RACE_CDE via GORRACE to helix/ethnicity. Hispanic/Latino: check SPBPERS.SPBPERS_ETHN_CDE = '2' \u2192 'hispanic_latino'."
+    },
+    {
+      "helix_attribute": "citizenship_countries[]",
+      "source": "SPBPERS.SPBPERS_CITZ_CODE \u2192 STVCITZ \u2192 STVNATN",
+      "transformation": "Resolve citizenship code to nation code, then to ISO 3166-1 alpha-2."
+    },
+    {
+      "helix_attribute": "is_deceased",
+      "source": "SPBPERS.SPBPERS_DEAD_IND",
+      "transformation": "Map: 'Y'\u2192true, null/'N'\u2192false."
+    },
+    {
+      "helix_attribute": "deceased_date",
+      "source": "SPBPERS.SPBPERS_DEAD_DATE",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "contact.emails[]",
+      "source": "GOREMAL",
+      "transformation": "Map GOREMAL_EMAIL_ADDRESS. GOREMAL_EMAL_CODE: 'CAMP'\u2192'institutional', 'PERS'\u2192'personal', 'BUSI'\u2192'work'. GOREMAL_PREFERRED_IND='Y'\u2192is_preferred."
+    },
+    {
+      "helix_attribute": "contact.phones[]",
+      "source": "SPRTELE",
+      "transformation": "Map SPRTELE_PHONE_NUMBER. SPRTELE_TELE_CODE: 'CL'\u2192'mobile', 'PR'\u2192'home', 'BU'\u2192'work'. SPRTELE_PRIMARY_IND='Y'\u2192is_preferred."
+    },
+    {
+      "helix_attribute": "contact.addresses[]",
+      "source": "SPRADDR",
+      "transformation": "Map SPRADDR_STREET_LINE1-3, SPRADDR_CITY, SPRADDR_STAT_CODE, SPRADDR_ZIP, SPRADDR_NATN_CODE. SPRADDR_ATYP_CODE: 'PR'\u2192'permanent', 'MA'\u2192'mailing', 'CM'\u2192'campus', 'BI'\u2192'billing'. Use current effective-dated record per type."
+    },
+    {
+      "helix_attribute": "veteran_status",
+      "source": "SPBPERS.SPBPERS_VETC_FILE_NUMBER IS NOT NULL or SGBSTDN.SGBSTDN_VETC_CODE",
+      "transformation": "Map Banner veteran codes to helix/veteran-status. STVVETC defines valid codes."
+    },
+    {
+      "helix_attribute": "primary_language",
+      "source": "SPBPERS.SPBPERS_LANG_CODE",
+      "transformation": "Map via STVLANG to ISO 639-1."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

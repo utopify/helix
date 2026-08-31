@@ -1,0 +1,71 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 AcademicOrg",
+  "source_system": "banner",
+  "module": "Student - Institutional",
+  "target_resource": "AcademicOrg",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "STVCOLL",
+      "description": "College validation. College codes and descriptions."
+    },
+    {
+      "table": "STVDEPT",
+      "description": "Department validation. Department codes and descriptions."
+    },
+    {
+      "table": "FTVORGN",
+      "description": "Finance organization. Organizational hierarchy for financial reporting. Often mirrors academic org structure."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + org_code."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "STVCOLL.STVCOLL_CODE or STVDEPT.STVDEPT_CODE",
+      "transformation": "Direct map. Colleges and departments are separate validation tables in Banner."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "STVCOLL.STVCOLL_DESC or STVDEPT.STVDEPT_DESC",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "Derived",
+      "transformation": "STVCOLL entries \u2192 'college'. STVDEPT entries \u2192 'department'. Banner doesn't have a single org hierarchy table like PeopleSoft \u2014 college and department are separate concepts."
+    },
+    {
+      "helix_attribute": "parent_org_ref",
+      "source": "STVDEPT \u2192 implicit college relationship via SCBCRSE/SSBSECT dept-to-college linkage",
+      "transformation": "Banner doesn't store explicit dept\u2192college hierarchy. Derived from course/section data (which college a department's courses belong to) or from FTVORGN finance hierarchy."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "STVCOLL.STVCOLL_VALID_IND or STVDEPT.STVDEPT_VALID_IND",
+      "transformation": "Map: 'Y'\u2192true, 'N'\u2192false."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Banner's academic organizational structure is flatter than PeopleSoft's tree-based model. Colleges (STVCOLL) and departments (STVDEPT) are independent validation tables without an explicit parent-child relationship. The linkage is implied through course ownership (SCBCRSE.SCBCRSE_COLL_CODE) and section assignment (SSBSECT). FTVORGN provides a finance-side org hierarchy that often parallels the academic structure but may not match exactly."
+}

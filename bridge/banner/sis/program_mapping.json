@@ -1,0 +1,102 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Program",
+  "source_system": "banner",
+  "module": "Student - Curriculum",
+  "target_resource": "Program",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SMRPRLE",
+      "description": "Program rules. Degree, college, major requirements, CIP code, total hours required. One row per program per effective term."
+    },
+    {
+      "table": "SOBCURR",
+      "description": "Curriculum rules. Defines curriculum (program + major + concentration + minor combinations). Links program to specific majors."
+    },
+    {
+      "table": "STVMAJR",
+      "description": "Major validation. Major codes and descriptions (used for both majors and minors)."
+    },
+    {
+      "table": "STVCOLL",
+      "description": "College validation. College codes and descriptions (e.g., 'AS' = Arts & Sciences, 'EN' = Engineering)."
+    },
+    {
+      "table": "STVDEGC",
+      "description": "Degree code validation. Degree designations (BS, BA, MS, PhD, etc.)."
+    },
+    {
+      "table": "STVCLAS",
+      "description": "Class validation. Classification codes (FR, SO, JR, SR)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SMRPRLE_PROGRAM + STVMAJR_CODE (for the primary major)."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "SMRPRLE.SMRPRLE_PROGRAM",
+      "transformation": "Direct map. Banner program code."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "STVMAJR.STVMAJR_DESC (for the primary major code)",
+      "transformation": "Resolve major code description. e.g., 'Computer Science'."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "SMRPRLE.SMRPRLE_DEGC_CODE \u2192 STVDEGC.STVDEGC_DESC",
+      "transformation": "Direct map (e.g., 'BS', 'BA', 'MS', 'PHD')."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "SMRPRLE.SMRPRLE_LEVL_CODE",
+      "transformation": "Map Banner level: 'UG'\u2192'bachelors' (or 'associate'), 'GR'\u2192'masters', 'DR'\u2192'doctoral'. Refine using degree code."
+    },
+    {
+      "helix_attribute": "program_type",
+      "source": "Derived from curriculum",
+      "transformation": "Map: if SOBCURR_MAJR_CODE_1 populated \u2192 'major'; if minor code populated \u2192 'minor'; if concentration \u2192 'concentration'."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "SMRPRLE.SMRPRLE_CIPC_CODE or STVMAJR.STVMAJR_CIPC_CODE",
+      "transformation": "Direct map. CIP code for IPEDS reporting."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "source": "SMRPRLE.SMRPRLE_COLL_CODE \u2192 STVCOLL",
+      "transformation": "Resolve college code to HELIX AcademicOrg.helix_id."
+    },
+    {
+      "helix_attribute": "total_credit_hours_required",
+      "source": "SMRPRLE.SMRPRLE_CREDIT_HRS",
+      "transformation": "Direct map. Total hours required for degree completion."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "SMRPRLE.SMRPRLE_CRSE_STATUS_IND or derived from effective term",
+      "transformation": "'A'\u2192true, 'I'\u2192false. Use current effective term row."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'public'"
+    }
+  ]
+}

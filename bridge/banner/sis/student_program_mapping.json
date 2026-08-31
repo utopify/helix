@@ -1,0 +1,108 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 StudentProgram",
+  "source_system": "banner",
+  "module": "Student - General/Curriculum",
+  "target_resource": "StudentProgram",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SGBSTDN",
+      "description": "Student general. Student type, level, college, major, advisor, residency, class. Effective-term dated (one row per term with changes)."
+    },
+    {
+      "table": "SORCMJR",
+      "description": "Student curriculum major. Links student to specific major(s) within their curriculum. Supports primary, secondary, minor."
+    },
+    {
+      "table": "SHRLGPA",
+      "description": "Student level GPA. GPA calculations by level (UG, GR) with term and cumulative breakdowns. Includes hours attempted, earned, quality points."
+    },
+    {
+      "table": "SFBETRM",
+      "description": "Student enrollment term. Term-level enrollment data: enrolled hours, academic standing, enrollment status (full/part-time)."
+    },
+    {
+      "table": "STVSTYP",
+      "description": "Student type validation. First-time freshman, transfer, readmit, continuing, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PIDM + SGBSTDN_LEVL_CODE + SORCMJR_MAJR_CODE."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "SGBSTDN.SGBSTDN_PIDM",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "SORCMJR.SORCMJR_MAJR_CODE + SGBSTDN.SGBSTDN_PROGRAM",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "academic_level",
+      "source": "SGBSTDN.SGBSTDN_LEVL_CODE",
+      "transformation": "Map: 'UG'\u2192'undergraduate', 'GR'\u2192'graduate', 'DR'\u2192'doctoral'."
+    },
+    {
+      "helix_attribute": "program_status",
+      "source": "SGBSTDN.SGBSTDN_STST_CODE",
+      "transformation": "Map Banner student status: 'AS'\u2192'active', 'IS'\u2192'withdrawn', 'GR'\u2192'completed', 'EX'\u2192'dismissed'. Institution-defined in STVSTST."
+    },
+    {
+      "helix_attribute": "is_primary",
+      "source": "SORCMJR.SORCMJR_SEQNO = 1",
+      "transformation": "true if first major sequence."
+    },
+    {
+      "helix_attribute": "start_period_ref",
+      "source": "SGBSTDN.SGBSTDN_TERM_CODE_ADMIT",
+      "transformation": "Resolve admit term to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "class_standing",
+      "source": "SGBSTDN.SGBSTDN_CLAS_CODE",
+      "transformation": "Map via STVCLAS: 'FR'\u2192'freshman', 'SO'\u2192'sophomore', 'JR'\u2192'junior', 'SR'\u2192'senior'."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "SHRLGPA.SHRLGPA_GPA (where SHRLGPA_GPA_TYPE_IND = 'O' for overall)",
+      "transformation": "Use overall cumulative GPA for the matching level. SHRLGPA has rows for institutional, transfer, and overall GPA."
+    },
+    {
+      "helix_attribute": "total_credits_earned",
+      "source": "SHRLGPA.SHRLGPA_HOURS_EARNED",
+      "transformation": "Cumulative earned hours from overall GPA record."
+    },
+    {
+      "helix_attribute": "total_credits_attempted",
+      "source": "SHRLGPA.SHRLGPA_HOURS_ATTEMPTED",
+      "transformation": "Cumulative attempted hours."
+    },
+    {
+      "helix_attribute": "advisor_name",
+      "source": "SGBSTDN.SGBSTDN_ADVR_PIDM \u2192 SPRIDEN",
+      "transformation": "Resolve advisor PIDM to name."
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "source": "SGBSTDN.SGBSTDN_TERM_CODE_CTLG (catalog term)",
+      "transformation": "The term whose catalog requirements govern the student's degree."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

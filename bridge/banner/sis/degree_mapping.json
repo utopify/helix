@@ -1,0 +1,123 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Degree",
+  "source_system": "banner",
+  "module": "Student - Academic History",
+  "target_resource": "Degree",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SHRDGMR",
+      "description": "Degree master. One row per degree conferral per student. Degree, major, minor, concentration, conferral date, honors, GPA. The core degree/completion table."
+    },
+    {
+      "table": "SHRLGPA",
+      "description": "Student level GPA (for final cumulative GPA at time of conferral)."
+    },
+    {
+      "table": "STVMAJR",
+      "description": "Major validation (for major/minor descriptions)."
+    },
+    {
+      "table": "STVDEGC",
+      "description": "Degree code validation."
+    },
+    {
+      "table": "STVHONR",
+      "description": "Honors validation. Latin honors, departmental honors, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SHRDGMR_PIDM + SHRDGMR_SEQ_NO."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "SHRDGMR.SHRDGMR_PIDM",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "SHRDGMR.SHRDGMR_PROGRAM + SHRDGMR_MAJR_CODE_1",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "SHRDGMR.SHRDGMR_DEGC_CODE \u2192 STVDEGC.STVDEGC_DESC",
+      "transformation": "Direct map (e.g., 'BS', 'MA', 'PHD')."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "SHRDGMR.SHRDGMR_LEVL_CODE",
+      "transformation": "Map: 'UG'\u2192'bachelors', 'GR'\u2192'masters'/'doctoral_research'. Refine with degree code."
+    },
+    {
+      "helix_attribute": "major",
+      "source": "SHRDGMR.SHRDGMR_MAJR_CODE_1 \u2192 STVMAJR.STVMAJR_DESC",
+      "transformation": "First major."
+    },
+    {
+      "helix_attribute": "second_major",
+      "source": "SHRDGMR.SHRDGMR_MAJR_CODE_2 \u2192 STVMAJR.STVMAJR_DESC",
+      "transformation": "Second major (double major). Null if single major."
+    },
+    {
+      "helix_attribute": "minor",
+      "source": "SHRDGMR.SHRDGMR_MINR_CODE_1 \u2192 STVMAJR.STVMAJR_DESC",
+      "transformation": "First minor. STVMAJR is used for both majors and minors in Banner."
+    },
+    {
+      "helix_attribute": "concentration",
+      "source": "SHRDGMR.SHRDGMR_MAJR_CODE_CONC_1 \u2192 STVMAJR.STVMAJR_DESC",
+      "transformation": "First concentration."
+    },
+    {
+      "helix_attribute": "conferral_date",
+      "source": "SHRDGMR.SHRDGMR_GRAD_DATE",
+      "transformation": "Cast to ISO 8601. The official degree conferral date."
+    },
+    {
+      "helix_attribute": "conferral_period_ref",
+      "source": "SHRDGMR.SHRDGMR_TERM_CODE_GRAD",
+      "transformation": "Resolve graduation term to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "honors",
+      "source": "SHRDGMR.SHRDGMR_HONR_CODE_1 \u2192 STVHONR.STVHONR_DESC",
+      "transformation": "Map Banner honors codes to helix: institution-defined in STVHONR. Common: 'SC'\u2192'summa_cum_laude', 'MC'\u2192'magna_cum_laude', 'CL'\u2192'cum_laude'."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "SHRDGMR.SHRDGMR_GPA or SHRLGPA overall at final term",
+      "transformation": "Direct map from degree record GPA, or use SHRLGPA overall cumulative for graduation term."
+    },
+    {
+      "helix_attribute": "total_credit_hours_earned",
+      "source": "SHRLGPA.SHRLGPA_HOURS_EARNED (overall, at graduation term)",
+      "transformation": "Total earned hours at time of conferral."
+    },
+    {
+      "helix_attribute": "degree_status",
+      "source": "SHRDGMR.SHRDGMR_DEGS_CODE",
+      "transformation": "Map: 'AW'\u2192'conferred', 'SG'\u2192'pending_conferral' (sought/applied for graduation), 'PN'\u2192'pending_conferral'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

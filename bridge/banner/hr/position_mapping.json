@@ -1,0 +1,104 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner HR \u2192 Position",
+  "source_system": "banner",
+  "module": "Human Resources - Position Management",
+  "target_resource": "Position (planned)",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "NBBPOSN",
+      "description": "Position base. Position number, title, FTE, department/org, pay grade, budget, status, begin/end dates. The core position table."
+    },
+    {
+      "table": "NBRPTOT",
+      "description": "Position budget totals. Budget amount by fiscal year for each position."
+    },
+    {
+      "table": "FTVORGN",
+      "description": "Finance organization. Org codes for position department/org assignment."
+    },
+    {
+      "table": "PTRECLS",
+      "description": "Employee class. The default employee class for the position."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "position_id",
+      "source": "NBBPOSN.NBBPOSN_POSN",
+      "transformation": "Direct map. Banner position number (e.g., '900001')."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "NBBPOSN.NBBPOSN_TITLE",
+      "transformation": "Official position title."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "NBBPOSN.NBBPOSN_ORGN_CODE_TS \u2192 FTVORGN.FTVORGN_TITLE",
+      "transformation": "Resolve timesheet org code to org description."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "NBBPOSN.NBBPOSN_AUTH_NUMBER (authorized FTE)",
+      "transformation": "Budgeted FTE for the position."
+    },
+    {
+      "helix_attribute": "position_status",
+      "source": "NBBPOSN.NBBPOSN_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'F'\u2192'frozen', 'I'\u2192'inactive', 'C'\u2192'cancelled'."
+    },
+    {
+      "helix_attribute": "pay_grade",
+      "source": "NBBPOSN.NBBPOSN_PGRP_CODE",
+      "transformation": "Direct map. Pay grade group."
+    },
+    {
+      "helix_attribute": "employee_class",
+      "source": "NBBPOSN.NBBPOSN_ECLS_CODE \u2192 PTRECLS",
+      "transformation": "Default employee class for this position."
+    },
+    {
+      "helix_attribute": "begin_date",
+      "source": "NBBPOSN.NBBPOSN_BEGIN_DATE",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "NBBPOSN.NBBPOSN_END_DATE",
+      "transformation": "Cast to ISO 8601. Null for open-ended positions."
+    },
+    {
+      "helix_attribute": "budget_amount",
+      "source": "NBRPTOT.NBRPTOT_BUDGET (current fiscal year)",
+      "transformation": "Budgeted salary for the position."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "NBBPOSN.NBBPOSN_FUND_CODE or NBRPTOT funding",
+      "transformation": "Primary funding source fund code."
+    },
+    {
+      "helix_attribute": "incumbent_count",
+      "source": "COUNT(NBRBJOB where POSN = this position and active)",
+      "transformation": "Number of current incumbents."
+    },
+    {
+      "helix_attribute": "is_vacant",
+      "source": "Derived",
+      "transformation": "true if position is active and incumbent_count = 0."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 CourseSection",
+  "source_system": "banner",
+  "module": "Student - Schedule",
+  "target_resource": "CourseSection",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SSBSECT",
+      "description": "Section base. CRN, term, subject, course, section number, status, campus, capacity, enrollment counts. One row per section per term."
+    },
+    {
+      "table": "SSRMEET",
+      "description": "Section meeting times. Days, start/end times, building, room. One row per meeting pattern per section."
+    },
+    {
+      "table": "SIRASGN",
+      "description": "Instructor assignment. Links instructors to sections with role (primary, secondary). One row per instructor per section."
+    },
+    {
+      "table": "SSRXLST",
+      "description": "Cross-list group. Links sections that share a physical meeting (cross-listed courses). SSRXLST_XLST_GROUP groups them."
+    },
+    {
+      "table": "STVCAMP",
+      "description": "Campus validation. Campus codes and descriptions."
+    },
+    {
+      "table": "STVSCHD",
+      "description": "Schedule type validation. Lecture, lab, seminar, independent study, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + SSBSECT_TERM_CODE + SSBSECT_CRN."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "SSBSECT.SSBSECT_SUBJ_CODE + SSBSECT.SSBSECT_CRSE_NUMB",
+      "transformation": "Resolve to HELIX Course.helix_id via subject + course number."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "SSBSECT.SSBSECT_TERM_CODE",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "section_number",
+      "source": "SSBSECT.SSBSECT_SEQ_NUMB",
+      "transformation": "Direct map (e.g., '001', '002')."
+    },
+    {
+      "helix_attribute": "crn",
+      "source": "SSBSECT.SSBSECT_CRN",
+      "transformation": "Direct map. Course Reference Number \u2014 Banner's unique section identifier within a term."
+    },
+    {
+      "helix_attribute": "delivery_mode",
+      "source": "SSBSECT.SSBSECT_INSM_CODE (instruction mode)",
+      "transformation": "Map Banner instruction mode codes: institution-defined in STVINSM. Common: 'TR'\u2192'in_person', 'WB'\u2192'online_asynchronous', 'WS'\u2192'online_synchronous', 'HY'\u2192'hybrid', 'HF'\u2192'hyflex'."
+    },
+    {
+      "helix_attribute": "campus",
+      "source": "SSBSECT.SSBSECT_CAMP_CODE \u2192 STVCAMP.STVCAMP_DESC",
+      "transformation": "Direct map code; resolve description via STVCAMP."
+    },
+    {
+      "helix_attribute": "building",
+      "source": "SSRMEET.SSRMEET_BLDG_CODE",
+      "transformation": "Direct map. From meeting pattern record."
+    },
+    {
+      "helix_attribute": "room",
+      "source": "SSRMEET.SSRMEET_ROOM_CODE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "instructors[]",
+      "source": "SIRASGN",
+      "transformation": "Map SIRASGN_PIDM \u2192 name (via SPRIDEN), SIRASGN_PRIMARY_IND: 'Y'\u2192'primary', 'N'\u2192'secondary'. One SIRASGN row per instructor per section."
+    },
+    {
+      "helix_attribute": "max_enrollment",
+      "source": "SSBSECT.SSBSECT_MAX_ENRL",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "actual_enrollment",
+      "source": "SSBSECT.SSBSECT_ENRL",
+      "transformation": "Direct map. Updated in real-time as students register."
+    },
+    {
+      "helix_attribute": "waitlist_capacity",
+      "source": "SSBSECT.SSBSECT_WAIT_CAPACITY",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "SSBSECT.SSBSECT_CREDIT_HRS",
+      "transformation": "Direct map. Section-level credit hours (may override catalog)."
+    },
+    {
+      "helix_attribute": "section_status",
+      "source": "SSBSECT.SSBSECT_SSTS_CODE",
+      "transformation": "Map via STVSSTS: 'A'\u2192'active', 'C'\u2192'cancelled', 'I'\u2192'closed'. Also check SSBSECT_ENRL >= SSBSECT_MAX_ENRL for functionally closed."
+    },
+    {
+      "helix_attribute": "schedule.days",
+      "source": "SSRMEET day flags",
+      "transformation": "Build from SSRMEET_SUN_DAY, SSRMEET_MON_DAY, SSRMEET_TUE_DAY, SSRMEET_WED_DAY, SSRMEET_THU_DAY, SSRMEET_FRI_DAY, SSRMEET_SAT_DAY. Non-null value = day is active. Concatenate to 'MWF' or 'TR'."
+    },
+    {
+      "helix_attribute": "schedule.start_time",
+      "source": "SSRMEET.SSRMEET_BEGIN_TIME",
+      "transformation": "Banner stores as HHMM (e.g., '0930'). Convert to ISO 8601 time (09:30:00)."
+    },
+    {
+      "helix_attribute": "schedule.end_time",
+      "source": "SSRMEET.SSRMEET_END_TIME",
+      "transformation": "Convert HHMM to ISO 8601 time."
+    },
+    {
+      "helix_attribute": "cross_listed_sections[]",
+      "source": "SSRXLST",
+      "transformation": "If SSRXLST.SSRXLST_XLST_GROUP exists for this CRN, find all other CRNs in the same group. Resolve to HELIX CourseSection.helix_ids."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "source": "SSBSECT.SSBSECT_DEPT_CODE or SSBSECT_SUBJ_CODE \u2192 STVDEPT",
+      "transformation": "Resolve to HELIX AcademicOrg.helix_id."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

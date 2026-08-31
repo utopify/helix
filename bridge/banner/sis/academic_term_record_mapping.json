@@ -1,0 +1,95 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 AcademicTermRecord",
+  "source_system": "banner",
+  "module": "Student - Enrollment/GPA",
+  "target_resource": "AcademicTermRecord (planned)",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SFBETRM",
+      "description": "Student enrollment term. Term-level enrollment: enrolled indicator, academic standing, hours enrolled, enrollment status code."
+    },
+    {
+      "table": "SHRLGPA",
+      "description": "Student level GPA. Term and cumulative GPA, hours attempted/earned/passed, quality points. By level and GPA type (institutional, transfer, overall)."
+    },
+    {
+      "table": "SGRSPRT",
+      "description": "Student sport participation. Athletic sport codes and eligibility for student-athletes. Linked by PIDM and term."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "SFBETRM.SFBETRM_PIDM",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "SFBETRM.SFBETRM_TERM_CODE",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "term_gpa",
+      "source": "SHRLGPA.SHRLGPA_GPA (where GPA_TYPE_IND='I' for institutional, current term)",
+      "transformation": "Term GPA. Match on PIDM + TERM + LEVL + GPA_TYPE."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "SHRLGPA.SHRLGPA_GPA (where GPA_TYPE_IND='O' for overall)",
+      "transformation": "Cumulative through this term."
+    },
+    {
+      "helix_attribute": "term_units_taken",
+      "source": "SHRLGPA.SHRLGPA_HOURS_ATTEMPTED (institutional, current term)",
+      "transformation": "Hours attempted this term."
+    },
+    {
+      "helix_attribute": "term_units_earned",
+      "source": "SHRLGPA.SHRLGPA_HOURS_EARNED (institutional, current term)",
+      "transformation": "Hours earned this term."
+    },
+    {
+      "helix_attribute": "cumulative_units_earned",
+      "source": "SHRLGPA.SHRLGPA_HOURS_EARNED (overall)",
+      "transformation": "Cumulative earned hours."
+    },
+    {
+      "helix_attribute": "academic_standing",
+      "source": "SFBETRM.SFBETRM_ASTD_CODE",
+      "transformation": "Map Banner academic standing codes via STVASTD: 'GS'\u2192'good_standing', 'PB'\u2192'probation', 'SU'\u2192'suspension', 'DL'\u2192'deans_list', 'PL'\u2192'presidents_list'. Institution-defined."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "SFBETRM.SFBETRM_ESTS_CODE",
+      "transformation": "Map enrollment status (full/part time): 'FT'\u2192'full_time', 'HT'\u2192'half_time', 'QT'\u2192'three_quarter_time', 'LT'\u2192'less_than_half_time'. Via STVESTS."
+    },
+    {
+      "helix_attribute": "total_grade_points",
+      "source": "SHRLGPA.SHRLGPA_QUALITY_POINTS (overall)",
+      "transformation": "Cumulative quality/grade points."
+    },
+    {
+      "helix_attribute": "is_athlete",
+      "source": "SGRSPRT exists for this PIDM + TERM",
+      "transformation": "true if student has a SGRSPRT record for this term."
+    },
+    {
+      "helix_attribute": "sport_codes[]",
+      "source": "SGRSPRT.SGRSPRT_SPRT_CODE",
+      "transformation": "Array of sport codes for this term (e.g., 'MBB', 'WVB', 'FTBL'). Via STVSPRT for descriptions."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'banner'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}
