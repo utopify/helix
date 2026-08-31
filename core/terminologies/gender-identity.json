@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/gender-identity.json",
+  "title": "HELIX Terminology: Gender Identity",
+  "description": "Self-reported gender identity. Used by Person resource 'gender_identity' attribute. This is separate from legal/administrative gender.",
+  "code_system": "helix/gender-identity",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "man",
+      "display": "Man"
+    },
+    {
+      "code": "woman",
+      "display": "Woman"
+    },
+    {
+      "code": "nonbinary",
+      "display": "Non-Binary"
+    },
+    {
+      "code": "transgender_man",
+      "display": "Transgender Man"
+    },
+    {
+      "code": "transgender_woman",
+      "display": "Transgender Woman"
+    },
+    {
+      "code": "genderqueer",
+      "display": "Genderqueer/Gender Non-Conforming"
+    },
+    {
+      "code": "two_spirit",
+      "display": "Two-Spirit",
+      "definition": "Indigenous identity. Include only when culturally appropriate."
+    },
+    {
+      "code": "prefer_not_to_say",
+      "display": "Prefer Not to Say"
+    },
+    {
+      "code": "not_listed",
+      "display": "A Gender Not Listed Here"
+    },
+    {
+      "code": "unknown",
+      "display": "Unknown"
+    }
+  ],
+  "notes": "This terminology is intentionally expansive. Institutions should adopt the subset appropriate to their regulatory and cultural context via Implementation Profiles. The US IPEDS currently requires binary reporting; this terminology supports richer collection while enabling rollup to binary for compliance."
+}

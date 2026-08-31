@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/degree-level.json",
+  "title": "HELIX Terminology: Degree Level",
+  "description": "Standard degree levels. Used by Program and Degree resources.",
+  "code_system": "helix/degree-level",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "certificate_undergraduate",
+      "display": "Undergraduate Certificate",
+      "definition": "Sub-baccalaureate certificate (less than 1 year or 1-2 years)"
+    },
+    {
+      "code": "associate",
+      "display": "Associate Degree",
+      "definition": "Two-year degree (AA, AS, AAS, etc.)"
+    },
+    {
+      "code": "bachelors",
+      "display": "Bachelor's Degree",
+      "definition": "Four-year baccalaureate degree (BA, BS, BFA, etc.)"
+    },
+    {
+      "code": "certificate_post_baccalaureate",
+      "display": "Post-Baccalaureate Certificate"
+    },
+    {
+      "code": "masters",
+      "display": "Master's Degree",
+      "definition": "Graduate-level master's degree (MA, MS, MBA, MFA, etc.)"
+    },
+    {
+      "code": "certificate_post_masters",
+      "display": "Post-Master's Certificate",
+      "definition": "e.g., Education Specialist (EdS)"
+    },
+    {
+      "code": "doctoral_research",
+      "display": "Doctoral Degree - Research/Scholarship",
+      "definition": "PhD, EdD (research-focused), DMA, etc."
+    },
+    {
+      "code": "doctoral_professional",
+      "display": "Doctoral Degree - Professional Practice",
+      "definition": "MD, JD, DDS, PharmD, DPT, etc."
+    },
+    {
+      "code": "professional",
+      "display": "First Professional Degree",
+      "definition": "Legacy IPEDS category. Being phased into doctoral_professional."
+    },
+    {
+      "code": "non_degree",
+      "display": "Non-Degree / Non-Credit",
+      "definition": "Enrollment without pursuit of a formal credential"
+    },
+    {
+      "code": "micro_credential",
+      "display": "Micro-Credential / Badge",
+      "definition": "Short-form credential, often competency-based or industry-aligned"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ],
+  "notes": "Aligned with IPEDS degree level classifications. International profiles may map to ISCED levels (e.g., ISCED 5 = short-cycle, ISCED 6 = bachelor's, ISCED 7 = master's, ISCED 8 = doctoral)."
+}

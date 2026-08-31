@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/delivery-mode.json",
+  "title": "HELIX Terminology: Delivery Mode",
+  "description": "Standard instructional delivery modes for course sections and programs.",
+  "code_system": "helix/delivery-mode",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "in_person",
+      "display": "In Person",
+      "definition": "Traditional face-to-face instruction in a physical classroom"
+    },
+    {
+      "code": "online_synchronous",
+      "display": "Online Synchronous",
+      "definition": "Online instruction with scheduled real-time meetings (via Zoom, Teams, etc.)"
+    },
+    {
+      "code": "online_asynchronous",
+      "display": "Online Asynchronous",
+      "definition": "Online instruction with no scheduled meeting times. Students access materials on their own schedule."
+    },
+    {
+      "code": "hybrid",
+      "display": "Hybrid",
+      "definition": "Mix of in-person and online components, with reduced in-person seat time"
+    },
+    {
+      "code": "hyflex",
+      "display": "HyFlex",
+      "definition": "Students choose per-session whether to attend in person or online synchronously"
+    },
+    {
+      "code": "competency_based",
+      "display": "Competency-Based",
+      "definition": "Progress based on demonstrated mastery rather than seat time"
+    },
+    {
+      "code": "correspondence",
+      "display": "Correspondence",
+      "definition": "Self-paced study via mailed or digital materials with limited instructor interaction"
+    },
+    {
+      "code": "clinical",
+      "display": "Clinical/Practicum",
+      "definition": "Supervised hands-on experience in a clinical, field, or professional setting"
+    },
+    {
+      "code": "internship",
+      "display": "Internship/Co-op",
+      "definition": "Work-integrated learning in a professional setting"
+    },
+    {
+      "code": "independent_study",
+      "display": "Independent Study",
+      "definition": "Student-directed study under faculty supervision"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}

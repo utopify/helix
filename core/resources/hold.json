@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/hold.json",
+  "title": "HELIX Hold Resource",
+  "description": "A restriction placed on a student's record that prevents specific actions (registration, transcript release, graduation, etc.) until resolved.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "hold_type",
+    "hold_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string"
+    },
+    "hold_type": {
+      "type": "string",
+      "enum": [
+        "registration",
+        "financial",
+        "academic",
+        "disciplinary",
+        "transcript",
+        "graduation",
+        "library",
+        "health_compliance",
+        "admissions",
+        "other"
+      ]
+    },
+    "hold_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "released",
+        "expired"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Human-readable reason for the hold (e.g., 'Unpaid balance', 'Missing immunization records')"
+    },
+    "hold_code": {
+      "type": "string",
+      "description": "Institution's internal hold code"
+    },
+    "placed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "released_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the hold auto-expires if not released"
+    },
+    "placed_by_office": {
+      "type": "string",
+      "description": "Office or department that placed the hold"
+    },
+    "prevents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "registration",
+          "transcript_release",
+          "graduation",
+          "grade_viewing",
+          "diploma_release",
+          "enrollment_verification",
+          "other"
+        ]
+      },
+      "description": "What actions this hold prevents"
+    },
+    "amount_owed": {
+      "type": "number",
+      "description": "For financial holds, the outstanding balance"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

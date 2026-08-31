@@ -116,6 +116,42 @@
           "description": "Data classification tier per HELIX Govern"
         }
       }
+    },
+    "second_major": {
+      "type": "string"
+    },
+    "additional_minors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Embedded certifications earned alongside the degree"
+    },
+    "time_to_degree_terms": {
+      "type": "integer",
+      "description": "Number of terms from first enrollment to conferral"
+    },
+    "total_transfer_credits_applied": {
+      "type": "number"
+    },
+    "commencement_participation": {
+      "type": "boolean"
+    },
+    "degree_status": {
+      "type": "string",
+      "enum": [
+        "pending_requirements",
+        "pending_conferral",
+        "conferred",
+        "revoked"
+      ],
+      "description": "Tracks degree from near-completion through official conferral"
     }
   },
   "definitions": {

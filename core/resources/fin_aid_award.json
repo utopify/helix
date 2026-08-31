@@ -139,6 +139,41 @@
           "description": "Data classification tier per HELIX Govern"
         }
       }
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Program this award is associated with (if program-specific)"
+    },
+    "renewal_criteria": {
+      "type": "string",
+      "description": "Conditions for award renewal (e.g., 'Maintain 3.0 GPA')"
+    },
+    "is_renewable": {
+      "type": "boolean"
+    },
+    "award_year_total": {
+      "type": "number",
+      "description": "Total award amount across all terms in the academic year"
+    },
+    "cost_of_attendance": {
+      "type": "number",
+      "description": "Institutional COA budget used for this award calculation"
+    },
+    "unmet_need": {
+      "type": "number",
+      "description": "Remaining financial need after all awards"
+    },
+    "satisfactory_academic_progress": {
+      "type": "string",
+      "enum": [
+        "meeting",
+        "warning",
+        "probation",
+        "suspension",
+        "appeal_approved",
+        "not_evaluated"
+      ],
+      "description": "SAP status at time of award. Federal aid requires SAP compliance."
     }
   },
   "definitions": {

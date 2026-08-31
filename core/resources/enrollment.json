@@ -110,6 +110,42 @@
           "description": "Data classification tier per HELIX Govern"
         }
       }
+    },
+    "midterm_grade": {
+      "type": "string",
+      "description": "Midterm/progress grade if institution uses early alert grading"
+    },
+    "last_attendance_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last date of academic activity. Required for federal financial aid return calculations."
+    },
+    "attendance_verified": {
+      "type": "boolean",
+      "description": "Whether attendance/participation has been verified by instructor"
+    },
+    "final_exam_grade": {
+      "type": "string"
+    },
+    "instructional_method": {
+      "type": "string",
+      "enum": [
+        "lecture",
+        "lab",
+        "seminar",
+        "independent_study",
+        "internship",
+        "clinical",
+        "practicum",
+        "thesis",
+        "dissertation",
+        "online_module",
+        "other"
+      ]
+    },
+    "billing_hours": {
+      "type": "number",
+      "description": "Credit hours used for billing purposes (may differ from academic credit hours)"
     }
   },
   "definitions": {

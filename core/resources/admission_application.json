@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/admission_application.json",
+  "title": "HELIX AdmissionApplication Resource",
+  "description": "An application for admission to the institution. Tracks the applicant's journey from submission through decision and enrollment intent.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "institution_id",
+    "application_type",
+    "application_status",
+    "admit_period_ref"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student/Person (applicant)"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "application_number": {
+      "type": "string",
+      "description": "Institution-assigned application number"
+    },
+    "application_type": {
+      "type": "string",
+      "enum": [
+        "first_time_freshman",
+        "transfer",
+        "readmit",
+        "graduate",
+        "professional",
+        "non_degree",
+        "transient",
+        "international",
+        "dual_enrollment",
+        "other"
+      ]
+    },
+    "admit_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod the applicant is applying for"
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the intended Program"
+    },
+    "application_status": {
+      "type": "string",
+      "description": "Bound to helix/admission-status terminology",
+      "enum": [
+        "submitted",
+        "in_review",
+        "incomplete",
+        "admitted",
+        "conditionally_admitted",
+        "denied",
+        "waitlisted",
+        "deferred",
+        "cancelled",
+        "withdrawn"
+      ]
+    },
+    "decision_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "enrollment_deposit_paid": {
+      "type": "boolean"
+    },
+    "enrollment_deposit_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "enrollment_intent": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "declined",
+        "no_response",
+        "pending"
+      ],
+      "description": "Whether the admitted student intends to enroll"
+    },
+    "submitted_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "application_source": {
+      "type": "string",
+      "description": "Application platform (e.g., 'Common App', 'Coalition', 'institutional', 'SOPHAS', 'AMCAS')"
+    },
+    "high_school_gpa": {
+      "type": "number"
+    },
+    "transfer_gpa": {
+      "type": "number"
+    },
+    "test_scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "test_type": {
+            "type": "string",
+            "enum": [
+              "SAT",
+              "ACT",
+              "GRE",
+              "GMAT",
+              "LSAT",
+              "MCAT",
+              "TOEFL",
+              "IELTS",
+              "other"
+            ]
+          },
+          "score": {
+            "type": "number"
+          },
+          "sub_scores": {
+            "type": "object",
+            "description": "Component scores (e.g., SAT Math, SAT EBRW)"
+          },
+          "test_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "residency_at_application": {
+      "type": "string",
+      "enum": [
+        "in_state",
+        "out_of_state",
+        "international",
+        "unknown"
+      ]
+    },
+    "first_generation_flag": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

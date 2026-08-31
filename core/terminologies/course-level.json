@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/course-level.json",
+  "title": "HELIX Terminology: Course Level",
+  "description": "Academic level classification for catalog courses.",
+  "code_system": "helix/course-level",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "developmental",
+      "display": "Developmental/Remedial",
+      "definition": "Below college-level. Does not count toward degree credit."
+    },
+    {
+      "code": "undergraduate_lower",
+      "display": "Undergraduate Lower Division",
+      "definition": "100-200 level. Introductory and foundational courses."
+    },
+    {
+      "code": "undergraduate_upper",
+      "display": "Undergraduate Upper Division",
+      "definition": "300-400 level. Advanced undergraduate courses requiring prerequisites."
+    },
+    {
+      "code": "graduate",
+      "display": "Graduate",
+      "definition": "500-600 level (convention varies). Master's-level coursework."
+    },
+    {
+      "code": "doctoral",
+      "display": "Doctoral",
+      "definition": "700+ level. Doctoral seminars, research, dissertation hours."
+    },
+    {
+      "code": "professional",
+      "display": "Professional",
+      "definition": "Professional program courses (law, medicine, etc.) with their own numbering conventions."
+    },
+    {
+      "code": "non_credit",
+      "display": "Non-Credit",
+      "definition": "Continuing education, professional development, or community courses not carrying academic credit."
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ],
+  "notes": "Course number ranges (100/200/300/etc.) are a common convention but not universal. Institution-specific number-to-level mappings should be documented in Bridge implementations."
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/academic_org.json",
+  "title": "HELIX AcademicOrg Resource",
+  "description": "An academic organizational unit within an institution \u2014 college, school, division, department, or program area. Forms a hierarchy (university \u2192 college \u2192 department).",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "name",
+    "org_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "description": "Internal org code (e.g., 'ENGR', 'A&S', 'CS')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Official name (e.g., 'College of Engineering', 'Department of Computer Science')"
+    },
+    "short_name": {
+      "type": "string"
+    },
+    "org_type": {
+      "type": "string",
+      "enum": [
+        "college",
+        "school",
+        "division",
+        "department",
+        "program_area",
+        "center",
+        "institute",
+        "other"
+      ]
+    },
+    "parent_org_ref": {
+      "type": "string",
+      "description": "HELIX ID of the parent AcademicOrg. Null for top-level orgs."
+    },
+    "dean_or_chair": {
+      "type": "string",
+      "description": "Name or reference to the org leader"
+    },
+    "is_active": {
+      "type": "boolean"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

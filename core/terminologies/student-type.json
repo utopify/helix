@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/student-type.json",
+  "title": "HELIX Terminology: Student Type",
+  "description": "Classification of a student's entry pathway to the institution.",
+  "code_system": "helix/student-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "first_time_freshman",
+      "display": "First-Time Freshman",
+      "definition": "Entering college for the first time (no prior postsecondary enrollment). IPEDS: First-time, first-year."
+    },
+    {
+      "code": "transfer",
+      "display": "Transfer Student",
+      "definition": "Entering with credits from another postsecondary institution"
+    },
+    {
+      "code": "readmit",
+      "display": "Readmit",
+      "definition": "Previously enrolled at this institution, returning after a break in enrollment"
+    },
+    {
+      "code": "continuing",
+      "display": "Continuing Student",
+      "definition": "Currently enrolled, returning for the next term without a break"
+    },
+    {
+      "code": "dual_enrollment",
+      "display": "Dual Enrollment",
+      "definition": "High school student simultaneously enrolled in college courses"
+    },
+    {
+      "code": "transient",
+      "display": "Transient/Visiting",
+      "definition": "Enrolled at another institution but taking courses here temporarily"
+    },
+    {
+      "code": "non_degree",
+      "display": "Non-Degree Seeking",
+      "definition": "Taking courses without pursuing a degree or credential"
+    },
+    {
+      "code": "post_baccalaureate",
+      "display": "Post-Baccalaureate",
+      "definition": "Has a bachelor's degree, taking additional undergraduate courses"
+    },
+    {
+      "code": "audit_only",
+      "display": "Audit Only",
+      "definition": "Enrolled solely to audit courses without credit"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}

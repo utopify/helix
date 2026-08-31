@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/admission-status.json",
+  "title": "HELIX Terminology: Admission Status",
+  "description": "Standard statuses for admission applications.",
+  "code_system": "helix/admission-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "submitted",
+      "display": "Submitted",
+      "definition": "Application received by the institution"
+    },
+    {
+      "code": "in_review",
+      "display": "In Review",
+      "definition": "Application is being evaluated by admissions staff or committee"
+    },
+    {
+      "code": "incomplete",
+      "display": "Incomplete",
+      "definition": "Application is missing required materials (transcripts, test scores, essays, etc.)"
+    },
+    {
+      "code": "admitted",
+      "display": "Admitted",
+      "definition": "Full admission offered"
+    },
+    {
+      "code": "conditionally_admitted",
+      "display": "Conditionally Admitted",
+      "definition": "Admission contingent on meeting specified conditions (e.g., final transcript, GPA threshold)"
+    },
+    {
+      "code": "denied",
+      "display": "Denied",
+      "definition": "Application was not approved for admission"
+    },
+    {
+      "code": "waitlisted",
+      "display": "Waitlisted",
+      "definition": "Applicant placed on a waiting list pending space availability"
+    },
+    {
+      "code": "deferred",
+      "display": "Deferred",
+      "definition": "Decision postponed to a future review cycle (common in early decision/action)"
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Application cancelled by the institution (e.g., duplicate, fraud)"
+    },
+    {
+      "code": "withdrawn",
+      "display": "Withdrawn",
+      "definition": "Applicant voluntarily withdrew their application"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/transfer_credit.json",
+  "title": "HELIX TransferCredit Resource",
+  "description": "Credit earned at another institution and accepted for transfer. Links the external course to the equivalent internal course and tracks how the credit applies.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "institution_id",
+    "transfer_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string"
+    },
+    "institution_id": {
+      "type": "string",
+      "description": "HELIX ID of the receiving (current) institution"
+    },
+    "source_institution_name": {
+      "type": "string",
+      "description": "Name of the institution where credit was earned"
+    },
+    "source_institution_id": {
+      "type": "string",
+      "description": "HELIX ID of the source institution if registered, or external ID (FICE, OPEID, CEEB)"
+    },
+    "source_course_subject": {
+      "type": "string"
+    },
+    "source_course_number": {
+      "type": "string"
+    },
+    "source_course_title": {
+      "type": "string"
+    },
+    "source_credit_hours": {
+      "type": "number"
+    },
+    "source_grade": {
+      "type": "string"
+    },
+    "source_term": {
+      "type": "string",
+      "description": "Term/period at the source institution when the course was taken"
+    },
+    "equivalent_course_ref": {
+      "type": "string",
+      "description": "HELIX ID of the equivalent Course at the receiving institution. Null if accepted as elective."
+    },
+    "equivalent_subject": {
+      "type": "string"
+    },
+    "equivalent_course_number": {
+      "type": "string"
+    },
+    "credit_hours_accepted": {
+      "type": "number",
+      "description": "Credit hours accepted at the receiving institution (may differ from source)"
+    },
+    "transfer_status": {
+      "type": "string",
+      "enum": [
+        "pending_evaluation",
+        "accepted",
+        "denied",
+        "partially_accepted",
+        "expired"
+      ]
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "major_requirement",
+        "minor_requirement",
+        "general_education",
+        "elective",
+        "prerequisite",
+        "other"
+      ],
+      "description": "How the transfer credit applies to the student's degree requirements"
+    },
+    "evaluation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "evaluated_by": {
+      "type": "string"
+    },
+    "counts_toward_gpa": {
+      "type": "boolean",
+      "description": "Whether transfer credit is included in the institutional GPA calculation"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -157,6 +157,50 @@
           "description": "Data classification tier per HELIX Govern"
         }
       }
+    },
+    "fees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fee_type": {
+            "type": "string",
+            "enum": [
+              "lab_fee",
+              "technology_fee",
+              "materials_fee",
+              "course_fee",
+              "other"
+            ]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          }
+        }
+      }
+    },
+    "cross_listed_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "HELIX IDs of cross-listed sections (same meeting, different subject/number)"
+    },
+    "final_exam_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "syllabus_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "academic_org_ref": {
+      "type": "string",
+      "description": "HELIX ID of the owning department/AcademicOrg"
     }
   },
   "definitions": {

@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/person.json",
+  "title": "HELIX Person Resource",
+  "description": "A human being known to the institution in any capacity \u2014 student, employee, applicant, alumnus, donor, or contact. The foundational identity resource. Student, Employee, and other role-specific resources reference a Person.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "identifiers",
+    "name"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "identifiers": {
+      "type": "array",
+      "description": "All known identifiers across systems",
+      "items": {
+        "type": "object",
+        "required": [
+          "system",
+          "value",
+          "type"
+        ],
+        "properties": {
+          "system": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "Bound to helix/identifier-type terminology"
+          }
+        }
+      }
+    },
+    "name": {
+      "type": "object",
+      "required": [
+        "family",
+        "given"
+      ],
+      "properties": {
+        "family": {
+          "type": "string"
+        },
+        "given": {
+          "type": "string"
+        },
+        "middle": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        },
+        "preferred_first": {
+          "type": "string",
+          "description": "Preferred/chosen first name"
+        },
+        "preferred_last": {
+          "type": "string",
+          "description": "Preferred last name if different from legal"
+        },
+        "former_names": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "family": {
+                "type": "string"
+              },
+              "given": {
+                "type": "string"
+              },
+              "effective_date": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "description": "Previous legal names for historical matching"
+        }
+      }
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "gender": {
+      "type": "string",
+      "description": "Bound to helix/gender terminology"
+    },
+    "gender_identity": {
+      "type": "string",
+      "description": "Self-reported gender identity. Bound to helix/gender-identity terminology. Separate from legal gender for institutions that track both."
+    },
+    "pronouns": {
+      "type": "string",
+      "description": "Preferred pronouns (e.g., 'he/him', 'she/her', 'they/them')"
+    },
+    "ethnicity": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Self-reported ethnicity/race categories. Multi-select. Bound to helix/ethnicity terminology or country-specific profile."
+    },
+    "citizenship_countries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "iso-3166-1-alpha-2"
+      },
+      "description": "Countries of citizenship (supports dual/multi citizenship)"
+    },
+    "primary_language": {
+      "type": "string",
+      "description": "ISO 639-1 language code"
+    },
+    "is_deceased": {
+      "type": "boolean"
+    },
+    "deceased_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contact": {
+      "type": "object",
+      "description": "Contact information",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "address": {
+                "type": "string",
+                "format": "email"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "institutional",
+                  "personal",
+                  "work",
+                  "other"
+                ]
+              },
+              "is_preferred": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mobile",
+                  "home",
+                  "work",
+                  "other"
+                ]
+              },
+              "is_preferred": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "permanent",
+                  "mailing",
+                  "campus",
+                  "billing",
+                  "other"
+                ]
+              },
+              "line1": {
+                "type": "string"
+              },
+              "line2": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state_province": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string",
+                "format": "iso-3166-1-alpha-2"
+              },
+              "is_preferred": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "emergency_contacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "relationship": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

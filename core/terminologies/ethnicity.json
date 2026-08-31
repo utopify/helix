@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/ethnicity.json",
+  "title": "HELIX Terminology: Ethnicity/Race",
+  "description": "Self-reported race and ethnicity categories. Multi-select (a person may identify with multiple categories). Based on US IPEDS categories with international extensions.",
+  "code_system": "helix/ethnicity",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "hispanic_latino",
+      "display": "Hispanic or Latino",
+      "definition": "A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race"
+    },
+    {
+      "code": "american_indian_alaska_native",
+      "display": "American Indian or Alaska Native"
+    },
+    {
+      "code": "asian",
+      "display": "Asian"
+    },
+    {
+      "code": "black_african_american",
+      "display": "Black or African American"
+    },
+    {
+      "code": "native_hawaiian_pacific_islander",
+      "display": "Native Hawaiian or Other Pacific Islander"
+    },
+    {
+      "code": "white",
+      "display": "White"
+    },
+    {
+      "code": "two_or_more",
+      "display": "Two or More Races",
+      "definition": "Derived category for IPEDS reporting. Calculated when multiple race codes are selected."
+    },
+    {
+      "code": "nonresident_alien",
+      "display": "Nonresident Alien",
+      "definition": "IPEDS category for international students on non-immigrant visas. NOT a race/ethnicity; used as an IPEDS reporting overlay."
+    },
+    {
+      "code": "unknown",
+      "display": "Race/Ethnicity Unknown",
+      "definition": "Person declined to report or data is not available"
+    },
+    {
+      "code": "other",
+      "display": "Other",
+      "definition": "A category not captured above. Document in institution or country-specific profile."
+    }
+  ],
+  "notes": "IPEDS requires institutions to first ask about Hispanic/Latino ethnicity, then ask about race (multi-select). For IPEDS reporting, 'two_or_more' is derived from the selections. Non-US institutions should define country-specific ethnicity/race profiles as HELIX Implementation Profiles (e.g., UK uses different categories for HESA)."
+}

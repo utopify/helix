@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://helixedu.org/core/resources/student.json",
   "title": "HELIX Student Resource",
-  "description": "A person enrolled or admitted at a higher education institution.",
+  "description": "A person in their capacity as a learner at an institution. References a Person resource for base identity. Contains student-specific attributes: status, academic level, GPA, program enrollment, and classification.",
   "type": "object",
   "required": [
     "helix_id",
@@ -149,6 +149,136 @@
             "restricted"
           ],
           "description": "Data classification tier per HELIX Govern"
+        }
+      }
+    },
+    "person_ref": {
+      "type": "string",
+      "description": "HELIX ID of the underlying Person resource. A Student is a role on a Person."
+    },
+    "student_type": {
+      "type": "string",
+      "enum": [
+        "first_time_freshman",
+        "transfer",
+        "readmit",
+        "continuing",
+        "dual_enrollment",
+        "transient",
+        "non_degree",
+        "post_baccalaureate",
+        "other"
+      ],
+      "description": "Classification of the student's entry pathway"
+    },
+    "academic_level": {
+      "type": "string",
+      "enum": [
+        "undergraduate",
+        "graduate",
+        "doctoral",
+        "professional",
+        "non_degree",
+        "other"
+      ],
+      "description": "Current academic career/level"
+    },
+    "class_standing": {
+      "type": "string",
+      "enum": [
+        "freshman",
+        "sophomore",
+        "junior",
+        "senior",
+        "post_baccalaureate",
+        "graduate_1",
+        "graduate_2",
+        "doctoral_candidate",
+        "other"
+      ],
+      "description": "Current class standing based on earned credit hours"
+    },
+    "full_part_time": {
+      "type": "string",
+      "enum": [
+        "full_time",
+        "three_quarter_time",
+        "half_time",
+        "less_than_half_time",
+        "not_enrolled"
+      ],
+      "description": "Enrollment intensity. Critical for financial aid and IPEDS reporting."
+    },
+    "cumulative_gpa": {
+      "type": "number",
+      "description": "Overall cumulative GPA"
+    },
+    "total_credits_earned": {
+      "type": "number"
+    },
+    "total_credits_attempted": {
+      "type": "number"
+    },
+    "admit_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod when the student was first admitted"
+    },
+    "matriculation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the student first enrolled (matriculated)"
+    },
+    "expected_graduation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "primary_program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the student's primary StudentProgram"
+    },
+    "cohort": {
+      "type": "string",
+      "description": "Cohort identifier for tracking (e.g., 'Fall 2024 FTFT' for first-time full-time)"
+    },
+    "veteran_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "veteran",
+        "active_duty",
+        "reserve_national_guard",
+        "dependent_spouse",
+        "other"
+      ],
+      "description": "Military/veteran classification for benefits and reporting"
+    },
+    "international_student": {
+      "type": "object",
+      "description": "International student attributes (populated only for non-domestic students)",
+      "properties": {
+        "visa_type": {
+          "type": "string",
+          "enum": [
+            "F-1",
+            "J-1",
+            "M-1",
+            "H-1B",
+            "other",
+            "none"
+          ]
+        },
+        "sevis_id": {
+          "type": "string"
+        },
+        "country_of_origin": {
+          "type": "string",
+          "format": "iso-3166-1-alpha-2"
+        },
+        "english_proficiency_test": {
+          "type": "string"
+        },
+        "english_proficiency_score": {
+          "type": "number"
         }
       }
     }

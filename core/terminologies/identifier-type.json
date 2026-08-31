@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/identifier-type.json",
+  "title": "HELIX Terminology: Identifier Type",
+  "description": "Types of identifiers that can be assigned to a person or entity across systems.",
+  "code_system": "helix/identifier-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "institutional_id",
+      "display": "Institutional ID",
+      "definition": "The primary student/person ID assigned by the institution"
+    },
+    {
+      "code": "national_id",
+      "display": "National ID",
+      "definition": "Government-issued national identifier (e.g., SSN in US, SIN in Canada, NI Number in UK)"
+    },
+    {
+      "code": "ssn_last4",
+      "display": "SSN Last 4",
+      "definition": "Last 4 digits of Social Security Number. Full SSN should never be stored in HELIX."
+    },
+    {
+      "code": "passport",
+      "display": "Passport Number"
+    },
+    {
+      "code": "drivers_license",
+      "display": "Driver's License Number"
+    },
+    {
+      "code": "login",
+      "display": "Login/Username",
+      "definition": "Institutional login or network username"
+    },
+    {
+      "code": "email",
+      "display": "Email Address",
+      "definition": "When used as an identifier (e.g., for SSO matching)"
+    },
+    {
+      "code": "erp_internal_key",
+      "display": "ERP Internal Key",
+      "definition": "System-generated internal key (e.g., Banner PIDM, PeopleSoft EmplID). Not typically exposed to end users."
+    },
+    {
+      "code": "prior_institution_id",
+      "display": "Prior Institution ID",
+      "definition": "ID from a previous institution (useful for transfer matching)"
+    },
+    {
+      "code": "clearing_house_id",
+      "display": "Clearing House ID",
+      "definition": "National Student Clearinghouse or equivalent ID"
+    },
+    {
+      "code": "orcid",
+      "display": "ORCID",
+      "definition": "Open Researcher and Contributor ID for research/publishing"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}

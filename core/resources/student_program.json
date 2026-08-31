@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/student_program.json",
+  "title": "HELIX StudentProgram Resource",
+  "description": "A student's enrollment in an academic program (major, minor, concentration, certificate). A student may have multiple active program enrollments simultaneously (e.g., double major, major + minor).",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "program_ref",
+    "program_status",
+    "start_period_ref"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Program"
+    },
+    "academic_level": {
+      "type": "string",
+      "enum": [
+        "undergraduate",
+        "graduate",
+        "doctoral",
+        "professional",
+        "non_degree",
+        "other"
+      ],
+      "description": "Academic career/level for this program enrollment"
+    },
+    "program_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "withdrawn",
+        "dismissed",
+        "suspended",
+        "pending",
+        "other"
+      ],
+      "description": "Current status within this program"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "description": "Whether this is the student's primary program (for students with multiple programs)"
+    },
+    "start_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod when the student entered this program"
+    },
+    "expected_completion_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the expected graduation/completion period"
+    },
+    "actual_completion_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "catalog_year": {
+      "type": "string",
+      "description": "Catalog year governing degree requirements (e.g., '2024-2025')"
+    },
+    "advisor_name": {
+      "type": "string"
+    },
+    "advisor_ref": {
+      "type": "string",
+      "description": "HELIX ID or identifier for the assigned advisor"
+    },
+    "class_standing": {
+      "type": "string",
+      "enum": [
+        "freshman",
+        "sophomore",
+        "junior",
+        "senior",
+        "post_baccalaureate",
+        "graduate_1",
+        "graduate_2",
+        "doctoral_candidate",
+        "other"
+      ],
+      "description": "Current class standing based on credit hours earned"
+    },
+    "cumulative_gpa": {
+      "type": "number",
+      "description": "Cumulative GPA within this program/career"
+    },
+    "total_credits_earned": {
+      "type": "number"
+    },
+    "total_credits_attempted": {
+      "type": "number"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

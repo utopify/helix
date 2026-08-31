@@ -108,6 +108,43 @@
           "description": "Data classification tier per HELIX Govern"
         }
       }
+    },
+    "delivery_mode": {
+      "type": "string",
+      "enum": [
+        "in_person",
+        "online",
+        "hybrid",
+        "competency_based",
+        "correspondence",
+        "other"
+      ],
+      "description": "Primary delivery mode for the program"
+    },
+    "program_length_terms": {
+      "type": "integer",
+      "description": "Expected program length in standard terms"
+    },
+    "admission_selectivity": {
+      "type": "string",
+      "enum": [
+        "open_admission",
+        "selective",
+        "highly_selective",
+        "special_admission"
+      ],
+      "description": "Program-level admission selectivity"
+    },
+    "stackable_credentials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "HELIX IDs of related Programs that stack into this credential"
+    },
+    "gainful_employment_flag": {
+      "type": "boolean",
+      "description": "Whether the program is subject to Gainful Employment reporting (US)"
     }
   },
   "definitions": {

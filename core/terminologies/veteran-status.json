@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/veteran-status.json",
+  "title": "HELIX Terminology: Veteran Status",
+  "description": "Military/veteran classification for benefits eligibility and reporting.",
+  "code_system": "helix/veteran-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "none",
+      "display": "No Military Affiliation"
+    },
+    {
+      "code": "veteran",
+      "display": "Veteran",
+      "definition": "Former member of the armed forces who has been discharged"
+    },
+    {
+      "code": "active_duty",
+      "display": "Active Duty",
+      "definition": "Currently serving in the armed forces"
+    },
+    {
+      "code": "reserve_national_guard",
+      "display": "Reserve / National Guard",
+      "definition": "Member of a reserve component or National Guard"
+    },
+    {
+      "code": "dependent_spouse",
+      "display": "Military Dependent/Spouse",
+      "definition": "Dependent or spouse of a service member, eligible for benefits (e.g., Chapter 35, MyCAA)"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ],
+  "notes": "US-specific. Drives VA benefits eligibility (GI Bill chapters), IPEDS Military Servicemember reporting, and state veteran tuition waivers. International profiles should define country-specific military/veteran codes."
+}

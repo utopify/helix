@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/hold-type.json",
+  "title": "HELIX Terminology: Hold Type",
+  "description": "Standard types of holds/restrictions placed on student records.",
+  "code_system": "helix/hold-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "registration",
+      "display": "Registration Hold",
+      "definition": "Prevents the student from registering for courses"
+    },
+    {
+      "code": "financial",
+      "display": "Financial Hold",
+      "definition": "Unpaid balance or financial obligation. May prevent registration, transcript release, or graduation."
+    },
+    {
+      "code": "academic",
+      "display": "Academic Hold",
+      "definition": "Academic deficiency (GPA, SAP, etc.). May require advising clearance before registration."
+    },
+    {
+      "code": "disciplinary",
+      "display": "Disciplinary Hold",
+      "definition": "Conduct or disciplinary action pending or in effect"
+    },
+    {
+      "code": "transcript",
+      "display": "Transcript Hold",
+      "definition": "Prevents release of official transcripts"
+    },
+    {
+      "code": "graduation",
+      "display": "Graduation Hold",
+      "definition": "Prevents degree conferral (e.g., outstanding requirements, exit interview)"
+    },
+    {
+      "code": "library",
+      "display": "Library Hold",
+      "definition": "Overdue materials or library fines"
+    },
+    {
+      "code": "health_compliance",
+      "display": "Health Compliance Hold",
+      "definition": "Missing immunization records, health insurance verification, or other health requirements"
+    },
+    {
+      "code": "admissions",
+      "display": "Admissions Hold",
+      "definition": "Missing admissions documents (final transcript, test scores, etc.)"
+    },
+    {
+      "code": "international",
+      "display": "International Hold",
+      "definition": "Visa compliance, SEVIS reporting, or international student office clearance"
+    },
+    {
+      "code": "parking",
+      "display": "Parking Hold",
+      "definition": "Unpaid parking fines or violations"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}

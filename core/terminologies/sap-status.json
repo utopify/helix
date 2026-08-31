@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/sap-status.json",
+  "title": "HELIX Terminology: Satisfactory Academic Progress (SAP) Status",
+  "description": "Federal financial aid eligibility status based on academic performance and pace of completion.",
+  "code_system": "helix/sap-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "meeting",
+      "display": "Meeting SAP",
+      "definition": "Student meets all SAP requirements (GPA, pace, maximum timeframe)"
+    },
+    {
+      "code": "warning",
+      "display": "SAP Warning",
+      "definition": "Student failed to meet SAP at the end of a payment period. Eligible for aid for one more period without appeal."
+    },
+    {
+      "code": "probation",
+      "display": "SAP Probation",
+      "definition": "Student failed SAP, appealed successfully, and is on a monitored academic plan. Eligible for aid while on plan."
+    },
+    {
+      "code": "suspension",
+      "display": "SAP Suspension",
+      "definition": "Student is ineligible for federal financial aid due to failure to meet SAP requirements"
+    },
+    {
+      "code": "appeal_approved",
+      "display": "Appeal Approved",
+      "definition": "SAP appeal approved. Student placed on probation with an academic plan."
+    },
+    {
+      "code": "not_evaluated",
+      "display": "Not Yet Evaluated",
+      "definition": "SAP has not been evaluated for this period (e.g., first term)"
+    }
+  ],
+  "notes": "SAP is a federal (Title IV) requirement in the US. Institutions must evaluate SAP at least once per academic year. Three components: qualitative (GPA), quantitative (pace/completion rate), and maximum timeframe."
+}
