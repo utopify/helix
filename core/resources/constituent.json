@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/constituent.json",
+  "title": "HELIX Constituent Resource",
+  "description": "A person or organization with a relationship to the institution for advancement purposes: alumni, donors, parents, friends, corporate partners, foundations. Extends Person with advancement-specific attributes.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "constituent_type",
+    "status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "person_ref": {
+      "type": "string",
+      "description": "HELIX ID of the underlying Person resource (if individual)"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student resource (if alumnus)"
+    },
+    "constituent_type": {
+      "type": "string",
+      "enum": [
+        "alumnus",
+        "donor",
+        "parent",
+        "friend",
+        "faculty_staff",
+        "corporation",
+        "foundation",
+        "organization",
+        "prospect",
+        "other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "deceased",
+        "lost",
+        "do_not_contact",
+        "do_not_solicit"
+      ]
+    },
+    "class_year": {
+      "type": "string",
+      "description": "Graduation class year (e.g., '2015'). Primary affinity identifier for alumni."
+    },
+    "degrees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "degree_ref": {
+            "type": "string",
+            "description": "HELIX ID of the Degree resource"
+          },
+          "degree_type": {
+            "type": "string"
+          },
+          "major": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "affinity_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Affiliations: Greek org, athletics, college, department, student org, etc."
+    },
+    "giving_capacity": {
+      "type": "object",
+      "properties": {
+        "estimated_capacity": {
+          "type": "number",
+          "description": "Wealth screening estimated giving capacity"
+        },
+        "capacity_rating": {
+          "type": "string",
+          "enum": [
+            "principal",
+            "major",
+            "leadership",
+            "mid_level",
+            "annual",
+            "unrated"
+          ]
+        },
+        "screening_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "screening_source": {
+          "type": "string",
+          "description": "Wealth screening vendor (e.g., 'EverTrue', 'Windfall', 'iWave')"
+        }
+      }
+    },
+    "lifetime_giving": {
+      "type": "number",
+      "description": "Total lifetime giving amount"
+    },
+    "last_gift_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "last_gift_amount": {
+      "type": "number"
+    },
+    "consecutive_giving_years": {
+      "type": "integer"
+    },
+    "largest_gift_amount": {
+      "type": "number"
+    },
+    "donor_segment": {
+      "type": "string",
+      "enum": [
+        "lapsed",
+        "first_time",
+        "renewing",
+        "upgrading",
+        "downgrading",
+        "loyal",
+        "major",
+        "planned_giving",
+        "non_donor"
+      ],
+      "description": "Current donor lifecycle segment for targeting"
+    },
+    "engagement_score": {
+      "type": "number",
+      "description": "Composite engagement score (events, emails, volunteering, social, etc.)"
+    },
+    "solicitation_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Active solicitation restrictions or preferences"
+    },
+    "assigned_officer": {
+      "type": "string",
+      "description": "Development officer/gift officer managing this relationship"
+    },
+    "prospect_stage": {
+      "type": "string",
+      "enum": [
+        "identification",
+        "qualification",
+        "cultivation",
+        "solicitation",
+        "stewardship",
+        "none"
+      ],
+      "description": "Moves management pipeline stage"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "communication_preferences": {
+      "type": "object",
+      "properties": {
+        "preferred_channel": {
+          "type": "string",
+          "enum": [
+            "email",
+            "phone",
+            "mail",
+            "text",
+            "in_person"
+          ]
+        },
+        "email_opt_in": {
+          "type": "boolean"
+        },
+        "mail_opt_in": {
+          "type": "boolean"
+        },
+        "phone_opt_in": {
+          "type": "boolean"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

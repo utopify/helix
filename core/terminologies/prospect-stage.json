@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/prospect-stage.json",
+  "title": "HELIX Terminology: Prospect Stage (Moves Management)",
+  "code_system": "helix/prospect-stage",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "identification",
+      "display": "Identification",
+      "definition": "Prospect identified through screening, referral, or research. Not yet qualified."
+    },
+    {
+      "code": "qualification",
+      "display": "Qualification",
+      "definition": "Research and initial outreach to determine interest, capacity, and inclination."
+    },
+    {
+      "code": "cultivation",
+      "display": "Cultivation",
+      "definition": "Active relationship-building: meetings, events, campus visits, engagement activities."
+    },
+    {
+      "code": "solicitation",
+      "display": "Solicitation",
+      "definition": "Formal ask has been made or is imminent."
+    },
+    {
+      "code": "stewardship",
+      "display": "Stewardship",
+      "definition": "Post-gift acknowledgment, impact reporting, and continued relationship management."
+    },
+    {
+      "code": "none",
+      "display": "Not in Pipeline",
+      "definition": "Constituent is not currently in the moves management pipeline."
+    }
+  ],
+  "notes": "Moves management is the standard advancement methodology for managing major gift prospects through a pipeline. Each 'move' advances the relationship toward a gift. The stage reflects where the prospect is in that journey. Most advancement CRMs (Blackbaud, Salesforce, Slate) track this pipeline."
+}

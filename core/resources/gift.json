@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/gift.json",
+  "title": "HELIX Gift Resource",
+  "description": "A philanthropic transaction: gift, pledge, pledge payment, matching gift, planned gift, or in-kind donation to the institution.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "constituent_ref",
+    "gift_type",
+    "amount",
+    "gift_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "constituent_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Constituent resource (donor)"
+    },
+    "gift_number": {
+      "type": "string",
+      "description": "Institution-assigned gift/receipt number"
+    },
+    "gift_type": {
+      "type": "string",
+      "enum": [
+        "outright_gift",
+        "pledge",
+        "pledge_payment",
+        "matching_gift",
+        "planned_gift",
+        "bequest",
+        "in_kind",
+        "stock_transfer",
+        "real_property",
+        "qcd",
+        "daf",
+        "corporate_grant",
+        "foundation_grant",
+        "other"
+      ],
+      "description": "Type of philanthropic transaction"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Gift amount (or fair market value for in-kind)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "gift_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the gift was received or pledged"
+    },
+    "receipt_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "designation": {
+      "type": "object",
+      "description": "Where the gift is directed",
+      "properties": {
+        "fund_code": {
+          "type": "string",
+          "description": "Institution's fund/designation code"
+        },
+        "fund_name": {
+          "type": "string",
+          "description": "Fund name (e.g., 'College of Engineering Dean's Fund')"
+        },
+        "fund_type": {
+          "type": "string",
+          "enum": [
+            "unrestricted",
+            "restricted_current",
+            "endowment",
+            "capital",
+            "scholarship",
+            "fellowship",
+            "program_support",
+            "athletics",
+            "other"
+          ]
+        },
+        "college_school": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        }
+      }
+    },
+    "campaign_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Campaign resource (if gift is counted toward a campaign)"
+    },
+    "appeal_code": {
+      "type": "string",
+      "description": "Solicitation/appeal that prompted the gift"
+    },
+    "gift_source": {
+      "type": "string",
+      "enum": [
+        "online",
+        "mail",
+        "phone",
+        "event",
+        "in_person",
+        "wire",
+        "stock_transfer",
+        "payroll_deduction",
+        "daf_platform",
+        "other"
+      ]
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "check",
+        "credit_card",
+        "ach",
+        "wire",
+        "stock",
+        "crypto",
+        "payroll_deduction",
+        "cash",
+        "daf",
+        "other"
+      ]
+    },
+    "pledge_ref": {
+      "type": "string",
+      "description": "If this is a pledge payment, HELIX ID of the original pledge Gift"
+    },
+    "pledge_balance": {
+      "type": "number",
+      "description": "Remaining pledge balance (on pledge records)"
+    },
+    "matching_company": {
+      "type": "string",
+      "description": "Employer name for corporate matching gifts"
+    },
+    "matching_ratio": {
+      "type": "string",
+      "description": "Match ratio (e.g., '1:1', '2:1')"
+    },
+    "tax_deductible_amount": {
+      "type": "number"
+    },
+    "anonymous_flag": {
+      "type": "boolean",
+      "description": "Donor wishes to remain anonymous for public recognition"
+    },
+    "soft_credit_constituents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "HELIX IDs of constituents who receive soft credit (spouse, advisor, etc.)"
+    },
+    "acknowledgment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "not_required"
+      ],
+      "description": "Thank-you/acknowledgment letter status"
+    },
+    "acknowledgment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "stewardship_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action_type": {
+            "type": "string",
+            "enum": [
+              "thank_you_letter",
+              "phone_call",
+              "email",
+              "impact_report",
+              "naming_recognition",
+              "event_invitation",
+              "annual_report_mention",
+              "social_media",
+              "other"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "completed_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

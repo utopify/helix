@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/campaign.json",
+  "title": "HELIX Campaign Resource",
+  "description": "A fundraising campaign with goals, timelines, and progress tracking. May be a comprehensive campaign, annual fund, giving day, or targeted initiative.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "name",
+    "campaign_type",
+    "goal_amount",
+    "start_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "institution_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Campaign name (e.g., 'Forward Together: Campaign for State University')"
+    },
+    "campaign_type": {
+      "type": "string",
+      "enum": [
+        "comprehensive",
+        "capital",
+        "annual_fund",
+        "giving_day",
+        "crowdfunding",
+        "endowment",
+        "targeted_initiative",
+        "other"
+      ]
+    },
+    "goal_amount": {
+      "type": "number"
+    },
+    "raised_amount": {
+      "type": "number",
+      "description": "Total raised to date"
+    },
+    "donor_count": {
+      "type": "integer",
+      "description": "Unique donors to date"
+    },
+    "gift_count": {
+      "type": "integer",
+      "description": "Total gifts/pledges to date"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "silent_phase",
+        "public_phase",
+        "completed",
+        "extended"
+      ]
+    },
+    "priorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priority_name": {
+            "type": "string",
+            "description": "e.g., 'Student Scholarships', 'New Science Building', 'Faculty Endowment'"
+          },
+          "goal_amount": {
+            "type": "number"
+          },
+          "raised_amount": {
+            "type": "number"
+          },
+          "designation_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

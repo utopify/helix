@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/engagement_activity.json",
+  "title": "HELIX EngagementActivity Resource",
+  "description": "A trackable interaction between a constituent and the institution: event attendance, email engagement, volunteer activity, social media interaction, campus visit, or meeting with a development officer.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "constituent_ref",
+    "activity_type",
+    "activity_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "constituent_ref": {
+      "type": "string"
+    },
+    "activity_type": {
+      "type": "string",
+      "enum": [
+        "event_attendance",
+        "event_registration",
+        "email_open",
+        "email_click",
+        "email_reply",
+        "volunteer",
+        "campus_visit",
+        "development_meeting",
+        "phone_call",
+        "social_media",
+        "website_visit",
+        "giving_page_visit",
+        "survey_response",
+        "mentoring",
+        "guest_lecture",
+        "board_service",
+        "career_services",
+        "other"
+      ]
+    },
+    "activity_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_name": {
+      "type": "string",
+      "description": "Name of event, email campaign, or activity"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "homecoming",
+        "reunion",
+        "gala",
+        "donor_reception",
+        "groundbreaking",
+        "commencement",
+        "athletic",
+        "lecture",
+        "networking",
+        "giving_day",
+        "campus_tour",
+        "webinar",
+        "other"
+      ]
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "in_person",
+        "email",
+        "phone",
+        "social",
+        "web",
+        "mail",
+        "text",
+        "other"
+      ]
+    },
+    "location": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "engagement_points": {
+      "type": "integer",
+      "description": "Weighted points for engagement scoring model"
+    },
+    "linked_gift_ref": {
+      "type": "string",
+      "description": "If this activity resulted in a gift, link to the Gift resource"
+    },
+    "officer_ref": {
+      "type": "string",
+      "description": "Development officer who facilitated the interaction"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "helix_meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ]
+        }
+      }
+    }
+  }
+}

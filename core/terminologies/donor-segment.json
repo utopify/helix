@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/donor-segment.json",
+  "title": "HELIX Terminology: Donor Segment",
+  "code_system": "helix/donor-segment",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "non_donor",
+      "display": "Non-Donor",
+      "definition": "Constituent has never made a gift"
+    },
+    {
+      "code": "first_time",
+      "display": "First-Time Donor",
+      "definition": "Made their first gift in the current fiscal year"
+    },
+    {
+      "code": "renewing",
+      "display": "Renewing Donor",
+      "definition": "Gave last year and gave again this year at the same level"
+    },
+    {
+      "code": "upgrading",
+      "display": "Upgrading Donor",
+      "definition": "Gave last year and increased their giving this year"
+    },
+    {
+      "code": "downgrading",
+      "display": "Downgrading Donor",
+      "definition": "Gave last year but decreased their giving this year"
+    },
+    {
+      "code": "loyal",
+      "display": "Loyal/Consecutive Donor",
+      "definition": "Has given consecutively for 3+ years"
+    },
+    {
+      "code": "lapsed",
+      "display": "Lapsed Donor",
+      "definition": "Previously gave but has not given in the last 1-2 fiscal years"
+    },
+    {
+      "code": "deep_lapsed",
+      "display": "Deep Lapsed Donor",
+      "definition": "Previously gave but has not given in 3+ fiscal years"
+    },
+    {
+      "code": "major",
+      "display": "Major Donor",
+      "definition": "Cumulative or single-gift giving at the institution's major gift threshold (typically $25K-$100K+)"
+    },
+    {
+      "code": "planned_giving",
+      "display": "Planned Giving Donor",
+      "definition": "Has documented a planned gift (bequest, trust, beneficiary designation)"
+    },
+    {
+      "code": "recaptured",
+      "display": "Recaptured Donor",
+      "definition": "Was lapsed but made a new gift this year"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/gift-type.json",
+  "title": "HELIX Terminology: Gift Type",
+  "code_system": "helix/gift-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "outright_gift",
+      "display": "Outright Gift",
+      "definition": "Immediate, completed gift of cash or equivalents"
+    },
+    {
+      "code": "pledge",
+      "display": "Pledge",
+      "definition": "Commitment to give a specified amount over a defined period"
+    },
+    {
+      "code": "pledge_payment",
+      "display": "Pledge Payment",
+      "definition": "Payment toward a previously made pledge"
+    },
+    {
+      "code": "matching_gift",
+      "display": "Matching Gift",
+      "definition": "Corporate employer match of an employee's gift"
+    },
+    {
+      "code": "planned_gift",
+      "display": "Planned Gift",
+      "definition": "Deferred gift through estate/financial planning (trust, annuity, will)"
+    },
+    {
+      "code": "bequest",
+      "display": "Bequest",
+      "definition": "Gift received from a deceased donor's estate"
+    },
+    {
+      "code": "in_kind",
+      "display": "In-Kind Gift",
+      "definition": "Non-cash gift of goods, services, or property"
+    },
+    {
+      "code": "stock_transfer",
+      "display": "Stock/Securities Transfer",
+      "definition": "Gift of publicly traded or private securities"
+    },
+    {
+      "code": "real_property",
+      "display": "Real Property",
+      "definition": "Gift of real estate"
+    },
+    {
+      "code": "qcd",
+      "display": "Qualified Charitable Distribution",
+      "definition": "Direct transfer from IRA to institution (age 70\u00bd+)"
+    },
+    {
+      "code": "daf",
+      "display": "Donor Advised Fund",
+      "definition": "Grant from a donor advised fund (Fidelity Charitable, Schwab, etc.)"
+    },
+    {
+      "code": "corporate_grant",
+      "display": "Corporate Grant",
+      "definition": "Grant from a corporation (distinct from matching gift)"
+    },
+    {
+      "code": "foundation_grant",
+      "display": "Foundation Grant",
+      "definition": "Grant from a private or community foundation"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}

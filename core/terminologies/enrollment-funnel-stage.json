@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/enrollment-funnel-stage.json",
+  "title": "HELIX Terminology: Enrollment Funnel Stage",
+  "code_system": "helix/enrollment-funnel-stage",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "suspect",
+      "display": "Suspect",
+      "definition": "Name purchased or scraped from College Board, ACT, NRCCUA, or other list source. No interaction yet."
+    },
+    {
+      "code": "inquiry",
+      "display": "Inquiry",
+      "definition": "Student has initiated contact: RFI form, campus visit request, email, test score send, or fair card."
+    },
+    {
+      "code": "applicant",
+      "display": "Applicant",
+      "definition": "Student has submitted an application for admission."
+    },
+    {
+      "code": "admitted",
+      "display": "Admitted",
+      "definition": "Application approved. Admit letter/package sent."
+    },
+    {
+      "code": "confirmed",
+      "display": "Confirmed/Deposited",
+      "definition": "Student has paid enrollment deposit, confirming intent to enroll."
+    },
+    {
+      "code": "registered",
+      "display": "Registered",
+      "definition": "Student has completed orientation and/or registered for courses."
+    },
+    {
+      "code": "enrolled",
+      "display": "Enrolled",
+      "definition": "Student attended first day/census. Officially counted in enrollment."
+    },
+    {
+      "code": "melted",
+      "display": "Melted (Summer Melt)",
+      "definition": "Student confirmed/deposited but did not register or attend. Lost between confirmation and enrollment."
+    },
+    {
+      "code": "denied",
+      "display": "Denied",
+      "definition": "Application was not approved."
+    },
+    {
+      "code": "withdrawn",
+      "display": "Withdrawn",
+      "definition": "Student withdrew application or rescinded deposit before enrollment."
+    }
+  ],
+  "notes": "The enrollment funnel is the primary framework for enrollment management. 'Summer melt' (confirmed students who don't show up) is a critical metric: typical melt rates are 10-20% at open-access institutions, 2-5% at selective institutions. Each stage transition represents a conversion rate that enrollment managers optimize."
+}

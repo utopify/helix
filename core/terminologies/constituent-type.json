@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/constituent-type.json",
+  "title": "HELIX Terminology: Constituent Type",
+  "code_system": "helix/constituent-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "alumnus",
+      "display": "Alumnus/Alumna",
+      "definition": "Graduate or former student of the institution"
+    },
+    {
+      "code": "donor",
+      "display": "Donor",
+      "definition": "Any individual who has made a gift (may overlap with other types)"
+    },
+    {
+      "code": "parent",
+      "display": "Parent/Family",
+      "definition": "Parent or family member of a current or former student"
+    },
+    {
+      "code": "friend",
+      "display": "Friend of the University",
+      "definition": "Non-alumni individual with institutional affinity"
+    },
+    {
+      "code": "faculty_staff",
+      "display": "Faculty/Staff",
+      "definition": "Current or former employee"
+    },
+    {
+      "code": "corporation",
+      "display": "Corporation",
+      "definition": "Corporate entity for matching gifts or sponsorships"
+    },
+    {
+      "code": "foundation",
+      "display": "Foundation",
+      "definition": "Private or community foundation"
+    },
+    {
+      "code": "organization",
+      "display": "Organization",
+      "definition": "Non-profit, association, or other entity"
+    },
+    {
+      "code": "prospect",
+      "display": "Prospect",
+      "definition": "Identified potential donor not yet in the giving pipeline"
+    },
+    {
+      "code": "other",
+      "display": "Other"
+    }
+  ]
+}
