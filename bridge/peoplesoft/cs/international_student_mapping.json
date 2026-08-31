@@ -1,0 +1,127 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 InternationalStudent",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Campus Community / International",
+  "target_resource": "InternationalStudent (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_VISA_PMT_DATA",
+      "description": "Visa/permit data. Visa type, status, issue/expiration dates, country of citizenship."
+    },
+    {
+      "table": "PS_VISA_PERMIT_TBL",
+      "description": "Visa type definitions. F-1, J-1, H-1B, etc."
+    },
+    {
+      "table": "PS_SEVIS_DATA",
+      "description": "SEVIS tracking. SEVIS ID, program dates, funding sources, status events. Required for F-1/J-1 compliance."
+    },
+    {
+      "table": "PS_INTL_STDNT_DATA",
+      "description": "International student data. English proficiency, I-20/DS-2019 info, admission type."
+    },
+    {
+      "table": "PS_CITIZENSHIP",
+      "description": "Citizenship records. Country, citizenship status."
+    },
+    {
+      "table": "PS_COUNTRY_TBL",
+      "description": "Country reference. ISO codes, region, continent."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "visa_type",
+      "source": "PS_VISA_PMT_DATA.VISA_PERMIT_TYPE",
+      "transformation": "Map PS visa codes: 'F1'\u2192'F-1', 'J1'\u2192'J-1', 'M1'\u2192'M-1', 'H1B'\u2192'H-1B'. Institution-configured in VISA_PERMIT_TBL."
+    },
+    {
+      "helix_attribute": "visa_status",
+      "source": "PS_VISA_PMT_DATA.VISA_PERMIT_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'E'\u2192'expired', 'R'\u2192'revoked'."
+    },
+    {
+      "helix_attribute": "visa_issue_date",
+      "source": "PS_VISA_PMT_DATA.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "visa_expiration_date",
+      "source": "PS_VISA_PMT_DATA.VISA_PMT_EXPIRATN",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "country_of_citizenship",
+      "source": "PS_CITIZENSHIP.COUNTRY",
+      "transformation": "Map to ISO 3166-1 alpha-2."
+    },
+    {
+      "helix_attribute": "country_of_birth",
+      "source": "PS_PERSONAL_DATA.BIRTHCOUNTRY",
+      "transformation": "Map to ISO 3166-1 alpha-2."
+    },
+    {
+      "helix_attribute": "sevis_id",
+      "source": "PS_SEVIS_DATA.SEVIS_ID",
+      "transformation": "Direct map. SEVIS ID (N-number) for F-1/J-1 students."
+    },
+    {
+      "helix_attribute": "sevis_status",
+      "source": "PS_SEVIS_DATA.SEVIS_STAT_REASON",
+      "transformation": "Map: 'ACTV'\u2192'active', 'COMP'\u2192'completed', 'TERM'\u2192'terminated', 'INIT'\u2192'initial'."
+    },
+    {
+      "helix_attribute": "i20_program_start",
+      "source": "PS_SEVIS_DATA.SEVIS_START_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "i20_program_end",
+      "source": "PS_SEVIS_DATA.SEVIS_END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "english_proficiency_test",
+      "source": "PS_STDNT_TEST_COMP.TEST_ID (where TEST_ID in 'TOEFL','IELTS','DET')",
+      "transformation": "Test type."
+    },
+    {
+      "helix_attribute": "english_proficiency_score",
+      "source": "PS_STDNT_TEST_COMP.SCORE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "funding_source",
+      "source": "PS_SEVIS_DATA.SEVIS_FUND_SRC1",
+      "transformation": "Primary funding source for I-20/DS-2019: personal, government, institutional, etc."
+    },
+    {
+      "helix_attribute": "cpt_authorized",
+      "source": "PS_SEVIS_DATA CPT fields",
+      "transformation": "Curricular Practical Training authorization status and dates."
+    },
+    {
+      "helix_attribute": "opt_authorized",
+      "source": "PS_SEVIS_DATA OPT fields",
+      "transformation": "Optional Practical Training authorization status and dates."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "International student data is among the most compliance-sensitive in higher ed. SEVP (Student and Exchange Visitor Program) mandates real-time SEVIS reporting for F-1 and J-1 students. CPT/OPT authorization must be tracked precisely. Classification is RESTRICTED because SEVIS data includes immigration status, visa details, and is subject to federal audit."
+}

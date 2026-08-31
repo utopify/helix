@@ -1,0 +1,107 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 AbsenceManagement",
+  "source_system": "peoplesoft",
+  "module": "HCM - Absence Management",
+  "target_resource": "AbsenceRecord (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ABSENCE_EVENT",
+      "description": "Absence event header. Leave request with type, dates, status, reason."
+    },
+    {
+      "table": "PS_ABSENCE_DAILY",
+      "description": "Absence daily detail. Per-day breakdown of an absence event (partial days, hours)."
+    },
+    {
+      "table": "PS_LEAVE_ACCRUAL",
+      "description": "Leave accrual balances. Vacation, sick, personal, FMLA, etc. by plan and balance ID."
+    },
+    {
+      "table": "PS_ABSENCE_TAKE_TBL",
+      "description": "Absence take (type) definitions. Vacation, sick, bereavement, jury duty, FMLA, military, etc."
+    },
+    {
+      "table": "PS_ABSENCE_ENTL",
+      "description": "Absence entitlement. Accrual rate rules by plan."
+    },
+    {
+      "table": "PS_FMLA_LV_APPROVE",
+      "description": "FMLA leave approval. Certification, qualifying reason, protected leave tracking."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_ABSENCE_EVENT.EMPLID + EMPL_RCD",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "absence_type",
+      "source": "PS_ABSENCE_EVENT.ABSENCE_TAKE",
+      "transformation": "Map PS absence take codes to categories: 'VAC'\u2192'vacation', 'SCK'\u2192'sick', 'PER'\u2192'personal', 'BER'\u2192'bereavement', 'JUR'\u2192'jury_duty', 'FML'\u2192'fmla', 'MIL'\u2192'military', 'SAB'\u2192'sabbatical', 'MAT'\u2192'parental', 'UPD'\u2192'unpaid'. Codes institution-defined in ABSENCE_TAKE_TBL."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "PS_ABSENCE_EVENT.BEGIN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "PS_ABSENCE_EVENT.END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "total_hours",
+      "source": "PS_ABSENCE_EVENT.DURATION_ABS",
+      "transformation": "Total absence duration in hours."
+    },
+    {
+      "helix_attribute": "total_days",
+      "source": "Derived from PS_ABSENCE_DAILY count",
+      "transformation": "Count of absence daily records."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "PS_ABSENCE_EVENT.ABS_EVENT_STATUS",
+      "transformation": "Map: 'SUB'\u2192'submitted', 'APR'\u2192'approved', 'DEN'\u2192'denied', 'CAN'\u2192'cancelled', 'PRO'\u2192'processed'."
+    },
+    {
+      "helix_attribute": "reason",
+      "source": "PS_ABSENCE_EVENT.ABS_EVENT_REASON",
+      "transformation": "Direct map. Institution-defined reason codes."
+    },
+    {
+      "helix_attribute": "paid_flag",
+      "source": "PS_ABSENCE_TAKE_TBL.PAID_UNPAID",
+      "transformation": "Map: 'P'\u2192true (paid leave), 'U'\u2192false (unpaid)."
+    },
+    {
+      "helix_attribute": "fmla_qualifying",
+      "source": "PS_FMLA_LV_APPROVE exists for this event",
+      "transformation": "true if FMLA-protected leave."
+    },
+    {
+      "helix_attribute": "fmla_reason",
+      "source": "PS_FMLA_LV_APPROVE.FMLA_LV_REASON",
+      "transformation": "FMLA qualifying reason (own health, family member, military caregiver, etc.)."
+    },
+    {
+      "helix_attribute": "leave_balance_before",
+      "source": "PS_LEAVE_ACCRUAL (prior to event)",
+      "transformation": "Balance in the corresponding leave plan before this absence."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PeopleSoft Absence Management handles leave requests, accruals, and FMLA compliance. Higher ed institutions often have complex leave policies: faculty sabbaticals, classified staff accruals (union-negotiated), 12-month vs 9-month appointment differences, and FMLA eligibility tracking. Leave accrual balances (PS_LEAVE_ACCRUAL) are the most frequently queried HR dataset by employees and managers."
+}

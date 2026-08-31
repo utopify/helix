@@ -4,13 +4,13 @@ Comprehensive mapping templates from Oracle PeopleSoft to HELIX Core resources, 
 
 ## Modules
 
-| Module | Sub-Folder | Mappings | Description |
-|--------|-----------|----------|-------------|
-| **Campus Solutions (SIS)** | `cs/` | 14 | Student information, enrollment, financial aid, admissions, academics |
-| **Financials (FSCM)** | `fin/` | 6 | General ledger, AP, AR/student financials, purchasing, budgets, grants |
-| **Human Capital Management** | `hcm/` | 7 | Employee records, positions, compensation, benefits, payroll, time, recruiting |
+| Module | Sub-Folder | Mappings | Coverage | Description |
+|--------|-----------|----------|----------|-------------|
+| **Campus Solutions (SIS)** | `cs/` | 19 | 83% | Student identity, enrollment, financial aid, admissions, academics, degree audit, international, FERPA |
+| **Financials (FSCM)** | `fin/` | 9 | 82% | General ledger, AP, AR/student financials, purchasing, budgets, grants, assets, expenses, contracts |
+| **Human Capital Management** | `hcm/` | 12 | 80% | Employee records, positions, compensation, benefits, payroll, time, recruiting, absence, performance, job classification, position budgeting, learning |
 
-**Total: 27 PeopleSoft mappings** covering the three major modules used by higher education institutions.
+**Total: 40 PeopleSoft mappings** — the most comprehensive open PeopleSoft-to-canonical mapping library available.
 
 ## Architecture Notes
 
@@ -25,3 +25,4 @@ Comprehensive mapping templates from Oracle PeopleSoft to HELIX Core resources, 
 2. Browse the relevant sub-folder for your modules
 3. Each mapping file documents source tables, attribute-level transformations, and institution-specific notes
 4. Adapt the mappings to your PeopleSoft configuration (custom fields, institution-defined codes)
+5. Use the [Migration Adventure Guide](../../docs/migration-adventure-guide.md) for step-by-step migration paths

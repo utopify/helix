@@ -78,7 +78,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 | **HELIX Core** | 15 canonical resource definitions (JSON Schema) and 18 terminology code sets | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
-| **HELIX Bridge** | ERP-specific mapping templates (Banner, PeopleSoft, Workday, Colleague) | Implementation teams, system integrators |
+| **HELIX Bridge** | ERP-specific mapping templates: Banner (3), PeopleSoft (40 across CS/FIN/HCM), Workday (3), Colleague (3) | Implementation teams, system integrators |
 
 ---
 
@@ -109,16 +109,18 @@ See the [Terminology Catalog](docs/terminology-catalog.md) for every valid code 
 
 ## HELIX Bridge: ERP Mappings
 
-Column-level mapping templates from 4 major ERP systems to HELIX Core resources:
+Column-level mapping templates from 4 major ERP systems:
 
-| ERP | Architecture | Mappings |
-|-----|-------------|----------|
-| **Ellucian Banner** | Relational (Oracle) | Student, Enrollment, AcademicPeriod |
-| **Oracle PeopleSoft** | Relational, effective-dated | Student, Enrollment, AcademicPeriod |
-| **Workday Student** | Cloud-native (REST/business objects) | Student, Enrollment, AcademicPeriod |
-| **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | Student, Enrollment, AcademicPeriod |
+| ERP | Architecture | Mappings | Coverage |
+|-----|-------------|----------|----------|
+| **Oracle PeopleSoft** | Relational, effective-dated | **40 mappings** across CS (19), FIN (9), HCM (12) | 80-83% per module |
+| **Ellucian Banner** | Relational (Oracle) | 3 mappings | Core SIS resources |
+| **Workday Student** | Cloud-native (REST/business objects) | 3 mappings | Core SIS resources |
+| **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | 3 mappings | Core SIS resources |
 
-Four completely different architectures, all landing in the same HELIX shape. See the [Bridge Reference](docs/bridge-reference.md) for source table details.
+PeopleSoft is the deepest Bridge — 40 mappings covering Student Records, Financial Aid, Admissions, Degree Audit, International/SEVIS, FERPA, General Ledger, AP, AR, Purchasing, Budgets, Grants, Assets, Expenses, Contracts, Core HR, Position Management, Compensation, Benefits, Payroll, Time & Labor, Recruiting, Absence/FMLA, Performance, Job Classification, Position Budgeting, and Learning Management.
+
+See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Guide](docs/migration-adventure-guide.md) for details.
 
 ## HELIX Govern
 
@@ -199,16 +201,20 @@ helix/
 │   ├── maturity-model.json      ← Maturity assessment framework
 │   └── domain-taxonomy.json     ← Data domain taxonomy
 ├── bridge/
-│   ├── banner/                  ← Ellucian Banner mappings
-│   ├── peoplesoft/              ← Oracle PeopleSoft mappings
-│   ├── workday/                 ← Workday Student mappings
-│   └── colleague/               ← Ellucian Colleague mappings
+│   ├── banner/                  ← Ellucian Banner mappings (3)
+│   ├── peoplesoft/              ← Oracle PeopleSoft mappings (40)
+│   │   ├── cs/                  ← Campus Solutions / SIS (19)
+│   │   ├── fin/                 ← Financials / FSCM (9)
+│   │   └── hcm/                 ← Human Capital Management (12)
+│   ├── workday/                 ← Workday Student mappings (3)
+│   └── colleague/               ← Ellucian Colleague mappings (3)
 └── docs/                        ← Comprehensive documentation
     ├── resource-catalog.md
     ├── terminology-catalog.md
     ├── bridge-reference.md
     ├── govern-overview.md
-    └── connect-overview.md
+    ├── connect-overview.md
+    └── migration-adventure-guide.md  ← "Choose your own adventure" migration paths
 ```
 
 ---

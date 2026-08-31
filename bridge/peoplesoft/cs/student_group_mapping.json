@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 StudentGroup",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Student Records",
+  "target_resource": "StudentGroup (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_GRPS",
+      "description": "Student group assignment. Links students to institutional group codes with effective dates."
+    },
+    {
+      "table": "PS_STDNT_GRP_TBL",
+      "description": "Student group definition. Code and description for each group."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_GRPS.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "group_code",
+      "source": "PS_STDNT_GRPS.STDNT_GROUP",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "group_name",
+      "source": "PS_STDNT_GRP_TBL.DESCR",
+      "transformation": "Lookup."
+    },
+    {
+      "helix_attribute": "group_category",
+      "source": "Derived from group code pattern or institution mapping",
+      "transformation": "Categorize groups: 'cohort', 'athletic', 'honors', 'learning_community', 'greek', 'veteran', 'first_gen', 'trio', 'housing', 'other'."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_STDNT_GRPS.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_STDNT_GRPS.STDNT_GROUP_ACTIVE",
+      "transformation": "Map: 'A'\u2192true, 'I'\u2192false."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Student groups are institution-defined cohorts used for communication, reporting, and analysis. Common uses: athletics eligibility, honors program membership, learning communities, TRiO/SSS participants, first-generation cohorts, veteran cohorts, Greek life, residential communities. Groups are a primary segmentation tool for student success initiatives."
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 PerformanceManagement",
+  "source_system": "peoplesoft",
+  "module": "HCM - ePerformance",
+  "target_resource": "PerformanceReview (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_EP_APPRAISAL",
+      "description": "Appraisal header. Review period, status, overall rating, manager, template."
+    },
+    {
+      "table": "PS_EP_APPR_SECTION",
+      "description": "Appraisal sections. Competencies, goals, job responsibilities \u2014 each a section with items."
+    },
+    {
+      "table": "PS_EP_APPR_ITEM",
+      "description": "Appraisal items. Individual competency/goal ratings within a section."
+    },
+    {
+      "table": "PS_EP_APPR_RATING",
+      "description": "Rating scale definitions. Numeric and text ratings."
+    },
+    {
+      "table": "PS_EP_GOAL",
+      "description": "Employee goals. Goal text, target date, status, alignment to org goals."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_EP_APPRAISAL.EMPLID",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "reviewer_ref",
+      "source": "PS_EP_APPRAISAL.MANAGER_ID",
+      "transformation": "Resolve reviewer EMPLID to name."
+    },
+    {
+      "helix_attribute": "review_period_start",
+      "source": "PS_EP_APPRAISAL.PERIOD_BEGIN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "review_period_end",
+      "source": "PS_EP_APPRAISAL.PERIOD_END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "review_type",
+      "source": "PS_EP_APPRAISAL.EP_APPR_TMPLT_ID",
+      "transformation": "Map template to review type: 'annual', 'probationary', 'mid_year', 'special'."
+    },
+    {
+      "helix_attribute": "overall_rating",
+      "source": "PS_EP_APPRAISAL.REVIEW_RATING",
+      "transformation": "Numeric overall rating."
+    },
+    {
+      "helix_attribute": "overall_rating_text",
+      "source": "PS_EP_APPR_RATING.DESCR (via REVIEW_RATING)",
+      "transformation": "Text equivalent (e.g., 'Exceeds Expectations', 'Meets Expectations')."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "PS_EP_APPRAISAL.EP_APPR_STATUS",
+      "transformation": "Map: 'IP'\u2192'in_progress', 'SC'\u2192'self_complete', 'MC'\u2192'manager_complete', 'AC'\u2192'acknowledged', 'FN'\u2192'finalized'."
+    },
+    {
+      "helix_attribute": "section_ratings[]",
+      "source": "PS_EP_APPR_SECTION",
+      "transformation": "Array of sections: {section_name, section_rating, weight, items: [{item_name, rating, comments}]}."
+    },
+    {
+      "helix_attribute": "goals[]",
+      "source": "PS_EP_GOAL",
+      "transformation": "Array: {goal_text, target_date, status ('not_started', 'in_progress', 'complete'), percent_complete, alignment}."
+    },
+    {
+      "helix_attribute": "employee_comments",
+      "source": "PS_EP_APPRAISAL.COMMENTS (employee)",
+      "transformation": "Self-assessment narrative."
+    },
+    {
+      "helix_attribute": "manager_comments",
+      "source": "PS_EP_APPRAISAL.COMMENTS (manager)",
+      "transformation": "Manager narrative."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ]
+}

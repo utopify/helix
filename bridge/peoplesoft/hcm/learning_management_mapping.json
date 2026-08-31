@@ -1,0 +1,108 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 LearningManagement",
+  "source_system": "peoplesoft",
+  "module": "HCM - Enterprise Learning Management (ELM)",
+  "target_resource": "TrainingRecord (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_TRAINING",
+      "description": "Training record. Employee training history with course, dates, status, score."
+    },
+    {
+      "table": "PS_LM_LEARN_COMPNT",
+      "description": "Learning component (ELM). Course definition, type, delivery method, credit hours."
+    },
+    {
+      "table": "PS_LM_ENRLMT",
+      "description": "ELM enrollment. Student enrollment in learning component with status and completion."
+    },
+    {
+      "table": "PS_LM_CI_COMPL",
+      "description": "Compliance tracking. Required training by job code, department, or role. Due dates and completion status."
+    },
+    {
+      "table": "PS_LM_CERT",
+      "description": "Certification tracking. Professional certifications, licenses, CPE credits."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_TRAINING.EMPLID or PS_LM_ENRLMT.PERSON_ID",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "course_name",
+      "source": "PS_TRAINING.COURSE_TITLE or PS_LM_LEARN_COMPNT.DESCR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "course_code",
+      "source": "PS_TRAINING.COURSE or PS_LM_LEARN_COMPNT.LM_LC_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "training_type",
+      "source": "Derived from course attributes",
+      "transformation": "Map: 'compliance', 'professional_development', 'onboarding', 'safety', 'technical', 'leadership', 'dei', 'other'."
+    },
+    {
+      "helix_attribute": "delivery_method",
+      "source": "PS_LM_LEARN_COMPNT.LM_DELIVERY_TYPE",
+      "transformation": "Map: 'ILT'\u2192'instructor_led', 'WBT'\u2192'web_based', 'BLEND'\u2192'blended'."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "PS_TRAINING.COMPLETION_DT or PS_LM_ENRLMT.COMPL_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "PS_TRAINING.COURSE_STATUS or PS_LM_ENRLMT.LM_ENRL_STATUS",
+      "transformation": "Map: 'C'\u2192'completed', 'E'\u2192'enrolled', 'W'\u2192'withdrawn', 'N'\u2192'no_show'."
+    },
+    {
+      "helix_attribute": "score",
+      "source": "PS_TRAINING.GRADE or PS_LM_ENRLMT.SCORE",
+      "transformation": "Direct map. Assessment score if applicable."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "PS_LM_LEARN_COMPNT.LM_CREDIT_HRS",
+      "transformation": "CPE/CE credit hours earned."
+    },
+    {
+      "helix_attribute": "is_required",
+      "source": "PS_LM_CI_COMPL exists for this employee + course",
+      "transformation": "true if the training is compliance-required."
+    },
+    {
+      "helix_attribute": "due_date",
+      "source": "PS_LM_CI_COMPL.DUE_DT",
+      "transformation": "Compliance training due date. Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "expiration_date",
+      "source": "PS_TRAINING.EXPIRATN_DT",
+      "transformation": "Date the training/certification expires and must be renewed."
+    },
+    {
+      "helix_attribute": "certifications[]",
+      "source": "PS_LM_CERT",
+      "transformation": "Array: {cert_name, cert_id, issue_date, expiration_date, status}."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "PeopleSoft has two training tracking paths: the legacy PS_TRAINING table (simple completion records) and Enterprise Learning Management (ELM) which is a full LMS. Many higher ed institutions use a mix \u2014 ELM for compliance training (Title IX, FERPA, cybersecurity, lab safety) and PS_TRAINING for external professional development. Compliance training completion is frequently audited and reported to HR leadership."
+}

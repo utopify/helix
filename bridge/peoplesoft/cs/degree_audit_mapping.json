@@ -1,0 +1,113 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 DegreeAudit",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Academic Advisement",
+  "target_resource": "DegreeAudit (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_AA_RQRMNT",
+      "description": "Academic Advisement requirement. Degree requirements by catalog year, program, plan."
+    },
+    {
+      "table": "PS_AA_RQRMNT_DESIG",
+      "description": "Requirement designation. Maps requirements to course lists and conditions."
+    },
+    {
+      "table": "PS_STDNT_ADVR",
+      "description": "Student advisor assignment. Links students to academic advisors by career/program."
+    },
+    {
+      "table": "PS_STDNT_ENRL (cross-ref)",
+      "description": "Enrollment records cross-referenced against requirements for progress calculation."
+    },
+    {
+      "table": "PS_RQRMNT_GROUP",
+      "description": "Requirement group. Logical grouping of requirements (core, elective, major, gen-ed)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "ACAD_PLAN",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "source": "REQ_TERM",
+      "transformation": "The term whose catalog governs requirements."
+    },
+    {
+      "helix_attribute": "total_units_required",
+      "source": "PS_AA_RQRMNT.UNITS_REQUIRED",
+      "transformation": "Total credits needed for degree."
+    },
+    {
+      "helix_attribute": "total_units_completed",
+      "source": "Derived from PS_STDNT_CAR_TERM.TOT_CUMULATIVE",
+      "transformation": "Sum of earned credits."
+    },
+    {
+      "helix_attribute": "total_units_remaining",
+      "source": "Derived",
+      "transformation": "required - completed."
+    },
+    {
+      "helix_attribute": "gpa_required",
+      "source": "PS_AA_RQRMNT.GPA_REQUIRED",
+      "transformation": "Minimum GPA for degree conferral."
+    },
+    {
+      "helix_attribute": "gpa_current",
+      "source": "PS_STDNT_CAR_TERM.CUR_GPA",
+      "transformation": "Current cumulative GPA."
+    },
+    {
+      "helix_attribute": "requirement_groups[]",
+      "source": "PS_RQRMNT_GROUP",
+      "transformation": "Array of requirement groups with: group_name, units_required, units_completed, courses_required, courses_completed, status ('met', 'in_progress', 'not_started')."
+    },
+    {
+      "helix_attribute": "advisor_name",
+      "source": "PS_STDNT_ADVR.ADVISOR_ID \u2192 PS_NAMES",
+      "transformation": "Resolve advisor EMPLID to name."
+    },
+    {
+      "helix_attribute": "advisor_type",
+      "source": "PS_STDNT_ADVR.ADVISOR_ROLE",
+      "transformation": "Map: 'PRIM'\u2192'primary', 'SECN'\u2192'secondary', 'GEN'\u2192'general', 'MAJ'\u2192'major_advisor'."
+    },
+    {
+      "helix_attribute": "percent_complete",
+      "source": "Derived",
+      "transformation": "Calculated from units completed / units required or requirement groups met / total groups."
+    },
+    {
+      "helix_attribute": "on_track_flag",
+      "source": "Derived",
+      "transformation": "true if GPA meets minimum and credit pace is sufficient for expected graduation term."
+    },
+    {
+      "helix_attribute": "audit_date",
+      "source": "Run date",
+      "transformation": "Timestamp of the degree audit snapshot."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PeopleSoft Academic Advisement (AA) is the degree audit engine. It evaluates a student's completed coursework against their program's requirements and reports what's met, in progress, and still needed. The PS_AA_RQRMNT hierarchy is: Requirement \u2192 Requirement Group \u2192 Requirement Line \u2192 Course List. Institutions using third-party audit tools (DegreeWorks/Ellucian, CollegeSource TES) may have a parallel or replacement system."
+}

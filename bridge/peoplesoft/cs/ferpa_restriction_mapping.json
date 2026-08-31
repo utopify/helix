@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 FERPARestriction",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - FERPA",
+  "target_resource": "FERPARestriction (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_FERPA_INDC",
+      "description": "FERPA indicator. Tracks which directory information categories a student has restricted."
+    },
+    {
+      "table": "PS_FERPA_TBL",
+      "description": "FERPA restriction type definitions. Categories of directory information."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_FERPA_INDC.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "restriction_type",
+      "source": "PS_FERPA_INDC.FERPA",
+      "transformation": "Direct map. FERPA restriction code."
+    },
+    {
+      "helix_attribute": "restriction_description",
+      "source": "PS_FERPA_TBL.DESCR",
+      "transformation": "Lookup."
+    },
+    {
+      "helix_attribute": "restricted_categories[]",
+      "source": "PS_FERPA_INDC (multiple rows per student)",
+      "transformation": "Array of restricted directory info categories: 'name', 'address', 'phone', 'email', 'photo', 'enrollment_status', 'dates_of_attendance', 'degree_info', 'honors', 'all'."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_FERPA_INDC.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "is_total_restriction",
+      "source": "Derived",
+      "transformation": "true if all directory info categories are restricted."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "FERPA (Family Educational Rights and Privacy Act) allows students to restrict disclosure of directory information. This is a compliance-critical dataset \u2014 any system that displays or shares student data must check FERPA restrictions. A total restriction means NO directory information can be disclosed, including confirming enrollment. Classification is RESTRICTED because the existence of a FERPA restriction is itself protected."
+}

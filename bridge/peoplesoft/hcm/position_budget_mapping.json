@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 PositionBudget",
+  "source_system": "peoplesoft",
+  "module": "HCM - Position Management / Budget",
+  "target_resource": "PositionBudget (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_POSITION_DATA",
+      "description": "Position master (budget FTE, budget amount per position)."
+    },
+    {
+      "table": "PS_POS_BUDGET",
+      "description": "Position budget. Funding source, chartfield allocation for each position."
+    },
+    {
+      "table": "PS_DEPT_BUDGET_ERN",
+      "description": "Department budget by earnings. Budget amounts by department, account, fund for compensation."
+    },
+    {
+      "table": "PS_HP_POS_FUND_DTL",
+      "description": "Position funding detail (Higher Ed add-on). Funding splits across chartfields for a single position."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "position_ref",
+      "source": "PS_POS_BUDGET.POSITION_NBR",
+      "transformation": "Resolve to HELIX Position."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "PS_POS_BUDGET.FISCAL_YEAR or BUDGET_PERIOD",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "budgeted_fte",
+      "source": "PS_POSITION_DATA.FTE",
+      "transformation": "Budgeted FTE for the position."
+    },
+    {
+      "helix_attribute": "budgeted_amount",
+      "source": "PS_POS_BUDGET.BUDGET_AMT",
+      "transformation": "Annual budgeted compensation for the position."
+    },
+    {
+      "helix_attribute": "funding_sources[]",
+      "source": "PS_HP_POS_FUND_DTL or PS_POS_BUDGET (multiple rows)",
+      "transformation": "Array of funding splits: {fund_code, department, account, percent, amount}. A single position can be funded from multiple sources (e.g., 50% state funds, 30% grant, 20% auxiliary)."
+    },
+    {
+      "helix_attribute": "encumbered_amount",
+      "source": "Derived from PS_LEDGER_KK (ENCUMB ledger for position's chartfield)",
+      "transformation": "Actual salary encumbrance against the position budget."
+    },
+    {
+      "helix_attribute": "expended_amount",
+      "source": "Derived from PS_LEDGER (ACTUALS for position's chartfield)",
+      "transformation": "Actual salary expense to date."
+    },
+    {
+      "helix_attribute": "available_balance",
+      "source": "Derived",
+      "transformation": "budgeted_amount - encumbered_amount - expended_amount."
+    },
+    {
+      "helix_attribute": "position_status",
+      "source": "PS_POSITION_DATA.POSN_STATUS",
+      "transformation": "Map: 'A'\u2192'active/filled', 'V'\u2192'active/vacant', 'F'\u2192'frozen'."
+    },
+    {
+      "helix_attribute": "incumbent_count",
+      "source": "COUNT(PS_JOB where POSITION_NBR and active)",
+      "transformation": "Number of current incumbents."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Position budgeting bridges HCM and Financials. Higher ed institutions with position management use it to control headcount and compensation spending. Split funding (one position funded from multiple chartfields) is extremely common \u2014 a professor might be 60% state-funded instruction, 30% grant-funded research, 10% department service. The PS_HP_POS_FUND_DTL table (Higher Ed add-on) handles these splits."
+}

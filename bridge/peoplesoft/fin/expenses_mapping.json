@@ -1,0 +1,107 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Expenses",
+  "source_system": "peoplesoft",
+  "module": "Financials - Expenses / Travel & Expense",
+  "target_resource": "ExpenseReport (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_EX_SHEET_HDR",
+      "description": "Expense report header. Employee, business purpose, dates, status, total."
+    },
+    {
+      "table": "PS_EX_SHEET_LINE",
+      "description": "Expense report lines. Individual expenses with type, amount, date, receipt."
+    },
+    {
+      "table": "PS_EX_SHEET_DIST",
+      "description": "Expense distribution. Chartfield coding for each expense line."
+    },
+    {
+      "table": "PS_EX_SHEET_ACCTG",
+      "description": "Expense accounting. GL entries generated from approved expense reports."
+    },
+    {
+      "table": "PS_EX_ADV_HDR",
+      "description": "Cash advance header. Pre-trip advance requests."
+    },
+    {
+      "table": "PS_EX_TRANS_TBL",
+      "description": "Expense type definitions. Airfare, hotel, meals, mileage, registration, supplies."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "report_id",
+      "source": "PS_EX_SHEET_HDR.SHEET_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_EX_SHEET_HDR.EMPLID",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "business_purpose",
+      "source": "PS_EX_SHEET_HDR.DESCR254",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "trip_start_date",
+      "source": "PS_EX_SHEET_HDR.DATE_FROM",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "trip_end_date",
+      "source": "PS_EX_SHEET_HDR.DATE_TO",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "total_amount",
+      "source": "PS_EX_SHEET_HDR.TOTAL_AMT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "report_status",
+      "source": "PS_EX_SHEET_HDR.SHEET_STATUS",
+      "transformation": "Map: 'PND'\u2192'pending', 'APR'\u2192'approved', 'DEN'\u2192'denied', 'PAD'\u2192'paid', 'STG'\u2192'staged'."
+    },
+    {
+      "helix_attribute": "approval_date",
+      "source": "PS_EX_SHEET_HDR.APPROVAL_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "payment_date",
+      "source": "PS_EX_SHEET_HDR.PAID_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "lines[]",
+      "source": "PS_EX_SHEET_LINE",
+      "transformation": "Array: {expense_type, description, date, amount, receipt_flag, merchant_name, payment_type ('personal', 'corporate_card', 'prepaid')}."
+    },
+    {
+      "helix_attribute": "line_chartfields[]",
+      "source": "PS_EX_SHEET_DIST",
+      "transformation": "Chartfield coding per line: {account, fund, department, project_id, amount}."
+    },
+    {
+      "helix_attribute": "advance_amount",
+      "source": "PS_EX_ADV_HDR.ADVANCE_AMT",
+      "transformation": "Cash advance amount. Net reimbursement = total_amount - advance_amount."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Travel and expense is a high-volume, high-visibility module. Higher ed institutions often have complex travel policies (state per diem rates, pre-approval requirements, grant-funded travel restrictions). Expenses charged to federal grants must comply with 2 CFR 200 (reasonable, allowable, allocable). Corporate card reconciliation typically flows through PS_EX_SHEET_LINE."
+}

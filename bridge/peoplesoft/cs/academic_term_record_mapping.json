@@ -1,0 +1,105 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 AcademicTermRecord",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Student Records",
+  "target_resource": "AcademicTermRecord (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Student career term. One row per student per career per term. GPA, units, academic standing, enrollment status."
+    },
+    {
+      "table": "PS_STDNT_CAR_MLSTN",
+      "description": "Student career milestones. Academic standing history, probation, dean's list."
+    },
+    {
+      "table": "PS_ACAD_STDNG_TBL",
+      "description": "Academic standing definition. Codes and rules for good standing, probation, suspension, dean's list."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_CAR_TERM.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_CAR_TERM.STRM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "academic_career",
+      "source": "PS_STDNT_CAR_TERM.ACAD_CAREER",
+      "transformation": "Map: 'UGRD'\u2192'undergraduate', 'GRAD'\u2192'graduate'."
+    },
+    {
+      "helix_attribute": "term_gpa",
+      "source": "PS_STDNT_CAR_TERM.TERM_GPA",
+      "transformation": "GPA for this term only."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "PS_STDNT_CAR_TERM.CUR_GPA",
+      "transformation": "Cumulative GPA through this term."
+    },
+    {
+      "helix_attribute": "term_units_taken",
+      "source": "PS_STDNT_CAR_TERM.UNT_TAKEN_PRGRSS",
+      "transformation": "Units attempted this term."
+    },
+    {
+      "helix_attribute": "term_units_earned",
+      "source": "PS_STDNT_CAR_TERM.UNT_EARNED_PRGRSS (or UNT_PASSD_PRGRSS)",
+      "transformation": "Units earned this term."
+    },
+    {
+      "helix_attribute": "cumulative_units_taken",
+      "source": "PS_STDNT_CAR_TERM.TOT_TAKEN_CUMUL",
+      "transformation": "Total attempted through this term."
+    },
+    {
+      "helix_attribute": "cumulative_units_earned",
+      "source": "PS_STDNT_CAR_TERM.TOT_CUMULATIVE",
+      "transformation": "Total earned through this term."
+    },
+    {
+      "helix_attribute": "academic_standing",
+      "source": "PS_STDNT_CAR_TERM.ACAD_STNDNG_ACTN",
+      "transformation": "Map PS standing codes to HELIX: 'GST'\u2192'good_standing', 'PRB'\u2192'probation', 'DMS'\u2192'dismissal', 'DL'\u2192'deans_list', 'PD'\u2192'presidents_list', 'SUS'\u2192'suspension'. Institution-defined in ACAD_STDNG_TBL."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "PS_STDNT_CAR_TERM.ENRL_STATUS_TERM",
+      "transformation": "Full-time/part-time classification for the term. Map: 'F'\u2192'full_time', 'H'\u2192'half_time', 'Q'\u2192'three_quarter_time', 'L'\u2192'less_than_half_time'."
+    },
+    {
+      "helix_attribute": "academic_level",
+      "source": "PS_STDNT_CAR_TERM.ACAD_LEVEL_BOT",
+      "transformation": "Class standing at beginning of term: '10'\u2192'freshman', '20'\u2192'sophomore', '30'\u2192'junior', '40'\u2192'senior'."
+    },
+    {
+      "helix_attribute": "total_grade_points",
+      "source": "PS_STDNT_CAR_TERM.TOT_GRD_POINTS",
+      "transformation": "Cumulative grade/quality points."
+    },
+    {
+      "helix_attribute": "honors_flag",
+      "source": "Derived from ACAD_STNDNG_ACTN",
+      "transformation": "true if standing is dean's list, president's list, or honors."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PS_STDNT_CAR_TERM is one of the most queried tables in Campus Solutions. It provides the term-by-term academic transcript view: GPA, credits, standing, and enrollment intensity. Every retention model, IPEDS report, and student success dashboard starts here. Academic standing is evaluated at the end of each term based on institutional rules (GPA thresholds, pace of completion, etc.)."
+}
