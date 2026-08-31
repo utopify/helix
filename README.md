@@ -41,34 +41,31 @@ When an institution adopts HELIX:
 HELIX is not a single spec. It's an ecosystem of interconnected layers, each serving a different audience and a different part of the problem.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│                         H E L I X                               │
-│            Higher Education Linked Information eXchange         │
-│                                                                 │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌───────────────┐  │
-│   │                 │  │                 │  │               │  │
-│   │  HELIX Core     │  │  HELIX Connect  │  │ HELIX Govern  │  │
-│   │                 │  │                 │  │               │  │
-│   │  The data       │  │  The API &      │  │ The governance│  │
-│   │  model.         │  │  exchange       │  │ framework.    │  │
-│   │                 │  │  standard.      │  │               │  │
-│   │  19 resources,  │  │  16 REST        │  │ Roles, rules, │  │
-│   │  23 terminology │  │  endpoints,     │  │ quality, and  │  │
-│   │  code sets.     │  │  bulk export,   │  │ maturity      │  │
-│   │                 │  │  validation.    │  │ assessment.   │  │
-│   └─────────────────┘  └─────────────────┘  └───────────────┘  │
-│                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                                                         │   │
-│   │                     HELIX Bridge                        │   │
-│   │                                                         │   │
-│   │   ERP-to-HELIX mapping accelerators for Banner,        │   │
-│   │   PeopleSoft, Workday, and Colleague.                  │   │
-│   │                                                         │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+  +===============================================================+
+  |                                                               |
+  |                        H E L I X                              |
+  |          Higher Education Linked Information eXchange         |
+  |                                                               |
+  |   +-----------------+  +-----------------+  +---------------+ |
+  |   | HELIX Core      |  | HELIX Connect   |  | HELIX Govern  | |
+  |   |                 |  |                 |  |               | |
+  |   | The data model. |  | The API &       |  | The governance| |
+  |   |                 |  | exchange        |  | framework.    | |
+  |   | 19 resources,   |  | standard.       |  |               | |
+  |   | 23 terminology  |  |                 |  | Roles, rules, | |
+  |   | code sets.      |  | 16 REST endpts, |  | quality, and  | |
+  |   |                 |  | bulk export,    |  | maturity      | |
+  |   |                 |  | validation.     |  | assessment.   | |
+  |   +-----------------+  +-----------------+  +---------------+ |
+  |                                                               |
+  |   +---------------------------------------------------------+ |
+  |   | HELIX Bridge                                            | |
+  |   |                                                         | |
+  |   | ERP-to-HELIX mapping accelerators for Banner,           | | 
+  |   | PeopleSoft, Workday, and Colleague.                     | |
+  |   +---------------------------------------------------------+ |
+  |                                                               |
+  +===============================================================+
 ```
 
 | Layer | What It Is | Who It's For |
