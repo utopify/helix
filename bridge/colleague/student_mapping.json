@@ -1,0 +1,157 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Ellucian Colleague \u2192 Student",
+  "description": "Maps Ellucian Colleague SIS data to the HELIX Student resource. Colleague uses a UniData/UniVerse multi-valued (MV) database. Modern access paths include Colleague Web API (CWAPI), Ethos Integration API, and direct MV file reads via SQL (UniQuery/UniOLEDB).",
+  "source_system": "colleague",
+  "target_resource": "Student",
+  "version": "0.1",
+  "architecture_notes": "Colleague stores data in multi-valued (MV) files rather than relational tables. A single MV record can contain repeating groups (similar to nested arrays). Field names reference the MV file and field number (e.g., PERSON field 1 = LAST.NAME). Modern extraction uses: (1) Ethos Integration API (REST, EEDM resources), (2) Colleague Web API (CWAPI), (3) SQL access via UniOLEDB/UniQuery for direct reads, (4) DMI (Datatel Management Information) flat file extracts.",
+  "source_files": [
+    {
+      "file": "PERSON",
+      "description": "Core person record. Name, demographics, biographical data. Key: PERSON.ID (institution-assigned ID)."
+    },
+    {
+      "file": "STUDENTS",
+      "description": "Student-specific attributes. Academic levels, statuses, programs, advisors. Key: STUDENTS.ID (same as PERSON.ID)."
+    },
+    {
+      "file": "STUDENT.ACAD.LEVELS",
+      "description": "Student academic level records. Status and standing per academic level (UG, GR, etc.)."
+    },
+    {
+      "file": "FOREIGN.PERSON",
+      "description": "International student data. Citizenship, visa type, country of origin."
+    },
+    {
+      "file": "PERSON.ALT.IDS",
+      "description": "Alternate identifiers for a person (SSN, prior IDs, external IDs)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PERSON.ID",
+      "notes": "PERSON.ID is the institution-assigned student/person ID in Colleague. It serves as the primary key across all person-related MV files."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "identifiers[].system='colleague'",
+      "source": "PERSON.ID",
+      "transformation": "Direct map. The institution-assigned Colleague ID."
+    },
+    {
+      "helix_attribute": "identifiers[].system='ssn_last4'",
+      "source": "PERSON.ALT.IDS (where ALT.ID.TYPES = 'SSN')",
+      "transformation": "Extract last 4 digits only. Full SSN should never be stored in HELIX.",
+      "notes": "Alt IDs are multi-valued. Filter by type code."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "PERSON.LAST.NAME (PERSON field 1)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "PERSON.FIRST.NAME (PERSON field 2)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "PERSON.MIDDLE.NAME (PERSON field 3)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "PERSON.PREFIX (PERSON field 5)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "PERSON.SUFFIX (PERSON field 6)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.preferred",
+      "source": "PERSON.PREFERRED.NAME or PERSON.NICKNAME",
+      "transformation": "Direct map if available. Colleague field availability varies by version.",
+      "notes": "Older Colleague versions may not have a dedicated preferred name field."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "PERSON.BIRTH.DATE",
+      "transformation": "Convert from Colleague internal date format to ISO 8601 (YYYY-MM-DD). Colleague stores dates as integers (days since 12/31/1967).",
+      "notes": "CRITICAL: Colleague uses a proprietary date format. Internal value must be converted: ISO_date = date(1967,12,31) + timedelta(days=colleague_int_value)."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "PERSON.GENDER",
+      "transformation": "Map Colleague codes: 'M'\u2192'male', 'F'\u2192'female'. Newer Colleague versions may support additional codes via GENDER.IDENTITIES file.",
+      "notes": "Colleague uses single-character codes by default."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "STUDENTS.STUDENT.ACAD.LEVELS \u2192 STUDENT.ACAD.LEVELS.STA.ACAD.STANDING or STUDENTS.STU.STATUS",
+      "transformation": "Map Colleague student status codes to HELIX. Common mappings: 'A'\u2192'enrolled', 'I'\u2192'withdrawn', 'G'\u2192'graduated', 'L'\u2192'leave_of_absence'. Codes are institution-defined in the STUDENT.STATUSES valcode table.",
+      "notes": "Status may exist at the academic level (UG, GR) rather than the overall student level. Use the primary or most recent academic level."
+    },
+    {
+      "helix_attribute": "residency",
+      "source": "STUDENTS.STU.RESIDENCY.STATUS or STUDENT.ACAD.LEVELS.STA.RESIDENT.STATUS",
+      "transformation": "Map Colleague residency codes to HELIX enum. Codes are institution-defined in the RESIDENCY.STATUSES valcode table. Typical: 'R'\u2192'in_state', 'N'\u2192'out_of_state', 'I'\u2192'international'."
+    },
+    {
+      "helix_attribute": "citizenship_country",
+      "source": "FOREIGN.PERSON.CITIZENSHIP.COUNTRY",
+      "transformation": "Map Colleague country codes (typically ISO 3166 or institutional) to ISO 3166-1 alpha-2."
+    },
+    {
+      "helix_attribute": "first_generation_flag",
+      "source": "STUDENTS custom field or APPLICATION custom field",
+      "transformation": "Map: 'Y'\u2192true, 'N'/null\u2192false",
+      "notes": "No standard Colleague field for first-generation. Typically added as an institution-specific custom field or tracked in the admissions application."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'colleague'"
+    },
+    {
+      "helix_attribute": "meta.updated_at",
+      "source": "PERSON.CHGDATE or STUDENTS.CHGDATE",
+      "transformation": "Convert Colleague date format to ISO 8601 datetime. Use most recent change date across source files."
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Ethos Integration API",
+      "description": "Ellucian's modern REST API layer. Exposes Colleague data as EEDM (Ellucian Ethos Data Model) resources via standard REST endpoints. Supports paging, filtering, and change notifications.",
+      "notes": "Ethos EEDM resources partially overlap with HELIX Core resources (e.g., Ethos 'persons', 'student-academic-standings'). HELIX Bridge maps the delta. Ethos requires an API key provisioned through the Ellucian Ethos Integration portal."
+    },
+    {
+      "method": "Colleague Web API (CWAPI)",
+      "description": "Direct REST API to Colleague transaction processing. Lower-level than Ethos, closer to the MV data model. Supports CRUD operations.",
+      "notes": "CWAPI is being replaced by Ethos for external integrations but remains available for legacy access patterns."
+    },
+    {
+      "method": "UniOLEDB / UniQuery SQL",
+      "description": "SQL access layer over the UniData/UniVerse MV database. Allows SQL queries against MV files as if they were relational tables. Multi-valued fields are flattened or accessible via special syntax.",
+      "notes": "Best for bulk extraction and data warehouse loading. Requires understanding of MV data model and Colleague file structures."
+    },
+    {
+      "method": "DMI Flat File Extracts",
+      "description": "Colleague's batch extract facility. Produces delimited flat files from defined extract specifications.",
+      "notes": "Legacy approach. Still used at many institutions for data warehouse loads. Less flexible than API or SQL methods."
+    }
+  ]
+}

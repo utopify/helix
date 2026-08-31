@@ -1,0 +1,105 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Ellucian Colleague \u2192 Enrollment",
+  "description": "Maps Ellucian Colleague SIS registration data to the HELIX Enrollment resource.",
+  "source_system": "colleague",
+  "target_resource": "Enrollment",
+  "version": "0.1",
+  "source_files": [
+    {
+      "file": "STUDENT.ACAD.CRED",
+      "description": "Student academic credit. One record per student per course per term. Contains registration status, grades, credits."
+    },
+    {
+      "file": "STUDENT.COURSE.SEC",
+      "description": "Student course section enrollment. Links student to section. Contains grading and status info."
+    },
+    {
+      "file": "COURSE.SECTIONS",
+      "description": "Course section definitions. Used for section reference resolution."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + STUDENT.ACAD.CRED.ID",
+      "notes": "STUDENT.ACAD.CRED.ID is a composite key: typically PERSON.ID*TERM*SECTION or a sequential system-assigned ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "STUDENT.ACAD.CRED.STUDENT (or derived from composite key)",
+      "transformation": "Resolve to HELIX Student.helix_id via PERSON.ID lookup"
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "source": "STUDENT.ACAD.CRED.COURSE.SEC.ID or STC.COURSE.SECTION",
+      "transformation": "Resolve to HELIX CourseSection.helix_id via section ID + term lookup"
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "STUDENT.ACAD.CRED.TERM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id via term code lookup"
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "STUDENT.ACAD.CRED.STATUS",
+      "transformation": "Map Colleague academic credit status codes to HELIX. Common: 'N'\u2192'registered' (new/registered), 'A'\u2192'enrolled' (active/add), 'D'\u2192'dropped', 'W'\u2192'withdrawn', 'X'\u2192'deleted/dropped'. If STC.VERIFIED.GRADE exists \u2192 'completed'.",
+      "notes": "Colleague status codes are institution-defined in the STUDENT.ACAD.CRED.STATUSES valcode table. The codes above are common defaults."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "STUDENT.ACAD.CRED.STATUS.DATE (for the initial registration status)",
+      "transformation": "Convert Colleague date format to ISO 8601."
+    },
+    {
+      "helix_attribute": "drop_date",
+      "source": "STUDENT.ACAD.CRED.STATUS.DATE (where status = 'D' or 'W')",
+      "transformation": "Convert to ISO 8601. Null if not dropped/withdrawn.",
+      "notes": "Status dates are multi-valued, paralleling the multi-valued status field. Use the date associated with the drop/withdraw status entry."
+    },
+    {
+      "helix_attribute": "credit_hours_attempted",
+      "source": "STUDENT.ACAD.CRED.CRED or STC.CRED",
+      "transformation": "Direct map. Represents attempted credits for the section."
+    },
+    {
+      "helix_attribute": "credit_hours_earned",
+      "source": "STUDENT.ACAD.CRED.CMPL.CRED or STC.CMPL.CRED",
+      "transformation": "Direct map. Completed/earned credits. Null or zero if not yet completed."
+    },
+    {
+      "helix_attribute": "grade",
+      "source": "STUDENT.ACAD.CRED.VERIFIED.GRADE or STC.VERIFIED.GRADE",
+      "transformation": "Direct map. The verified (final, official) grade. Null if in progress.",
+      "notes": "Colleague distinguishes 'verified' (official) from 'entered' (preliminary) grades. Always use verified."
+    },
+    {
+      "helix_attribute": "grade_points",
+      "source": "STUDENT.ACAD.CRED.GRADE.PTS or STC.GRADE.PTS",
+      "transformation": "Direct map. Grade points (quality points) for the section."
+    },
+    {
+      "helix_attribute": "grade_mode",
+      "source": "STUDENT.ACAD.CRED.GRADE.SCHEME or STC.GRADE.SCHEME",
+      "transformation": "Map Colleague grade scheme codes to HELIX. Typical: default letter grade scheme \u2192 'standard', pass/fail scheme \u2192 'pass_fail', audit \u2192 'audit'. Scheme codes reference the GRADE.SCHEMES file.",
+      "notes": "Colleague uses 'grade schemes' rather than 'grade modes'. The scheme defines which grades are valid and how they calculate GPA."
+    },
+    {
+      "helix_attribute": "repeat_flag",
+      "source": "STUDENT.ACAD.CRED.REPEAT.FLAG or STC.REPEAT.FLAG",
+      "transformation": "Map: 'Y' or 'R' \u2192 true, null/blank \u2192 false",
+      "notes": "Repeat processing rules are institution-specific and configured in Colleague's repeat policy tables."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'colleague'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

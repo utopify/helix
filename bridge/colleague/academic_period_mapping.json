@@ -1,0 +1,92 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Ellucian Colleague \u2192 AcademicPeriod",
+  "description": "Maps Ellucian Colleague term data to the HELIX AcademicPeriod resource.",
+  "source_system": "colleague",
+  "target_resource": "AcademicPeriod",
+  "version": "0.1",
+  "source_files": [
+    {
+      "file": "TERMS",
+      "description": "Term definition file. Contains term codes, descriptions, dates, and reporting year."
+    },
+    {
+      "file": "TERM.SESSIONS",
+      "description": "Session/part-of-term definitions within a term. Start/end dates, census dates for sub-terms."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + TERMS.ID"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "period_type",
+      "source": "TERMS.REPORTING.TERM or institutional convention",
+      "transformation": "Colleague term codes vary by institution but commonly follow patterns like '2026FA' (Fall 2026), '2027SP' (Spring 2027), '2026SU' (Summer 2026). Derive period type from term code pattern or TERMS.REPORTING.TERM field. Map to HELIX: semester, quarter, etc.",
+      "notes": "Colleague term codes are less standardized than Banner's YYYYMM convention. Institution-specific mapping is often required."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "TERMS.ID",
+      "transformation": "Direct map (e.g., '2026FA', '2027SP')"
+    },
+    {
+      "helix_attribute": "name",
+      "source": "TERMS.DESC",
+      "transformation": "Direct map (e.g., 'Fall 2026')"
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "TERMS.REPORTING.YEAR or TERMS.ACAD.REPORTING.YEAR",
+      "transformation": "Map to YYYY-YYYY format. Colleague may store as a single year ('2026'). Convert: '2026' \u2192 '2026-2027' based on institutional convention."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "TERMS.START.DATE",
+      "transformation": "Convert Colleague date format (integer days since 12/31/1967) to ISO 8601"
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "TERMS.END.DATE",
+      "transformation": "Convert Colleague date format to ISO 8601"
+    },
+    {
+      "helix_attribute": "census_date",
+      "source": "TERMS.CENSUS.DATE or TERM.SESSIONS.CENSUS.DATE (for full-term session)",
+      "transformation": "Convert Colleague date format to ISO 8601. Use the full-term session census date if available.",
+      "notes": "Census date may be stored at the term level or the session level depending on Colleague configuration."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Derived",
+      "transformation": "true if current date is between start_date and end_date"
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'colleague'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "special_considerations": [
+    {
+      "topic": "Colleague Date Conversion",
+      "description": "Colleague stores all dates as integer values representing the number of days since December 31, 1967. This applies to ALL date fields across all files. Conversion formula: ISO_date = date(1967, 12, 31) + timedelta(days=colleague_int_value). Example: Colleague value 21275 = August 30, 2026. This conversion must be applied in every Bridge mapping that includes date fields."
+    },
+    {
+      "topic": "Multi-Valued Fields",
+      "description": "Colleague's MV database stores repeating groups within a single record. For example, a student's multiple statuses over time are stored as a multi-valued field within a single STUDENTS record, not as separate rows. Bridge implementations must handle MV field parsing \u2014 typically exploding multi-valued fields into rows during extraction."
+    }
+  ]
+}
