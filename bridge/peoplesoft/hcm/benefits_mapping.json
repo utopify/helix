@@ -1,0 +1,112 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Benefits",
+  "source_system": "peoplesoft",
+  "module": "HCM - Benefits Administration",
+  "target_resource": "BenefitEnrollment (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_HEALTH_BENEFIT",
+      "description": "Health plan enrollment. Medical, dental, vision. Plan type, coverage code, effective date."
+    },
+    {
+      "table": "PS_LIFE_ADD_BEN",
+      "description": "Life and AD&D insurance enrollment."
+    },
+    {
+      "table": "PS_SAVINGS_PLAN",
+      "description": "Retirement/savings plan enrollment. 401(a), 403(b), 457, TIAA, state retirement."
+    },
+    {
+      "table": "PS_FSA_BENEFIT",
+      "description": "Flexible spending account enrollment. Healthcare FSA, dependent care FSA."
+    },
+    {
+      "table": "PS_BEN_PROG_PARTIC",
+      "description": "Benefit program participation. Links employee to benefit program and event."
+    },
+    {
+      "table": "PS_DEPENDENT_BENEF",
+      "description": "Dependent/beneficiary data for benefit elections."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "EMPLID + EMPL_RCD",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "benefit_program",
+      "source": "PS_BEN_PROG_PARTIC.BENEFIT_PROGRAM",
+      "transformation": "Direct map. Groups of benefit plans offered together."
+    },
+    {
+      "helix_attribute": "health_plan_type",
+      "source": "PS_HEALTH_BENEFIT.PLAN_TYPE",
+      "transformation": "Map: '10'-'19'\u2192'medical', '20'-'29'\u2192'dental', '30'-'39'\u2192'vision'. PS uses numeric plan type ranges."
+    },
+    {
+      "helix_attribute": "health_plan",
+      "source": "PS_HEALTH_BENEFIT.BENEFIT_PLAN",
+      "transformation": "Direct map. Specific plan code (e.g., 'PPO1', 'HDHP', 'HMO2')."
+    },
+    {
+      "helix_attribute": "health_coverage_code",
+      "source": "PS_HEALTH_BENEFIT.COVRG_CD",
+      "transformation": "Map: '1'\u2192'employee_only', '2'\u2192'employee_spouse', '3'\u2192'employee_children', '4'\u2192'family'."
+    },
+    {
+      "helix_attribute": "retirement_plan",
+      "source": "PS_SAVINGS_PLAN.BENEFIT_PLAN",
+      "transformation": "Direct map (e.g., '403B_TIAA', 'STATE_RETIRE')."
+    },
+    {
+      "helix_attribute": "retirement_employee_pct",
+      "source": "PS_SAVINGS_PLAN.FLAT_DED_AMT or PCT",
+      "transformation": "Employee contribution rate or flat amount."
+    },
+    {
+      "helix_attribute": "retirement_employer_pct",
+      "source": "PS_SAVINGS_PLAN.EMPLR_PCT_MATCH",
+      "transformation": "Employer match percentage."
+    },
+    {
+      "helix_attribute": "life_coverage_amount",
+      "source": "PS_LIFE_ADD_BEN.FLAT_AMOUNT",
+      "transformation": "Life insurance coverage amount."
+    },
+    {
+      "helix_attribute": "fsa_annual_pledge",
+      "source": "PS_FSA_BENEFIT.ANNUAL_PLEDGE",
+      "transformation": "Annual FSA election amount."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "PS_HEALTH_BENEFIT.EFFDT (or BEN_PROG_PARTIC.EFFDT)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "coverage_begin_date",
+      "source": "PS_HEALTH_BENEFIT.COVERAGE_BEGIN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "dependents_covered",
+      "source": "PS_DEPENDENT_BENEF (count)",
+      "transformation": "Number of dependents enrolled on this plan."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "PeopleSoft Benefits uses plan types (numeric ranges) to categorize benefit plans. Health (10-39), Life/AD&D (40-49), Disability (50-59), Savings/Retirement (60-69), FSA (70-79), other (80-99). Each employee has a benefit program assignment that controls which plans they can elect. Open enrollment creates new effective-dated rows."
+}

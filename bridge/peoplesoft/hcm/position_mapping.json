@@ -1,0 +1,90 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Position",
+  "source_system": "peoplesoft",
+  "module": "HCM - Position Management",
+  "target_resource": "Position (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_POSITION_DATA",
+      "description": "Position master. Position number, title, department, reports-to, FTE, status. Effective-dated."
+    },
+    {
+      "table": "PS_POS_DATA_EFFDT",
+      "description": "Position effective date control."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "position_id",
+      "source": "PS_POSITION_DATA.POSITION_NBR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "PS_POSITION_DATA.DESCR",
+      "transformation": "Position title."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_POSITION_DATA.DEPTID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "job_code",
+      "source": "PS_POSITION_DATA.JOBCODE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "reports_to_position",
+      "source": "PS_POSITION_DATA.REPORTS_TO",
+      "transformation": "Position number this position reports to."
+    },
+    {
+      "helix_attribute": "location",
+      "source": "PS_POSITION_DATA.LOCATION",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "PS_POSITION_DATA.FTE",
+      "transformation": "Budgeted FTE for the position."
+    },
+    {
+      "helix_attribute": "max_head_count",
+      "source": "PS_POSITION_DATA.MAX_HEAD_COUNT",
+      "transformation": "Maximum number of incumbents."
+    },
+    {
+      "helix_attribute": "position_status",
+      "source": "PS_POSITION_DATA.POSN_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'I'\u2192'inactive', 'F'\u2192'frozen'."
+    },
+    {
+      "helix_attribute": "salary_plan",
+      "source": "PS_POSITION_DATA.SAL_ADMIN_PLAN",
+      "transformation": "Salary administration plan (pay grade structure)."
+    },
+    {
+      "helix_attribute": "pay_grade",
+      "source": "PS_POSITION_DATA.GRADE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_POSITION_DATA.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

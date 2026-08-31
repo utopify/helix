@@ -1,0 +1,88 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 TimeAndLabor",
+  "source_system": "peoplesoft",
+  "module": "HCM - Time & Labor",
+  "target_resource": "TimeRecord (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_TL_RPTD_TIME",
+      "description": "Reported time. Time entered by employees or timekeepers. Punch times, duration, task codes."
+    },
+    {
+      "table": "PS_TL_PAYABLE_TIME",
+      "description": "Payable time. Processed/approved time ready for payroll. After Time Administration rules applied."
+    },
+    {
+      "table": "PS_TL_EXCEPTION",
+      "description": "Time exceptions. Missed punches, overtime alerts, schedule deviations."
+    },
+    {
+      "table": "PS_TL_SCHEDULE",
+      "description": "Employee schedules. Shift assignments, workday patterns."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_TL_RPTD_TIME.EMPLID + EMPL_RCD",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "date",
+      "source": "PS_TL_RPTD_TIME.DUR (date)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "time_in",
+      "source": "PS_TL_RPTD_TIME.PUNCH_DTTM (in punch)",
+      "transformation": "Cast to ISO 8601 datetime."
+    },
+    {
+      "helix_attribute": "time_out",
+      "source": "PS_TL_RPTD_TIME.PUNCH_DTTM (out punch)",
+      "transformation": "Cast to ISO 8601 datetime."
+    },
+    {
+      "helix_attribute": "hours",
+      "source": "PS_TL_RPTD_TIME.QUANTITY or PS_TL_PAYABLE_TIME.QUANTITY",
+      "transformation": "Hours worked or reported."
+    },
+    {
+      "helix_attribute": "time_reporting_code",
+      "source": "PS_TL_RPTD_TIME.TRC",
+      "transformation": "Map: 'REG'\u2192'regular', 'OVT'\u2192'overtime', 'HOL'\u2192'holiday', 'VAC'\u2192'vacation', 'SCK'\u2192'sick'. Institution-defined TRC codes."
+    },
+    {
+      "helix_attribute": "task_code",
+      "source": "PS_TL_RPTD_TIME.TASKGROUP + TASK_PROFILE",
+      "transformation": "Cost allocation for time worked (department, project, grant)."
+    },
+    {
+      "helix_attribute": "approval_status",
+      "source": "PS_TL_RPTD_TIME.TL_QUANTITY_SUM_ST",
+      "transformation": "Map: 'A'\u2192'approved', 'S'\u2192'submitted', 'D'\u2192'denied', 'N'\u2192'needs_approval'."
+    },
+    {
+      "helix_attribute": "payable_status",
+      "source": "PS_TL_PAYABLE_TIME.PAYABLE_STATUS",
+      "transformation": "Map: 'E'\u2192'estimated', 'A'\u2192'approved', 'F'\u2192'final', 'C'\u2192'closed'."
+    },
+    {
+      "helix_attribute": "exception_flag",
+      "source": "PS_TL_EXCEPTION exists for this date/employee",
+      "transformation": "true if exceptions recorded."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

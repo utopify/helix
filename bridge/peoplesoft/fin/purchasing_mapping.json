@@ -1,0 +1,132 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Purchasing",
+  "source_system": "peoplesoft",
+  "module": "Financials - Purchasing",
+  "target_resource": "PurchaseOrder (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.2 resource",
+  "source_tables": [
+    {
+      "table": "PS_PO_HDR",
+      "description": "Purchase order header. PO ID, vendor, status, dates, buyer."
+    },
+    {
+      "table": "PS_PO_LINE",
+      "description": "PO line items. Item description, quantity, unit price, amount."
+    },
+    {
+      "table": "PS_PO_LINE_DISTRIB",
+      "description": "PO distribution. Chartfield coding for each line (account, fund, dept, project)."
+    },
+    {
+      "table": "PS_RECV_LN_SHIP",
+      "description": "Receiving records. Quantity received, receipt date."
+    },
+    {
+      "table": "PS_REQ_HDR",
+      "description": "Requisition header. Pre-PO procurement requests."
+    },
+    {
+      "table": "PS_REQ_LINE",
+      "description": "Requisition lines."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "po_id",
+      "source": "PS_PO_HDR.PO_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "PS_PO_HDR.BUSINESS_UNIT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "PS_PO_HDR.VENDOR_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "po_date",
+      "source": "PS_PO_HDR.PO_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "po_status",
+      "source": "PS_PO_HDR.PO_STATUS",
+      "transformation": "Map: 'A'\u2192'approved', 'O'\u2192'open', 'C'\u2192'complete', 'X'\u2192'cancelled', 'D'\u2192'dispatched'."
+    },
+    {
+      "helix_attribute": "total_amount",
+      "source": "PS_PO_HDR.PO_AMT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "buyer",
+      "source": "PS_PO_HDR.BUYER_ID",
+      "transformation": "Resolve to buyer name."
+    },
+    {
+      "helix_attribute": "line_description",
+      "source": "PS_PO_LINE.DESCR254",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_quantity",
+      "source": "PS_PO_LINE.QTY",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_unit_price",
+      "source": "PS_PO_LINE.PRICE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "PS_PO_LINE.MERCHANDISE_AMT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "PS_PO_LINE_DISTRIB.ACCOUNT",
+      "transformation": "GL account."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "PS_PO_LINE_DISTRIB.FUND_CODE",
+      "transformation": "Fund code."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "PS_PO_LINE_DISTRIB.DEPTID",
+      "transformation": "Department."
+    },
+    {
+      "helix_attribute": "line_project",
+      "source": "PS_PO_LINE_DISTRIB.PROJECT_ID",
+      "transformation": "Project/grant ID."
+    },
+    {
+      "helix_attribute": "requisition_id",
+      "source": "PS_PO_LINE.REQ_ID",
+      "transformation": "Link to originating requisition."
+    },
+    {
+      "helix_attribute": "receipt_status",
+      "source": "Derived from PS_RECV_LN_SHIP",
+      "transformation": "'received' if receiving records exist matching PO line, 'pending' otherwise."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

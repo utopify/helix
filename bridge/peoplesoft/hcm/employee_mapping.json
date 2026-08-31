@@ -1,0 +1,168 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Employee",
+  "source_system": "peoplesoft",
+  "module": "HCM - Core HR",
+  "target_resource": "Employee (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.2 resource (HR domain)",
+  "source_tables": [
+    {
+      "table": "PS_PERSONAL_DATA",
+      "description": "Person biographical data. Shared with Campus Solutions (same table)."
+    },
+    {
+      "table": "PS_NAMES",
+      "description": "Person names. Shared with CS."
+    },
+    {
+      "table": "PS_EMPLOYMENT",
+      "description": "Employment record. Hire date, termination date, employment status, employee class."
+    },
+    {
+      "table": "PS_JOB",
+      "description": "Job record. The most critical HCM table. Position, department, job code, salary, FTE, action/reason history. Effective-dated."
+    },
+    {
+      "table": "PS_PERSON",
+      "description": "Core person record. EmplID. Shared with CS."
+    },
+    {
+      "table": "PS_PERS_NID",
+      "description": "National ID. SSN, SIN, NI Number, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + EMPL_RCD"
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "PS_EMPLOYMENT.EMPLID",
+      "transformation": "Resolve to HELIX Person.helix_id. Same EMPLID used across CS and HCM."
+    },
+    {
+      "helix_attribute": "employee_id",
+      "source": "PS_EMPLOYMENT.EMPLID",
+      "transformation": "Direct map. Same as person ID in PeopleSoft's unified model."
+    },
+    {
+      "helix_attribute": "employee_record",
+      "source": "PS_EMPLOYMENT.EMPL_RCD",
+      "transformation": "Direct map. 0 = primary job. Higher numbers = additional concurrent jobs."
+    },
+    {
+      "helix_attribute": "hire_date",
+      "source": "PS_EMPLOYMENT.HIRE_DT",
+      "transformation": "Cast to ISO 8601. Original hire date."
+    },
+    {
+      "helix_attribute": "rehire_date",
+      "source": "PS_EMPLOYMENT.REHIRE_DT",
+      "transformation": "Most recent rehire date if applicable."
+    },
+    {
+      "helix_attribute": "termination_date",
+      "source": "PS_EMPLOYMENT.TERMINATION_DT",
+      "transformation": "Cast to ISO 8601. Null if active."
+    },
+    {
+      "helix_attribute": "employment_status",
+      "source": "PS_JOB.EMPL_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'L'\u2192'leave', 'P'\u2192'leave_with_pay', 'S'\u2192'suspended', 'T'\u2192'terminated', 'R'\u2192'retired', 'D'\u2192'deceased'. Use current effective-dated JOB row."
+    },
+    {
+      "helix_attribute": "employee_class",
+      "source": "PS_JOB.EMPL_CLASS",
+      "transformation": "Map PS employee class to category: 'F'\u2192'faculty_fulltime', 'P'\u2192'faculty_parttime', 'R'\u2192'staff_regular', 'T'\u2192'staff_temporary', 'S'\u2192'student_employee', 'G'\u2192'graduate_assistant'. Institution-defined in EMPL_CLASS table."
+    },
+    {
+      "helix_attribute": "job_code",
+      "source": "PS_JOB.JOBCODE",
+      "transformation": "Direct map. Institution's job classification code."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "PS_JOBCODE_TBL.DESCR (via JOBCODE)",
+      "transformation": "Lookup job title from job code table."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_JOB.DEPTID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "department_name",
+      "source": "PS_DEPT_TBL.DESCR (via DEPTID)",
+      "transformation": "Lookup."
+    },
+    {
+      "helix_attribute": "position_number",
+      "source": "PS_JOB.POSITION_NBR",
+      "transformation": "Direct map. Links to Position Management."
+    },
+    {
+      "helix_attribute": "reports_to",
+      "source": "PS_JOB.REPORTS_TO or PS_POSITION_DATA.REPORTS_TO",
+      "transformation": "EMPLID of supervisor. Resolve from position if position management is used."
+    },
+    {
+      "helix_attribute": "location",
+      "source": "PS_JOB.LOCATION",
+      "transformation": "Direct map. Work location code."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "PS_JOB.FTE",
+      "transformation": "Direct map. Full-time equivalency (1.0 = full-time, 0.5 = half-time, etc.)."
+    },
+    {
+      "helix_attribute": "standard_hours",
+      "source": "PS_JOB.STD_HOURS",
+      "transformation": "Direct map. Standard hours per week."
+    },
+    {
+      "helix_attribute": "flsa_status",
+      "source": "PS_JOB.FLSA_STATUS",
+      "transformation": "Map: 'E'\u2192'exempt', 'N'\u2192'nonexempt'. Critical for overtime eligibility."
+    },
+    {
+      "helix_attribute": "pay_group",
+      "source": "PS_JOB.PAY_GROUP",
+      "transformation": "Direct map. Groups employees by pay cycle (biweekly, monthly, etc.)."
+    },
+    {
+      "helix_attribute": "union_code",
+      "source": "PS_JOB.UNION_CD",
+      "transformation": "Direct map. Collective bargaining unit if applicable."
+    },
+    {
+      "helix_attribute": "action",
+      "source": "PS_JOB.ACTION",
+      "transformation": "Most recent job action: 'HIR'\u2192'hire', 'PRO'\u2192'promotion', 'DEM'\u2192'demotion', 'TER'\u2192'termination', 'RET'\u2192'retirement', 'LOA'\u2192'leave_of_absence', 'XFR'\u2192'transfer'."
+    },
+    {
+      "helix_attribute": "action_reason",
+      "source": "PS_JOB.ACTION_REASON",
+      "transformation": "Direct map. Reason for the action (institution-defined)."
+    },
+    {
+      "helix_attribute": "action_date",
+      "source": "PS_JOB.EFFDT",
+      "transformation": "Effective date of most recent action."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PS_JOB is the single most important HCM table. It is effective-dated with action/reason history \u2014 every employment event (hire, promotion, transfer, termination, pay change) creates a new effective-dated row. The current row (max EFFDT \u2264 today, max EFFSEQ) represents the employee's current state. Historical rows provide complete employment timeline."
+}

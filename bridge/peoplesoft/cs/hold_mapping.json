@@ -1,0 +1,94 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 Hold",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "Hold",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_SRVC_IND_DATA",
+      "description": "Service indicator data. PeopleSoft's term for holds/restrictions. Links person to service indicator with start/end dates."
+    },
+    {
+      "table": "PS_SRVC_IND_TBL",
+      "description": "Service indicator definition. Type, description, which services it impacts."
+    },
+    {
+      "table": "PS_SRVC_IND_RSLT",
+      "description": "Service indicator result. Maps indicators to specific impacts (registration, transcript, etc.)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + SRVC_IND_CD + START_DT"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_SRVC_IND_DATA.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "hold_type",
+      "source": "PS_SRVC_IND_TBL.SRVC_IND_TYPE + SRVC_IND_CD",
+      "transformation": "Map PS service indicator types to HELIX hold types. PS distinguishes positive ('H'=honors) from negative ('N'=holds). Filter to negative indicators only for HELIX Hold. Map by SRVC_IND_CD to helix/hold-type."
+    },
+    {
+      "helix_attribute": "hold_status",
+      "source": "Derived from PS_SRVC_IND_DATA.START_DT and END_DT",
+      "transformation": "If END_DT is null or > today \u2192 'active'. If END_DT <= today \u2192 'released'. PeopleSoft auto-expires by END_DT."
+    },
+    {
+      "helix_attribute": "reason",
+      "source": "PS_SRVC_IND_DATA.REASON + PS_SRVC_IND_TBL.DESCR",
+      "transformation": "Combine indicator description with specific reason text."
+    },
+    {
+      "helix_attribute": "hold_code",
+      "source": "PS_SRVC_IND_DATA.SRVC_IND_CD",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "placed_date",
+      "source": "PS_SRVC_IND_DATA.START_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "released_date",
+      "source": "PS_SRVC_IND_DATA.END_DT (if <= today)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "expiration_date",
+      "source": "PS_SRVC_IND_DATA.END_DT",
+      "transformation": "Cast to ISO 8601. Future dates = auto-expiration."
+    },
+    {
+      "helix_attribute": "placed_by_office",
+      "source": "PS_SRVC_IND_DATA.SRVC_IND_DEPT or SRVC_RECIP_DEPT",
+      "transformation": "Direct map. Department that placed the indicator."
+    },
+    {
+      "helix_attribute": "prevents[]",
+      "source": "PS_SRVC_IND_RSLT.SRVC_IND_RSLT",
+      "transformation": "Map PS service indicator results to HELIX prevents array: 'ENRL'\u2192'registration', 'TRAN'\u2192'transcript_release', 'GRAD'\u2192'graduation'. One row per impact."
+    },
+    {
+      "helix_attribute": "amount_owed",
+      "source": "PS_SRVC_IND_DATA.SFA_AMOUNT (if financial indicator)",
+      "transformation": "Direct map if applicable."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

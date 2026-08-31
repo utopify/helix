@@ -1,0 +1,66 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 AcademicOrg",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "AcademicOrg",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ACAD_ORG_TBL",
+      "description": "Academic organization table. Hierarchy of colleges, schools, departments. Tree-structured with parent references."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + ACAD_ORG"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_ACAD_ORG_TBL.INSTITUTION",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "PS_ACAD_ORG_TBL.ACAD_ORG",
+      "transformation": "Direct map (e.g., 'ENGR', 'CSE', 'A&S')."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "PS_ACAD_ORG_TBL.DESCR",
+      "transformation": "Direct map (e.g., 'College of Engineering')."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "PS_ACAD_ORG_TBL.ACAD_ORG_TYPE (if available) or derived from hierarchy level",
+      "transformation": "Map: top-level \u2192 'college' or 'school', mid-level \u2192 'division', leaf-level \u2192 'department'. PS uses tree structures (TREE_NODE) for hierarchy."
+    },
+    {
+      "helix_attribute": "parent_org_ref",
+      "source": "PS_TREE_NODE.PARENT_NODE_NUM (via ACAD_ORG tree)",
+      "transformation": "Resolve parent org code to HELIX AcademicOrg.helix_id. PeopleSoft uses tree manager for org hierarchy."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_ACAD_ORG_TBL.EFF_STATUS",
+      "transformation": "Map: 'A'\u2192true, 'I'\u2192false."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_ACAD_ORG_TBL.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

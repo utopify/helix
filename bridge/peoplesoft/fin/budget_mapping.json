@@ -1,0 +1,110 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Budget",
+  "source_system": "peoplesoft",
+  "module": "Financials - Commitment Control (Budget)",
+  "target_resource": "Budget (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.2 resource",
+  "source_tables": [
+    {
+      "table": "PS_KK_BUDGET_ACTVY",
+      "description": "Commitment Control budget activity. Budget, pre-encumbrance, encumbrance, and expenditure transactions."
+    },
+    {
+      "table": "PS_LEDGER_KK",
+      "description": "Commitment Control ledger. Budget vs. actual balances by chartfield."
+    },
+    {
+      "table": "PS_KK_BD_CONTROL",
+      "description": "Budget control definitions. Which chartfields are budget-controlled."
+    },
+    {
+      "table": "PS_KK_BUDGET_TYPE",
+      "description": "Budget type definitions. Original, revised, adjustment."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "budget_id",
+      "source": "PS_KK_BUDGET_ACTVY.LEDGER + chartfield combination",
+      "transformation": "Composite key from ledger and chartfields."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "PS_KK_BUDGET_ACTVY.BUSINESS_UNIT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "PS_KK_BUDGET_ACTVY.FISCAL_YEAR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "account",
+      "source": "PS_KK_BUDGET_ACTVY.ACCOUNT",
+      "transformation": "GL account."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_KK_BUDGET_ACTVY.FUND_CODE",
+      "transformation": "Fund."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_KK_BUDGET_ACTVY.DEPTID",
+      "transformation": "Department."
+    },
+    {
+      "helix_attribute": "program_code",
+      "source": "PS_KK_BUDGET_ACTVY.PROGRAM_CODE",
+      "transformation": "Functional classification."
+    },
+    {
+      "helix_attribute": "project_id",
+      "source": "PS_KK_BUDGET_ACTVY.PROJECT_ID",
+      "transformation": "Grant/project."
+    },
+    {
+      "helix_attribute": "budget_amount",
+      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='BUDGETS')",
+      "transformation": "Total budget for this chartfield combination."
+    },
+    {
+      "helix_attribute": "pre_encumbered",
+      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='PRE_ENC')",
+      "transformation": "Pre-encumbrances (requisitions not yet on PO)."
+    },
+    {
+      "helix_attribute": "encumbered",
+      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='ENCUMB')",
+      "transformation": "Encumbrances (POs, contracts)."
+    },
+    {
+      "helix_attribute": "expended",
+      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='ACTUALS')",
+      "transformation": "Actual expenditures."
+    },
+    {
+      "helix_attribute": "available_balance",
+      "source": "Derived",
+      "transformation": "budget_amount - pre_encumbered - encumbered - expended."
+    },
+    {
+      "helix_attribute": "budget_status",
+      "source": "PS_KK_BD_CONTROL.BUDGET_STATUS",
+      "transformation": "Map: 'O'\u2192'open', 'C'\u2192'closed', 'F'\u2192'frozen'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "PeopleSoft Commitment Control (KK) is the budget checking engine. Higher ed institutions use it heavily because grant/fund accounting requires tracking pre-encumbrances (requisitions), encumbrances (POs), and expenditures against budgeted amounts. Budget checking can be advisory (warn) or absolute (block) depending on institutional configuration."
+}

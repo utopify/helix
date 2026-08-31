@@ -1,0 +1,137 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 AccountsPayable",
+  "source_system": "peoplesoft",
+  "module": "Financials - Accounts Payable",
+  "target_resource": "APVoucher (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.2 resource",
+  "source_tables": [
+    {
+      "table": "PS_VOUCHER",
+      "description": "Voucher header. Vendor, invoice, business unit, voucher status, payment terms."
+    },
+    {
+      "table": "PS_VOUCHER_LINE",
+      "description": "Voucher distribution lines. Chartfield coding, amount, quantity, merchandise."
+    },
+    {
+      "table": "PS_DISTRIB_LINE",
+      "description": "Distribution accounting lines. Chartfield split for a single voucher line."
+    },
+    {
+      "table": "PS_VENDOR",
+      "description": "Vendor master. Vendor ID, name, address, TIN, payment method."
+    },
+    {
+      "table": "PS_PAYMENT_TBL",
+      "description": "Payment records. Check/EFT details, payment date, amount, void status."
+    },
+    {
+      "table": "PS_PYMNT_VCHR_XREF",
+      "description": "Payment-voucher cross reference. Links payments to vouchers."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "voucher_id",
+      "source": "PS_VOUCHER.VOUCHER_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "PS_VOUCHER.BUSINESS_UNIT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "PS_VOUCHER.VENDOR_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "PS_VENDOR.NAME1",
+      "transformation": "Lookup via VENDOR_ID."
+    },
+    {
+      "helix_attribute": "invoice_number",
+      "source": "PS_VOUCHER.INVOICE_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "invoice_date",
+      "source": "PS_VOUCHER.INVOICE_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "voucher_date",
+      "source": "PS_VOUCHER.ACCOUNTING_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "PS_VOUCHER.GROSS_AMT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "discount_amount",
+      "source": "PS_VOUCHER.DSCNT_AMT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "voucher_status",
+      "source": "PS_VOUCHER.VCHR_APPRVL_STATUS + ENTRY_STATUS",
+      "transformation": "Map: 'A'\u2192'approved', 'P'\u2192'pending', 'D'\u2192'denied', 'V'\u2192'void'. ENTRY_STATUS: 'P'\u2192'posted', 'R'\u2192'recycled'."
+    },
+    {
+      "helix_attribute": "payment_status",
+      "source": "PS_VOUCHER.PYMNT_STATUS or PS_PAYMENT_TBL.PYMNT_STATUS",
+      "transformation": "Map: 'P'\u2192'paid', 'U'\u2192'unpaid', 'V'\u2192'void'."
+    },
+    {
+      "helix_attribute": "payment_date",
+      "source": "PS_PAYMENT_TBL.PYMNT_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "payment_method",
+      "source": "PS_PAYMENT_TBL.PYMNT_METHOD",
+      "transformation": "Map: 'CHK'\u2192'check', 'ACH'\u2192'eft', 'WIR'\u2192'wire'."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "PS_DISTRIB_LINE.ACCOUNT",
+      "transformation": "GL account charged."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "PS_DISTRIB_LINE.FUND_CODE",
+      "transformation": "Fund charged."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "PS_DISTRIB_LINE.DEPTID",
+      "transformation": "Department charged."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "PS_DISTRIB_LINE.MONETARY_AMOUNT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "po_reference",
+      "source": "PS_VOUCHER_LINE.PO_ID",
+      "transformation": "Link to purchase order if voucher originated from PO."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

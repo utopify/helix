@@ -1,0 +1,113 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Compensation",
+  "source_system": "peoplesoft",
+  "module": "HCM - Compensation",
+  "target_resource": "Compensation (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_COMPENSATION",
+      "description": "Compensation detail. One or more comp rows per job row. Rate, frequency, plan, grade, step."
+    },
+    {
+      "table": "PS_JOB",
+      "description": "Job record (for annual rate, comp frequency, and effective dating)."
+    },
+    {
+      "table": "PS_SAL_PLAN_TBL",
+      "description": "Salary plan definitions. Pay structures and ranges."
+    },
+    {
+      "table": "PS_SAL_GRADE_TBL",
+      "description": "Salary grade table. Min/mid/max for each grade within a plan."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_JOB.EMPLID + EMPL_RCD",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "annual_rate",
+      "source": "PS_JOB.ANNUAL_RT",
+      "transformation": "Direct map. Annualized salary/wage."
+    },
+    {
+      "helix_attribute": "comp_frequency",
+      "source": "PS_JOB.COMP_FREQUENCY",
+      "transformation": "Map: 'A'\u2192'annual', 'M'\u2192'monthly', 'B'\u2192'biweekly', 'H'\u2192'hourly', 'W'\u2192'weekly'."
+    },
+    {
+      "helix_attribute": "hourly_rate",
+      "source": "PS_JOB.HOURLY_RT",
+      "transformation": "Direct map. Calculated from annual rate and standard hours."
+    },
+    {
+      "helix_attribute": "comp_rate",
+      "source": "PS_COMPENSATION.COMP_RATE",
+      "transformation": "Rate for this specific compensation component."
+    },
+    {
+      "helix_attribute": "comp_rate_type",
+      "source": "PS_COMPENSATION.COMP_RATECD",
+      "transformation": "Rate code (e.g., 'BASE', 'ADMIN', 'SHIFT', 'STIPEND'). Institution-defined."
+    },
+    {
+      "helix_attribute": "salary_plan",
+      "source": "PS_JOB.SAL_ADMIN_PLAN",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "pay_grade",
+      "source": "PS_JOB.GRADE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "step",
+      "source": "PS_JOB.STEP",
+      "transformation": "Direct map. Step within grade (if step-based pay)."
+    },
+    {
+      "helix_attribute": "grade_min",
+      "source": "PS_SAL_GRADE_TBL.MIN_RT_ANNUAL",
+      "transformation": "Minimum of salary range for this grade."
+    },
+    {
+      "helix_attribute": "grade_mid",
+      "source": "PS_SAL_GRADE_TBL.MID_RT_ANNUAL",
+      "transformation": "Midpoint."
+    },
+    {
+      "helix_attribute": "grade_max",
+      "source": "PS_SAL_GRADE_TBL.MAX_RT_ANNUAL",
+      "transformation": "Maximum."
+    },
+    {
+      "helix_attribute": "compa_ratio",
+      "source": "Derived",
+      "transformation": "annual_rate / grade_mid. Indicates position within salary range."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_JOB.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "PS_JOB.CURRENCY_CD",
+      "transformation": "ISO 4217."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ]
+}

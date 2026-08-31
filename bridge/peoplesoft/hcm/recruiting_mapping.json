@@ -1,0 +1,93 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Recruiting",
+  "source_system": "peoplesoft",
+  "module": "HCM - Talent Acquisition Manager (TAM) / Recruiting",
+  "target_resource": "JobOpening (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_HRS_JO_I",
+      "description": "Job opening. Requisition/posting. Position, department, hiring manager, status."
+    },
+    {
+      "table": "PS_HRS_APP_I",
+      "description": "Applicant profile. Candidate information, resume, source."
+    },
+    {
+      "table": "PS_HRS_APP_JO_I",
+      "description": "Applicant-job opening link. Candidate's disposition per job opening."
+    },
+    {
+      "table": "PS_HRS_JO_PST_I",
+      "description": "Job posting. Where the opening was posted (internal, external, job boards)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "job_opening_id",
+      "source": "PS_HRS_JO_I.HRS_JOB_OPENING_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "position_ref",
+      "source": "PS_HRS_JO_I.POSITION_NBR",
+      "transformation": "Resolve to HELIX Position."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_HRS_JO_I.DEPTID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "PS_HRS_JO_I.DESCR or POSTING_TITLE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "hiring_manager",
+      "source": "PS_HRS_JO_I.MANAGER_ID",
+      "transformation": "Resolve EMPLID to name."
+    },
+    {
+      "helix_attribute": "opening_date",
+      "source": "PS_HRS_JO_I.OPEN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "target_fill_date",
+      "source": "PS_HRS_JO_I.TARGET_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "close_date",
+      "source": "PS_HRS_JO_I.CLOSE_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "PS_HRS_JO_I.STATUS_CODE",
+      "transformation": "Map: '010'\u2192'draft', '020'\u2192'open', '030'\u2192'filled', '040'\u2192'closed/cancelled'. Codes from STATUS_CODE table."
+    },
+    {
+      "helix_attribute": "applicant_count",
+      "source": "COUNT(PS_HRS_APP_JO_I) for this opening",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "posting_channels[]",
+      "source": "PS_HRS_JO_PST_I.HRS_SOURCE_TYPE",
+      "transformation": "Array of posting destinations."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

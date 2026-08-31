@@ -1,0 +1,121 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 AdmissionApplication",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "AdmissionApplication",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ADM_APPL_DATA",
+      "description": "Admission application header. Application number, career, program, term, status."
+    },
+    {
+      "table": "PS_ADM_APPL_PROG",
+      "description": "Application program/plan. Intended program and plan for the application."
+    },
+    {
+      "table": "PS_ADM_APPL_PLAN",
+      "description": "Application plan detail. Specific academic plan applied to."
+    },
+    {
+      "table": "PS_ADM_APPL_ACTN",
+      "description": "Application action/decision history. Admit, deny, waitlist, defer actions with dates."
+    },
+    {
+      "table": "PS_ADM_APPL_DPOSIT",
+      "description": "Enrollment deposit tracking."
+    },
+    {
+      "table": "PS_STDNT_TEST_COMP",
+      "description": "Test scores (SAT, ACT, GRE, etc.) associated with the student."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + ADM_APPL_NBR"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_ADM_APPL_DATA.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_ADM_APPL_DATA.INSTITUTION",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "application_number",
+      "source": "PS_ADM_APPL_DATA.ADM_APPL_NBR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "application_type",
+      "source": "PS_ADM_APPL_DATA.ADMIT_TYPE",
+      "transformation": "Map PS admit type: 'FYR'\u2192'first_time_freshman', 'TRN'\u2192'transfer', 'REA'\u2192'readmit', 'GRD'\u2192'graduate'. Institution-defined codes in ADMIT_TYPE table."
+    },
+    {
+      "helix_attribute": "admit_period_ref",
+      "source": "PS_ADM_APPL_DATA.ADMIT_TERM",
+      "transformation": "Resolve ADMIT_TERM to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "PS_ADM_APPL_PLAN.ACAD_PLAN",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "application_status",
+      "source": "PS_ADM_APPL_PROG.PROG_ACTION + PROG_STATUS",
+      "transformation": "Map most recent action: 'ADMT'\u2192'admitted', 'COND'\u2192'conditionally_admitted', 'DENY'\u2192'denied', 'WADM'\u2192'waitlisted', 'DEFR'\u2192'deferred', 'APPL'\u2192'submitted', 'COMP'\u2192'in_review'. Use most recent effective-dated row."
+    },
+    {
+      "helix_attribute": "decision_date",
+      "source": "PS_ADM_APPL_ACTN.ACTION_DT (for admit/deny action)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "enrollment_deposit_paid",
+      "source": "PS_ADM_APPL_DPOSIT.DEPOSIT_PAID",
+      "transformation": "Map: 'Y'\u2192true, 'N'\u2192false."
+    },
+    {
+      "helix_attribute": "submitted_date",
+      "source": "PS_ADM_APPL_DATA.ADM_APPL_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "application_source",
+      "source": "PS_ADM_APPL_DATA.ADM_SOURCE_ID or APPL_FEE_SOURCE",
+      "transformation": "Map: institution-defined codes for Common App, Coalition, institutional, etc."
+    },
+    {
+      "helix_attribute": "test_scores[]",
+      "source": "PS_STDNT_TEST_COMP",
+      "transformation": "Map TEST_ID ('SAT'\u2192'SAT', 'ACT'\u2192'ACT', 'GRE'\u2192'GRE'), TEST_COMPONENT\u2192sub_scores, SCORE, TEST_DT\u2192test_date."
+    },
+    {
+      "helix_attribute": "transfer_gpa",
+      "source": "PS_ADM_APPL_DATA.TRANS_GPA (if available)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "first_generation_flag",
+      "source": "PS_ADM_APPL_DATA.FIRST_GEN_STUDENT",
+      "transformation": "Map: 'Y'\u2192true, 'N'/null\u2192false."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

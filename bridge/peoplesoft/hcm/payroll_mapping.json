@@ -1,0 +1,146 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Payroll",
+  "source_system": "peoplesoft",
+  "module": "HCM - Payroll",
+  "target_resource": "PayrollRecord (planned)",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_PAY_EARNINGS",
+      "description": "Pay earnings. Detailed earnings records per pay period. Earnings codes, hours, amounts."
+    },
+    {
+      "table": "PS_PAY_DEDUCTION",
+      "description": "Pay deductions. Tax withholdings, benefit deductions, retirement, garnishments per pay period."
+    },
+    {
+      "table": "PS_PAY_CHECK",
+      "description": "Pay check/deposit record. Net pay, check number, pay period, pay group."
+    },
+    {
+      "table": "PS_PAY_TAX",
+      "description": "Tax records. Federal, state, local tax withholding details."
+    },
+    {
+      "table": "PS_PAY_OTH_EARNS",
+      "description": "Other earnings. Supplemental pay, bonuses, stipends, overload."
+    },
+    {
+      "table": "PS_EARNINGS_TBL",
+      "description": "Earnings code definitions. Regular, overtime, shift, bonus, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_PAY_CHECK.EMPLID + EMPL_RCD",
+      "transformation": "Resolve to HELIX Employee.helix_id."
+    },
+    {
+      "helix_attribute": "pay_period_end_date",
+      "source": "PS_PAY_CHECK.PAY_END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "check_date",
+      "source": "PS_PAY_CHECK.CHECK_DT",
+      "transformation": "Payment date."
+    },
+    {
+      "helix_attribute": "pay_group",
+      "source": "PS_PAY_CHECK.PAYGROUP",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "gross_pay",
+      "source": "PS_PAY_CHECK.TOTAL_GROSS",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "net_pay",
+      "source": "PS_PAY_CHECK.NET_PAY",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "total_deductions",
+      "source": "PS_PAY_CHECK.TOTAL_DEDUCTIONS",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "total_taxes",
+      "source": "PS_PAY_CHECK.TOTAL_TAXES",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "earnings[].code",
+      "source": "PS_PAY_EARNINGS.ERNCD",
+      "transformation": "Earnings code (e.g., 'REG', 'OVT', 'HOL', 'BON', 'STI')."
+    },
+    {
+      "helix_attribute": "earnings[].description",
+      "source": "PS_EARNINGS_TBL.DESCR",
+      "transformation": "Lookup."
+    },
+    {
+      "helix_attribute": "earnings[].hours",
+      "source": "PS_PAY_EARNINGS.OTH_HRS or REG_HRS",
+      "transformation": "Hours for this earning."
+    },
+    {
+      "helix_attribute": "earnings[].amount",
+      "source": "PS_PAY_EARNINGS.OTH_EARNS or REG_EARNS",
+      "transformation": "Dollar amount."
+    },
+    {
+      "helix_attribute": "earnings[].rate",
+      "source": "PS_PAY_EARNINGS.HOURLY_RT or OTH_PAY",
+      "transformation": "Pay rate applied."
+    },
+    {
+      "helix_attribute": "deductions[].code",
+      "source": "PS_PAY_DEDUCTION.DEDCD",
+      "transformation": "Deduction code (e.g., 'MEDIC', '403B', 'UNION', 'GARN')."
+    },
+    {
+      "helix_attribute": "deductions[].amount",
+      "source": "PS_PAY_DEDUCTION.DED_CUR",
+      "transformation": "Current period deduction amount."
+    },
+    {
+      "helix_attribute": "deductions[].ytd",
+      "source": "PS_PAY_DEDUCTION.DED_YTD",
+      "transformation": "Year-to-date deduction total."
+    },
+    {
+      "helix_attribute": "taxes[].tax_type",
+      "source": "PS_PAY_TAX.STATE + TAX_CLASS",
+      "transformation": "Map: '$U'\u2192'federal', state codes\u2192'state', local\u2192'local'. TAX_CLASS: 'H'\u2192'withholding', 'D'\u2192'employee_fica', 'E'\u2192'employer_fica'."
+    },
+    {
+      "helix_attribute": "taxes[].amount",
+      "source": "PS_PAY_TAX.TAX_CUR",
+      "transformation": "Current period tax."
+    },
+    {
+      "helix_attribute": "taxes[].ytd",
+      "source": "PS_PAY_TAX.TAX_YTD",
+      "transformation": "YTD tax."
+    },
+    {
+      "helix_attribute": "payment_method",
+      "source": "PS_PAY_CHECK.FORM_ID",
+      "transformation": "Map: 'A'\u2192'direct_deposit', 'C'\u2192'check'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ]
+}

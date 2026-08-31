@@ -1,0 +1,114 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 AccountsReceivable (Student Financials)",
+  "source_system": "peoplesoft",
+  "module": "Financials - Student Financials / AR",
+  "target_resource": "StudentAccount (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.2 resource",
+  "source_tables": [
+    {
+      "table": "PS_ITEM",
+      "description": "AR item (charge/payment/financial aid). One row per transaction on the student account."
+    },
+    {
+      "table": "PS_ITEM_LINE_DTL",
+      "description": "Item line detail. Chartfield coding for each item (GL distribution)."
+    },
+    {
+      "table": "PS_SF_ACCTG_LN",
+      "description": "Student Financials accounting lines. Detailed GL entries generated from student account activity."
+    },
+    {
+      "table": "PS_ITEM_TYPE_TBL",
+      "description": "Item type definition. Tuition, fees, room, board, financial aid disbursements, payments."
+    },
+    {
+      "table": "PS_ACAD_CAREER_SF",
+      "description": "Student Financials career settings. Tuition calc group, fee assessment."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "transaction_id",
+      "source": "PS_ITEM.ITEM_NBR + ITEM_LINE",
+      "transformation": "Composite key."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_ITEM.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "PS_ITEM.BUSINESS_UNIT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "item_type",
+      "source": "PS_ITEM.ITEM_TYPE",
+      "transformation": "Direct map. Institution-defined types (e.g., tuition, lab fee, dorm, meal plan, Pell disbursement)."
+    },
+    {
+      "helix_attribute": "item_type_category",
+      "source": "PS_ITEM_TYPE_TBL.SF_CATEGORY",
+      "transformation": "Map: 'TUI'\u2192'tuition', 'FEE'\u2192'fee', 'HSG'\u2192'housing', 'MEL'\u2192'meal_plan', 'FIN'\u2192'financial_aid_disbursement', 'PAY'\u2192'payment'."
+    },
+    {
+      "helix_attribute": "term",
+      "source": "PS_ITEM.TERM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "amount",
+      "source": "PS_ITEM.ITEM_AMT",
+      "transformation": "Direct map. Positive = charge, negative = credit/payment."
+    },
+    {
+      "helix_attribute": "due_date",
+      "source": "PS_ITEM.DUE_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "posting_date",
+      "source": "PS_ITEM.ACCOUNTING_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "item_status",
+      "source": "PS_ITEM.ITEM_STATUS",
+      "transformation": "Map: 'O'\u2192'outstanding', 'C'\u2192'closed/paid', 'X'\u2192'cancelled'."
+    },
+    {
+      "helix_attribute": "balance",
+      "source": "PS_ITEM.ITEM_BALANCE",
+      "transformation": "Remaining balance on the item."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "PS_ITEM_TYPE_TBL.DESCR",
+      "transformation": "Human-readable charge description."
+    },
+    {
+      "helix_attribute": "gl_account",
+      "source": "PS_ITEM_LINE_DTL.ACCOUNT",
+      "transformation": "GL account for the revenue/receivable."
+    },
+    {
+      "helix_attribute": "gl_fund",
+      "source": "PS_ITEM_LINE_DTL.FUND_CODE",
+      "transformation": "Fund code for the revenue."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PeopleSoft Student Financials (SF) is a specialized AR module for student billing. It integrates with Tuition Calculation (automatic fee assessment based on enrollment), Financial Aid (disbursement posting), and General Ledger (revenue recognition). The PS_ITEM table is the core transaction table \u2014 every charge, payment, refund, and financial aid disbursement flows through it."
+}

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 FinAidAward",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "FinAidAward",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_AWARDS",
+      "description": "Student award records. One row per student per item type per aid year/term. Amount offered, accepted, disbursed."
+    },
+    {
+      "table": "PS_ITEM_TYPE_FA",
+      "description": "Financial aid item type configuration. Fund source, award category, federal fund codes."
+    },
+    {
+      "table": "PS_STDNT_FA_TERM",
+      "description": "Student FA term record. SAP status, enrollment status, budget (COA)."
+    },
+    {
+      "table": "PS_ISIR_COMPUTED",
+      "description": "ISIR (Institutional Student Information Record). EFC/SAI from FAFSA processing."
+    },
+    {
+      "table": "PS_DISB_DETAIL",
+      "description": "Disbursement detail. Individual disbursement transactions with dates and amounts."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR + ITEM_TYPE + STRM"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_AWARDS.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_AWARDS.STRM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "award_type",
+      "source": "PS_ITEM_TYPE_FA.FED_FUND_CODE + AWARD_CATEGORY",
+      "transformation": "Map federal fund codes: 'PELL'\u2192'grant', 'DSUB'\u2192'loan_subsidized', 'DUNS'\u2192'loan_unsubsidized', 'DPLUS'\u2192'loan_plus', 'FWS'\u2192'work_study'. For institutional: use AWARD_CATEGORY."
+    },
+    {
+      "helix_attribute": "fund_source",
+      "source": "PS_ITEM_TYPE_FA.AID_TYPE",
+      "transformation": "Map: 'F'\u2192'federal', 'S'\u2192'state', 'I'\u2192'institutional', 'P'\u2192'private'."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "PS_ITEM_TYPE_FA.DESCR",
+      "transformation": "Direct map (e.g., 'Federal Pell Grant', 'Presidential Scholarship')."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_STDNT_AWARDS.ITEM_TYPE",
+      "transformation": "Direct map. PeopleSoft internal item type code."
+    },
+    {
+      "helix_attribute": "award_status",
+      "source": "PS_STDNT_AWARDS.AWARD_STATUS",
+      "transformation": "Map: 'O'\u2192'offered', 'A'\u2192'accepted', 'C'\u2192'cancelled'. If DISB_DETAIL exists with DISB_STATUS='P' \u2192 'disbursed'."
+    },
+    {
+      "helix_attribute": "amount_offered",
+      "source": "PS_STDNT_AWARDS.OFFER_AMOUNT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "amount_accepted",
+      "source": "PS_STDNT_AWARDS.ACCEPT_AMOUNT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "amount_disbursed",
+      "source": "PS_STDNT_AWARDS.DISBURSED_AMOUNT or SUM(PS_DISB_DETAIL.DISB_AMOUNT)",
+      "transformation": "Direct map or aggregate from disbursement detail."
+    },
+    {
+      "helix_attribute": "disbursement_date",
+      "source": "PS_DISB_DETAIL.DISB_DT (most recent)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AWARDS.AID_YEAR",
+      "transformation": "Map to YYYY-YYYY format. PS stores as '2027' \u2192 '2026-2027'."
+    },
+    {
+      "helix_attribute": "efc",
+      "source": "PS_ISIR_COMPUTED.PRIMARY_EFC",
+      "transformation": "Direct map. Now called SAI (Student Aid Index) for 2024-25+ aid years."
+    },
+    {
+      "helix_attribute": "satisfactory_academic_progress",
+      "source": "PS_STDNT_FA_TERM.SAP_STATUS or derived field",
+      "transformation": "Map PS SAP status codes to helix/sap-status. Institution-configured in SAP_STATUS table."
+    },
+    {
+      "helix_attribute": "cost_of_attendance",
+      "source": "PS_STDNT_FA_TERM.BUDGET_AMOUNT",
+      "transformation": "Direct map. Institutional COA for this student/term."
+    },
+    {
+      "helix_attribute": "need_based_flag",
+      "source": "PS_ITEM_TYPE_FA.NEED_BASED",
+      "transformation": "Map: 'Y'\u2192true, 'N'\u2192false."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ]
+}

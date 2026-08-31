@@ -1,0 +1,104 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 Degree",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "Degree",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ACAD_DEGR",
+      "description": "Degrees conferred. One row per degree per student. Conferral date, honors, GPA."
+    },
+    {
+      "table": "PS_ACAD_DEGR_PLAN",
+      "description": "Degree plan details. Major, minor, concentration for each conferred degree."
+    },
+    {
+      "table": "PS_ACAD_DEGR_HONS",
+      "description": "Degree honors. Latin honors, departmental honors."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + ACAD_CAREER + DEGR_SEQ_NBR"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_ACAD_DEGR.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_ACAD_DEGR.INSTITUTION",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "PS_ACAD_DEGR_PLAN.ACAD_PLAN",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "PS_ACAD_DEGR.DEGREE",
+      "transformation": "Direct map (e.g., 'BS', 'MA', 'PHD')."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "PS_ACAD_DEGR.ACAD_CAREER",
+      "transformation": "Map: 'UGRD'\u2192'bachelors', 'GRAD'\u2192'masters' or 'doctoral_research' (refine with DEGREE), 'PRFN'\u2192'doctoral_professional'."
+    },
+    {
+      "helix_attribute": "major",
+      "source": "PS_ACAD_DEGR_PLAN.ACAD_PLAN (PLAN_TYPE='MAJ')",
+      "transformation": "Resolve to plan description. First major plan."
+    },
+    {
+      "helix_attribute": "minor",
+      "source": "PS_ACAD_DEGR_PLAN.ACAD_PLAN (PLAN_TYPE='MIN')",
+      "transformation": "Resolve to plan description."
+    },
+    {
+      "helix_attribute": "concentration",
+      "source": "PS_ACAD_DEGR_PLAN.ACAD_SUB_PLAN",
+      "transformation": "Resolve to subplan description."
+    },
+    {
+      "helix_attribute": "conferral_date",
+      "source": "PS_ACAD_DEGR.DEGR_CONFER_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "conferral_period_ref",
+      "source": "PS_ACAD_DEGR.DEGR_CONFER_TERM (if available) or derive from date",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "honors",
+      "source": "PS_ACAD_DEGR_HONS.HONORS_CODE",
+      "transformation": "Map PS honors codes to helix/honors: institution-specific codes from HONORS table."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "PS_ACAD_DEGR.GPA_OVERALL or PS_STDNT_CAR_TERM.CUR_GPA (final term)",
+      "transformation": "Direct map. Use degree-level GPA if available, otherwise final career term GPA."
+    },
+    {
+      "helix_attribute": "degree_status",
+      "source": "PS_ACAD_DEGR.DEGR_STATUS",
+      "transformation": "Map: 'A'\u2192'conferred', 'P'\u2192'pending_conferral'. If DEGR_CONFER_DT is populated \u2192 'conferred'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

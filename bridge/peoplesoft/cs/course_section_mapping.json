@@ -1,0 +1,129 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 CourseSection",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "CourseSection",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_CLASS_TBL",
+      "description": "Class schedule. One row per class per term. Section details, status, capacity."
+    },
+    {
+      "table": "PS_CLASS_MTG_PAT",
+      "description": "Class meeting pattern. Days, times, room, building for each meeting pattern."
+    },
+    {
+      "table": "PS_CLASS_INSTR",
+      "description": "Class instructors. Links instructors to classes with role (primary, secondary, TA)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + STRM + CLASS_NBR"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_CLASS_TBL.INSTITUTION",
+      "transformation": "Resolve to HELIX Institution.helix_id."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "PS_CLASS_TBL.CRSE_ID",
+      "transformation": "Resolve to HELIX Course.helix_id via CRSE_ID."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_CLASS_TBL.STRM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "section_number",
+      "source": "PS_CLASS_TBL.CLASS_SECTION",
+      "transformation": "Direct map (e.g., '001', '010')."
+    },
+    {
+      "helix_attribute": "crn",
+      "source": "PS_CLASS_TBL.CLASS_NBR",
+      "transformation": "Direct map. PeopleSoft's CLASS_NBR is the equivalent of Banner's CRN."
+    },
+    {
+      "helix_attribute": "delivery_mode",
+      "source": "PS_CLASS_TBL.INSTRUCTION_MODE",
+      "transformation": "Map: 'P'\u2192'in_person', 'OL'\u2192'online_asynchronous', 'OS'\u2192'online_synchronous', 'HB'\u2192'hybrid'. Codes are institution-configured in INSTRUCTION_MODE table."
+    },
+    {
+      "helix_attribute": "campus",
+      "source": "PS_CLASS_TBL.CAMPUS",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "building",
+      "source": "PS_CLASS_MTG_PAT.BUILDING",
+      "transformation": "Direct map. From meeting pattern record."
+    },
+    {
+      "helix_attribute": "room",
+      "source": "PS_CLASS_MTG_PAT.ROOM",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "instructors[]",
+      "source": "PS_CLASS_INSTR",
+      "transformation": "Map EMPLID\u2192name (via PS_NAMES lookup), INSTR_ROLE: 'PI'\u2192'primary', 'SI'\u2192'secondary', 'TA'\u2192'teaching_assistant'."
+    },
+    {
+      "helix_attribute": "max_enrollment",
+      "source": "PS_CLASS_TBL.ENRL_CAP",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "actual_enrollment",
+      "source": "PS_CLASS_TBL.ENRL_TOT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "waitlist_capacity",
+      "source": "PS_CLASS_TBL.WAIT_CAP",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "PS_CLASS_TBL.UNITS_MINIMUM (or UNITS_MAXIMUM for variable)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "section_status",
+      "source": "PS_CLASS_TBL.CLASS_STAT",
+      "transformation": "Map: 'A'\u2192'active', 'X'\u2192'cancelled', 'S'\u2192'closed'. Tentative\u2192'pending'."
+    },
+    {
+      "helix_attribute": "schedule.days",
+      "source": "PS_CLASS_MTG_PAT.MON/TUES/WED/THURS/FRI/SAT/SUN",
+      "transformation": "Build day string from individual day flags: if MON='Y' \u2192 'M', TUES='Y' \u2192 'T', etc. Concatenate to 'MWF' or 'TR'."
+    },
+    {
+      "helix_attribute": "schedule.start_time",
+      "source": "PS_CLASS_MTG_PAT.MEETING_TIME_START",
+      "transformation": "Cast to ISO 8601 time (HH:MM:SS)."
+    },
+    {
+      "helix_attribute": "schedule.end_time",
+      "source": "PS_CLASS_MTG_PAT.MEETING_TIME_END",
+      "transformation": "Cast to ISO 8601 time."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

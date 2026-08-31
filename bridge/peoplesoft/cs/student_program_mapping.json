@@ -1,0 +1,99 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 StudentProgram",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "StudentProgram",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ACAD_PROG",
+      "description": "Student academic program enrollment. Status, admit term, expected graduation. One row per student per program (effective-dated)."
+    },
+    {
+      "table": "PS_ACAD_PLAN",
+      "description": "Student academic plan (major/minor). Links student to specific plan within a program."
+    },
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Student career term. GPA, units, academic standing per career per term."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + ACAD_CAREER + STDNT_CAR_NBR + ACAD_PLAN"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_ACAD_PROG.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "PS_ACAD_PLAN.ACAD_PLAN",
+      "transformation": "Resolve to HELIX Program.helix_id."
+    },
+    {
+      "helix_attribute": "academic_level",
+      "source": "PS_ACAD_PROG.ACAD_CAREER",
+      "transformation": "Map: 'UGRD'\u2192'undergraduate', 'GRAD'\u2192'graduate', 'PRFN'\u2192'professional'."
+    },
+    {
+      "helix_attribute": "program_status",
+      "source": "PS_ACAD_PROG.PROG_STATUS",
+      "transformation": "Map: 'AC'\u2192'active', 'CM'\u2192'completed', 'DC'\u2192'withdrawn', 'DM'\u2192'dismissed', 'LA'\u2192'suspended', 'CN'\u2192'pending'."
+    },
+    {
+      "helix_attribute": "is_primary",
+      "source": "PS_ACAD_PLAN.PLAN_SEQUENCE",
+      "transformation": "true if PLAN_SEQUENCE = 1 (first plan in the program)."
+    },
+    {
+      "helix_attribute": "start_period_ref",
+      "source": "PS_ACAD_PROG.ADMIT_TERM",
+      "transformation": "Resolve ADMIT_TERM to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "expected_completion_period_ref",
+      "source": "PS_ACAD_PROG.EXP_GRAD_TERM",
+      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "source": "PS_ACAD_PROG.REQ_TERM (requirement term)",
+      "transformation": "The term whose catalog requirements govern the student's degree audit."
+    },
+    {
+      "helix_attribute": "class_standing",
+      "source": "PS_STDNT_CAR_TERM.ACAD_LEVEL_BOT",
+      "transformation": "Map PS academic level: '10'\u2192'freshman', '20'\u2192'sophomore', '30'\u2192'junior', '40'\u2192'senior', 'GR'\u2192'graduate_1'. Codes from ACAD_LEVEL table."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "PS_STDNT_CAR_TERM.CUR_GPA",
+      "transformation": "Use most recent career term row. CUR_GPA is cumulative GPA."
+    },
+    {
+      "helix_attribute": "total_credits_earned",
+      "source": "PS_STDNT_CAR_TERM.TOT_CUMULATIVE (UNITS_EARNED_CUMUL)",
+      "transformation": "Cumulative earned units from most recent career term."
+    },
+    {
+      "helix_attribute": "total_credits_attempted",
+      "source": "PS_STDNT_CAR_TERM.TOT_TAKEN_CUMUL",
+      "transformation": "Cumulative attempted units."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

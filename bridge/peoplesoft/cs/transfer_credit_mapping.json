@@ -1,0 +1,108 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 TransferCredit",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "TransferCredit",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_TRNS_CRSE_DTL",
+      "description": "Transfer course detail. External course info from the sending institution."
+    },
+    {
+      "table": "PS_TRNS_CRSE_TERM",
+      "description": "Transfer course term. The term and institution where the course was taken."
+    },
+    {
+      "table": "PS_TRNSFR_EQUIVLNC",
+      "description": "Transfer equivalency. Maps external course to internal course equivalent."
+    },
+    {
+      "table": "PS_EXT_ORG_TBL",
+      "description": "External organization table. Information about sending institutions."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + EXT_ORG_ID + EXT_COURSE_NBR + TERM_SRC"
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_TRNS_CRSE_DTL.EMPLID",
+      "transformation": "Resolve to HELIX Student.helix_id."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Receiving institution's HELIX ID."
+    },
+    {
+      "helix_attribute": "source_institution_name",
+      "source": "PS_EXT_ORG_TBL.DESCR (via EXT_ORG_ID)",
+      "transformation": "Lookup external org name."
+    },
+    {
+      "helix_attribute": "source_institution_id",
+      "source": "PS_TRNS_CRSE_DTL.EXT_ORG_ID",
+      "transformation": "PeopleSoft external org ID. Cross-reference with FICE/CEEB/OPEID if available."
+    },
+    {
+      "helix_attribute": "source_course_subject",
+      "source": "PS_TRNS_CRSE_DTL.EXT_SUBJECT_AREA",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "source_course_number",
+      "source": "PS_TRNS_CRSE_DTL.EXT_COURSE_NBR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "source_course_title",
+      "source": "PS_TRNS_CRSE_DTL.DESCR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "source_credit_hours",
+      "source": "PS_TRNS_CRSE_DTL.UNT_TRNSFR",
+      "transformation": "Direct map. Units as reported by sending institution."
+    },
+    {
+      "helix_attribute": "source_grade",
+      "source": "PS_TRNS_CRSE_DTL.CRSE_GRADE_OFF",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "equivalent_course_ref",
+      "source": "PS_TRNSFR_EQUIVLNC.CRSE_ID",
+      "transformation": "Resolve to HELIX Course.helix_id. Null if accepted as elective."
+    },
+    {
+      "helix_attribute": "credit_hours_accepted",
+      "source": "PS_TRNS_CRSE_DTL.UNT_TRNSFR_EARNED",
+      "transformation": "Units accepted by the receiving institution. May differ from source."
+    },
+    {
+      "helix_attribute": "transfer_status",
+      "source": "PS_TRNS_CRSE_DTL.CRSE_STATUS",
+      "transformation": "Map: 'P'\u2192'accepted' (posted), 'I'\u2192'pending_evaluation' (in progress). 'D'\u2192'denied'."
+    },
+    {
+      "helix_attribute": "counts_toward_gpa",
+      "source": "PS_TRNS_CRSE_DTL.INCL_IN_GPA",
+      "transformation": "Map: 'Y'\u2192true, 'N'\u2192false."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

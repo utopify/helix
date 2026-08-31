@@ -1,0 +1,118 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Grants",
+  "source_system": "peoplesoft",
+  "module": "Financials - Grants",
+  "target_resource": "Grant (planned)",
+  "version": "0.1",
+  "status": "Maps to planned HELIX Core v0.3 resource (Research Administration domain)",
+  "source_tables": [
+    {
+      "table": "PS_GM_AWARD",
+      "description": "Award master. Sponsor, PI, award amount, project dates, award type."
+    },
+    {
+      "table": "PS_GM_AWD_PRJ_LNK",
+      "description": "Award-project link. Connects awards to one or more projects."
+    },
+    {
+      "table": "PS_PROJECT",
+      "description": "Project master. Project ID, description, status, start/end dates."
+    },
+    {
+      "table": "PS_GM_SPONSOR",
+      "description": "Sponsor table. Federal agencies (NSF, NIH, DOE), foundations, corporations."
+    },
+    {
+      "table": "PS_PROJ_RESOURCE",
+      "description": "Project resource budget. Budget lines by resource type and category."
+    },
+    {
+      "table": "PS_GM_AWD_BILLING",
+      "description": "Grant billing. Invoicing sponsors, cost share tracking."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "award_id",
+      "source": "PS_GM_AWARD.AWARD_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "PS_GM_AWARD.BUSINESS_UNIT_GL",
+      "transformation": "GL business unit."
+    },
+    {
+      "helix_attribute": "sponsor_name",
+      "source": "PS_GM_SPONSOR.DESCR",
+      "transformation": "Lookup via SPONSOR_ID."
+    },
+    {
+      "helix_attribute": "sponsor_id",
+      "source": "PS_GM_AWARD.SPONSOR_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "sponsor_type",
+      "source": "PS_GM_SPONSOR.SPONSOR_TYPE",
+      "transformation": "Map: 'FED'\u2192'federal', 'STA'\u2192'state', 'IND'\u2192'industry', 'FDN'\u2192'foundation', 'INT'\u2192'internal'."
+    },
+    {
+      "helix_attribute": "principal_investigator",
+      "source": "PS_GM_AWARD.PI_ID (EMPLID)",
+      "transformation": "Resolve to name via PS_NAMES."
+    },
+    {
+      "helix_attribute": "award_amount",
+      "source": "PS_GM_AWARD.TOTAL_AWARD_AMT",
+      "transformation": "Direct map. Total award including all budget periods."
+    },
+    {
+      "helix_attribute": "award_start_date",
+      "source": "PS_GM_AWARD.AWARD_BEGIN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "award_end_date",
+      "source": "PS_GM_AWARD.AWARD_END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "award_status",
+      "source": "PS_GM_AWARD.AWARD_STATUS",
+      "transformation": "Map: 'A'\u2192'active', 'C'\u2192'closed', 'P'\u2192'pending', 'S'\u2192'suspended'."
+    },
+    {
+      "helix_attribute": "cfda_number",
+      "source": "PS_GM_AWARD.CFDA_NUMBER",
+      "transformation": "Federal assistance listing number (formerly CFDA). Required for Single Audit."
+    },
+    {
+      "helix_attribute": "project_ids[]",
+      "source": "PS_GM_AWD_PRJ_LNK.PROJECT_ID",
+      "transformation": "Array of linked project IDs."
+    },
+    {
+      "helix_attribute": "indirect_cost_rate",
+      "source": "PS_GM_AWARD.IDC_RT or PS_PROJ_RESOURCE.RATE",
+      "transformation": "F&A (indirect cost) rate negotiated for this award."
+    },
+    {
+      "helix_attribute": "total_expended",
+      "source": "Derived from PS_LEDGER_KK or PS_LEDGER (PROJECT_ID)",
+      "transformation": "Sum of actuals against the project chartfield."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PeopleSoft Grants (GM) module manages the post-award lifecycle: budget setup, expenditure tracking, billing, reporting. Pre-award (proposals) may be in a separate system. Key compliance drivers: 2 CFR 200 (Uniform Guidance), Single Audit (A-133), federal sponsor requirements. F&A (facilities & administrative) cost recovery is a major revenue source for research universities."
+}

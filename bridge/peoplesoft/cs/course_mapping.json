@@ -1,0 +1,90 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 Course",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "Course",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_CRSE_CATALOG",
+      "description": "Course catalog. Master course record with subject, catalog number, title, units."
+    },
+    {
+      "table": "PS_CRSE_OFFER",
+      "description": "Course offering. Links catalog to academic org and campus. Controls where the course can be scheduled."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + CRSE_ID"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_CRSE_CATALOG.INSTITUTION",
+      "transformation": "Resolve to HELIX Institution.helix_id."
+    },
+    {
+      "helix_attribute": "subject_code",
+      "source": "PS_CRSE_OFFER.SUBJECT",
+      "transformation": "Direct map (e.g., 'CS', 'ECON')."
+    },
+    {
+      "helix_attribute": "course_number",
+      "source": "PS_CRSE_OFFER.CATALOG_NBR",
+      "transformation": "Direct map (e.g., '1100', '4500'). PeopleSoft stores as char, may include alpha suffixes."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "PS_CRSE_CATALOG.COURSE_TITLE_LONG",
+      "transformation": "Direct map. Use COURSE_TITLE_LONG for full title; DESCR is the short description."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "PS_CRSE_CATALOG.DESCRLONG",
+      "transformation": "Direct map. Catalog description text."
+    },
+    {
+      "helix_attribute": "credit_hours_min",
+      "source": "PS_CRSE_CATALOG.UNITS_MINIMUM",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "credit_hours_max",
+      "source": "PS_CRSE_CATALOG.UNITS_MAXIMUM",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "level",
+      "source": "PS_CRSE_CATALOG.CRSE_CAREER (ACAD_CAREER)",
+      "transformation": "Map: 'UGRD'\u2192derive from catalog number (lower/upper), 'GRAD'\u2192'graduate', 'PRFN'\u2192'professional'."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "source": "PS_CRSE_OFFER.ACAD_ORG",
+      "transformation": "Resolve to HELIX AcademicOrg.helix_id."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_CRSE_CATALOG.EFF_STATUS",
+      "transformation": "Map: 'A'\u2192true, 'I'\u2192false. Use current effective-dated row."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_CRSE_CATALOG.EFFDT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

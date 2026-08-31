@@ -1,0 +1,173 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 Person",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "Person",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_PERSONAL_DATA",
+      "description": "Biographical data: birth date, gender, marital status, deceased info."
+    },
+    {
+      "table": "PS_NAMES",
+      "description": "Name history with effective dating and name types (Legal, Primary, Preferred)."
+    },
+    {
+      "table": "PS_ADDRESSES",
+      "description": "Address records with address type, effective date, and country-specific formats."
+    },
+    {
+      "table": "PS_EMAIL_ADDRESSES",
+      "description": "Email addresses with type (campus, home, business, other)."
+    },
+    {
+      "table": "PS_PERSONAL_PHONE",
+      "description": "Phone numbers with type and preferred flag."
+    },
+    {
+      "table": "PS_PERSON",
+      "description": "Core person record. EmplID assignment, creation date."
+    },
+    {
+      "table": "PS_CITIZENSHIP",
+      "description": "Citizenship records with country and status."
+    },
+    {
+      "table": "PS_DIVERS_ETHNIC",
+      "description": "Race/ethnicity self-identification. Multi-valued (supports multiple selections)."
+    },
+    {
+      "table": "PS_EMERGENCY_CNTCT",
+      "description": "Emergency contact records."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Map from institutional HELIX registration"
+    },
+    {
+      "helix_attribute": "identifiers[].system='peoplesoft'",
+      "source": "PS_PERSON.EMPLID",
+      "transformation": "Direct map. Universal key across all PS modules."
+    },
+    {
+      "helix_attribute": "name.family",
+      "source": "PS_NAMES.LAST_NAME",
+      "transformation": "Current effective-dated row, NAME_TYPE='PRI' or 'LEG'."
+    },
+    {
+      "helix_attribute": "name.given",
+      "source": "PS_NAMES.FIRST_NAME",
+      "transformation": "Current primary name record."
+    },
+    {
+      "helix_attribute": "name.middle",
+      "source": "PS_NAMES.MIDDLE_NAME",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "source": "PS_NAMES.NAME_PREFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "source": "PS_NAMES.NAME_SUFFIX",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "name.preferred_first",
+      "source": "PS_NAMES.FIRST_NAME (NAME_TYPE='PRF')",
+      "transformation": "Preferred name row if exists."
+    },
+    {
+      "helix_attribute": "name.former_names[]",
+      "source": "PS_NAMES (historical rows)",
+      "transformation": "All non-current effective-dated rows with NAME_TYPE='PRI'. Provides name change history for matching."
+    },
+    {
+      "helix_attribute": "birth_date",
+      "source": "PS_PERSONAL_DATA.BIRTHDATE",
+      "transformation": "Cast to ISO 8601 date."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "PS_PERSONAL_DATA.SEX",
+      "transformation": "Map: 'M'\u2192'male', 'F'\u2192'female', 'U'\u2192'unknown'. Newer PS versions may have PS_GENDER_IDENTITY."
+    },
+    {
+      "helix_attribute": "gender_identity",
+      "source": "PS_GENDER_IDENTITY.GENDER_IDENTITY (if available)",
+      "transformation": "Map PS gender identity reference to helix/gender-identity. Only in PeopleSoft 9.2 PUM 30+."
+    },
+    {
+      "helix_attribute": "pronouns",
+      "source": "PS_PRONOUN (if available)",
+      "transformation": "Direct map. PeopleSoft 9.2 PUM 38+ added pronoun support."
+    },
+    {
+      "helix_attribute": "ethnicity[]",
+      "source": "PS_DIVERS_ETHNIC.ETHNIC_GRP_CD",
+      "transformation": "Map PS ethnicity codes to helix/ethnicity. Multi-select: one row per selected ethnicity. IPEDS rollup: if HISPANIC_LATINO='Y' in PS_PERSONAL_DATA \u2192 'hispanic_latino'."
+    },
+    {
+      "helix_attribute": "citizenship_countries[]",
+      "source": "PS_CITIZENSHIP.COUNTRY",
+      "transformation": "Map PS 3-char country code to ISO 3166-1 alpha-2. Multiple rows = multiple citizenships."
+    },
+    {
+      "helix_attribute": "is_deceased",
+      "source": "PS_PERSONAL_DATA.DT_OF_DEATH IS NOT NULL",
+      "transformation": "true if death date populated."
+    },
+    {
+      "helix_attribute": "deceased_date",
+      "source": "PS_PERSONAL_DATA.DT_OF_DEATH",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "contact.emails[]",
+      "source": "PS_EMAIL_ADDRESSES",
+      "transformation": "Map EMAIL_ADDR, E_ADDR_TYPE ('CAMP'\u2192'institutional', 'HOME'\u2192'personal', 'BUS'\u2192'work'), PREF_EMAIL_FLAG\u2192is_preferred."
+    },
+    {
+      "helix_attribute": "contact.phones[]",
+      "source": "PS_PERSONAL_PHONE",
+      "transformation": "Map PHONE, PHONE_TYPE ('CELL'\u2192'mobile', 'HOME'\u2192'home', 'BUSN'\u2192'work'), PREF_PHONE_FLAG\u2192is_preferred."
+    },
+    {
+      "helix_attribute": "contact.addresses[]",
+      "source": "PS_ADDRESSES",
+      "transformation": "Map ADDRESS1-4, CITY, STATE, POSTAL, COUNTRY. ADDRESS_TYPE: 'HOME'\u2192'permanent', 'MAIL'\u2192'mailing', 'CAMP'\u2192'campus'. Use current effective-dated row per type."
+    },
+    {
+      "helix_attribute": "emergency_contacts[]",
+      "source": "PS_EMERGENCY_CNTCT",
+      "transformation": "Map CONTACT_NAME, RELATIONSHIP, PHONE, EMAIL_ADDR. Multiple rows per person."
+    },
+    {
+      "helix_attribute": "primary_language",
+      "source": "PS_PERSONAL_DATA.LANG_CD",
+      "transformation": "Map PS language code to ISO 639-1."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

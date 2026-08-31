@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS \u2192 Program",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "target_resource": "Program",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ACAD_PROG_TBL",
+      "description": "Academic program definition. Degree, career, status, expected graduation term structure."
+    },
+    {
+      "table": "PS_ACAD_PLAN_TBL",
+      "description": "Academic plan (major/minor/concentration). Links to program. Contains CIP code, degree."
+    },
+    {
+      "table": "PS_ACAD_SUBPLAN_TBL",
+      "description": "Academic subplan (concentration/emphasis). Nested under plan."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + ACAD_PLAN"
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_ACAD_PLAN_TBL.INSTITUTION",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "code",
+      "source": "PS_ACAD_PLAN_TBL.ACAD_PLAN",
+      "transformation": "Direct map. PeopleSoft academic plan code (e.g., 'CSCI-BS')."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "PS_ACAD_PLAN_TBL.DESCR",
+      "transformation": "Direct map (e.g., 'Computer Science')."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "PS_ACAD_PLAN_TBL.DEGREE",
+      "transformation": "Direct map (e.g., 'BS', 'BA', 'MS', 'PHD')."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "PS_ACAD_PROG_TBL.ACAD_CAREER",
+      "transformation": "Map: 'UGRD'\u2192'bachelors' (or 'associate'), 'GRAD'\u2192'masters', 'PRFN'\u2192'professional'. Refine using DEGREE field."
+    },
+    {
+      "helix_attribute": "program_type",
+      "source": "PS_ACAD_PLAN_TBL.PLAN_TYPE",
+      "transformation": "Map: 'MAJ'\u2192'major', 'MIN'\u2192'minor', 'CRT'\u2192'certificate', 'SP'\u2192'concentration'."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "PS_ACAD_PLAN_TBL.CIP_CODE",
+      "transformation": "Direct map. PeopleSoft stores CIP codes directly."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "source": "PS_ACAD_PLAN_TBL.ACAD_ORG",
+      "transformation": "Resolve to HELIX AcademicOrg.helix_id."
+    },
+    {
+      "helix_attribute": "total_credit_hours_required",
+      "source": "PS_ACAD_PLAN_TBL.UNITS_REQUIRED (if available) or derived from degree audit",
+      "transformation": "Direct map if field exists. Many institutions track this in degree audit (Academic Advisement) rather than the plan table."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_ACAD_PLAN_TBL.EFF_STATUS",
+      "transformation": "Map: 'A'\u2192true, 'I'\u2192false. Current effective-dated row."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}
