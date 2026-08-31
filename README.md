@@ -70,16 +70,16 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | 15 foundational resource definitions (JSON Schema) and 18 terminology code sets | Data architects, data engineers, analytics teams |
+| **HELIX Core** | 19 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
-| **HELIX Bridge** | ERP-specific mapping templates: Banner (3), PeopleSoft (40 across CS/FIN/HCM), Workday (3), Colleague (3) | Implementation teams, system integrators |
+| **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (3), Colleague (3) — 59 total | Implementation teams, system integrators |
 
 ---
 
 ## HELIX Core: Resources (v0.1)
 
-15 foundational resources across 6 domains:
+19 foundational resources across 7 domains:
 
 | Domain | Resources |
 |--------|-----------|
@@ -89,16 +89,23 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 | **Financial Aid** | `FinAidAward` |
 | **Outcomes** | `Degree` |
 | **Student Services** | `Hold` |
+| **Advancement** | `Constituent`, `Gift`, `Campaign`, `EngagementActivity` |
 
 Each resource includes a `meta` block with embedded governance: version, source system, data owner, and classification level.
 
 See the [Resource Catalog](docs/resource-catalog.md) for full attribute details.
 
+## HELIX Core: Glossary
+
+A 34,000-word comprehensive taxonomy covering the complete student lifecycle (web visitor through alumni/donor), all student types (workers, athletes, international, first-gen, veteran), the administrative infrastructure (registrar, student financial services, FERPA, GLBA), and the full faculty taxonomy (10 employment types, 9 academic ranks, tenure system, IPEDS faculty categories).
+
+See the [Glossary](core/glossary.md) for the full reference.
+
 ## HELIX Core: Terminologies (v0.1)
 
-18 standardized code sets that eliminate "what does this code mean?" across institutions:
+23 standardized code sets that eliminate "what does this code mean?" across institutions:
 
-`student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status`
+`student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status` · `constituent-type` · `gift-type` · `donor-segment` · `prospect-stage` · `enrollment-funnel-stage`
 
 See the [Terminology Catalog](docs/terminology-catalog.md) for every valid code and definition.
 
@@ -109,7 +116,7 @@ Column-level mapping templates from 4 major ERP systems:
 | ERP | Architecture | Mappings | Coverage |
 |-----|-------------|----------|----------|
 | **Oracle PeopleSoft** | Relational, effective-dated | **40 mappings** across CS (19), FIN (9), HCM (12) | 80-83% per module |
-| **Ellucian Banner** | Relational (Oracle) | 3 mappings | Core SIS resources |
+| **Ellucian Banner** | Relational (Oracle) | **13 mappings** across SIS (11), HR (2) | Core + extended SIS |
 | **Workday Student** | Cloud-native (REST/business objects) | 3 mappings | Core SIS resources |
 | **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | 3 mappings | Core SIS resources |
 
@@ -184,9 +191,10 @@ helix/
 ├── README.md                    ← You are here
 ├── CONTRIBUTING.md              ← How to participate
 ├── core/
-│   ├── resources/               ← 15 JSON Schema resource definitions
-│   ├── terminologies/           ← 18 standardized code sets
-│   └── examples/                ← Sample payloads (coming soon)
+│   ├── resources/               ← 19 JSON Schema resource definitions
+│   ├── terminologies/           ← 23 standardized code sets
+│   ├── glossary.md              ← Comprehensive higher ed taxonomy (34K words)
+│   └── examples/                ← 3 post-migration use case examples
 ├── connect/
 │   └── openapi.json             ← OpenAPI 3.1 API specification
 ├── govern/
@@ -208,16 +216,23 @@ helix/
     ├── bridge-reference.md
     ├── govern-overview.md
     ├── connect-overview.md
-    └── migration-adventure-guide.md  ← "Choose your own adventure" migration paths
+    ├── migration-adventure-guide.md  ← "Choose your own adventure" migration paths
+    └── lakehouse-architecture-guide.md  ← Medallion architecture, FERPA/GLBA compliance
 ```
 
 ---
 
 ## Getting Started
 
+**New to higher ed data?** Start with the [Glossary](core/glossary.md) for a complete walkthrough of the student lifecycle, faculty taxonomy, and institutional infrastructure.
+
+**Migrating ERPs or building a data lake?** Start with the [Migration Adventure Guide](docs/migration-adventure-guide.md) and the [Lakehouse Architecture Guide](docs/lakehouse-architecture-guide.md).
+
 **Explore the data model:** Browse [core/resources/](core/resources/) or read the [Resource Catalog](docs/resource-catalog.md)
 
 **Check the terminology:** Browse [core/terminologies/](core/terminologies/) or read the [Terminology Catalog](docs/terminology-catalog.md)
+
+**See what's possible after migration:** Browse [core/examples/](core/examples/) for real-world use cases (advancement, COA cross-reference, enrollment analytics)
 
 **Find your ERP mapping:** Browse [bridge/](bridge/) for Banner, PeopleSoft, Workday, or Colleague
 
@@ -239,5 +254,5 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.1 — August 2026*
+*HELIX v0.1.5 — August 2026*
 *Licensed under Apache 2.0*
