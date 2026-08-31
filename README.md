@@ -43,30 +43,28 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│                        H E L I X                                │
-│           Higher Education Linked Information eXchange          │
+│                         H E L I X                               │
+│            Higher Education Linked Information eXchange         │
 │                                                                 │
-│   ┌───────────────┐  ┌───────────────┐  ┌───────────────────┐  │
-│   │               │  │               │  │                   │  │
-│   │  HELIX Core   │  │ HELIX Connect │  │  HELIX Govern     │  │
-│   │               │  │               │  │                   │  │
-│   │  The data     │  │  The API &    │  │  The governance   │  │
-│   │  model.       │  │  exchange     │  │  framework.       │  │
-│   │               │  │  standard.    │  │                   │  │
-│   │  15 foundational │  │               │  │  Roles, rules,    │  │
-│   │  resources,   │  │  16 REST      │  │  classification,  │  │
-│   │  18 termi-    │  │  endpoints,   │  │  quality, and     │  │
-│   │  nology code  │  │  bulk export, │  │  maturity         │  │
-│   │  sets.        │  │  validation.  │  │  assessment.      │  │
-│   │               │  │              │  │                   │  │
-│   └───────────────┘  └───────────────┘  └───────────────────┘  │
+│   ┌─────────────────┐  ┌─────────────────┐  ┌───────────────┐  │
+│   │                 │  │                 │  │               │  │
+│   │  HELIX Core     │  │  HELIX Connect  │  │ HELIX Govern  │  │
+│   │                 │  │                 │  │               │  │
+│   │  The data       │  │  The API &      │  │ The governance│  │
+│   │  model.         │  │  exchange       │  │ framework.    │  │
+│   │                 │  │  standard.      │  │               │  │
+│   │  19 resources,  │  │  16 REST        │  │ Roles, rules, │  │
+│   │  23 terminology │  │  endpoints,     │  │ quality, and  │  │
+│   │  code sets.     │  │  bulk export,   │  │ maturity      │  │
+│   │                 │  │  validation.    │  │ assessment.   │  │
+│   └─────────────────┘  └─────────────────┘  └───────────────┘  │
 │                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │                                                         │   │
-│   │                    HELIX Bridge                         │   │
+│   │                     HELIX Bridge                        │   │
 │   │                                                         │   │
-│   │   ERP-to-HELIX mapping accelerators for Banner,         │   │
-│   │   PeopleSoft, Workday, and Colleague.                   │   │
+│   │   ERP-to-HELIX mapping accelerators for Banner,        │   │
+│   │   PeopleSoft, Workday, and Colleague.                  │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
