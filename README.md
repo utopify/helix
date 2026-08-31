@@ -2,13 +2,15 @@
 
 ### Higher Education Linked Information eXchange
 
-> An open framework for eliminating data integration friction in higher education, worldwide.
+> What if every university spoke the same data language?
+
+HELIX is an open framework of canonical data models, governance standards, and ERP mapping templates that eliminate integration friction in higher education, worldwide.
 
 ---
 
 **Founded by:** Dallas Maddox
-**Status:** Draft v0.1 — Founding Charter
-**License:** Apache 2.0 (proposed)
+**Version:** 0.1 (August 2026)
+**License:** Apache 2.0
 
 ---
 
@@ -19,8 +21,6 @@ Every university on the planet runs some version of the same core data domains: 
 The mapping logic from Banner to a lakehouse is 80% identical to the mapping logic from PeopleSoft to a lakehouse. But nobody has codified that shared 80% into something reusable.
 
 The result: billions of dollars spent globally on redundant integration work, inconsistent definitions that erode trust in institutional data, and an inability to benchmark or collaborate across institutions because everyone speaks a different data dialect.
-
-**What if every university spoke the same data language?**
 
 ## The Vision
 
@@ -38,7 +38,7 @@ When an institution adopts HELIX:
 
 ## The HELIX Ecosystem
 
-HELIX is not a single spec. It's an ecosystem of interconnected layers, each serving a different audience and a different part of the problem. Institutions adopt what they need, when they need it.
+HELIX is not a single spec. It's an ecosystem of interconnected layers, each serving a different audience and a different part of the problem.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -53,23 +53,20 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 │   │  The data     │  │  The API &    │  │  The governance   │  │
 │   │  model.       │  │  exchange     │  │  framework.       │  │
 │   │               │  │  standard.    │  │                   │  │
-│   │  Canonical    │  │               │  │  Roles, rules,    │  │
-│   │  resource     │  │  OpenAPI &    │  │  classification,  │  │
-│   │  definitions, │  │  AsyncAPI     │  │  quality, and     │  │
-│   │  terminologies│  │  specs for    │  │  maturity         │  │
-│   │  & schemas.   │  │  real-time &  │  │  assessment.      │  │
-│   │               │  │  bulk         │  │                   │  │
-│   │               │  │  exchange.    │  │                   │  │
+│   │  15 canonical │  │               │  │  Roles, rules,    │  │
+│   │  resources,   │  │  16 REST      │  │  classification,  │  │
+│   │  18 termi-    │  │  endpoints,   │  │  quality, and     │  │
+│   │  nology code  │  │  bulk export, │  │  maturity         │  │
+│   │  sets.        │  │  validation.  │  │  assessment.      │  │
+│   │               │  │              │  │                   │  │
 │   └───────────────┘  └───────────────┘  └───────────────────┘  │
 │                                                                 │
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │                                                         │   │
 │   │                    HELIX Bridge                         │   │
 │   │                                                         │   │
-│   │   ERP-to-HELIX mapping accelerators.                    │   │
-│   │   Pre-built transformation templates for Banner,        │   │
-│   │   PeopleSoft, Workday, Colleague, and others.           │   │
-│   │   The on-ramp that makes adoption real.                 │   │
+│   │   ERP-to-HELIX mapping accelerators for Banner,         │   │
+│   │   PeopleSoft, Workday, and Colleague.                   │   │
 │   │                                                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
@@ -78,304 +75,77 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | Canonical resource definitions (JSON Schema), terminology code sets, and relationship models | Data architects, data engineers, analytics teams |
-| **HELIX Connect** | OpenAPI and AsyncAPI specifications for real-time and bulk data exchange between systems | Integration engineers, application developers, ERP teams |
-| **HELIX Govern** | Governance templates: domain taxonomy, role definitions, data classification, quality rule libraries, lineage standards | CDOs, data stewards, compliance officers, institutional research |
-| **HELIX Bridge** | ERP-specific mapping templates that transform source system data into HELIX Core resources | Implementation teams, system integrators, consultants |
-
-Each layer is independently adoptable. An institution can start with **HELIX Core** (just the data model) and never touch the others. Or they can go all-in across the ecosystem. The layers reinforce each other but don't require each other.
+| **HELIX Core** | 15 canonical resource definitions (JSON Schema) and 18 terminology code sets | Data architects, data engineers, analytics teams |
+| **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
+| **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
+| **HELIX Bridge** | ERP-specific mapping templates (Banner, PeopleSoft, Workday, Colleague) | Implementation teams, system integrators |
 
 ---
 
-## Design Principles
+## HELIX Core: Resources (v0.1)
 
-1. **Spec over software.** HELIX is a standard, not a product. It defines the shape of data, not how to store or query it.
+15 canonical resources across 6 domains:
 
-2. **80/20 pragmatism.** Start with the most common, most exchanged data domains. Cover the 80% that's universal. Let extensions handle the 20% that's institution-specific.
+| Domain | Resources |
+|--------|-----------|
+| **Identity** | `Person`, `Student`, `Institution` |
+| **Academic Structure** | `AcademicOrg`, `Course`, `CourseSection`, `Program`, `AcademicPeriod` |
+| **Enrollment & Registration** | `Enrollment`, `StudentProgram`, `AdmissionApplication`, `TransferCredit` |
+| **Financial Aid** | `FinAidAward` |
+| **Outcomes** | `Degree` |
+| **Student Services** | `Hold` |
 
-3. **Technology-neutral at the spec layer.** Core resources are defined in JSON Schema. They don't assume a storage format, query engine, or cloud provider.
+Each resource includes a `meta` block with embedded governance: version, source system, data owner, and classification level.
 
-4. **Platform-aware at the implementation layer.** Publish generators and templates for current technologies (Apache Iceberg, dbt, Parquet, OpenAPI) so institutions have a fast on-ramp. These are regenerable and disposable as technology evolves.
+See the [Resource Catalog](docs/resource-catalog.md) for full attribute details.
 
-5. **Developer-friendly.** JSON + REST + schemas that any web developer can read. No proprietary tooling required.
+## HELIX Core: Terminologies (v0.1)
 
-6. **Governance-native.** Every resource carries metadata: ownership, classification, quality rules, lineage expectations. Governance isn't a bolt-on; it's woven into the DNA.
+18 standardized code sets that eliminate "what does this code mean?" across institutions:
 
-7. **Evolutionary by design.** Versioned spec releases. Schema evolution (via Iceberg) means upgrading doesn't require data rewrites. Extensions don't break the core.
+`student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status`
 
-8. **Globally scoped, locally profiled.** The base spec is international. Country- and system-specific constraints live in Implementation Profiles (US, UK, AU, EU, etc.).
+See the [Terminology Catalog](docs/terminology-catalog.md) for every valid code and definition.
 
----
+## HELIX Bridge: ERP Mappings
 
-## Future-Proofing Architecture
+Column-level mapping templates from 4 major ERP systems to HELIX Core resources:
 
-HELIX separates what's durable from what's disposable:
+| ERP | Architecture | Mappings |
+|-----|-------------|----------|
+| **Ellucian Banner** | Relational (Oracle) | Student, Enrollment, AcademicPeriod |
+| **Oracle PeopleSoft** | Relational, effective-dated | Student, Enrollment, AcademicPeriod |
+| **Workday Student** | Cloud-native (REST/business objects) | Student, Enrollment, AcademicPeriod |
+| **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | Student, Enrollment, AcademicPeriod |
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    DURABLE SPEC LAYER                       │
-│               (designed to last 15-20+ years)               │
-│                                                             │
-│    HELIX Core          HELIX Govern       HELIX Connect     │
-│    JSON Schema         Role definitions   OpenAPI/AsyncAPI  │
-│    resources           Quality rules      endpoint specs    │
-│    Terminologies       Classification     event schemas     │
-│                        Maturity model                       │
-└───────────────────────────┬─────────────────────────────────┘
-                            │
-                     Auto-generated
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                 REGENERABLE IMPLEMENTATION LAYER             │
-│            (evolves with technology, 3-5 year cycles)        │
-│                                                             │
-│    Iceberg DDL    dbt model stubs    Validation suites      │
-│    Parquet schemas   Metric definitions   Cloud bindings    │
-│                                                             │
-│                       HELIX Bridge                          │
-│    Banner mappings   PeopleSoft mappings   Workday mappings │
-└─────────────────────────────────────────────────────────────┘
-```
+Four completely different architectures, all landing in the same HELIX shape. See the [Bridge Reference](docs/bridge-reference.md) for source table details.
 
-The spec defines **what** the data looks like. The implementation layer handles **how** it's stored and moved. Today that's Apache Iceberg + Parquet + dbt. In five years it might be something else. The generators change; the spec doesn't.
+## HELIX Govern
 
-| Layer | Expected Lifespan | Why |
-|-------|-------------------|-----|
-| JSON Schema resource definitions | 15-20+ years | Describes concepts, not technology |
-| Terminology code sets | 10-15 years | Enrollment statuses don't change fast |
-| OpenAPI / AsyncAPI specs | 10+ years | REST/HTTP isn't going anywhere |
-| Apache Iceberg table format | 5-10 years | Current best bet, massive industry momentum |
-| dbt / engine-specific code | 3-5 years | Tools churn, but they're generated, not hand-written |
-| Specific cloud service bindings | 2-3 years | AWS/Azure/GCP SDKs evolve constantly |
+| Component | Contents |
+|-----------|----------|
+| **Roles** | 6 governance roles (Data Trustee, CDO, Data Steward, Data Custodian, Data Consumer, HELIX Champion) |
+| **Quality Rules** | 22 rules across 5 domains with severity, testable expressions, and remediation guidance |
+| **Maturity Model** | 5 dimensions × 5 levels, aligned to HELIX conformance levels |
+| **Domain Taxonomy** | 9 data domains with steward assignments and regulatory context |
+
+See the [Govern Overview](docs/govern-overview.md) for details.
+
+## HELIX Connect
+
+OpenAPI 3.1 spec with 16 endpoints covering all core resources, bulk export (NDJSON + Parquet), resource validation, and OAuth 2.0 security with classification-aware scopes.
+
+See the [Connect Overview](docs/connect-overview.md) for the full API reference.
 
 ---
 
-## HELIX Core: First Canonical Resources (v0.1)
-
-### Scope
-
-HELIX Core v0.1 focuses on the domains that every institution shares and that cause the most integration pain:
-
-| Domain | Key Resources | Why First |
-|--------|--------------|-----------|
-| **Student Identity** | `Student`, `Person`, `Identifier` | Foundation. Everything references a student. |
-| **Academic Structure** | `Institution`, `AcademicOrg`, `Program`, `Course`, `CourseSection` | Defines what's offered. |
-| **Enrollment** | `Enrollment`, `Registration`, `AcademicPeriod` | Highest-volume transactional domain. |
-| **Financial Aid** | `FinAidAward`, `FinAidApplication`, `Disbursement` | Most regulated, most painful to integrate. |
-| **Outcomes** | `Degree`, `GradeRecord`, `Credential` | The "so what." What institutions ultimately measure. |
-
-Later versions: HR/workforce, research administration, advancement/alumni, finance/GL, facilities.
-
----
-
-### Resource: `Student`
-
-The core identity resource. Represents a person in their capacity as a learner at an institution.
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "HELIX Student Resource",
-  "description": "A person enrolled or admitted at a higher education institution.",
-  "type": "object",
-  "required": ["helix_id", "institution_id", "identifiers", "status"],
-  "properties": {
-    "helix_id": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Globally unique HELIX identifier"
-    },
-    "institution_id": {
-      "type": "string",
-      "description": "HELIX identifier for the institution (references Institution resource)"
-    },
-    "identifiers": {
-      "type": "array",
-      "description": "All known identifiers for this student across systems",
-      "items": {
-        "type": "object",
-        "properties": {
-          "system": {
-            "type": "string",
-            "description": "Source system (e.g., 'banner', 'peoplesoft', 'national_id')"
-          },
-          "value": { "type": "string" },
-          "type": {
-            "type": "string",
-            "enum": ["institutional_id", "national_id", "ssn_last4", "login", "other"]
-          }
-        }
-      }
-    },
-    "name": {
-      "type": "object",
-      "properties": {
-        "family": { "type": "string" },
-        "given": { "type": "string" },
-        "middle": { "type": "string" },
-        "prefix": { "type": "string" },
-        "suffix": { "type": "string" },
-        "preferred": { "type": "string" }
-      }
-    },
-    "birth_date": { "type": "string", "format": "date" },
-    "gender": {
-      "type": "string",
-      "description": "Bound to HELIX terminology: helix/gender"
-    },
-    "status": {
-      "type": "string",
-      "description": "Current lifecycle status. Bound to HELIX terminology: helix/student-status",
-      "enum": [
-        "prospective", "applicant", "admitted", "enrolled",
-        "leave_of_absence", "withdrawn", "graduated", "deceased"
-      ]
-    },
-    "first_generation_flag": { "type": "boolean" },
-    "citizenship_country": { "type": "string", "format": "iso-3166-1-alpha-2" },
-    "residency": {
-      "type": "string",
-      "enum": ["in_state", "out_of_state", "international", "unknown"]
-    },
-    "demographics": {
-      "type": "object",
-      "description": "Extension point for institution- or country-specific demographic attributes"
-    },
-    "meta": {
-      "type": "object",
-      "description": "HELIX metadata block — present on every resource",
-      "properties": {
-        "version": { "type": "integer" },
-        "created_at": { "type": "string", "format": "date-time" },
-        "updated_at": { "type": "string", "format": "date-time" },
-        "source_system": { "type": "string" },
-        "data_owner": { "type": "string" },
-        "classification": {
-          "type": "string",
-          "enum": ["public", "internal", "confidential", "restricted"]
-        }
-      }
-    }
-  }
-}
-```
-
-**Design notes:** The `identifiers` array handles the cross-system key problem (Banner PIDM, PeopleSoft EmplID, Workday Student ID). The `status` enum forces lifecycle consistency. The `meta` block embeds governance at the resource level. The `demographics` extension point lets institutions or country profiles add attributes without altering the core.
-
----
-
-### Resource: `AcademicPeriod`
-
-Time is the connective tissue of higher ed data. Every enrollment, grade, and financial aid record references a term.
-
-```json
-{
-  "title": "HELIX AcademicPeriod Resource",
-  "description": "A defined period of academic activity (term, semester, quarter, session).",
-  "type": "object",
-  "required": [
-    "helix_id", "institution_id", "period_type",
-    "code", "start_date", "end_date"
-  ],
-  "properties": {
-    "helix_id": { "type": "string", "format": "uuid" },
-    "institution_id": { "type": "string" },
-    "period_type": {
-      "type": "string",
-      "enum": [
-        "semester", "quarter", "trimester", "session",
-        "mini_term", "academic_year", "other"
-      ]
-    },
-    "code": {
-      "type": "string",
-      "description": "Institution's native term code (e.g., '202610', 'Fall 2026')"
-    },
-    "name": { "type": "string" },
-    "academic_year": {
-      "type": "string",
-      "description": "Academic year in YYYY-YYYY format (e.g., '2026-2027')"
-    },
-    "start_date": { "type": "string", "format": "date" },
-    "end_date": { "type": "string", "format": "date" },
-    "census_date": { "type": "string", "format": "date" },
-    "is_active": { "type": "boolean" },
-    "meta": { "$ref": "#/definitions/helix_meta" }
-  }
-}
-```
-
-**Design notes:** Term definitions are the #1 source of mismatch in cross-institutional analytics. Banner's term codes (YYYYMM), PeopleSoft's STRM, and Workday's academic periods all encode time differently. HELIX normalizes them into a shared shape while preserving the native code for traceability.
-
----
-
-### Resource: `Enrollment`
-
-The transactional heart of the framework. Connects a student to a course section in a term.
-
-```json
-{
-  "title": "HELIX Enrollment Resource",
-  "description": "A student's registration in a specific course section during an academic period.",
-  "type": "object",
-  "required": [
-    "helix_id", "student_ref", "course_section_ref",
-    "academic_period_ref", "enrollment_status"
-  ],
-  "properties": {
-    "helix_id": { "type": "string", "format": "uuid" },
-    "student_ref": {
-      "type": "string",
-      "description": "HELIX ID of the Student resource"
-    },
-    "course_section_ref": {
-      "type": "string",
-      "description": "HELIX ID of the CourseSection resource"
-    },
-    "academic_period_ref": {
-      "type": "string",
-      "description": "HELIX ID of the AcademicPeriod resource"
-    },
-    "enrollment_status": {
-      "type": "string",
-      "enum": [
-        "registered", "waitlisted", "enrolled", "dropped",
-        "withdrawn", "completed", "incomplete", "auditing"
-      ]
-    },
-    "enrollment_date": { "type": "string", "format": "date" },
-    "drop_date": { "type": "string", "format": "date" },
-    "credit_hours_attempted": { "type": "number" },
-    "credit_hours_earned": { "type": "number" },
-    "grade": {
-      "type": "string",
-      "description": "Final grade. Bound to institution's HELIX grade terminology profile."
-    },
-    "grade_points": { "type": "number" },
-    "grade_mode": {
-      "type": "string",
-      "enum": [
-        "standard", "pass_fail", "audit",
-        "satisfactory_unsatisfactory", "other"
-      ]
-    },
-    "repeat_flag": { "type": "boolean" },
-    "meta": { "$ref": "#/definitions/helix_meta" }
-  }
-}
-```
-
-**Design notes:** Enrollment is the highest-volume, most-joined entity in any institutional data warehouse. This single resource shape unlocks retention analysis, enrollment reporting, credit hour production, student success modeling, and IPEDS reporting. Get this right and everything downstream benefits.
-
----
-
-## HELIX Govern: Conformance Levels
+## Conformance Levels
 
 Institutions adopt HELIX progressively:
 
 | Level | Name | What It Means |
 |-------|------|---------------|
-| **1** | **Explorer** | Reviewing HELIX resources as a reference model for internal alignment |
+| **1** | **Explorer** | Reviewing HELIX resources as a reference model |
 | **2** | **Aligned** | Data lake silver layer maps to HELIX Core schemas; passes validation |
 | **3** | **Governed** | HELIX Govern templates implemented (roles, quality rules, classification) |
 | **4** | **Contributor** | Publishing ERP mappings, profiles, or extensions back to the community |
@@ -383,31 +153,79 @@ Institutions adopt HELIX progressively:
 
 ---
 
-## Existing Standards: How HELIX Relates
+## Design Principles
 
-HELIX does not replace existing standards. It fills the gap none of them cover: **the ERP-to-lake canonical data model with embedded governance.**
-
-| Standard | Scope | HELIX Relationship |
-|----------|-------|-------------------|
-| **CEDS** (Common Education Data Standards) | K-20 data element dictionary | HELIX aligns terminology where possible; extends for the ERP/lake integration layer |
-| **Ed-Fi** | K-12 data exchange | Covers K-12 transactional exchange; HELIX focuses on postsecondary analytics and integration |
-| **PESC** (Postsecondary Electronic Standards Council) | Transcript/enrollment XML exchange | Narrow scope (transcripts, admissions); HELIX is broader |
-| **1EdTech** (formerly IMS Global) | Learning tool interoperability (LTI, Caliper) | Complementary. Covers LMS, not ERP/SIS |
-| **HESA** (UK) / **TCSI** (Australia) | Country-specific regulatory reporting | Natural candidates for HELIX Implementation Profiles |
-| **FHIR** (HL7) | Healthcare interoperability | Architectural inspiration, not a competitor |
+1. **Spec over software.** HELIX is a standard, not a product.
+2. **80/20 pragmatism.** Cover the universal 80%. Let extensions handle the rest.
+3. **Technology-neutral at the spec layer.** JSON Schema. No vendor lock-in.
+4. **Platform-aware at the implementation layer.** Generators for Iceberg, dbt, Parquet, OpenAPI.
+5. **Developer-friendly.** JSON + REST. Any web developer can implement it.
+6. **Governance-native.** Every resource carries classification, ownership, and quality metadata.
+7. **Evolutionary by design.** Versioned releases. Schema evolution without data rewrites.
+8. **Globally scoped, locally profiled.** Base spec is international. Country profiles handle the rest.
 
 ---
 
-## What's Next
+## Existing Standards: How HELIX Relates
 
-- [ ] Community review of this founding charter
-- [ ] Refine first 5 HELIX Core resources (add `CourseSection`, `FinAidAward`)
-- [ ] Draft the first HELIX Bridge template (Banner-to-HELIX)
-- [ ] Define HELIX Core terminology code sets (enrollment status, student status, period type)
-- [ ] Draft the HELIX Connect OpenAPI spec for a conformant server
-- [ ] Sketch the HELIX Govern maturity assessment framework
-- [ ] Establish GitHub repo structure and contribution guidelines
-- [ ] Identify 3-5 institutional champions for early feedback
+| Standard | Scope | HELIX Relationship |
+|----------|-------|-------------------|
+| **CEDS** | K-20 data element dictionary | HELIX aligns terminology; extends for ERP/lake integration |
+| **Ed-Fi** | K-12 data exchange | Complementary. HELIX focuses on postsecondary. |
+| **PESC** | Transcript/enrollment XML | Narrow scope. HELIX is broader. |
+| **1EdTech** | Learning tool interoperability | Complementary. Covers LMS, not ERP/SIS. |
+| **HESA** (UK) / **TCSI** (AU) | Country-specific reporting | Natural HELIX Implementation Profiles |
+| **FHIR** (HL7) | Healthcare interoperability | Architectural inspiration |
+
+HELIX fills the gap none of them cover: **the ERP-to-lake canonical data model with embedded governance.**
+
+---
+
+## Repository Structure
+
+```
+helix/
+├── README.md                    ← You are here
+├── CONTRIBUTING.md              ← How to participate
+├── core/
+│   ├── resources/               ← 15 JSON Schema resource definitions
+│   ├── terminologies/           ← 18 standardized code sets
+│   └── examples/                ← Sample payloads (coming soon)
+├── connect/
+│   └── openapi.json             ← OpenAPI 3.1 API specification
+├── govern/
+│   ├── roles.json               ← Governance role definitions
+│   ├── quality-rules.json       ← Data quality rule library
+│   ├── maturity-model.json      ← Maturity assessment framework
+│   └── domain-taxonomy.json     ← Data domain taxonomy
+├── bridge/
+│   ├── banner/                  ← Ellucian Banner mappings
+│   ├── peoplesoft/              ← Oracle PeopleSoft mappings
+│   ├── workday/                 ← Workday Student mappings
+│   └── colleague/               ← Ellucian Colleague mappings
+└── docs/                        ← Comprehensive documentation
+    ├── resource-catalog.md
+    ├── terminology-catalog.md
+    ├── bridge-reference.md
+    ├── govern-overview.md
+    └── connect-overview.md
+```
+
+---
+
+## Getting Started
+
+**Explore the data model:** Browse [core/resources/](core/resources/) or read the [Resource Catalog](docs/resource-catalog.md)
+
+**Check the terminology:** Browse [core/terminologies/](core/terminologies/) or read the [Terminology Catalog](docs/terminology-catalog.md)
+
+**Find your ERP mapping:** Browse [bridge/](bridge/) for Banner, PeopleSoft, Workday, or Colleague
+
+**Review governance:** Browse [govern/](govern/) or read the [Govern Overview](docs/govern-overview.md)
+
+**See the API:** Open [connect/openapi.json](connect/openapi.json) in [Swagger Editor](https://editor.swagger.io/) or read the [Connect Overview](docs/connect-overview.md)
+
+**Contribute:** Read [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue or pull request
 
 ---
 
@@ -421,5 +239,5 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.1 Draft — August 2026*
+*HELIX v0.1 — August 2026*
 *Licensed under Apache 2.0*
