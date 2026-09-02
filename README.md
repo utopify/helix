@@ -4,15 +4,15 @@
 
 > What if every university spoke the same data language?
 
-HELIX is an open framework of foundational data models, governance standards, and ERP mapping templates that eliminate integration friction in higher education, worldwide.
+HELIX is an open framework of foundational data models, governance standards, and ERP mapping templates that eliminate integration friction in higher education — worldwide.
 
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.1 (August 2026)
+**Version:** 0.1.7 (September 2026)
 **License:** Apache 2.0
 
----
+--- 
 
 ## The Problem
 
@@ -73,7 +73,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 | **HELIX Core** | 19 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
-| **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (3), Colleague (3) — 59 total | Implementation teams, system integrators |
+| **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (8), Colleague (3) — 64 total | Implementation teams, system integrators |
 
 ---
 
@@ -117,10 +117,10 @@ Column-level mapping templates from 4 major ERP systems:
 |-----|-------------|----------|----------|
 | **Oracle PeopleSoft** | Relational, effective-dated | **40 mappings** across CS (19), FIN (9), HCM (12) | 80-83% per module |
 | **Ellucian Banner** | Relational (Oracle) | **13 mappings** across SIS (11), HR (2) | Core + extended SIS |
-| **Workday Student** | Cloud-native (REST/business objects) | 3 mappings | Core SIS resources |
+| **Workday** | Cloud-native (REST/business objects) | **8 mappings** across SIS (3), FIN (5) | Core SIS + Financial Management |
 | **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | 3 mappings | Core SIS resources |
 
-PeopleSoft is the deepest Bridge — 40 mappings covering Student Records, Financial Aid, Admissions, Degree Audit, International/SEVIS, FERPA, General Ledger, AP, AR, Purchasing, Budgets, Grants, Assets, Expenses, Contracts, Core HR, Position Management, Compensation, Benefits, Payroll, Time & Labor, Recruiting, Absence/FMLA, Performance, Job Classification, Position Budgeting, and Learning Management.
+PeopleSoft is the deepest Bridge — 40 mappings covering Student Records, Financial Aid, Admissions, Degree Audit, International/SEVIS, FERPA, General Ledger, AP, AR, Purchasing, Budgets, Grants, Assets, Expenses, Contracts, Core HR, Position Management, Compensation, Benefits, Payroll, Time & Labor, Recruiting, Absence/FMLA, Performance, Job Classification, Position Budgeting, and Learning Management. Workday now covers both SIS (Student, Enrollment, AcademicPeriod) and Financial Management (General Ledger, Accounts Payable, Budget, Cost Center, Fund) with worktag-to-HELIX mappings and 4 documented extraction methods.
 
 See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Guide](docs/migration-adventure-guide.md) for details.
 
@@ -128,10 +128,13 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 
 | Component | Contents |
 |-----------|----------|
-| **Roles** | 6 governance roles (Data Trustee, CDO, Data Steward, Data Custodian, Data Consumer, HELIX Champion) |
-| **Quality Rules** | 22 rules across 5 domains with severity, testable expressions, and remediation guidance |
-| **Maturity Model** | 5 dimensions × 5 levels, aligned to HELIX conformance levels |
+| **Roles** | 6 governance roles (Data Trustee, CDO, Data Steward, Data Custodian, Data Consumer, HELIX Champion) with RACI matrix |
+| **Quality Rules** | 22 rules across 5 domains with severity, testable expressions, and remediation |
+| **Maturity Model** | 5 dimensions × 5 levels, aligned to conformance levels |
 | **Domain Taxonomy** | 9 data domains with steward assignments and regulatory context |
+| **RACI Matrix** | 18 activities × 5 roles with Responsible/Accountable/Consulted/Informed assignments |
+| **Classification Handling** | 4 tiers (Public, Internal, Confidential, Restricted) with encryption, access, audit, masking, retention, sharing, and disposal rules — FERPA and GLBA specific guidance |
+| **Data Dictionary** | 537-entry structured dictionary (JSON + CSV) of every resource attribute and terminology code — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
 
 See the [Govern Overview](docs/govern-overview.md) for details.
 
@@ -184,40 +187,63 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure
+## Repository Structure (160 files)
 
 ```
 helix/
-├── README.md                    ← You are here
-├── CONTRIBUTING.md              ← How to participate
-├── core/
-│   ├── resources/               ← 19 JSON Schema resource definitions
-│   ├── terminologies/           ← 23 standardized code sets
-│   ├── glossary.md              ← Comprehensive higher ed taxonomy (34K words)
-│   └── examples/                ← 3 post-migration use case examples
-├── connect/
-│   └── openapi.json             ← OpenAPI 3.1 API specification
-├── govern/
-│   ├── roles.json               ← Governance role definitions
-│   ├── quality-rules.json       ← Data quality rule library
-│   ├── maturity-model.json      ← Maturity assessment framework
-│   └── domain-taxonomy.json     ← Data domain taxonomy
-├── bridge/
-│   ├── banner/                  ← Ellucian Banner mappings (3)
-│   ├── peoplesoft/              ← Oracle PeopleSoft mappings (40)
-│   │   ├── cs/                  ← Campus Solutions / SIS (19)
-│   │   ├── fin/                 ← Financials / FSCM (9)
-│   │   └── hcm/                 ← Human Capital Management (12)
-│   ├── workday/                 ← Workday Student mappings (3)
-│   └── colleague/               ← Ellucian Colleague mappings (3)
-└── docs/                        ← Comprehensive documentation
-    ├── resource-catalog.md
-    ├── terminology-catalog.md
-    ├── bridge-reference.md
-    ├── govern-overview.md
-    ├── connect-overview.md
-    ├── migration-adventure-guide.md  ← "Choose your own adventure" migration paths
-    └── lakehouse-architecture-guide.md  ← Medallion architecture, FERPA/GLBA compliance
++-- README.md                          <-- You are here
++-- CONTRIBUTING.md                    <-- How to participate
++-- core/
+|   +-- resources/                     <-- 19 JSON Schema resource definitions
+|   +-- terminologies/                 <-- 23 standardized code sets
+|   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (34K words)
+|   +-- data-dictionary.json           <-- 537-entry structured data dictionary
+|   +-- data-dictionary.csv            <-- Same dictionary in spreadsheet format
+|   +-- examples/                      <-- 3 post-migration use case examples
++-- connect/
+|   +-- openapi.json                   <-- OpenAPI 3.1 API specification
++-- govern/
+|   +-- roles.json                     <-- Governance role definitions
+|   +-- quality-rules.json             <-- Data quality rule library (22 rules)
+|   +-- maturity-model.json            <-- 5-dimension maturity assessment
+|   +-- domain-taxonomy.json           <-- 9 data domains with steward assignments
+|   +-- raci-matrix.json               <-- 18 activities x 5 roles (R/A/C/I)
+|   +-- classification-handling-rules.json  <-- 4-tier handling (FERPA/GLBA)
++-- bridge/
+|   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (40)
+|   |   +-- cs/                        <-- Campus Solutions / SIS (19)
+|   |   +-- fin/                       <-- Financials / FSCM (9)
+|   |   +-- hcm/                       <-- Human Capital Management (12)
+|   +-- banner/                        <-- Ellucian Banner mappings (13)
+|   |   +-- sis/                       <-- Student Information System (11)
+|   |   +-- hr/                        <-- Human Resources (2)
+|   +-- workday/                       <-- Workday mappings (8)
+|   |   +-- sis/                       <-- Student (3)
+|   |   +-- fin/                       <-- Financial Management (5)
+|   +-- colleague/                     <-- Ellucian Colleague mappings (3)
+|   +-- xref/                          <-- Machine-readable cross-references
+|       +-- ps-to-workday-fin/         <-- 4 dimensions, JSON + CSV
+|           +-- account-xref.*         <-- 31 account mappings
+|           +-- fund-xref.*            <-- 14 fund mappings
+|           +-- department-xref.*      <-- 15 dept/cost center mappings
+|           +-- program-xref.*         <-- 12 functional classifications
++-- agents/                            <-- Downloadable AI assistant templates
+|   +-- ps-to-workday-fin-agent.json
+|   +-- enrollment-analytics-agent.json
+|   +-- advancement-donor-agent.json
+|   +-- banner-to-lakehouse-agent.json
++-- tools/
+|   +-- validate.py                    <-- Schema validation (JSON/NDJSON/CSV)
++-- docs/
+    +-- helix-executive-summary.md     <-- One-pager for CIOs and leadership
+    +-- cdo-quick-start.md             <-- 90-day governance quickstart guide
+    +-- resource-catalog.md
+    +-- terminology-catalog.md
+    +-- bridge-reference.md
+    +-- govern-overview.md
+    +-- connect-overview.md
+    +-- migration-adventure-guide.md        <-- "Choose your own adventure"
+    +-- lakehouse-architecture-guide.md     <-- Medallion, FERPA/GLBA
 ```
 
 ---
@@ -240,19 +266,29 @@ helix/
 
 **See the API:** Open [connect/openapi.json](connect/openapi.json) in [Swagger Editor](https://editor.swagger.io/) or read the [Connect Overview](docs/connect-overview.md)
 
+**New CDO?** Read the [CDO Quick Start Guide](docs/cdo-quick-start.md) for a 90-day governance implementation plan.
+
+**Briefing leadership?** Share the [Executive Summary](docs/helix-executive-summary.md) — a non-technical one-pager for CIOs, provosts, and presidents.
+
+**Validating your data?** Use the [validation script](tools/validate.py) to check JSON, NDJSON, or CSV files against HELIX schemas.
+
 **Contribute:** Read [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue or pull request
 
 ---
 
 ## About the Founder
 
-**Dallas Maddox** created HELIX from a straightforward observation: after years of working with higher education institutions on data modernization, the same integration patterns and the same governance gaps appeared everywhere, regardless of institution size, ERP vendor, or geography. The work to solve these problems was being duplicated thousands of times across the world, at enormous cost, with no shared benefit.
+**Dr. Dallas Maddox, PhD** created HELIX from a career spent at the intersection of higher education and technology. With doctoral research focused on the systems and structures that power colleges and universities, Dallas saw the same pattern repeat at every institution: brilliant people solving the same data problems in isolation, duplicating millions of dollars in integration work with no shared benefit and no shared language.
+
+HELIX exists because higher education deserves better tools — tools that accelerate innovation instead of consuming it, tools that free institutions to focus on what actually matters: the student experience, groundbreaking research, and community impact.
+
+At its core, HELIX is about the human element. Behind every data record is a student navigating their future, a faculty member advancing knowledge, a financial aid counselor changing someone's life trajectory, a donor investing in a mission they believe in. The data infrastructure we build should honor that reality — not obscure it beneath layers of technical complexity. When we eliminate the friction of data integration, we give people back the time and clarity to do the work that drew them to higher education in the first place.
 
 HELIX is an open, philanthropic effort. It is not a product, not a consultancy, and not owned by any vendor. It belongs to the higher education community.
 
-The double helix is a fitting metaphor. Two strands, data and governance, wound together into a structure that carries the blueprint for something larger. HELIX is the blueprint. What the global higher education community builds from it is the point.
+The double helix is a fitting metaphor. Two strands — data and governance — wound together into a structure that carries the blueprint for something larger. HELIX is the blueprint. What the global higher education community builds from it is the point.
 
 ---
 
-*HELIX v0.1.5 — August 2026*
+*HELIX v0.1.7 — September 2026*
 *Licensed under Apache 2.0*
