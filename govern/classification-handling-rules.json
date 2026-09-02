@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/govern/classification-handling-schema.json",
+  "title": "HELIX Govern: Data Classification Handling Rules",
+  "description": "Specific handling requirements for each HELIX data classification tier. Institutions adopt these as baseline policy and customize as needed.",
+  "version": "0.1",
+  "tiers": [
+    {
+      "classification": "public",
+      "definition": "Data approved for unrestricted public access.",
+      "examples": "Course catalog, institution name, program listings, campus locations",
+      "handling": {
+        "encryption_at_rest": "Recommended but not required",
+        "encryption_in_transit": "Required (HTTPS)",
+        "access_control": "No restrictions. Available to any authenticated or anonymous user.",
+        "authentication": "None required",
+        "mfa": "Not required",
+        "audit_logging": "Not required",
+        "data_masking": "Not applicable",
+        "retention": "Per institutional records retention schedule",
+        "sharing": "No restrictions. May be published on website, shared freely.",
+        "disposal": "Standard deletion when no longer needed"
+      }
+    },
+    {
+      "classification": "internal",
+      "definition": "Data intended for institutional use only.",
+      "examples": "Enrollment counts (pre-publication), section capacity, course schedules, department budgets, organizational charts",
+      "handling": {
+        "encryption_at_rest": "Required",
+        "encryption_in_transit": "Required (HTTPS/TLS)",
+        "access_control": "Role-based. Available to institutional employees with a legitimate business need.",
+        "authentication": "Institutional SSO required",
+        "mfa": "Recommended for remote access",
+        "audit_logging": "Recommended",
+        "data_masking": "Not typically required",
+        "retention": "Per institutional records retention schedule",
+        "sharing": "Internal sharing permitted. External sharing requires approval from Data Steward.",
+        "disposal": "Secure deletion (overwrite or crypto-shred)"
+      }
+    },
+    {
+      "classification": "confidential",
+      "definition": "Data protected by regulation or policy. FERPA-protected student education records fall here at minimum.",
+      "examples": "Student PII (name + education record), grades, GPA, admission decisions, donor records, employee performance evaluations",
+      "handling": {
+        "encryption_at_rest": "Required (AES-256 or equivalent). Separate encryption keys from public/internal data.",
+        "encryption_in_transit": "Required (TLS 1.2+)",
+        "access_control": "Role-based with named authorization. Only users with a documented legitimate educational interest (FERPA) or business need.",
+        "authentication": "Institutional SSO required",
+        "mfa": "Required for all access",
+        "audit_logging": "Required. Log: who accessed, when, what data, from where. Retain logs for 7 years minimum.",
+        "data_masking": "Required in non-production environments (dev, test, training). PII must be masked or synthetic.",
+        "retention": "Per FERPA (education records retained as long as institution exists) and institutional schedule. Minimum 5 years after last enrollment for student records.",
+        "sharing": "External sharing requires: (a) Data Sharing Agreement, (b) Data Steward approval, (c) FERPA-compliant authorization (consent or exception). Internal sharing limited to authorized roles.",
+        "disposal": "Secure deletion with certificate of destruction. Crypto-shred encrypted data."
+      },
+      "ferpa_specific": {
+        "directory_information": "Check FERPA restriction flags (HELIX Hold, type: ferpa) before any disclosure of directory information",
+        "legitimate_educational_interest": "Document in role definitions which data each role needs and why",
+        "annual_notification": "Institution must annually notify students of their FERPA rights",
+        "third_party_disclosure": "Requires written consent OR a FERPA exception (health/safety emergency, judicial order, financial aid audit, authorized research, etc.)"
+      }
+    },
+    {
+      "classification": "restricted",
+      "definition": "Highly sensitive data requiring the strictest access controls. GLBA-covered customer financial information falls here.",
+      "examples": "SSN, bank account numbers, FAFSA/ISIR data, EFC/SAI, tax return information, health records (if not covered by HIPAA), disciplinary records",
+      "handling": {
+        "encryption_at_rest": "Required (AES-256). Dedicated KMS keys separate from confidential data. Column-level encryption for the most sensitive fields (SSN, bank accounts).",
+        "encryption_in_transit": "Required (TLS 1.3 preferred)",
+        "access_control": "Named individual authorization. No group/role grants. Each person accessing restricted data must be individually approved by the Data Trustee or designee.",
+        "authentication": "Institutional SSO required",
+        "mfa": "Required. Hardware token or phishing-resistant MFA preferred.",
+        "audit_logging": "Required. Enhanced logging: log query text in addition to access metadata. Real-time alerting on anomalous access patterns. Retain logs for 7+ years.",
+        "data_masking": "Required everywhere except the specific production process that needs the raw value. SSN: display only last 4 in all UIs. Bank accounts: never display.",
+        "tokenization": "Required for SSN and bank account numbers. Replace with tokens in all layers above bronze. Original values retained only in encrypted bronze with audit-logged access.",
+        "retention": "Per GLBA (as long as customer relationship + 5 years), FERPA, and institutional schedule. ISIR data: retain for 3 years after end of award year per federal regulation.",
+        "sharing": "External sharing requires: (a) Formal Data Sharing Agreement with GLBA provisions, (b) Data Trustee approval, (c) Legal/compliance review. No self-service access.",
+        "disposal": "Crypto-shred with certificate of destruction. Verify destruction across all copies including backups.",
+        "incident_response": "Any unauthorized access or breach must be reported to the GLBA coordinator and institution's incident response team within 24 hours"
+      },
+      "glba_specific": {
+        "safeguards_rule": "Designate a GLBA coordinator. Conduct annual risk assessment. Implement safeguards. Oversee service providers. Evaluate and adjust.",
+        "service_providers": "Any third-party with access to restricted financial data must have a contract with GLBA safeguards provisions",
+        "ftc_rule": "FTC Safeguards Rule (16 CFR 314) requires documented information security program for customer financial information"
+      }
+    }
+  ]
+}

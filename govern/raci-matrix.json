@@ -1,0 +1,159 @@
+{
+  "$schema": "https://helixedu.org/govern/raci-schema.json",
+  "title": "HELIX Govern: RACI Matrix Template",
+  "description": "Maps HELIX governance roles to responsibilities across data lifecycle activities. R=Responsible, A=Accountable, C=Consulted, I=Informed.",
+  "version": "0.1",
+  "roles": [
+    "Data Trustee",
+    "CDO",
+    "Data Steward",
+    "Data Custodian",
+    "Data Consumer"
+  ],
+  "activities": [
+    {
+      "activity": "Define business data definitions",
+      "data_trustee": "A",
+      "cdo": "C",
+      "data_steward": "R",
+      "data_custodian": "I",
+      "data_consumer": "C"
+    },
+    {
+      "activity": "Approve data policies",
+      "data_trustee": "R/A",
+      "cdo": "C",
+      "data_steward": "C",
+      "data_custodian": "I",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Maintain HELIX resource definitions",
+      "data_trustee": "I",
+      "cdo": "A",
+      "data_steward": "R",
+      "data_custodian": "C",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Map ERP data to HELIX (Bridge)",
+      "data_trustee": "I",
+      "cdo": "A",
+      "data_steward": "C",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Implement data quality rules",
+      "data_trustee": "I",
+      "cdo": "A",
+      "data_steward": "R",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Monitor data quality metrics",
+      "data_trustee": "I",
+      "cdo": "R",
+      "data_steward": "R",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Remediate data quality issues",
+      "data_trustee": "I",
+      "cdo": "I",
+      "data_steward": "A",
+      "data_custodian": "R",
+      "data_consumer": "C"
+    },
+    {
+      "activity": "Classify data (HELIX classification tiers)",
+      "data_trustee": "A",
+      "cdo": "R",
+      "data_steward": "R",
+      "data_custodian": "C",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Enforce access controls (FERPA/GLBA)",
+      "data_trustee": "A",
+      "cdo": "R",
+      "data_steward": "C",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Approve data access requests",
+      "data_trustee": "A",
+      "cdo": "C",
+      "data_steward": "R",
+      "data_custodian": "I",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Create/modify reports and dashboards",
+      "data_trustee": "I",
+      "cdo": "I",
+      "data_steward": "C",
+      "data_custodian": "C",
+      "data_consumer": "R"
+    },
+    {
+      "activity": "Report data quality issues",
+      "data_trustee": "I",
+      "cdo": "I",
+      "data_steward": "I",
+      "data_custodian": "I",
+      "data_consumer": "R"
+    },
+    {
+      "activity": "Conduct maturity assessment",
+      "data_trustee": "C",
+      "cdo": "R/A",
+      "data_steward": "C",
+      "data_custodian": "C",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Manage schema evolution (HELIX versioning)",
+      "data_trustee": "I",
+      "cdo": "A",
+      "data_steward": "C",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Approve third-party data sharing",
+      "data_trustee": "R/A",
+      "cdo": "C",
+      "data_steward": "C",
+      "data_custodian": "I",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Conduct FERPA access review (annual)",
+      "data_trustee": "A",
+      "cdo": "R",
+      "data_steward": "C",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Respond to student data requests (FERPA)",
+      "data_trustee": "I",
+      "cdo": "I",
+      "data_steward": "R",
+      "data_custodian": "C",
+      "data_consumer": "I"
+    },
+    {
+      "activity": "Manage data retention/disposal",
+      "data_trustee": "A",
+      "cdo": "R",
+      "data_steward": "C",
+      "data_custodian": "R",
+      "data_consumer": "I"
+    }
+  ]
+}

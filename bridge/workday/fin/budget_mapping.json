@@ -1,0 +1,93 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Budget",
+  "source_system": "workday",
+  "module": "Financial Management - Budgets",
+  "target_resource": "Budget (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Budget",
+      "description": "Budget header: budget name, fiscal year, status, structure (which worktags are budgeted)."
+    },
+    {
+      "object": "Budget Amendment",
+      "description": "Budget changes (increases, decreases, transfers) after the initial budget is set."
+    },
+    {
+      "object": "Budget Line",
+      "description": "Budget amounts by worktag combination (ledger account, cost center, fund, spend category). Equivalent to PS_LEDGER_KK."
+    },
+    {
+      "object": "Commitment",
+      "description": "Encumbrances and pre-encumbrances from purchase orders and requisitions."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "budget_id",
+      "source": "Budget.Budget_Name + worktag combination",
+      "transformation": "Composite key."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "Budget.Company (worktag)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "Budget.Fiscal_Year",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "account",
+      "source": "Budget Line.Ledger_Account (worktag)",
+      "transformation": "Map to HELIX account code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Budget Line.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Budget Line.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "budget_amount",
+      "source": "Budget Line.Budget_Amount",
+      "transformation": "Original budget + amendments."
+    },
+    {
+      "helix_attribute": "encumbered",
+      "source": "Commitment balance for this worktag combination",
+      "transformation": "Sum of open commitments (POs, contracts)."
+    },
+    {
+      "helix_attribute": "expended",
+      "source": "Actuals ledger balance for this worktag combination",
+      "transformation": "Sum of posted actuals."
+    },
+    {
+      "helix_attribute": "available_balance",
+      "source": "Derived",
+      "transformation": "budget_amount - encumbered - expended."
+    },
+    {
+      "helix_attribute": "budget_status",
+      "source": "Budget.Budget_Status",
+      "transformation": "Map: 'Draft'\u2192'draft', 'Approved'\u2192'open', 'Closed'\u2192'closed', 'Frozen'\u2192'frozen'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

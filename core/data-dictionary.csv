@@ -1,0 +1,538 @@
+term,resource,domain,definition,data_type,format,required,terminology_binding,classification,ferpa,glba,source_file
+helix_id,AcademicOrg,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/academic_org.json
+institution_id,AcademicOrg,Academic Structure,,string,,True,,internal,False,False,core/resources/academic_org.json
+code,AcademicOrg,Academic Structure,"Internal org code (e.g., 'ENGR', 'A&S', 'CS')",string,,False,,internal,False,False,core/resources/academic_org.json
+name,AcademicOrg,Academic Structure,"Official name (e.g., 'College of Engineering', 'Department of Computer Science')",string,,True,,internal,False,False,core/resources/academic_org.json
+short_name,AcademicOrg,Academic Structure,,string,,False,,internal,False,False,core/resources/academic_org.json
+org_type,AcademicOrg,Academic Structure,,string,,True,"enum: college, school, division, department, program_area...",internal,False,False,core/resources/academic_org.json
+parent_org_ref,AcademicOrg,Academic Structure,HELIX ID of the parent AcademicOrg. Null for top-level orgs.,string,,False,,internal,False,False,core/resources/academic_org.json
+dean_or_chair,AcademicOrg,Academic Structure,Name or reference to the org leader,string,,False,,internal,False,False,core/resources/academic_org.json
+is_active,AcademicOrg,Academic Structure,,boolean,,False,,internal,False,False,core/resources/academic_org.json
+effective_date,AcademicOrg,Academic Structure,,string,date,False,,internal,False,False,core/resources/academic_org.json
+end_date,AcademicOrg,Academic Structure,,string,date,False,,internal,False,False,core/resources/academic_org.json
+helix_id,AcademicPeriod,Academic Structure,,string,uuid,True,,public,False,False,core/resources/academic_period.json
+institution_id,AcademicPeriod,Academic Structure,,string,,True,,public,False,False,core/resources/academic_period.json
+period_type,AcademicPeriod,Academic Structure,,string,,True,"enum: semester, quarter, trimester, session, mini_term...",public,False,False,core/resources/academic_period.json
+code,AcademicPeriod,Academic Structure,"Institution's native term code (e.g., '202610', 'Fall 2026')",string,,True,,public,False,False,core/resources/academic_period.json
+name,AcademicPeriod,Academic Structure,,string,,False,,public,False,False,core/resources/academic_period.json
+academic_year,AcademicPeriod,Academic Structure,"Academic year in YYYY-YYYY format (e.g., '2026-2027')",string,,False,,public,False,False,core/resources/academic_period.json
+start_date,AcademicPeriod,Academic Structure,,string,date,True,,public,False,False,core/resources/academic_period.json
+end_date,AcademicPeriod,Academic Structure,,string,date,True,,public,False,False,core/resources/academic_period.json
+census_date,AcademicPeriod,Academic Structure,,string,date,False,,public,False,False,core/resources/academic_period.json
+is_active,AcademicPeriod,Academic Structure,,boolean,,False,,public,False,False,core/resources/academic_period.json
+helix_id,AdmissionApplication,Enrollment & Registration,,string,uuid,True,,confidential,True,False,core/resources/admission_application.json
+student_ref,AdmissionApplication,Enrollment & Registration,HELIX ID of the Student/Person (applicant),string,,True,,confidential,True,False,core/resources/admission_application.json
+institution_id,AdmissionApplication,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/admission_application.json
+application_number,AdmissionApplication,Enrollment & Registration,Institution-assigned application number,string,,False,,confidential,True,False,core/resources/admission_application.json
+application_type,AdmissionApplication,Enrollment & Registration,,string,,True,"enum: first_time_freshman, transfer, readmit, graduate, professional...",confidential,True,False,core/resources/admission_application.json
+admit_period_ref,AdmissionApplication,Enrollment & Registration,HELIX ID of the AcademicPeriod the applicant is applying for,string,,True,,confidential,True,False,core/resources/admission_application.json
+program_ref,AdmissionApplication,Enrollment & Registration,HELIX ID of the intended Program,string,,False,,confidential,True,False,core/resources/admission_application.json
+application_status,AdmissionApplication,Enrollment & Registration,Bound to helix/admission-status terminology,string,,True,helix/admission-status,confidential,True,False,core/resources/admission_application.json
+decision_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
+enrollment_deposit_paid,AdmissionApplication,Enrollment & Registration,,boolean,,False,,confidential,True,False,core/resources/admission_application.json
+enrollment_deposit_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
+enrollment_intent,AdmissionApplication,Enrollment & Registration,Whether the admitted student intends to enroll,string,,False,"enum: confirmed, declined, no_response, pending",confidential,True,False,core/resources/admission_application.json
+submitted_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
+application_source,AdmissionApplication,Enrollment & Registration,"Application platform (e.g., 'Common App', 'Coalition', 'institutional', 'SOPHAS', 'AMCAS')",string,,False,,confidential,True,False,core/resources/admission_application.json
+high_school_gpa,AdmissionApplication,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/admission_application.json
+transfer_gpa,AdmissionApplication,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/admission_application.json
+test_scores,AdmissionApplication,Enrollment & Registration,,array,,False,,confidential,True,False,core/resources/admission_application.json
+residency_at_application,AdmissionApplication,Enrollment & Registration,,string,,False,"enum: in_state, out_of_state, international, unknown",confidential,True,False,core/resources/admission_application.json
+first_generation_flag,AdmissionApplication,Enrollment & Registration,,boolean,,False,,confidential,True,False,core/resources/admission_application.json
+helix_id,Campaign,Advancement,,string,uuid,True,,internal,False,False,core/resources/campaign.json
+institution_id,Campaign,Advancement,,string,,True,,internal,False,False,core/resources/campaign.json
+name,Campaign,Advancement,"Campaign name (e.g., 'Forward Together: Campaign for State University')",string,,True,,internal,False,False,core/resources/campaign.json
+campaign_type,Campaign,Advancement,,string,,True,"enum: comprehensive, capital, annual_fund, giving_day, crowdfunding...",internal,False,False,core/resources/campaign.json
+goal_amount,Campaign,Advancement,,number,,True,,internal,False,False,core/resources/campaign.json
+raised_amount,Campaign,Advancement,Total raised to date,number,,False,,internal,False,False,core/resources/campaign.json
+donor_count,Campaign,Advancement,Unique donors to date,integer,,False,,internal,False,False,core/resources/campaign.json
+gift_count,Campaign,Advancement,Total gifts/pledges to date,integer,,False,,internal,False,False,core/resources/campaign.json
+start_date,Campaign,Advancement,,string,date,True,,internal,False,False,core/resources/campaign.json
+end_date,Campaign,Advancement,,string,date,False,,internal,False,False,core/resources/campaign.json
+status,Campaign,Advancement,,string,,False,"enum: planning, silent_phase, public_phase, completed, extended",internal,False,False,core/resources/campaign.json
+priorities,Campaign,Advancement,,array,,False,,internal,False,False,core/resources/campaign.json
+helix_id,Constituent,Advancement,,string,uuid,True,,confidential,True,False,core/resources/constituent.json
+institution_id,Constituent,Advancement,,string,,True,,confidential,True,False,core/resources/constituent.json
+person_ref,Constituent,Advancement,HELIX ID of the underlying Person resource (if individual),string,,False,,confidential,True,False,core/resources/constituent.json
+student_ref,Constituent,Advancement,HELIX ID of the Student resource (if alumnus),string,,False,,confidential,True,False,core/resources/constituent.json
+constituent_type,Constituent,Advancement,,string,,True,"enum: alumnus, donor, parent, friend, faculty_staff...",confidential,True,False,core/resources/constituent.json
+status,Constituent,Advancement,,string,,True,"enum: active, inactive, deceased, lost, do_not_contact...",confidential,True,False,core/resources/constituent.json
+class_year,Constituent,Advancement,"Graduation class year (e.g., '2015'). Primary affinity identifier for alumni.",string,,False,,confidential,True,False,core/resources/constituent.json
+degrees,Constituent,Advancement,,array,,False,,confidential,True,False,core/resources/constituent.json
+affinity_groups,Constituent,Advancement,"Affiliations: Greek org, athletics, college, department, student org, etc.",array,,False,,confidential,True,False,core/resources/constituent.json
+giving_capacity,Constituent,Advancement,,object,,False,,confidential,True,False,core/resources/constituent.json
+lifetime_giving,Constituent,Advancement,Total lifetime giving amount,number,,False,,confidential,True,False,core/resources/constituent.json
+last_gift_date,Constituent,Advancement,,string,date,False,,confidential,True,False,core/resources/constituent.json
+last_gift_amount,Constituent,Advancement,,number,,False,,confidential,True,False,core/resources/constituent.json
+consecutive_giving_years,Constituent,Advancement,,integer,,False,,confidential,True,False,core/resources/constituent.json
+largest_gift_amount,Constituent,Advancement,,number,,False,,confidential,True,False,core/resources/constituent.json
+donor_segment,Constituent,Advancement,Current donor lifecycle segment for targeting,string,,False,"enum: lapsed, first_time, renewing, upgrading, downgrading...",confidential,True,False,core/resources/constituent.json
+engagement_score,Constituent,Advancement,"Composite engagement score (events, emails, volunteering, social, etc.)",number,,False,,confidential,True,False,core/resources/constituent.json
+solicitation_codes,Constituent,Advancement,Active solicitation restrictions or preferences,array,,False,,confidential,True,False,core/resources/constituent.json
+assigned_officer,Constituent,Advancement,Development officer/gift officer managing this relationship,string,,False,,confidential,True,False,core/resources/constituent.json
+prospect_stage,Constituent,Advancement,Moves management pipeline stage,string,,False,"enum: identification, qualification, cultivation, solicitation, stewardship...",confidential,True,False,core/resources/constituent.json
+employer,Constituent,Advancement,,string,,False,,confidential,True,False,core/resources/constituent.json
+job_title,Constituent,Advancement,,string,,False,,confidential,True,False,core/resources/constituent.json
+industry,Constituent,Advancement,,string,,False,,confidential,True,False,core/resources/constituent.json
+communication_preferences,Constituent,Advancement,,object,,False,,confidential,True,False,core/resources/constituent.json
+helix_id,Course,Academic Structure,,string,uuid,True,,public,False,False,core/resources/course.json
+institution_id,Course,Academic Structure,,string,,True,,public,False,False,core/resources/course.json
+subject_code,Course,Academic Structure,"Department/subject prefix (e.g., 'CS', 'ECON', 'BIOL')",string,,True,,public,False,False,core/resources/course.json
+course_number,Course,Academic Structure,"Catalog number (e.g., '101', '4500')",string,,True,,public,False,False,core/resources/course.json
+title,Course,Academic Structure,Official course title,string,,True,,public,False,False,core/resources/course.json
+description,Course,Academic Structure,,string,,False,,public,False,False,core/resources/course.json
+credit_hours_min,Course,Academic Structure,Minimum credit hours (for variable-credit courses),number,,False,,public,False,False,core/resources/course.json
+credit_hours_max,Course,Academic Structure,Maximum credit hours,number,,False,,public,False,False,core/resources/course.json
+level,Course,Academic Structure,,string,,False,"enum: undergraduate_lower, undergraduate_upper, graduate, doctoral, professional...",public,False,False,core/resources/course.json
+academic_org_ref,Course,Academic Structure,HELIX ID of the owning academic organization/department,string,,False,,public,False,False,core/resources/course.json
+is_active,Course,Academic Structure,,boolean,,False,,public,False,False,core/resources/course.json
+effective_date,Course,Academic Structure,,string,date,False,,public,False,False,core/resources/course.json
+end_date,Course,Academic Structure,,string,date,False,,public,False,False,core/resources/course.json
+helix_id,CourseSection,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/course_section.json
+institution_id,CourseSection,Academic Structure,,string,,True,,internal,False,False,core/resources/course_section.json
+course_ref,CourseSection,Academic Structure,HELIX ID of the parent Course resource,string,,True,,internal,False,False,core/resources/course_section.json
+academic_period_ref,CourseSection,Academic Structure,HELIX ID of the AcademicPeriod,string,,True,,internal,False,False,core/resources/course_section.json
+section_number,CourseSection,Academic Structure,"Section identifier (e.g., '001', 'A')",string,,True,,internal,False,False,core/resources/course_section.json
+crn,CourseSection,Academic Structure,Course Reference Number or equivalent registration code,string,,False,,internal,False,False,core/resources/course_section.json
+title_override,CourseSection,Academic Structure,Section-specific title if different from catalog course,string,,False,,internal,False,False,core/resources/course_section.json
+delivery_mode,CourseSection,Academic Structure,,string,,False,"enum: in_person, online_synchronous, online_asynchronous, hybrid, hyflex...",internal,False,False,core/resources/course_section.json
+campus,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
+building,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
+room,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
+instructors,CourseSection,Academic Structure,,array,,False,,internal,False,False,core/resources/course_section.json
+max_enrollment,CourseSection,Academic Structure,,integer,,False,,internal,False,False,core/resources/course_section.json
+actual_enrollment,CourseSection,Academic Structure,,integer,,False,,internal,False,False,core/resources/course_section.json
+waitlist_capacity,CourseSection,Academic Structure,,integer,,False,,internal,False,False,core/resources/course_section.json
+credit_hours,CourseSection,Academic Structure,,number,,False,,internal,False,False,core/resources/course_section.json
+section_status,CourseSection,Academic Structure,,string,,False,"enum: active, cancelled, closed, pending",internal,False,False,core/resources/course_section.json
+schedule,CourseSection,Academic Structure,Meeting pattern,object,,False,,internal,False,False,core/resources/course_section.json
+fees,CourseSection,Academic Structure,,array,,False,,internal,False,False,core/resources/course_section.json
+cross_listed_sections,CourseSection,Academic Structure,"HELIX IDs of cross-listed sections (same meeting, different subject/number)",array,,False,,internal,False,False,core/resources/course_section.json
+final_exam_date,CourseSection,Academic Structure,,string,date-time,False,,internal,False,False,core/resources/course_section.json
+syllabus_url,CourseSection,Academic Structure,,string,uri,False,,internal,False,False,core/resources/course_section.json
+academic_org_ref,CourseSection,Academic Structure,HELIX ID of the owning department/AcademicOrg,string,,False,,internal,False,False,core/resources/course_section.json
+helix_id,Degree,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/degree.json
+student_ref,Degree,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/degree.json
+institution_id,Degree,Outcomes,,string,,True,,confidential,True,False,core/resources/degree.json
+program_ref,Degree,Outcomes,HELIX ID of the Program,string,,True,,confidential,True,False,core/resources/degree.json
+degree_type,Degree,Outcomes,"Degree designation (e.g., 'BS', 'MA', 'PhD')",string,,False,,confidential,True,False,core/resources/degree.json
+degree_level,Degree,Outcomes,,string,,False,"enum: associate, bachelors, masters, doctoral, professional...",confidential,True,False,core/resources/degree.json
+major,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+minor,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+concentration,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+conferral_date,Degree,Outcomes,,string,date,True,,confidential,True,False,core/resources/degree.json
+conferral_period_ref,Degree,Outcomes,HELIX ID of the AcademicPeriod of conferral,string,,False,,confidential,True,False,core/resources/degree.json
+honors,Degree,Outcomes,,string,,False,"enum: summa_cum_laude, magna_cum_laude, cum_laude, with_distinction, with_honors...",confidential,True,False,core/resources/degree.json
+cumulative_gpa,Degree,Outcomes,,number,,False,,confidential,True,False,core/resources/degree.json
+total_credit_hours_earned,Degree,Outcomes,,number,,False,,confidential,True,False,core/resources/degree.json
+thesis_title,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+second_major,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+additional_minors,Degree,Outcomes,,array,,False,,confidential,True,False,core/resources/degree.json
+certifications,Degree,Outcomes,Embedded certifications earned alongside the degree,array,,False,,confidential,True,False,core/resources/degree.json
+time_to_degree_terms,Degree,Outcomes,Number of terms from first enrollment to conferral,integer,,False,,confidential,True,False,core/resources/degree.json
+total_transfer_credits_applied,Degree,Outcomes,,number,,False,,confidential,True,False,core/resources/degree.json
+commencement_participation,Degree,Outcomes,,boolean,,False,,confidential,True,False,core/resources/degree.json
+degree_status,Degree,Outcomes,Tracks degree from near-completion through official conferral,string,,False,"enum: pending_requirements, pending_conferral, conferred, revoked",confidential,True,False,core/resources/degree.json
+helix_id,EngagementActivity,Advancement,,string,uuid,True,,internal,False,False,core/resources/engagement_activity.json
+constituent_ref,EngagementActivity,Advancement,,string,,True,,internal,False,False,core/resources/engagement_activity.json
+activity_type,EngagementActivity,Advancement,,string,,True,"enum: event_attendance, event_registration, email_open, email_click, email_reply...",internal,False,False,core/resources/engagement_activity.json
+activity_date,EngagementActivity,Advancement,,string,date-time,True,,internal,False,False,core/resources/engagement_activity.json
+event_name,EngagementActivity,Advancement,"Name of event, email campaign, or activity",string,,False,,internal,False,False,core/resources/engagement_activity.json
+event_type,EngagementActivity,Advancement,,string,,False,"enum: homecoming, reunion, gala, donor_reception, groundbreaking...",internal,False,False,core/resources/engagement_activity.json
+channel,EngagementActivity,Advancement,,string,,False,"enum: in_person, email, phone, social, web...",internal,False,False,core/resources/engagement_activity.json
+location,EngagementActivity,Advancement,,string,,False,,internal,False,False,core/resources/engagement_activity.json
+notes,EngagementActivity,Advancement,,string,,False,,internal,False,False,core/resources/engagement_activity.json
+engagement_points,EngagementActivity,Advancement,Weighted points for engagement scoring model,integer,,False,,internal,False,False,core/resources/engagement_activity.json
+linked_gift_ref,EngagementActivity,Advancement,"If this activity resulted in a gift, link to the Gift resource",string,,False,,internal,False,False,core/resources/engagement_activity.json
+officer_ref,EngagementActivity,Advancement,Development officer who facilitated the interaction,string,,False,,internal,False,False,core/resources/engagement_activity.json
+helix_id,Enrollment,Enrollment & Registration,,string,uuid,True,,confidential,True,False,core/resources/enrollment.json
+student_ref,Enrollment,Enrollment & Registration,HELIX ID of the Student resource,string,,True,,confidential,True,False,core/resources/enrollment.json
+course_section_ref,Enrollment,Enrollment & Registration,HELIX ID of the CourseSection resource,string,,True,,confidential,True,False,core/resources/enrollment.json
+academic_period_ref,Enrollment,Enrollment & Registration,HELIX ID of the AcademicPeriod resource,string,,True,,confidential,True,False,core/resources/enrollment.json
+enrollment_status,Enrollment,Enrollment & Registration,,string,,True,"enum: registered, waitlisted, enrolled, dropped, withdrawn...",confidential,True,False,core/resources/enrollment.json
+enrollment_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
+drop_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
+credit_hours_attempted,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
+credit_hours_earned,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
+grade,Enrollment,Enrollment & Registration,Final grade. Bound to institution's HELIX grade terminology profile.,string,,False,,confidential,True,False,core/resources/enrollment.json
+grade_points,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
+grade_mode,Enrollment,Enrollment & Registration,,string,,False,"enum: standard, pass_fail, audit, satisfactory_unsatisfactory, other",confidential,True,False,core/resources/enrollment.json
+repeat_flag,Enrollment,Enrollment & Registration,,boolean,,False,,confidential,True,False,core/resources/enrollment.json
+midterm_grade,Enrollment,Enrollment & Registration,Midterm/progress grade if institution uses early alert grading,string,,False,,confidential,True,False,core/resources/enrollment.json
+last_attendance_date,Enrollment,Enrollment & Registration,Last date of academic activity. Required for federal financial aid return calculations.,string,date,False,,confidential,True,False,core/resources/enrollment.json
+attendance_verified,Enrollment,Enrollment & Registration,Whether attendance/participation has been verified by instructor,boolean,,False,,confidential,True,False,core/resources/enrollment.json
+final_exam_grade,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
+instructional_method,Enrollment,Enrollment & Registration,,string,,False,"enum: lecture, lab, seminar, independent_study, internship...",confidential,True,False,core/resources/enrollment.json
+billing_hours,Enrollment,Enrollment & Registration,Credit hours used for billing purposes (may differ from academic credit hours),number,,False,,confidential,True,False,core/resources/enrollment.json
+helix_id,FinAidAward,Financial Aid,,string,uuid,True,,restricted,True,True,core/resources/fin_aid_award.json
+student_ref,FinAidAward,Financial Aid,HELIX ID of the Student resource,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+academic_period_ref,FinAidAward,Financial Aid,HELIX ID of the AcademicPeriod,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+award_type,FinAidAward,Financial Aid,,string,,True,"enum: grant, scholarship, loan_subsidized, loan_unsubsidized, loan_plus...",restricted,True,True,core/resources/fin_aid_award.json
+fund_source,FinAidAward,Financial Aid,,string,,True,"enum: federal, state, institutional, private, employer...",restricted,True,True,core/resources/fin_aid_award.json
+fund_name,FinAidAward,Financial Aid,"Specific fund or program name (e.g., 'Federal Pell Grant', 'Dean's Scholarship')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+fund_code,FinAidAward,Financial Aid,Institution's internal fund code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+award_status,FinAidAward,Financial Aid,,string,,True,"enum: offered, accepted, declined, cancelled, disbursed...",restricted,True,True,core/resources/fin_aid_award.json
+amount_offered,FinAidAward,Financial Aid,Amount offered in local currency,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+amount_accepted,FinAidAward,Financial Aid,,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+amount_disbursed,FinAidAward,Financial Aid,,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+currency,FinAidAward,Financial Aid,ISO 4217 currency code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+disbursement_date,FinAidAward,Financial Aid,,string,date,False,,restricted,True,True,core/resources/fin_aid_award.json
+academic_year,FinAidAward,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+need_based_flag,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+merit_based_flag,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+efc,FinAidAward,Financial Aid,Expected Family Contribution / Student Aid Index at time of award,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+program_ref,FinAidAward,Financial Aid,HELIX ID of the Program this award is associated with (if program-specific),string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+renewal_criteria,FinAidAward,Financial Aid,"Conditions for award renewal (e.g., 'Maintain 3.0 GPA')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+is_renewable,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+award_year_total,FinAidAward,Financial Aid,Total award amount across all terms in the academic year,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+cost_of_attendance,FinAidAward,Financial Aid,Institutional COA budget used for this award calculation,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+unmet_need,FinAidAward,Financial Aid,Remaining financial need after all awards,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+satisfactory_academic_progress,FinAidAward,Financial Aid,SAP status at time of award. Federal aid requires SAP compliance.,string,,False,"enum: meeting, warning, probation, suspension, appeal_approved...",restricted,True,True,core/resources/fin_aid_award.json
+helix_id,Gift,Advancement,,string,uuid,True,,confidential,True,False,core/resources/gift.json
+institution_id,Gift,Advancement,,string,,True,,confidential,True,False,core/resources/gift.json
+constituent_ref,Gift,Advancement,HELIX ID of the Constituent resource (donor),string,,True,,confidential,True,False,core/resources/gift.json
+gift_number,Gift,Advancement,Institution-assigned gift/receipt number,string,,False,,confidential,True,False,core/resources/gift.json
+gift_type,Gift,Advancement,Type of philanthropic transaction,string,,True,"enum: outright_gift, pledge, pledge_payment, matching_gift, planned_gift...",confidential,True,False,core/resources/gift.json
+amount,Gift,Advancement,Gift amount (or fair market value for in-kind),number,,True,,confidential,True,False,core/resources/gift.json
+currency,Gift,Advancement,,string,,False,,confidential,True,False,core/resources/gift.json
+gift_date,Gift,Advancement,Date the gift was received or pledged,string,date,True,,confidential,True,False,core/resources/gift.json
+receipt_date,Gift,Advancement,,string,date,False,,confidential,True,False,core/resources/gift.json
+designation,Gift,Advancement,Where the gift is directed,object,,False,,confidential,True,False,core/resources/gift.json
+campaign_ref,Gift,Advancement,HELIX ID of the Campaign resource (if gift is counted toward a campaign),string,,False,,confidential,True,False,core/resources/gift.json
+appeal_code,Gift,Advancement,Solicitation/appeal that prompted the gift,string,,False,,confidential,True,False,core/resources/gift.json
+gift_source,Gift,Advancement,,string,,False,"enum: online, mail, phone, event, in_person...",confidential,True,False,core/resources/gift.json
+payment_method,Gift,Advancement,,string,,False,"enum: check, credit_card, ach, wire, stock...",confidential,True,False,core/resources/gift.json
+pledge_ref,Gift,Advancement,"If this is a pledge payment, HELIX ID of the original pledge Gift",string,,False,,confidential,True,False,core/resources/gift.json
+pledge_balance,Gift,Advancement,Remaining pledge balance (on pledge records),number,,False,,confidential,True,False,core/resources/gift.json
+matching_company,Gift,Advancement,Employer name for corporate matching gifts,string,,False,,confidential,True,False,core/resources/gift.json
+matching_ratio,Gift,Advancement,"Match ratio (e.g., '1:1', '2:1')",string,,False,,confidential,True,False,core/resources/gift.json
+tax_deductible_amount,Gift,Advancement,,number,,False,,confidential,True,False,core/resources/gift.json
+anonymous_flag,Gift,Advancement,Donor wishes to remain anonymous for public recognition,boolean,,False,,confidential,True,False,core/resources/gift.json
+soft_credit_constituents,Gift,Advancement,"HELIX IDs of constituents who receive soft credit (spouse, advisor, etc.)",array,,False,,confidential,True,False,core/resources/gift.json
+acknowledgment_status,Gift,Advancement,Thank-you/acknowledgment letter status,string,,False,"enum: pending, sent, not_required",confidential,True,False,core/resources/gift.json
+acknowledgment_date,Gift,Advancement,,string,date,False,,confidential,True,False,core/resources/gift.json
+stewardship_actions,Gift,Advancement,,array,,False,,confidential,True,False,core/resources/gift.json
+helix_id,Hold,Student Services,,string,uuid,True,,confidential,True,False,core/resources/hold.json
+student_ref,Hold,Student Services,,string,,True,,confidential,True,False,core/resources/hold.json
+hold_type,Hold,Student Services,,string,,True,"enum: registration, financial, academic, disciplinary, transcript...",confidential,True,False,core/resources/hold.json
+hold_status,Hold,Student Services,,string,,True,"enum: active, released, expired",confidential,True,False,core/resources/hold.json
+reason,Hold,Student Services,"Human-readable reason for the hold (e.g., 'Unpaid balance', 'Missing immunization records')",string,,False,,confidential,True,False,core/resources/hold.json
+hold_code,Hold,Student Services,Institution's internal hold code,string,,False,,confidential,True,False,core/resources/hold.json
+placed_date,Hold,Student Services,,string,date,False,,confidential,True,False,core/resources/hold.json
+released_date,Hold,Student Services,,string,date,False,,confidential,True,False,core/resources/hold.json
+expiration_date,Hold,Student Services,Date the hold auto-expires if not released,string,date,False,,confidential,True,False,core/resources/hold.json
+placed_by_office,Hold,Student Services,Office or department that placed the hold,string,,False,,confidential,True,False,core/resources/hold.json
+prevents,Hold,Student Services,What actions this hold prevents,array,,False,,confidential,True,False,core/resources/hold.json
+amount_owed,Hold,Student Services,"For financial holds, the outstanding balance",number,,False,,confidential,True,True,core/resources/hold.json
+currency,Hold,Student Services,,string,,False,,confidential,True,False,core/resources/hold.json
+helix_id,Institution,Identity,Globally unique HELIX identifier,string,uuid,True,,public,False,False,core/resources/institution.json
+name,Institution,Identity,Official institution name,string,,True,,public,False,False,core/resources/institution.json
+short_name,Institution,Identity,"Common abbreviation (e.g., 'OSU', 'MIT')",string,,False,,public,False,False,core/resources/institution.json
+identifiers,Institution,Identity,"External identifiers (IPEDS UnitID, OPEID, HESA UKPRN, etc.)",array,,False,,public,False,False,core/resources/institution.json
+institution_type,Institution,Identity,,string,,True,"enum: university, college, community_college, technical_college, system_office...",public,False,False,core/resources/institution.json
+carnegie_classification,Institution,Identity,Carnegie Classification code (US institutions),string,,False,,public,False,False,core/resources/institution.json
+country,Institution,Identity,,string,iso-3166-1-alpha-2,True,,public,False,False,core/resources/institution.json
+state_province,Institution,Identity,"State, province, or region",string,,False,,public,False,False,core/resources/institution.json
+timezone,Institution,Identity,"IANA timezone (e.g., 'America/New_York')",string,,False,,public,False,False,core/resources/institution.json
+erp_system,Institution,Identity,Primary SIS/ERP platform,string,,False,"enum: banner, peoplesoft, workday, colleague, jenzabar...",public,False,False,core/resources/institution.json
+website,Institution,Identity,,string,uri,False,,public,False,False,core/resources/institution.json
+helix_id,Person,Identity,,string,uuid,True,,confidential,True,False,core/resources/person.json
+institution_id,Person,Identity,,string,,True,,confidential,True,False,core/resources/person.json
+identifiers,Person,Identity,All known identifiers across systems,array,,True,,confidential,True,False,core/resources/person.json
+name,Person,Identity,,object,,True,,confidential,True,False,core/resources/person.json
+birth_date,Person,Identity,,string,date,False,,confidential,True,False,core/resources/person.json
+gender,Person,Identity,Bound to helix/gender terminology,string,,False,,confidential,True,False,core/resources/person.json
+gender_identity,Person,Identity,Self-reported gender identity. Bound to helix/gender-identity terminology. Separate from legal gender for institutions that track both.,string,,False,,confidential,True,False,core/resources/person.json
+pronouns,Person,Identity,"Preferred pronouns (e.g., 'he/him', 'she/her', 'they/them')",string,,False,,confidential,True,False,core/resources/person.json
+ethnicity,Person,Identity,Self-reported ethnicity/race categories. Multi-select. Bound to helix/ethnicity terminology or country-specific profile.,array,,False,,confidential,True,False,core/resources/person.json
+citizenship_countries,Person,Identity,Countries of citizenship (supports dual/multi citizenship),array,,False,,confidential,True,False,core/resources/person.json
+primary_language,Person,Identity,ISO 639-1 language code,string,,False,,confidential,True,False,core/resources/person.json
+is_deceased,Person,Identity,,boolean,,False,,confidential,True,False,core/resources/person.json
+deceased_date,Person,Identity,,string,date,False,,confidential,True,False,core/resources/person.json
+contact,Person,Identity,Contact information,object,,False,,confidential,True,False,core/resources/person.json
+emergency_contacts,Person,Identity,,array,,False,,confidential,True,False,core/resources/person.json
+helix_id,Program,Academic Structure,,string,uuid,True,,public,False,False,core/resources/program.json
+institution_id,Program,Academic Structure,,string,,True,,public,False,False,core/resources/program.json
+code,Program,Academic Structure,Institution's program code,string,,False,,public,False,False,core/resources/program.json
+name,Program,Academic Structure,"Official program name (e.g., 'Computer Science')",string,,True,,public,False,False,core/resources/program.json
+degree_type,Program,Academic Structure,"Degree designation (e.g., 'BS', 'BA', 'MS', 'PhD', 'AAS')",string,,False,,public,False,False,core/resources/program.json
+degree_level,Program,Academic Structure,,string,,True,"enum: associate, bachelors, masters, doctoral, professional...",public,False,False,core/resources/program.json
+program_type,Program,Academic Structure,,string,,True,"enum: major, minor, concentration, certificate, credential...",public,False,False,core/resources/program.json
+cip_code,Program,Academic Structure,"NCES Classification of Instructional Programs code (e.g., '11.0701')",string,,False,,public,False,False,core/resources/program.json
+academic_org_ref,Program,Academic Structure,HELIX ID of the owning college/school/department,string,,False,,public,False,False,core/resources/program.json
+total_credit_hours_required,Program,Academic Structure,,number,,False,,public,False,False,core/resources/program.json
+is_active,Program,Academic Structure,,boolean,,False,,public,False,False,core/resources/program.json
+accreditation_body,Program,Academic Structure,External accreditor if program-level accreditation exists,string,,False,,public,False,False,core/resources/program.json
+delivery_mode,Program,Academic Structure,Primary delivery mode for the program,string,,False,"enum: in_person, online, hybrid, competency_based, correspondence...",public,False,False,core/resources/program.json
+program_length_terms,Program,Academic Structure,Expected program length in standard terms,integer,,False,,public,False,False,core/resources/program.json
+admission_selectivity,Program,Academic Structure,Program-level admission selectivity,string,,False,"enum: open_admission, selective, highly_selective, special_admission",public,False,False,core/resources/program.json
+stackable_credentials,Program,Academic Structure,HELIX IDs of related Programs that stack into this credential,array,,False,,public,False,False,core/resources/program.json
+gainful_employment_flag,Program,Academic Structure,Whether the program is subject to Gainful Employment reporting (US),boolean,,False,,public,False,False,core/resources/program.json
+helix_id,Student,Identity,Globally unique HELIX identifier,string,uuid,True,,confidential,True,False,core/resources/student.json
+institution_id,Student,Identity,HELIX identifier for the institution (references Institution resource),string,,True,,confidential,True,False,core/resources/student.json
+identifiers,Student,Identity,All known identifiers for this student across systems,array,,True,,confidential,True,False,core/resources/student.json
+name,Student,Identity,,object,,False,,confidential,True,False,core/resources/student.json
+birth_date,Student,Identity,,string,date,False,,confidential,True,False,core/resources/student.json
+gender,Student,Identity,Bound to HELIX terminology: helix/gender,string,,False,,confidential,True,False,core/resources/student.json
+status,Student,Identity,Current lifecycle status. Bound to HELIX terminology: helix/student-status,string,,True,helix/student-status,confidential,True,False,core/resources/student.json
+first_generation_flag,Student,Identity,,boolean,,False,,confidential,True,False,core/resources/student.json
+citizenship_country,Student,Identity,,string,iso-3166-1-alpha-2,False,,confidential,True,False,core/resources/student.json
+residency,Student,Identity,,string,,False,"enum: in_state, out_of_state, international, unknown",confidential,True,False,core/resources/student.json
+demographics,Student,Identity,Extension point for institution- or country-specific demographic attributes,object,,False,,confidential,True,False,core/resources/student.json
+person_ref,Student,Identity,HELIX ID of the underlying Person resource. A Student is a role on a Person.,string,,False,,confidential,True,False,core/resources/student.json
+student_type,Student,Identity,Classification of the student's entry pathway,string,,False,"enum: first_time_freshman, transfer, readmit, continuing, dual_enrollment...",confidential,True,False,core/resources/student.json
+academic_level,Student,Identity,Current academic career/level,string,,False,"enum: undergraduate, graduate, doctoral, professional, non_degree...",confidential,True,False,core/resources/student.json
+class_standing,Student,Identity,Current class standing based on earned credit hours,string,,False,"enum: freshman, sophomore, junior, senior, post_baccalaureate...",confidential,True,False,core/resources/student.json
+full_part_time,Student,Identity,Enrollment intensity. Critical for financial aid and IPEDS reporting.,string,,False,"enum: full_time, three_quarter_time, half_time, less_than_half_time, not_enrolled",confidential,True,False,core/resources/student.json
+cumulative_gpa,Student,Identity,Overall cumulative GPA,number,,False,,confidential,True,False,core/resources/student.json
+total_credits_earned,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
+total_credits_attempted,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
+admit_period_ref,Student,Identity,HELIX ID of the AcademicPeriod when the student was first admitted,string,,False,,confidential,True,False,core/resources/student.json
+matriculation_date,Student,Identity,Date the student first enrolled (matriculated),string,date,False,,confidential,True,False,core/resources/student.json
+expected_graduation_date,Student,Identity,,string,date,False,,confidential,True,False,core/resources/student.json
+primary_program_ref,Student,Identity,HELIX ID of the student's primary StudentProgram,string,,False,,confidential,True,False,core/resources/student.json
+cohort,Student,Identity,"Cohort identifier for tracking (e.g., 'Fall 2024 FTFT' for first-time full-time)",string,,False,,confidential,True,False,core/resources/student.json
+veteran_status,Student,Identity,Military/veteran classification for benefits and reporting,string,,False,"enum: none, veteran, active_duty, reserve_national_guard, dependent_spouse...",confidential,True,False,core/resources/student.json
+international_student,Student,Identity,International student attributes (populated only for non-domestic students),object,,False,,confidential,True,False,core/resources/student.json
+helix_id,StudentProgram,Enrollment & Registration,,string,uuid,True,,confidential,True,False,core/resources/student_program.json
+student_ref,StudentProgram,Enrollment & Registration,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/student_program.json
+program_ref,StudentProgram,Enrollment & Registration,HELIX ID of the Program,string,,True,,confidential,True,False,core/resources/student_program.json
+academic_level,StudentProgram,Enrollment & Registration,Academic career/level for this program enrollment,string,,False,"enum: undergraduate, graduate, doctoral, professional, non_degree...",confidential,True,False,core/resources/student_program.json
+program_status,StudentProgram,Enrollment & Registration,Current status within this program,string,,True,"enum: active, completed, withdrawn, dismissed, suspended...",confidential,True,False,core/resources/student_program.json
+is_primary,StudentProgram,Enrollment & Registration,Whether this is the student's primary program (for students with multiple programs),boolean,,False,,confidential,True,False,core/resources/student_program.json
+start_period_ref,StudentProgram,Enrollment & Registration,HELIX ID of the AcademicPeriod when the student entered this program,string,,True,,confidential,True,False,core/resources/student_program.json
+expected_completion_period_ref,StudentProgram,Enrollment & Registration,HELIX ID of the expected graduation/completion period,string,,False,,confidential,True,False,core/resources/student_program.json
+actual_completion_date,StudentProgram,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/student_program.json
+catalog_year,StudentProgram,Enrollment & Registration,"Catalog year governing degree requirements (e.g., '2024-2025')",string,,False,,confidential,True,False,core/resources/student_program.json
+advisor_name,StudentProgram,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/student_program.json
+advisor_ref,StudentProgram,Enrollment & Registration,HELIX ID or identifier for the assigned advisor,string,,False,,confidential,True,False,core/resources/student_program.json
+class_standing,StudentProgram,Enrollment & Registration,Current class standing based on credit hours earned,string,,False,"enum: freshman, sophomore, junior, senior, post_baccalaureate...",confidential,True,False,core/resources/student_program.json
+cumulative_gpa,StudentProgram,Enrollment & Registration,Cumulative GPA within this program/career,number,,False,,confidential,True,False,core/resources/student_program.json
+total_credits_earned,StudentProgram,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/student_program.json
+total_credits_attempted,StudentProgram,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/student_program.json
+helix_id,TransferCredit,Enrollment & Registration,,string,uuid,True,,confidential,True,False,core/resources/transfer_credit.json
+student_ref,TransferCredit,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/transfer_credit.json
+institution_id,TransferCredit,Enrollment & Registration,HELIX ID of the receiving (current) institution,string,,True,,confidential,True,False,core/resources/transfer_credit.json
+source_institution_name,TransferCredit,Enrollment & Registration,Name of the institution where credit was earned,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_institution_id,TransferCredit,Enrollment & Registration,"HELIX ID of the source institution if registered, or external ID (FICE, OPEID, CEEB)",string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_course_subject,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_course_number,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_course_title,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_credit_hours,TransferCredit,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_grade,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+source_term,TransferCredit,Enrollment & Registration,Term/period at the source institution when the course was taken,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+equivalent_course_ref,TransferCredit,Enrollment & Registration,HELIX ID of the equivalent Course at the receiving institution. Null if accepted as elective.,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+equivalent_subject,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+equivalent_course_number,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+credit_hours_accepted,TransferCredit,Enrollment & Registration,Credit hours accepted at the receiving institution (may differ from source),number,,False,,confidential,True,False,core/resources/transfer_credit.json
+transfer_status,TransferCredit,Enrollment & Registration,,string,,True,"enum: pending_evaluation, accepted, denied, partially_accepted, expired",confidential,True,False,core/resources/transfer_credit.json
+applies_to,TransferCredit,Enrollment & Registration,How the transfer credit applies to the student's degree requirements,string,,False,"enum: major_requirement, minor_requirement, general_education, elective, prerequisite...",confidential,True,False,core/resources/transfer_credit.json
+evaluation_date,TransferCredit,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/transfer_credit.json
+evaluated_by,TransferCredit,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/transfer_credit.json
+counts_toward_gpa,TransferCredit,Enrollment & Registration,Whether transfer credit is included in the institutional GPA calculation,boolean,,False,,confidential,True,False,core/resources/transfer_credit.json
+helix/admission-status/submitted,Terminology: Admission Status,Terminology,Application received by the institution,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/in_review,Terminology: Admission Status,Terminology,Application is being evaluated by admissions staff or committee,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/incomplete,Terminology: Admission Status,Terminology,"Application is missing required materials (transcripts, test scores, essays, etc.)",code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/admitted,Terminology: Admission Status,Terminology,Full admission offered,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/conditionally_admitted,Terminology: Admission Status,Terminology,"Admission contingent on meeting specified conditions (e.g., final transcript, GPA threshold)",code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/denied,Terminology: Admission Status,Terminology,Application was not approved for admission,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/waitlisted,Terminology: Admission Status,Terminology,Applicant placed on a waiting list pending space availability,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/deferred,Terminology: Admission Status,Terminology,Decision postponed to a future review cycle (common in early decision/action),code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/cancelled,Terminology: Admission Status,Terminology,"Application cancelled by the institution (e.g., duplicate, fraud)",code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/admission-status/withdrawn,Terminology: Admission Status,Terminology,Applicant voluntarily withdrew their application,code,,False,helix/admission-status,public,False,False,core/terminologies/admission-status.json
+helix/award-type/grant,Terminology: Financial Aid Award Type,Terminology,"Gift aid that does not need to be repaid (e.g., Pell Grant)",code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/scholarship,Terminology: Financial Aid Award Type,Terminology,Merit- or criteria-based gift aid that does not need to be repaid,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/loan_subsidized,Terminology: Financial Aid Award Type,Terminology,Need-based loan where the government pays interest while student is enrolled,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/loan_unsubsidized,Terminology: Financial Aid Award Type,Terminology,Non-need-based loan where interest accrues from disbursement,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/loan_plus,Terminology: Financial Aid Award Type,Terminology,Federal loan for parents of dependent undergrads or graduate/professional students,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/loan_private,Terminology: Financial Aid Award Type,Terminology,"Loan from a private lender, not part of federal programs",code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/work_study,Terminology: Financial Aid Award Type,Terminology,Earnings from a federally or institutionally funded part-time employment program,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/waiver,Terminology: Financial Aid Award Type,Terminology,Full or partial waiver of tuition or fees,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/fellowship,Terminology: Financial Aid Award Type,Terminology,"Financial support for graduate students, typically for research or academic merit",code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/assistantship,Terminology: Financial Aid Award Type,Terminology,Graduate teaching or research assistantship with stipend and/or tuition remission,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/award-type/other,Terminology: Financial Aid Award Type,Terminology,An award type not covered by the standard codes,code,,False,helix/award-type,public,False,False,core/terminologies/award-type.json
+helix/constituent-type/alumnus,Terminology: Constituent Type,Terminology,Graduate or former student of the institution,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/donor,Terminology: Constituent Type,Terminology,Any individual who has made a gift (may overlap with other types),code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/parent,Terminology: Constituent Type,Terminology,Parent or family member of a current or former student,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/friend,Terminology: Constituent Type,Terminology,Non-alumni individual with institutional affinity,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/faculty_staff,Terminology: Constituent Type,Terminology,Current or former employee,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/corporation,Terminology: Constituent Type,Terminology,Corporate entity for matching gifts or sponsorships,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/foundation,Terminology: Constituent Type,Terminology,Private or community foundation,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/organization,Terminology: Constituent Type,Terminology,"Non-profit, association, or other entity",code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/prospect,Terminology: Constituent Type,Terminology,Identified potential donor not yet in the giving pipeline,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/constituent-type/other,Terminology: Constituent Type,Terminology,Other,code,,False,helix/constituent-type,public,False,False,core/terminologies/constituent-type.json
+helix/course-level/developmental,Terminology: Course Level,Terminology,Below college-level. Does not count toward degree credit.,code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/undergraduate_lower,Terminology: Course Level,Terminology,100-200 level. Introductory and foundational courses.,code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/undergraduate_upper,Terminology: Course Level,Terminology,300-400 level. Advanced undergraduate courses requiring prerequisites.,code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/graduate,Terminology: Course Level,Terminology,500-600 level (convention varies). Master's-level coursework.,code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/doctoral,Terminology: Course Level,Terminology,"700+ level. Doctoral seminars, research, dissertation hours.",code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/professional,Terminology: Course Level,Terminology,"Professional program courses (law, medicine, etc.) with their own numbering conventions.",code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/non_credit,Terminology: Course Level,Terminology,"Continuing education, professional development, or community courses not carrying academic credit.",code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/course-level/other,Terminology: Course Level,Terminology,Other,code,,False,helix/course-level,public,False,False,core/terminologies/course-level.json
+helix/data-classification/public,Terminology: Data Classification,Terminology,"Data approved for unrestricted public access (e.g., course catalog, institution name)",code,,False,helix/data-classification,public,False,False,core/terminologies/data-classification.json
+helix/data-classification/internal,Terminology: Data Classification,Terminology,"Data intended for institutional use only (e.g., enrollment counts, section capacity)",code,,False,helix/data-classification,public,False,False,core/terminologies/data-classification.json
+helix/data-classification/confidential,Terminology: Data Classification,Terminology,"Data protected by regulation or policy (e.g., student PII, grades, financial aid). FERPA-protected data falls here at minimum.",code,,False,helix/data-classification,public,False,False,core/terminologies/data-classification.json
+helix/data-classification/restricted,Terminology: Data Classification,Terminology,"Highly sensitive data requiring strict access controls (e.g., SSN, health records, disciplinary records)",code,,False,helix/data-classification,public,False,False,core/terminologies/data-classification.json
+helix/degree-level/certificate_undergraduate,Terminology: Degree Level,Terminology,Sub-baccalaureate certificate (less than 1 year or 1-2 years),code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/associate,Terminology: Degree Level,Terminology,"Two-year degree (AA, AS, AAS, etc.)",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/bachelors,Terminology: Degree Level,Terminology,"Four-year baccalaureate degree (BA, BS, BFA, etc.)",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/certificate_post_baccalaureate,Terminology: Degree Level,Terminology,Post-Baccalaureate Certificate,code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/masters,Terminology: Degree Level,Terminology,"Graduate-level master's degree (MA, MS, MBA, MFA, etc.)",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/certificate_post_masters,Terminology: Degree Level,Terminology,"e.g., Education Specialist (EdS)",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/doctoral_research,Terminology: Degree Level,Terminology,"PhD, EdD (research-focused), DMA, etc.",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/doctoral_professional,Terminology: Degree Level,Terminology,"MD, JD, DDS, PharmD, DPT, etc.",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/professional,Terminology: Degree Level,Terminology,Legacy IPEDS category. Being phased into doctoral_professional.,code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/non_degree,Terminology: Degree Level,Terminology,Enrollment without pursuit of a formal credential,code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/micro_credential,Terminology: Degree Level,Terminology,"Short-form credential, often competency-based or industry-aligned",code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/degree-level/other,Terminology: Degree Level,Terminology,Other,code,,False,helix/degree-level,public,False,False,core/terminologies/degree-level.json
+helix/delivery-mode/in_person,Terminology: Delivery Mode,Terminology,Traditional face-to-face instruction in a physical classroom,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/online_synchronous,Terminology: Delivery Mode,Terminology,"Online instruction with scheduled real-time meetings (via Zoom, Teams, etc.)",code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/online_asynchronous,Terminology: Delivery Mode,Terminology,Online instruction with no scheduled meeting times. Students access materials on their own schedule.,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/hybrid,Terminology: Delivery Mode,Terminology,"Mix of in-person and online components, with reduced in-person seat time",code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/hyflex,Terminology: Delivery Mode,Terminology,Students choose per-session whether to attend in person or online synchronously,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/competency_based,Terminology: Delivery Mode,Terminology,Progress based on demonstrated mastery rather than seat time,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/correspondence,Terminology: Delivery Mode,Terminology,Self-paced study via mailed or digital materials with limited instructor interaction,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/clinical,Terminology: Delivery Mode,Terminology,"Supervised hands-on experience in a clinical, field, or professional setting",code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/internship,Terminology: Delivery Mode,Terminology,Work-integrated learning in a professional setting,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/independent_study,Terminology: Delivery Mode,Terminology,Student-directed study under faculty supervision,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/delivery-mode/other,Terminology: Delivery Mode,Terminology,Other,code,,False,helix/delivery-mode,public,False,False,core/terminologies/delivery-mode.json
+helix/donor-segment/non_donor,Terminology: Donor Segment,Terminology,Constituent has never made a gift,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/first_time,Terminology: Donor Segment,Terminology,Made their first gift in the current fiscal year,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/renewing,Terminology: Donor Segment,Terminology,Gave last year and gave again this year at the same level,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/upgrading,Terminology: Donor Segment,Terminology,Gave last year and increased their giving this year,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/downgrading,Terminology: Donor Segment,Terminology,Gave last year but decreased their giving this year,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/loyal,Terminology: Donor Segment,Terminology,Has given consecutively for 3+ years,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/lapsed,Terminology: Donor Segment,Terminology,Previously gave but has not given in the last 1-2 fiscal years,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/deep_lapsed,Terminology: Donor Segment,Terminology,Previously gave but has not given in 3+ fiscal years,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/major,Terminology: Donor Segment,Terminology,Cumulative or single-gift giving at the institution's major gift threshold (typically $25K-$100K+),code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/planned_giving,Terminology: Donor Segment,Terminology,"Has documented a planned gift (bequest, trust, beneficiary designation)",code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/donor-segment/recaptured,Terminology: Donor Segment,Terminology,Was lapsed but made a new gift this year,code,,False,helix/donor-segment,public,False,False,core/terminologies/donor-segment.json
+helix/enrollment-funnel-stage/suspect,Terminology: Enrollment Funnel Stage,Terminology,"Name purchased or scraped from College Board, ACT, NRCCUA, or other list source. No interaction yet.",code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/inquiry,Terminology: Enrollment Funnel Stage,Terminology,"Student has initiated contact: RFI form, campus visit request, email, test score send, or fair card.",code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/applicant,Terminology: Enrollment Funnel Stage,Terminology,Student has submitted an application for admission.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/admitted,Terminology: Enrollment Funnel Stage,Terminology,Application approved. Admit letter/package sent.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/confirmed,Terminology: Enrollment Funnel Stage,Terminology,"Student has paid enrollment deposit, confirming intent to enroll.",code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/registered,Terminology: Enrollment Funnel Stage,Terminology,Student has completed orientation and/or registered for courses.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/enrolled,Terminology: Enrollment Funnel Stage,Terminology,Student attended first day/census. Officially counted in enrollment.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/melted,Terminology: Enrollment Funnel Stage,Terminology,Student confirmed/deposited but did not register or attend. Lost between confirmation and enrollment.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/denied,Terminology: Enrollment Funnel Stage,Terminology,Application was not approved.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-funnel-stage/withdrawn,Terminology: Enrollment Funnel Stage,Terminology,Student withdrew application or rescinded deposit before enrollment.,code,,False,helix/enrollment-funnel-stage,public,False,False,core/terminologies/enrollment-funnel-stage.json
+helix/enrollment-status/registered,Terminology: Enrollment Status,Terminology,Student has registered but the term has not started or census has not passed,code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/waitlisted,Terminology: Enrollment Status,Terminology,Student is on a waitlist for the section,code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/enrolled,Terminology: Enrollment Status,Terminology,Student is confirmed enrolled (post-census or post-start),code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/dropped,Terminology: Enrollment Status,Terminology,Student dropped the course before the institution's drop deadline (typically no record on transcript),code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/withdrawn,Terminology: Enrollment Status,Terminology,Student withdrew after the drop deadline (typically a 'W' on transcript),code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/completed,Terminology: Enrollment Status,Terminology,Student completed the course and received a final grade,code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/incomplete,Terminology: Enrollment Status,Terminology,Student received an incomplete grade with a deadline for completion,code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/enrollment-status/auditing,Terminology: Enrollment Status,Terminology,Student is attending the course without receiving credit or a grade,code,,False,helix/enrollment-status,public,False,False,core/terminologies/enrollment-status.json
+helix/ethnicity/hispanic_latino,Terminology: Ethnicity/Race,Terminology,"A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race",code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/american_indian_alaska_native,Terminology: Ethnicity/Race,Terminology,American Indian or Alaska Native,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/asian,Terminology: Ethnicity/Race,Terminology,Asian,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/black_african_american,Terminology: Ethnicity/Race,Terminology,Black or African American,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/native_hawaiian_pacific_islander,Terminology: Ethnicity/Race,Terminology,Native Hawaiian or Other Pacific Islander,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/white,Terminology: Ethnicity/Race,Terminology,White,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/two_or_more,Terminology: Ethnicity/Race,Terminology,Derived category for IPEDS reporting. Calculated when multiple race codes are selected.,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/nonresident_alien,Terminology: Ethnicity/Race,Terminology,IPEDS category for international students on non-immigrant visas. NOT a race/ethnicity; used as an IPEDS reporting overlay.,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/unknown,Terminology: Ethnicity/Race,Terminology,Person declined to report or data is not available,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/ethnicity/other,Terminology: Ethnicity/Race,Terminology,A category not captured above. Document in institution or country-specific profile.,code,,False,helix/ethnicity,public,False,False,core/terminologies/ethnicity.json
+helix/gender-identity/man,Terminology: Gender Identity,Terminology,Man,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/woman,Terminology: Gender Identity,Terminology,Woman,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/nonbinary,Terminology: Gender Identity,Terminology,Non-Binary,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/transgender_man,Terminology: Gender Identity,Terminology,Transgender Man,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/transgender_woman,Terminology: Gender Identity,Terminology,Transgender Woman,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/genderqueer,Terminology: Gender Identity,Terminology,Genderqueer/Gender Non-Conforming,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/two_spirit,Terminology: Gender Identity,Terminology,Indigenous identity. Include only when culturally appropriate.,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/prefer_not_to_say,Terminology: Gender Identity,Terminology,Prefer Not to Say,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/not_listed,Terminology: Gender Identity,Terminology,A Gender Not Listed Here,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender-identity/unknown,Terminology: Gender Identity,Terminology,Unknown,code,,False,helix/gender-identity,public,False,False,core/terminologies/gender-identity.json
+helix/gender/male,Terminology: Gender,Terminology,Male,code,,False,helix/gender,public,False,False,core/terminologies/gender.json
+helix/gender/female,Terminology: Gender,Terminology,Female,code,,False,helix/gender,public,False,False,core/terminologies/gender.json
+helix/gender/nonbinary,Terminology: Gender,Terminology,Legal gender is non-binary (recognized in some jurisdictions),code,,False,helix/gender,public,False,False,core/terminologies/gender.json
+helix/gender/unknown,Terminology: Gender,Terminology,Gender is not known or not disclosed,code,,False,helix/gender,public,False,False,core/terminologies/gender.json
+helix/gender/other,Terminology: Gender,Terminology,A gender not captured by the above codes. Document in extensions.,code,,False,helix/gender,public,False,False,core/terminologies/gender.json
+helix/gift-type/outright_gift,Terminology: Gift Type,Terminology,"Immediate, completed gift of cash or equivalents",code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/pledge,Terminology: Gift Type,Terminology,Commitment to give a specified amount over a defined period,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/pledge_payment,Terminology: Gift Type,Terminology,Payment toward a previously made pledge,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/matching_gift,Terminology: Gift Type,Terminology,Corporate employer match of an employee's gift,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/planned_gift,Terminology: Gift Type,Terminology,"Deferred gift through estate/financial planning (trust, annuity, will)",code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/bequest,Terminology: Gift Type,Terminology,Gift received from a deceased donor's estate,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/in_kind,Terminology: Gift Type,Terminology,"Non-cash gift of goods, services, or property",code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/stock_transfer,Terminology: Gift Type,Terminology,Gift of publicly traded or private securities,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/real_property,Terminology: Gift Type,Terminology,Gift of real estate,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/qcd,Terminology: Gift Type,Terminology,Direct transfer from IRA to institution (age 70½+),code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/daf,Terminology: Gift Type,Terminology,"Grant from a donor advised fund (Fidelity Charitable, Schwab, etc.)",code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/corporate_grant,Terminology: Gift Type,Terminology,Grant from a corporation (distinct from matching gift),code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/foundation_grant,Terminology: Gift Type,Terminology,Grant from a private or community foundation,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/gift-type/other,Terminology: Gift Type,Terminology,Other,code,,False,helix/gift-type,public,False,False,core/terminologies/gift-type.json
+helix/grade-mode/standard,Terminology: Grade Mode,Terminology,Traditional A-F grading scale with GPA impact,code,,False,helix/grade-mode,public,False,False,core/terminologies/grade-mode.json
+helix/grade-mode/pass_fail,Terminology: Grade Mode,Terminology,Binary pass or fail with no GPA impact,code,,False,helix/grade-mode,public,False,False,core/terminologies/grade-mode.json
+helix/grade-mode/audit,Terminology: Grade Mode,Terminology,No grade or credit awarded; student attends for learning only,code,,False,helix/grade-mode,public,False,False,core/terminologies/grade-mode.json
+helix/grade-mode/satisfactory_unsatisfactory,Terminology: Grade Mode,Terminology,"S/U grading, common for graduate research hours or clinical rotations",code,,False,helix/grade-mode,public,False,False,core/terminologies/grade-mode.json
+helix/grade-mode/other,Terminology: Grade Mode,Terminology,An institution-specific grading mode. Document in extensions.,code,,False,helix/grade-mode,public,False,False,core/terminologies/grade-mode.json
+helix/hold-type/registration,Terminology: Hold Type,Terminology,Prevents the student from registering for courses,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/financial,Terminology: Hold Type,Terminology,"Unpaid balance or financial obligation. May prevent registration, transcript release, or graduation.",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/academic,Terminology: Hold Type,Terminology,"Academic deficiency (GPA, SAP, etc.). May require advising clearance before registration.",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/disciplinary,Terminology: Hold Type,Terminology,Conduct or disciplinary action pending or in effect,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/transcript,Terminology: Hold Type,Terminology,Prevents release of official transcripts,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/graduation,Terminology: Hold Type,Terminology,"Prevents degree conferral (e.g., outstanding requirements, exit interview)",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/library,Terminology: Hold Type,Terminology,Overdue materials or library fines,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/health_compliance,Terminology: Hold Type,Terminology,"Missing immunization records, health insurance verification, or other health requirements",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/admissions,Terminology: Hold Type,Terminology,"Missing admissions documents (final transcript, test scores, etc.)",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/international,Terminology: Hold Type,Terminology,"Visa compliance, SEVIS reporting, or international student office clearance",code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/parking,Terminology: Hold Type,Terminology,Unpaid parking fines or violations,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/hold-type/other,Terminology: Hold Type,Terminology,Other,code,,False,helix/hold-type,public,False,False,core/terminologies/hold-type.json
+helix/identifier-type/institutional_id,Terminology: Identifier Type,Terminology,The primary student/person ID assigned by the institution,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/national_id,Terminology: Identifier Type,Terminology,"Government-issued national identifier (e.g., SSN in US, SIN in Canada, NI Number in UK)",code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/ssn_last4,Terminology: Identifier Type,Terminology,Last 4 digits of Social Security Number. Full SSN should never be stored in HELIX.,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/passport,Terminology: Identifier Type,Terminology,Passport Number,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/drivers_license,Terminology: Identifier Type,Terminology,Driver's License Number,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/login,Terminology: Identifier Type,Terminology,Institutional login or network username,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/email,Terminology: Identifier Type,Terminology,"When used as an identifier (e.g., for SSO matching)",code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/erp_internal_key,Terminology: Identifier Type,Terminology,"System-generated internal key (e.g., Banner PIDM, PeopleSoft EmplID). Not typically exposed to end users.",code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/prior_institution_id,Terminology: Identifier Type,Terminology,ID from a previous institution (useful for transfer matching),code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/clearing_house_id,Terminology: Identifier Type,Terminology,National Student Clearinghouse or equivalent ID,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/orcid,Terminology: Identifier Type,Terminology,Open Researcher and Contributor ID for research/publishing,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/identifier-type/other,Terminology: Identifier Type,Terminology,Other,code,,False,helix/identifier-type,public,False,False,core/terminologies/identifier-type.json
+helix/period-type/semester,Terminology: Academic Period Type,Terminology,"A ~15-week academic term (typically Fall, Spring). Most common in US institutions.",code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/quarter,Terminology: Academic Period Type,Terminology,"A ~10-week academic term (typically Fall, Winter, Spring, Summer)",code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/trimester,Terminology: Academic Period Type,Terminology,A ~13-week term dividing the year into three periods,code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/session,Terminology: Academic Period Type,Terminology,A sub-term or accelerated term within a semester or quarter,code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/mini_term,Terminology: Academic Period Type,Terminology,"A short-duration term (e.g., May term, Winterim, 8-week session)",code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/academic_year,Terminology: Academic Period Type,Terminology,"A full academic year container (e.g., '2026-2027'). Used for annual financial aid and reporting.",code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/period-type/other,Terminology: Academic Period Type,Terminology,A period type not covered by the standard codes. Document in extensions.,code,,False,helix/period-type,public,False,False,core/terminologies/period-type.json
+helix/prospect-stage/identification,Terminology: Prospect Stage (Moves Management),Terminology,"Prospect identified through screening, referral, or research. Not yet qualified.",code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/prospect-stage/qualification,Terminology: Prospect Stage (Moves Management),Terminology,"Research and initial outreach to determine interest, capacity, and inclination.",code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/prospect-stage/cultivation,Terminology: Prospect Stage (Moves Management),Terminology,"Active relationship-building: meetings, events, campus visits, engagement activities.",code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/prospect-stage/solicitation,Terminology: Prospect Stage (Moves Management),Terminology,Formal ask has been made or is imminent.,code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/prospect-stage/stewardship,Terminology: Prospect Stage (Moves Management),Terminology,"Post-gift acknowledgment, impact reporting, and continued relationship management.",code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/prospect-stage/none,Terminology: Prospect Stage (Moves Management),Terminology,Constituent is not currently in the moves management pipeline.,code,,False,helix/prospect-stage,public,False,False,core/terminologies/prospect-stage.json
+helix/sap-status/meeting,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,"Student meets all SAP requirements (GPA, pace, maximum timeframe)",code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/sap-status/warning,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,Student failed to meet SAP at the end of a payment period. Eligible for aid for one more period without appeal.,code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/sap-status/probation,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,"Student failed SAP, appealed successfully, and is on a monitored academic plan. Eligible for aid while on plan.",code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/sap-status/suspension,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,Student is ineligible for federal financial aid due to failure to meet SAP requirements,code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/sap-status/appeal_approved,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,SAP appeal approved. Student placed on probation with an academic plan.,code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/sap-status/not_evaluated,Terminology: Satisfactory Academic Progress (SAP) Status,Terminology,"SAP has not been evaluated for this period (e.g., first term)",code,,False,helix/sap-status,public,False,False,core/terminologies/sap-status.json
+helix/student-status/prospective,Terminology: Student Status,Terminology,Person has expressed interest but has not applied,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/applicant,Terminology: Student Status,Terminology,Person has submitted an application for admission,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/admitted,Terminology: Student Status,Terminology,Application accepted; student has not yet enrolled,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/enrolled,Terminology: Student Status,Terminology,Student is actively registered in courses for a current or future term,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/leave_of_absence,Terminology: Student Status,Terminology,Student has an approved leave and intends to return,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/withdrawn,Terminology: Student Status,Terminology,Student has voluntarily or administratively separated from the institution,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/graduated,Terminology: Student Status,Terminology,"Student has been conferred a degree, certificate, or credential",code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-status/deceased,Terminology: Student Status,Terminology,Student is deceased. Record retained for historical and compliance purposes.,code,,False,helix/student-status,public,False,False,core/terminologies/student-status.json
+helix/student-type/first_time_freshman,Terminology: Student Type,Terminology,"Entering college for the first time (no prior postsecondary enrollment). IPEDS: First-time, first-year.",code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/transfer,Terminology: Student Type,Terminology,Entering with credits from another postsecondary institution,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/readmit,Terminology: Student Type,Terminology,"Previously enrolled at this institution, returning after a break in enrollment",code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/continuing,Terminology: Student Type,Terminology,"Currently enrolled, returning for the next term without a break",code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/dual_enrollment,Terminology: Student Type,Terminology,High school student simultaneously enrolled in college courses,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/transient,Terminology: Student Type,Terminology,Enrolled at another institution but taking courses here temporarily,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/non_degree,Terminology: Student Type,Terminology,Taking courses without pursuing a degree or credential,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/post_baccalaureate,Terminology: Student Type,Terminology,"Has a bachelor's degree, taking additional undergraduate courses",code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/audit_only,Terminology: Student Type,Terminology,Enrolled solely to audit courses without credit,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/student-type/other,Terminology: Student Type,Terminology,Other,code,,False,helix/student-type,public,False,False,core/terminologies/student-type.json
+helix/veteran-status/none,Terminology: Veteran Status,Terminology,No Military Affiliation,code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json
+helix/veteran-status/veteran,Terminology: Veteran Status,Terminology,Former member of the armed forces who has been discharged,code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json
+helix/veteran-status/active_duty,Terminology: Veteran Status,Terminology,Currently serving in the armed forces,code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json
+helix/veteran-status/reserve_national_guard,Terminology: Veteran Status,Terminology,Member of a reserve component or National Guard,code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json
+helix/veteran-status/dependent_spouse,Terminology: Veteran Status,Terminology,"Dependent or spouse of a service member, eligible for benefits (e.g., Chapter 35, MyCAA)",code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json
+helix/veteran-status/other,Terminology: Veteran Status,Terminology,Other,code,,False,helix/veteran-status,public,False,False,core/terminologies/veteran-status.json

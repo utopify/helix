@@ -1,0 +1,32 @@
+ps_account,ps_description,helix_code,helix_category,wd_ledger_account,wd_description,ipeds_category
+40100,Tuition Revenue,REV-TUITION,revenue,4010,Tuition and Fees,Tuition and fees
+40200,Fee Revenue,REV-FEES,revenue,4020,Student Fees,Tuition and fees
+40500,State Appropriation,REV-STATE-APPROP,revenue,4050,Government Appropriations,State appropriations
+40600,Federal Grants Revenue,REV-FED-GRANT,revenue,4060,Federal Grant Revenue,Federal grants and contracts
+40700,State Grants Revenue,REV-STATE-GRANT,revenue,4070,State Grant Revenue,State grants and contracts
+40800,Local Grants Revenue,REV-LOCAL-GRANT,revenue,4080,Local Grant Revenue,Local grants and contracts
+41000,Auxiliary Revenue,REV-AUX,revenue,4100,Auxiliary Enterprises,Auxiliary enterprises
+42000,Gift Revenue,REV-GIFT,revenue,4200,Contributions and Gifts,"Private gifts, grants, contracts"
+42500,Endowment Income,REV-ENDOW,revenue,4250,Investment Income - Endowment,Investment return
+43000,Sales & Services Revenue,REV-SALES,revenue,4300,Sales and Services,Sales and services of educational activities
+50100,Faculty Salaries,EXP-SAL-FACULTY,expense,6010,Faculty Compensation,Salaries and wages
+50200,Staff Salaries,EXP-SAL-STAFF,expense,6020,Staff Compensation,Salaries and wages
+50300,Student Wages,EXP-SAL-STUDENT,expense,6030,Student Employee Wages,Salaries and wages
+50400,GA/TA Stipends,EXP-SAL-GA,expense,6040,Graduate Assistant Compensation,Salaries and wages
+51000,Employee Benefits,EXP-BENEFITS,expense,6100,Employee Benefits,Benefits
+52100,Travel - Domestic,EXP-TRAVEL-DOM,expense,6200,Travel - Domestic,Operation and maintenance of plant
+52200,Travel - International,EXP-TRAVEL-INTL,expense,6210,Travel - International,Operation and maintenance of plant
+53000,Supplies & Materials,EXP-SUPPLIES,expense,6300,Supplies and Materials,Operation and maintenance of plant
+54000,Equipment (<$5K),EXP-EQUIP-MINOR,expense,6400,Non-Capital Equipment,Operation and maintenance of plant
+55000,Contractual Services,EXP-CONTRACT,expense,6500,Professional Services,Operation and maintenance of plant
+56000,Utilities,EXP-UTILITIES,expense,6600,Utilities,Operation and maintenance of plant
+57000,Scholarships & Fellowships,EXP-SCHOLAR,expense,6700,Scholarships and Fellowships,Scholarships and fellowships
+58000,Depreciation,EXP-DEPREC,expense,6800,Depreciation Expense,Depreciation
+59000,Interest Expense,EXP-INTEREST,expense,6900,Interest on Indebtedness,Interest
+60000,Capital Equipment (>$5K),ASSET-EQUIP-CAP,asset,1600,Capital Equipment,N/A (balance sheet)
+61000,Buildings,ASSET-BUILDING,asset,1500,Buildings and Improvements,N/A (balance sheet)
+62000,Land,ASSET-LAND,asset,1400,Land,N/A (balance sheet)
+70000,Accounts Payable,LIAB-AP,liability,2100,Accounts Payable,N/A (balance sheet)
+75000,Deferred Revenue,LIAB-DEF-REV,liability,2300,Deferred Revenue,N/A (balance sheet)
+80000,Net Assets - Unrestricted,EQUITY-UNREST,net_assets,3100,Net Assets Without Restriction,N/A (balance sheet)
+80500,Net Assets - Restricted,EQUITY-REST,net_assets,3200,Net Assets With Restriction,N/A (balance sheet)

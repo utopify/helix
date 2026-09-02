@@ -1,0 +1,13 @@
+ps_program,ps_description,helix_functional_class,ipeds_category,wd_revenue_category
+INSTR,Instruction,instruction,Instruction,Instruction
+RESRCH,Research,research,Research,Research
+PUBSVC,Public Service,public_service,Public Service,Public Service
+ACASUP,Academic Support,academic_support,Academic Support,Academic Support
+STUSVC,Student Services,student_services,Student Services,Student Services
+INSTSUP,Institutional Support,institutional_support,Institutional Support,Institutional Support
+O&M,Operation & Maintenance of Plant,plant_operations,Operation and Maintenance of Plant,Plant Operations
+SCHLRSHP,Scholarships & Fellowships,scholarships,Scholarships and Fellowships,Scholarships and Fellowships
+AUXENT,Auxiliary Enterprises,auxiliary,Auxiliary Enterprises,Auxiliary Enterprises
+HOSP,Hospital/Medical,hospital,Hospital Services,Hospital/Clinical
+DEPR,Depreciation,depreciation,Depreciation,Depreciation
+INTEXP,Interest,interest,Interest,Interest on Indebtedness

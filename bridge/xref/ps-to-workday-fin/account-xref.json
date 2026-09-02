@@ -1,0 +1,287 @@
+{
+  "title": "HELIX XREF: Account \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Account / Ledger Account",
+  "description": "Maps PeopleSoft GL account codes to Workday ledger accounts through the HELIX foundational account taxonomy.",
+  "mappings": [
+    {
+      "ps_account": "40100",
+      "ps_description": "Tuition Revenue",
+      "helix_code": "REV-TUITION",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4010",
+      "wd_description": "Tuition and Fees",
+      "ipeds_category": "Tuition and fees"
+    },
+    {
+      "ps_account": "40200",
+      "ps_description": "Fee Revenue",
+      "helix_code": "REV-FEES",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4020",
+      "wd_description": "Student Fees",
+      "ipeds_category": "Tuition and fees"
+    },
+    {
+      "ps_account": "40500",
+      "ps_description": "State Appropriation",
+      "helix_code": "REV-STATE-APPROP",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4050",
+      "wd_description": "Government Appropriations",
+      "ipeds_category": "State appropriations"
+    },
+    {
+      "ps_account": "40600",
+      "ps_description": "Federal Grants Revenue",
+      "helix_code": "REV-FED-GRANT",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4060",
+      "wd_description": "Federal Grant Revenue",
+      "ipeds_category": "Federal grants and contracts"
+    },
+    {
+      "ps_account": "40700",
+      "ps_description": "State Grants Revenue",
+      "helix_code": "REV-STATE-GRANT",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4070",
+      "wd_description": "State Grant Revenue",
+      "ipeds_category": "State grants and contracts"
+    },
+    {
+      "ps_account": "40800",
+      "ps_description": "Local Grants Revenue",
+      "helix_code": "REV-LOCAL-GRANT",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4080",
+      "wd_description": "Local Grant Revenue",
+      "ipeds_category": "Local grants and contracts"
+    },
+    {
+      "ps_account": "41000",
+      "ps_description": "Auxiliary Revenue",
+      "helix_code": "REV-AUX",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4100",
+      "wd_description": "Auxiliary Enterprises",
+      "ipeds_category": "Auxiliary enterprises"
+    },
+    {
+      "ps_account": "42000",
+      "ps_description": "Gift Revenue",
+      "helix_code": "REV-GIFT",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4200",
+      "wd_description": "Contributions and Gifts",
+      "ipeds_category": "Private gifts, grants, contracts"
+    },
+    {
+      "ps_account": "42500",
+      "ps_description": "Endowment Income",
+      "helix_code": "REV-ENDOW",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4250",
+      "wd_description": "Investment Income - Endowment",
+      "ipeds_category": "Investment return"
+    },
+    {
+      "ps_account": "43000",
+      "ps_description": "Sales & Services Revenue",
+      "helix_code": "REV-SALES",
+      "helix_category": "revenue",
+      "wd_ledger_account": "4300",
+      "wd_description": "Sales and Services",
+      "ipeds_category": "Sales and services of educational activities"
+    },
+    {
+      "ps_account": "50100",
+      "ps_description": "Faculty Salaries",
+      "helix_code": "EXP-SAL-FACULTY",
+      "helix_category": "expense",
+      "wd_ledger_account": "6010",
+      "wd_description": "Faculty Compensation",
+      "ipeds_category": "Salaries and wages"
+    },
+    {
+      "ps_account": "50200",
+      "ps_description": "Staff Salaries",
+      "helix_code": "EXP-SAL-STAFF",
+      "helix_category": "expense",
+      "wd_ledger_account": "6020",
+      "wd_description": "Staff Compensation",
+      "ipeds_category": "Salaries and wages"
+    },
+    {
+      "ps_account": "50300",
+      "ps_description": "Student Wages",
+      "helix_code": "EXP-SAL-STUDENT",
+      "helix_category": "expense",
+      "wd_ledger_account": "6030",
+      "wd_description": "Student Employee Wages",
+      "ipeds_category": "Salaries and wages"
+    },
+    {
+      "ps_account": "50400",
+      "ps_description": "GA/TA Stipends",
+      "helix_code": "EXP-SAL-GA",
+      "helix_category": "expense",
+      "wd_ledger_account": "6040",
+      "wd_description": "Graduate Assistant Compensation",
+      "ipeds_category": "Salaries and wages"
+    },
+    {
+      "ps_account": "51000",
+      "ps_description": "Employee Benefits",
+      "helix_code": "EXP-BENEFITS",
+      "helix_category": "expense",
+      "wd_ledger_account": "6100",
+      "wd_description": "Employee Benefits",
+      "ipeds_category": "Benefits"
+    },
+    {
+      "ps_account": "52100",
+      "ps_description": "Travel - Domestic",
+      "helix_code": "EXP-TRAVEL-DOM",
+      "helix_category": "expense",
+      "wd_ledger_account": "6200",
+      "wd_description": "Travel - Domestic",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "52200",
+      "ps_description": "Travel - International",
+      "helix_code": "EXP-TRAVEL-INTL",
+      "helix_category": "expense",
+      "wd_ledger_account": "6210",
+      "wd_description": "Travel - International",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "53000",
+      "ps_description": "Supplies & Materials",
+      "helix_code": "EXP-SUPPLIES",
+      "helix_category": "expense",
+      "wd_ledger_account": "6300",
+      "wd_description": "Supplies and Materials",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "54000",
+      "ps_description": "Equipment (<$5K)",
+      "helix_code": "EXP-EQUIP-MINOR",
+      "helix_category": "expense",
+      "wd_ledger_account": "6400",
+      "wd_description": "Non-Capital Equipment",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "55000",
+      "ps_description": "Contractual Services",
+      "helix_code": "EXP-CONTRACT",
+      "helix_category": "expense",
+      "wd_ledger_account": "6500",
+      "wd_description": "Professional Services",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "56000",
+      "ps_description": "Utilities",
+      "helix_code": "EXP-UTILITIES",
+      "helix_category": "expense",
+      "wd_ledger_account": "6600",
+      "wd_description": "Utilities",
+      "ipeds_category": "Operation and maintenance of plant"
+    },
+    {
+      "ps_account": "57000",
+      "ps_description": "Scholarships & Fellowships",
+      "helix_code": "EXP-SCHOLAR",
+      "helix_category": "expense",
+      "wd_ledger_account": "6700",
+      "wd_description": "Scholarships and Fellowships",
+      "ipeds_category": "Scholarships and fellowships"
+    },
+    {
+      "ps_account": "58000",
+      "ps_description": "Depreciation",
+      "helix_code": "EXP-DEPREC",
+      "helix_category": "expense",
+      "wd_ledger_account": "6800",
+      "wd_description": "Depreciation Expense",
+      "ipeds_category": "Depreciation"
+    },
+    {
+      "ps_account": "59000",
+      "ps_description": "Interest Expense",
+      "helix_code": "EXP-INTEREST",
+      "helix_category": "expense",
+      "wd_ledger_account": "6900",
+      "wd_description": "Interest on Indebtedness",
+      "ipeds_category": "Interest"
+    },
+    {
+      "ps_account": "60000",
+      "ps_description": "Capital Equipment (>$5K)",
+      "helix_code": "ASSET-EQUIP-CAP",
+      "helix_category": "asset",
+      "wd_ledger_account": "1600",
+      "wd_description": "Capital Equipment",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "61000",
+      "ps_description": "Buildings",
+      "helix_code": "ASSET-BUILDING",
+      "helix_category": "asset",
+      "wd_ledger_account": "1500",
+      "wd_description": "Buildings and Improvements",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "62000",
+      "ps_description": "Land",
+      "helix_code": "ASSET-LAND",
+      "helix_category": "asset",
+      "wd_ledger_account": "1400",
+      "wd_description": "Land",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "70000",
+      "ps_description": "Accounts Payable",
+      "helix_code": "LIAB-AP",
+      "helix_category": "liability",
+      "wd_ledger_account": "2100",
+      "wd_description": "Accounts Payable",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "75000",
+      "ps_description": "Deferred Revenue",
+      "helix_code": "LIAB-DEF-REV",
+      "helix_category": "liability",
+      "wd_ledger_account": "2300",
+      "wd_description": "Deferred Revenue",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "80000",
+      "ps_description": "Net Assets - Unrestricted",
+      "helix_code": "EQUITY-UNREST",
+      "helix_category": "net_assets",
+      "wd_ledger_account": "3100",
+      "wd_description": "Net Assets Without Restriction",
+      "ipeds_category": "N/A (balance sheet)"
+    },
+    {
+      "ps_account": "80500",
+      "ps_description": "Net Assets - Restricted",
+      "helix_code": "EQUITY-REST",
+      "helix_category": "net_assets",
+      "wd_ledger_account": "3200",
+      "wd_description": "Net Assets With Restriction",
+      "ipeds_category": "N/A (balance sheet)"
+    }
+  ]
+}

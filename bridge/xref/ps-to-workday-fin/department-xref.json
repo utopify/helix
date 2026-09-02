@@ -1,0 +1,113 @@
+{
+  "title": "HELIX XREF: Department/Cost Center \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Department / Cost Center",
+  "note": "This is a starter template with common higher ed departments. Each institution MUST customize this to match their specific department codes.",
+  "mappings": [
+    {
+      "ps_deptid": "100100",
+      "ps_description": "Office of the President",
+      "helix_org_code": "PRES",
+      "wd_cost_center": "CC-PRES",
+      "wd_description": "President's Office"
+    },
+    {
+      "ps_deptid": "100200",
+      "ps_description": "Office of the Provost",
+      "helix_org_code": "PROV",
+      "wd_cost_center": "CC-PROV",
+      "wd_description": "Provost's Office"
+    },
+    {
+      "ps_deptid": "110100",
+      "ps_description": "College of Arts & Sciences - Dean",
+      "helix_org_code": "AS-DEAN",
+      "wd_cost_center": "CC-AS-DEAN",
+      "wd_description": "A&S Dean's Office"
+    },
+    {
+      "ps_deptid": "110200",
+      "ps_description": "English Department",
+      "helix_org_code": "ENGL",
+      "wd_cost_center": "CC-ENGL",
+      "wd_description": "English"
+    },
+    {
+      "ps_deptid": "110300",
+      "ps_description": "Mathematics Department",
+      "helix_org_code": "MATH",
+      "wd_cost_center": "CC-MATH",
+      "wd_description": "Mathematics"
+    },
+    {
+      "ps_deptid": "120100",
+      "ps_description": "College of Engineering - Dean",
+      "helix_org_code": "ENGR-DEAN",
+      "wd_cost_center": "CC-EN-DEAN",
+      "wd_description": "Engineering Dean's Office"
+    },
+    {
+      "ps_deptid": "120400",
+      "ps_description": "Computer Science",
+      "helix_org_code": "CS",
+      "wd_cost_center": "CC-CS",
+      "wd_description": "Computer Science"
+    },
+    {
+      "ps_deptid": "200100",
+      "ps_description": "Registrar's Office",
+      "helix_org_code": "REG",
+      "wd_cost_center": "CC-REG",
+      "wd_description": "Registrar"
+    },
+    {
+      "ps_deptid": "200200",
+      "ps_description": "Financial Aid Office",
+      "helix_org_code": "FINAID",
+      "wd_cost_center": "CC-FINAID",
+      "wd_description": "Financial Aid"
+    },
+    {
+      "ps_deptid": "200300",
+      "ps_description": "Admissions",
+      "helix_org_code": "ADM",
+      "wd_cost_center": "CC-ADM",
+      "wd_description": "Admissions"
+    },
+    {
+      "ps_deptid": "300100",
+      "ps_description": "Athletics",
+      "helix_org_code": "ATH",
+      "wd_cost_center": "CC-ATH",
+      "wd_description": "Athletics"
+    },
+    {
+      "ps_deptid": "400100",
+      "ps_description": "Facilities Management",
+      "helix_org_code": "FAC",
+      "wd_cost_center": "CC-FAC",
+      "wd_description": "Facilities"
+    },
+    {
+      "ps_deptid": "500100",
+      "ps_description": "University Advancement",
+      "helix_org_code": "ADV",
+      "wd_cost_center": "CC-ADV",
+      "wd_description": "Advancement"
+    },
+    {
+      "ps_deptid": "600100",
+      "ps_description": "Information Technology",
+      "helix_org_code": "IT",
+      "wd_cost_center": "CC-IT",
+      "wd_description": "Information Technology"
+    },
+    {
+      "ps_deptid": "700100",
+      "ps_description": "Human Resources",
+      "helix_org_code": "HR",
+      "wd_cost_center": "CC-HR",
+      "wd_description": "Human Resources"
+    }
+  ]
+}

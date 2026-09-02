@@ -1,0 +1,92 @@
+{
+  "title": "HELIX XREF: Program/Functional Classification \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Program / Functional Classification",
+  "note": "IPEDS functional expense categories. These are standard across all US higher ed institutions.",
+  "mappings": [
+    {
+      "ps_program": "INSTR",
+      "ps_description": "Instruction",
+      "helix_functional_class": "instruction",
+      "ipeds_category": "Instruction",
+      "wd_revenue_category": "Instruction"
+    },
+    {
+      "ps_program": "RESRCH",
+      "ps_description": "Research",
+      "helix_functional_class": "research",
+      "ipeds_category": "Research",
+      "wd_revenue_category": "Research"
+    },
+    {
+      "ps_program": "PUBSVC",
+      "ps_description": "Public Service",
+      "helix_functional_class": "public_service",
+      "ipeds_category": "Public Service",
+      "wd_revenue_category": "Public Service"
+    },
+    {
+      "ps_program": "ACASUP",
+      "ps_description": "Academic Support",
+      "helix_functional_class": "academic_support",
+      "ipeds_category": "Academic Support",
+      "wd_revenue_category": "Academic Support"
+    },
+    {
+      "ps_program": "STUSVC",
+      "ps_description": "Student Services",
+      "helix_functional_class": "student_services",
+      "ipeds_category": "Student Services",
+      "wd_revenue_category": "Student Services"
+    },
+    {
+      "ps_program": "INSTSUP",
+      "ps_description": "Institutional Support",
+      "helix_functional_class": "institutional_support",
+      "ipeds_category": "Institutional Support",
+      "wd_revenue_category": "Institutional Support"
+    },
+    {
+      "ps_program": "O&M",
+      "ps_description": "Operation & Maintenance of Plant",
+      "helix_functional_class": "plant_operations",
+      "ipeds_category": "Operation and Maintenance of Plant",
+      "wd_revenue_category": "Plant Operations"
+    },
+    {
+      "ps_program": "SCHLRSHP",
+      "ps_description": "Scholarships & Fellowships",
+      "helix_functional_class": "scholarships",
+      "ipeds_category": "Scholarships and Fellowships",
+      "wd_revenue_category": "Scholarships and Fellowships"
+    },
+    {
+      "ps_program": "AUXENT",
+      "ps_description": "Auxiliary Enterprises",
+      "helix_functional_class": "auxiliary",
+      "ipeds_category": "Auxiliary Enterprises",
+      "wd_revenue_category": "Auxiliary Enterprises"
+    },
+    {
+      "ps_program": "HOSP",
+      "ps_description": "Hospital/Medical",
+      "helix_functional_class": "hospital",
+      "ipeds_category": "Hospital Services",
+      "wd_revenue_category": "Hospital/Clinical"
+    },
+    {
+      "ps_program": "DEPR",
+      "ps_description": "Depreciation",
+      "helix_functional_class": "depreciation",
+      "ipeds_category": "Depreciation",
+      "wd_revenue_category": "Depreciation"
+    },
+    {
+      "ps_program": "INTEXP",
+      "ps_description": "Interest",
+      "helix_functional_class": "interest",
+      "ipeds_category": "Interest",
+      "wd_revenue_category": "Interest on Indebtedness"
+    }
+  ]
+}

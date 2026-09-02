@@ -1,0 +1,15 @@
+ps_fund,ps_description,helix_category,wd_fund,wd_description,gasb_fund_type
+11000,Unrestricted General,unrestricted_general,FD100,General Operating,Current Unrestricted
+12000,Designated Operating,unrestricted_designated,FD110,Board Designated,Current Unrestricted
+13000,Auxiliary Enterprises,auxiliary,FD200,Auxiliary Operations,Current Unrestricted
+14000,Service Centers,service_center,FD210,Internal Services,Current Unrestricted
+21000,Restricted - Federal,restricted_federal,FD300,Federal Grants,Current Restricted
+22000,Restricted - State,restricted_state,FD310,State Grants,Current Restricted
+23000,Restricted - Private,restricted_private,FD320,Private Restricted,Current Restricted
+30000,Endowment - Permanent,endowment_true,FD400,True Endowment,Endowment
+31000,Endowment - Quasi,endowment_quasi,FD410,Quasi-Endowment,Endowment
+40000,Plant - Unexpended,plant_unexpended,FD500,Capital Projects,Plant
+41000,Plant - Renewal,plant_renewal,FD510,Renewal and Replacement,Plant
+42000,Plant - Retirement of Debt,plant_debt,FD520,Debt Service,Plant
+50000,Student Financial Aid,student_aid,FD600,Student Aid,Current Restricted
+60000,Agency/Custodial,agency,FD700,Agency Funds,Agency

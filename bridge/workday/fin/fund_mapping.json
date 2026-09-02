@@ -1,0 +1,70 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Fund",
+  "source_system": "workday",
+  "module": "Financial Management - Fund Accounting",
+  "target_resource": "Fund (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Fund",
+      "description": "Workday Fund worktag. Used for fund accounting (GASB). Tracks restricted vs unrestricted, endowment, auxiliary, plant, agency."
+    },
+    {
+      "object": "Fund Hierarchy",
+      "description": "Parent-child fund relationships for roll-up reporting."
+    },
+    {
+      "object": "Fund Type",
+      "description": "Classification of funds (unrestricted, temporarily restricted, permanently restricted under pre-ASU 2016-14; with/without donor restrictions under ASU 2016-14)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "fund_code",
+      "source": "Fund.Fund_ID",
+      "transformation": "Direct map. E.g., 'FD100'."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "Fund.Name",
+      "transformation": "Direct map. E.g., 'General Operating'."
+    },
+    {
+      "helix_attribute": "fund_category",
+      "source": "Fund.Fund_Type or derived from hierarchy",
+      "transformation": "Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_debt', 'student_aid', 'agency'."
+    },
+    {
+      "helix_attribute": "restriction_type",
+      "source": "Fund.Fund_Type",
+      "transformation": "Map: 'Without Donor Restrictions'\u2192'unrestricted', 'With Donor Restrictions'\u2192'restricted'. ASU 2016-14 terminology for FASB institutions. GASB institutions use fund-type-based restrictions."
+    },
+    {
+      "helix_attribute": "parent_fund",
+      "source": "Fund Hierarchy.Parent_Fund",
+      "transformation": "Resolve parent fund ID for roll-up."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Fund.Inactive = false",
+      "transformation": "Map."
+    },
+    {
+      "helix_attribute": "gasb_fund_type",
+      "source": "Custom worktag or derived",
+      "transformation": "For public (GASB) institutions: 'current_unrestricted', 'current_restricted', 'loan', 'endowment', 'plant', 'agency'. Maps to GASB fund types for statement of net position."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Fund accounting is critical for higher ed. Public institutions (GASB 34/35) report by fund type on the Statement of Net Position. Private institutions (FASB ASU 2016-14) report by restriction type (with/without donor restrictions). Workday supports both models through configurable fund worktags and hierarchies. The HELIX fund category taxonomy normalizes both GASB and FASB conventions."
+}

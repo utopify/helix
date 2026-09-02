@@ -1,0 +1,122 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 AccountsPayable",
+  "source_system": "workday",
+  "module": "Financial Management - Accounts Payable",
+  "target_resource": "APVoucher (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Supplier Invoice",
+      "description": "Invoice from a supplier. Header: supplier, invoice number, date, total, status, payment terms. Equivalent to PS_VOUCHER."
+    },
+    {
+      "object": "Supplier Invoice Line",
+      "description": "Invoice line items with worktag coding (ledger account, cost center, fund, spend category). Equivalent to PS_VOUCHER_LINE + PS_DISTRIB_LINE."
+    },
+    {
+      "object": "Supplier",
+      "description": "Supplier master. Name, tax ID, payment method, address, banking. Equivalent to PS_VENDOR."
+    },
+    {
+      "object": "Payment",
+      "description": "Payment records: check, ACH, wire. Links to one or more supplier invoices. Equivalent to PS_PAYMENT_TBL."
+    },
+    {
+      "object": "Spend Category",
+      "description": "Classification of what was purchased. Used for reporting and spend analysis."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "voucher_id",
+      "source": "Supplier Invoice.Invoice_Number (internal Workday ID)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "Supplier Invoice.Company (worktag)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "Supplier Invoice.Supplier.Supplier_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "Supplier.Supplier_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "invoice_number",
+      "source": "Supplier Invoice.Invoice_Number",
+      "transformation": "Supplier's invoice number."
+    },
+    {
+      "helix_attribute": "invoice_date",
+      "source": "Supplier Invoice.Invoice_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "Supplier Invoice.Total_Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "voucher_status",
+      "source": "Supplier Invoice.Invoice_Status",
+      "transformation": "Map: 'Draft'\u2192'pending', 'Awaiting Approval'\u2192'pending', 'Approved'\u2192'approved', 'Paid'\u2192'paid', 'Canceled'\u2192'void'."
+    },
+    {
+      "helix_attribute": "payment_date",
+      "source": "Payment.Payment_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "payment_method",
+      "source": "Payment.Payment_Type",
+      "transformation": "Map: 'Check'\u2192'check', 'ACH'\u2192'eft', 'Wire'\u2192'wire'."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "Supplier Invoice Line.Ledger_Account (worktag)",
+      "transformation": "Map to HELIX account code."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "Supplier Invoice Line.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "Supplier Invoice Line.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "Supplier Invoice Line.Extended_Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "Supplier Invoice Line.Spend_Category (worktag)",
+      "transformation": "Direct map. Workday-specific classification."
+    },
+    {
+      "helix_attribute": "po_reference",
+      "source": "Supplier Invoice Line.Purchase_Order_Line (reference)",
+      "transformation": "Link to originating PO if three-way match."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

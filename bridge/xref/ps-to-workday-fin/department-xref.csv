@@ -1,0 +1,16 @@
+ps_deptid,ps_description,helix_org_code,wd_cost_center,wd_description
+100100,Office of the President,PRES,CC-PRES,President's Office
+100200,Office of the Provost,PROV,CC-PROV,Provost's Office
+110100,College of Arts & Sciences - Dean,AS-DEAN,CC-AS-DEAN,A&S Dean's Office
+110200,English Department,ENGL,CC-ENGL,English
+110300,Mathematics Department,MATH,CC-MATH,Mathematics
+120100,College of Engineering - Dean,ENGR-DEAN,CC-EN-DEAN,Engineering Dean's Office
+120400,Computer Science,CS,CC-CS,Computer Science
+200100,Registrar's Office,REG,CC-REG,Registrar
+200200,Financial Aid Office,FINAID,CC-FINAID,Financial Aid
+200300,Admissions,ADM,CC-ADM,Admissions
+300100,Athletics,ATH,CC-ATH,Athletics
+400100,Facilities Management,FAC,CC-FAC,Facilities
+500100,University Advancement,ADV,CC-ADV,Advancement
+600100,Information Technology,IT,CC-IT,Information Technology
+700100,Human Resources,HR,CC-HR,Human Resources

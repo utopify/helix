@@ -1,0 +1,74 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 CostCenter",
+  "source_system": "workday",
+  "module": "Financial Management - Organization",
+  "target_resource": "AcademicOrg / FinancialOrg (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Cost Center",
+      "description": "Organizational unit for financial tracking and reporting. The Workday equivalent of PeopleSoft's DeptID. Hierarchical."
+    },
+    {
+      "object": "Cost Center Hierarchy",
+      "description": "Parent-child relationships between cost centers. Drives roll-up reporting."
+    },
+    {
+      "object": "Company",
+      "description": "Top-level organizational entity. May map to campus, school, or legal entity."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "org_code",
+      "source": "Cost Center.Cost_Center_ID",
+      "transformation": "Direct map. E.g., 'CC-CS'."
+    },
+    {
+      "helix_attribute": "org_name",
+      "source": "Cost Center.Name",
+      "transformation": "Direct map. E.g., 'Computer Science'."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "Derived from hierarchy level",
+      "transformation": "Top-level cost centers \u2192 'college'/'division', mid-level \u2192 'school', leaf \u2192 'department'."
+    },
+    {
+      "helix_attribute": "parent_org",
+      "source": "Cost Center Hierarchy.Parent_Cost_Center",
+      "transformation": "Resolve parent cost center ID."
+    },
+    {
+      "helix_attribute": "company",
+      "source": "Cost Center.Company (worktag)",
+      "transformation": "The legal entity / campus this cost center belongs to."
+    },
+    {
+      "helix_attribute": "manager",
+      "source": "Cost Center.Manager",
+      "transformation": "Resolve to name. Budget owner / department head."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Cost Center.Inactive = false",
+      "transformation": "Map: false \u2192 true (active), true \u2192 false (inactive)."
+    },
+    {
+      "helix_attribute": "fund_type",
+      "source": "Cost Center.Fund_Type (custom worktag if configured)",
+      "transformation": "Some institutions configure cost centers with a default fund type for budgeting."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}
