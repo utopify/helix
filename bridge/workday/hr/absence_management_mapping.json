@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Absence Management / Leave",
+  "source_system": "workday",
+  "module": "HCM - Absence Management",
+  "target_resource": "AbsenceRecord (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Leave of Absence",
+      "description": "Extended leave: FMLA, personal, medical, sabbatical, military. Equivalent to PS_LEAVE_PLAN + PS_JOB.ACTION = 'LOA'."
+    },
+    {
+      "object": "Absence Request",
+      "description": "Day-level absence: vacation, sick, personal, bereavement, jury duty. Equivalent to PS_GP_ABS_EVENT."
+    },
+    {
+      "object": "Absence Plan",
+      "description": "Plan definition: accrual rules, carryover, maximum balance, waiting period. Equivalent to PS_LEAVE_PLAN_TBL."
+    },
+    {
+      "object": "Time Off Balance",
+      "description": "Current accrued/available/used balances per absence plan. Equivalent to PS_LEAVE_ACCRUAL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "absence_type",
+      "source": "Absence Request.Absence_Type or Leave of Absence.Leave_Type",
+      "transformation": "Map: 'Vacation' \u2192 'vacation', 'Sick' \u2192 'sick', 'Personal' \u2192 'personal', 'FMLA' \u2192 'fmla', 'Sabbatical' \u2192 'sabbatical', 'Bereavement' \u2192 'bereavement', 'Jury Duty' \u2192 'jury_duty', 'Military' \u2192 'military', 'Parental' \u2192 'parental', 'Workers Comp' \u2192 'workers_comp'."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Absence Request.Start_Date or Leave.Start_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Absence Request.End_Date or Leave.Expected_Return_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "hours_requested",
+      "source": "Absence Request.Total_Hours",
+      "transformation": "For day-level absences. Direct map."
+    },
+    {
+      "helix_attribute": "fmla_qualifying",
+      "source": "Leave of Absence.FMLA_Qualifying = true",
+      "transformation": "Boolean. Whether this leave counts against FMLA entitlement (12 weeks/year for eligible employees)."
+    },
+    {
+      "helix_attribute": "fmla_hours_used",
+      "source": "Derived from FMLA tracking",
+      "transformation": "Running total of FMLA hours used in the 12-month measurement period."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Absence Request.Status or Leave.Status",
+      "transformation": "Map: 'Requested' \u2192 'requested', 'Approved' \u2192 'approved', 'Denied' \u2192 'denied', 'In Progress' \u2192 'active', 'Returned' \u2192 'completed', 'Canceled' \u2192 'canceled'."
+    },
+    {
+      "helix_attribute": "balance_vacation",
+      "source": "Time Off Balance where plan = 'Vacation'",
+      "transformation": "Current available vacation hours."
+    },
+    {
+      "helix_attribute": "balance_sick",
+      "source": "Time Off Balance where plan = 'Sick'",
+      "transformation": "Current available sick hours."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Absence data is confidential. FMLA records are particularly sensitive \u2014 medical certification documents must be stored separately with restricted access. Higher ed specific: sabbatical leave (typically tenured faculty, every 7 years, at half or full pay), professional development leave, and academic break periods (winter/summer) which may or may not use leave accruals."
+}

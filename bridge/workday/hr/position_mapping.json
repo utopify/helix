@@ -1,0 +1,124 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Position Management",
+  "source_system": "workday",
+  "module": "HCM - Position Management",
+  "target_resource": "Position (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday uses position management as a core organizational building block. Every job assignment sits in a position, and every position sits in a supervisory organization. Positions define the 'seat' (job profile, location, compensation grade, etc.) independently of who fills it. This differs from PeopleSoft where position management is optional (many PS clients use department/job code without formal positions).",
+  "source_objects": [
+    {
+      "object": "Position",
+      "description": "Position definition: title, job profile, supervisory org, location, availability date, compensation grade, worker type. Equivalent to PS_POSITION_DATA."
+    },
+    {
+      "object": "Position Restriction",
+      "description": "Budget and headcount constraints on positions. Equivalent to PS_POSITION_DATA budget fields."
+    },
+    {
+      "object": "Supervisory Organization",
+      "description": "Hierarchical org unit. The primary org structure in Workday. Positions belong to supervisory orgs, not departments. Equivalent to PS_DEPT_TBL (loosely)."
+    },
+    {
+      "object": "Job Profile",
+      "description": "Template defining a job: title, job family, job level, pay rate type, management level, FLSA status. Equivalent to PS_JOBCODE_TBL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "position_id",
+      "source": "Position.Position_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "position_title",
+      "source": "Position.Position_Title or Job_Profile.Job_Profile_Name",
+      "transformation": "Position-specific title if overridden, otherwise from job profile."
+    },
+    {
+      "helix_attribute": "job_profile",
+      "source": "Position.Job_Profile.Job_Profile_ID",
+      "transformation": "Workday Job Profile = PS Job Code. The classification template."
+    },
+    {
+      "helix_attribute": "job_family",
+      "source": "Job_Profile.Job_Family.Job_Family_ID",
+      "transformation": "Grouping of related job profiles. E.g., 'Information Technology', 'Faculty - Arts & Sciences'."
+    },
+    {
+      "helix_attribute": "job_level",
+      "source": "Job_Profile.Job_Level",
+      "transformation": "Map to institutional level structure or HELIX level codes."
+    },
+    {
+      "helix_attribute": "management_level",
+      "source": "Job_Profile.Management_Level",
+      "transformation": "Map: 'Individual Contributor' \u2192 'individual', 'Manager' \u2192 'manager', 'Director' \u2192 'director', 'Vice President' \u2192 'vp', 'Executive' \u2192 'executive'."
+    },
+    {
+      "helix_attribute": "supervisory_org",
+      "source": "Position.Supervisory_Organization.Org_ID",
+      "transformation": "The org unit this position reports into."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Position.Cost_Center (worktag) or supervisory org \u2192 cost center",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "location",
+      "source": "Position.Location",
+      "transformation": "Physical work location (campus, building)."
+    },
+    {
+      "helix_attribute": "compensation_grade",
+      "source": "Position.Compensation_Grade",
+      "transformation": "Pay grade/band for this position."
+    },
+    {
+      "helix_attribute": "worker_type",
+      "source": "Position.Worker_Type",
+      "transformation": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+    },
+    {
+      "helix_attribute": "time_type",
+      "source": "Position.Time_Type",
+      "transformation": "Map: 'Full time' \u2192 'full_time', 'Part time' \u2192 'part_time'."
+    },
+    {
+      "helix_attribute": "position_status",
+      "source": "Position.Position_Status",
+      "transformation": "Map: 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Frozen' \u2192 'frozen', 'Closed' \u2192 'closed'."
+    },
+    {
+      "helix_attribute": "incumbent_ref",
+      "source": "Position.Worker (if filled)",
+      "transformation": "Resolve to HELIX employee_id if position is filled."
+    },
+    {
+      "helix_attribute": "headcount",
+      "source": "Position.Headcount or Position_Restriction.Available_Headcount",
+      "transformation": "Number of workers that can fill this position (usually 1)."
+    },
+    {
+      "helix_attribute": "eeo_job_category",
+      "source": "Job_Profile.EEO_Job_Category",
+      "transformation": "Map to IPEDS EEO category for federal reporting. E.g., 'Executive/Admin/Managerial', 'Faculty', 'Professional', 'Clerical', 'Technical', 'Skilled Craft', 'Service/Maintenance'."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Position.Fund (worktag) or default from supervisory org",
+      "transformation": "Map to HELIX fund code. Faculty positions on grants \u2192 restricted fund."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

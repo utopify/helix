@@ -1,0 +1,94 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Benefits",
+  "source_system": "workday",
+  "module": "HCM - Benefits",
+  "target_resource": "BenefitEnrollment (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Worker Benefit Election",
+      "description": "Current benefit elections: plan, coverage level, dependents, beneficiaries. Equivalent to PS_HEALTH_BENEFIT + PS_LIFE_ADD_BEN + PS_SAVINGS_PLAN + PS_PENSION_PLAN."
+    },
+    {
+      "object": "Benefit Plan",
+      "description": "Plan definition: type (medical, dental, vision, life, disability, retirement, FSA, HSA), provider, rates. Equivalent to PS_BENEF_PLAN_TBL."
+    },
+    {
+      "object": "Benefit Event",
+      "description": "Life events triggering enrollment changes: new hire, marriage, birth, divorce, loss of coverage. Equivalent to PS_BEN_PROG_PARTIC enrollment events."
+    },
+    {
+      "object": "Dependent",
+      "description": "Worker dependents: name, relationship, DOB, SSN. Equivalent to PS_DEPENDENT_BENEF."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "plan_name",
+      "source": "Benefit Plan.Benefit_Plan_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "plan_type",
+      "source": "Benefit Plan.Benefit_Type",
+      "transformation": "Map: 'Medical' \u2192 'medical', 'Dental' \u2192 'dental', 'Vision' \u2192 'vision', 'Life Insurance' \u2192 'life', 'Disability' \u2192 'disability', 'Retirement' \u2192 'retirement', 'FSA' \u2192 'fsa', 'HSA' \u2192 'hsa', 'Tuition Waiver' \u2192 'tuition_waiver'."
+    },
+    {
+      "helix_attribute": "coverage_level",
+      "source": "Worker Benefit Election.Coverage_Level",
+      "transformation": "Map: 'Employee Only' \u2192 'employee', 'Employee + Spouse' \u2192 'employee_spouse', 'Employee + Children' \u2192 'employee_children', 'Family' \u2192 'family'."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "Worker Benefit Election.Coverage_Begin_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "termination_date",
+      "source": "Worker Benefit Election.Coverage_End_Date",
+      "transformation": "Null if active. Cast to ISO 8601 if ended."
+    },
+    {
+      "helix_attribute": "employee_contribution",
+      "source": "Worker Benefit Election.Employee_Cost",
+      "transformation": "Per-pay-period employee contribution."
+    },
+    {
+      "helix_attribute": "employer_contribution",
+      "source": "Worker Benefit Election.Employer_Cost",
+      "transformation": "Per-pay-period employer contribution."
+    },
+    {
+      "helix_attribute": "retirement_contribution_pct",
+      "source": "Worker Benefit Election.Employee_Contribution_Percent (retirement plans)",
+      "transformation": "Employee deferral percentage for 403(b), 457(b), state pension."
+    },
+    {
+      "helix_attribute": "employer_match_pct",
+      "source": "Benefit Plan.Employer_Match_Percent",
+      "transformation": "Employer matching percentage."
+    },
+    {
+      "helix_attribute": "dependent_count",
+      "source": "Count of dependents on election",
+      "transformation": "Number of covered dependents."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "Benefits data is restricted. Dependent SSNs must be tokenized. Higher ed institutions typically offer: state retirement systems (for public institutions), TIAA-CREF (for private), 403(b) plans, tuition waivers/exchange programs, and COBRA. Tuition waiver/exchange is a distinctive higher ed benefit worth tracking."
+}

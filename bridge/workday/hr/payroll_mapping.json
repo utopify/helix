@@ -1,0 +1,120 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Payroll",
+  "source_system": "workday",
+  "module": "HCM - Payroll (US)",
+  "target_resource": "PayrollResult (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Payroll is cloud-native with built-in tax engine (for US). Some institutions use Workday Payroll directly; others use a third-party payroll (ADP, Ceridian) and integrate via Payroll Interface. For institutions using third-party payroll, Workday exports payroll input and imports payroll results.",
+  "source_objects": [
+    {
+      "object": "Payroll Result",
+      "description": "Pay statement results: gross pay, taxes, deductions, net pay, by pay component. Equivalent to PS_PAY_EARNINGS + PS_PAY_DEDUCTION + PS_PAY_TAX + PS_PAY_CHECK."
+    },
+    {
+      "object": "Pay Component",
+      "description": "Earnings type (regular, overtime, shift differential, stipend, retroactive) or deduction type (tax, benefit, garnishment, retirement)."
+    },
+    {
+      "object": "Payroll Input",
+      "description": "One-time entries: bonuses, additional earnings, adjustments. Equivalent to PS_ADDL_PAY_ERNCD or PS_ONE_TIME_PAY."
+    },
+    {
+      "object": "Tax Filing",
+      "description": "W-2 data, tax jurisdiction, withholding elections. Equivalent to PS_FED_TAX_DATA + PS_STATE_TAX_DATA."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Payroll Result.Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "pay_period_start",
+      "source": "Payroll Result.Pay_Period_Start_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "pay_period_end",
+      "source": "Payroll Result.Pay_Period_End_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "pay_date",
+      "source": "Payroll Result.Payment_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "gross_pay",
+      "source": "Payroll Result.Gross_Pay",
+      "transformation": "Direct map. Sum of all earnings."
+    },
+    {
+      "helix_attribute": "total_taxes",
+      "source": "Sum of Payroll Result tax components",
+      "transformation": "Federal + state + local + FICA."
+    },
+    {
+      "helix_attribute": "total_deductions",
+      "source": "Sum of Payroll Result deduction components",
+      "transformation": "Benefits + retirement + garnishments + other pre/post-tax deductions."
+    },
+    {
+      "helix_attribute": "net_pay",
+      "source": "Payroll Result.Net_Pay",
+      "transformation": "Gross - taxes - deductions."
+    },
+    {
+      "helix_attribute": "regular_earnings",
+      "source": "Payroll Result component where type = 'Regular'",
+      "transformation": "Base pay earnings for the period."
+    },
+    {
+      "helix_attribute": "overtime_earnings",
+      "source": "Payroll Result component where type = 'Overtime'",
+      "transformation": "OT earnings (non-exempt employees only)."
+    },
+    {
+      "helix_attribute": "supplemental_earnings",
+      "source": "Sum of bonus, stipend, retroactive components",
+      "transformation": "Additional earnings beyond regular pay."
+    },
+    {
+      "helix_attribute": "retirement_deduction",
+      "source": "Payroll Result component where type = 'Retirement'",
+      "transformation": "403(b), 457(b), state pension employee contribution."
+    },
+    {
+      "helix_attribute": "benefit_deductions",
+      "source": "Sum of medical, dental, vision, life, etc. components",
+      "transformation": "Employee benefit premium contributions."
+    },
+    {
+      "helix_attribute": "cost_center",
+      "source": "Payroll Result.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code. Where the labor cost is charged."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Payroll Result.Fund (worktag)",
+      "transformation": "Map to HELIX fund code. Grant-funded positions \u2192 restricted fund."
+    },
+    {
+      "helix_attribute": "grant_ref",
+      "source": "Payroll Result.Grant (worktag)",
+      "transformation": "If labor is charged to a grant."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "Payroll data is restricted. Contains SSN-linked tax data, salary details, and garnishment information. W-2 data subject to IRS retention requirements. Higher ed payroll complexity: faculty 9-month vs 12-month pay distribution, summer research compensation, graduate assistant stipends with tuition remission, multi-fund labor distribution (split funding across grants and operating funds)."
+}

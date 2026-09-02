@@ -1,0 +1,124 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Asset Management",
+  "source_system": "workday",
+  "module": "Financial Management - Business Assets",
+  "target_resource": "Asset (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Business Asset",
+      "description": "Capital asset record: description, acquisition cost, date, category, location, custodian, depreciation. Equivalent to PS_ASSET."
+    },
+    {
+      "object": "Asset Category",
+      "description": "Classification: land, buildings, equipment, software, leasehold improvements, library collections. Drives depreciation rules."
+    },
+    {
+      "object": "Asset Depreciation",
+      "description": "Depreciation schedule: method (straight-line, declining balance), useful life, salvage value, accumulated depreciation."
+    },
+    {
+      "object": "Asset Location",
+      "description": "Physical location: building, room, campus. Important for insurance and inventory."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "asset_id",
+      "source": "Business Asset.Asset_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Business Asset.Asset_Description",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "asset_category",
+      "source": "Business Asset.Asset_Category",
+      "transformation": "Map: 'Land' \u2192 'land', 'Buildings' \u2192 'building', 'Equipment' \u2192 'equipment', 'Software' \u2192 'software', 'Vehicles' \u2192 'vehicle', 'Leasehold Improvements' \u2192 'leasehold', 'Library Collections' \u2192 'library', 'Construction in Progress' \u2192 'cip'."
+    },
+    {
+      "helix_attribute": "acquisition_date",
+      "source": "Business Asset.Acquisition_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "acquisition_cost",
+      "source": "Business Asset.Acquisition_Cost",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "useful_life_months",
+      "source": "Business Asset.Useful_Life",
+      "transformation": "Convert to months if in years."
+    },
+    {
+      "helix_attribute": "salvage_value",
+      "source": "Business Asset.Residual_Value",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "depreciation_method",
+      "source": "Business Asset.Depreciation_Method",
+      "transformation": "Map: 'Straight Line' \u2192 'straight_line', 'Declining Balance' \u2192 'declining_balance'."
+    },
+    {
+      "helix_attribute": "accumulated_depreciation",
+      "source": "Business Asset.Accumulated_Depreciation",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "net_book_value",
+      "source": "Business Asset.Net_Book_Value",
+      "transformation": "acquisition_cost - accumulated_depreciation."
+    },
+    {
+      "helix_attribute": "location_building",
+      "source": "Business Asset.Business_Asset_Location.Building",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "location_room",
+      "source": "Business Asset.Business_Asset_Location.Room",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "custodian",
+      "source": "Business Asset.Custodian",
+      "transformation": "Resolve to name. Person responsible."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Business Asset.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Business Asset.Fund (worktag)",
+      "transformation": "Map to HELIX fund code. Equipment on grants \u2192 restricted fund."
+    },
+    {
+      "helix_attribute": "grant_ref",
+      "source": "Business Asset.Grant (worktag)",
+      "transformation": "If purchased on a grant, link to grant. Subject to federal disposition rules if federally funded."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Business Asset.Asset_Status",
+      "transformation": "Map: 'Active' \u2192 'in_service', 'Disposed' \u2192 'disposed', 'Under Construction' \u2192 'cip', 'Fully Depreciated' \u2192 'fully_depreciated'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Higher ed capitalization thresholds vary by institution, typically $5,000-$10,000. Equipment purchased on federal grants (>$5K or institution threshold, whichever is lower) must be tracked per 2 CFR 200.313 and is subject to federal disposition and reporting requirements."
+}

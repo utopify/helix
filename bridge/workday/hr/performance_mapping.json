@@ -1,0 +1,99 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Performance Management / Talent",
+  "source_system": "workday",
+  "module": "HCM - Talent Management",
+  "target_resource": "PerformanceReview (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Performance Review",
+      "description": "Review document: rating, goals, competencies, manager comments, self-assessment. Equivalent to PS_EP_APPRAISAL."
+    },
+    {
+      "object": "Goal",
+      "description": "Employee goals linked to reviews: description, status, progress, alignment to org goals. Equivalent to PS_EP_GOAL."
+    },
+    {
+      "object": "Competency Assessment",
+      "description": "Rating on institutional competency framework: proficiency level per competency."
+    },
+    {
+      "object": "Talent Profile",
+      "description": "Succession-related: flight risk, retention potential, performance/potential matrix (9-box), career interests, certifications, education."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "review_period_start",
+      "source": "Performance Review.Review_Period_Start",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "review_period_end",
+      "source": "Performance Review.Review_Period_End",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "overall_rating",
+      "source": "Performance Review.Overall_Rating",
+      "transformation": "Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'."
+    },
+    {
+      "helix_attribute": "numeric_rating",
+      "source": "Performance Review.Rating_Numeric",
+      "transformation": "Numeric equivalent if available (e.g., 1-5 scale)."
+    },
+    {
+      "helix_attribute": "reviewer",
+      "source": "Performance Review.Manager",
+      "transformation": "Resolve to name. The reviewing manager."
+    },
+    {
+      "helix_attribute": "review_status",
+      "source": "Performance Review.Status",
+      "transformation": "Map: 'Not Started' \u2192 'not_started', 'In Progress' \u2192 'in_progress', 'Manager Review' \u2192 'manager_review', 'Completed' \u2192 'completed', 'Acknowledged' \u2192 'acknowledged'."
+    },
+    {
+      "helix_attribute": "goals_count",
+      "source": "Count of Goals for this review",
+      "transformation": "Number of goals."
+    },
+    {
+      "helix_attribute": "goals_achieved",
+      "source": "Count of Goals where Status = 'Achieved'",
+      "transformation": "Number of goals met."
+    },
+    {
+      "helix_attribute": "nine_box_performance",
+      "source": "Talent Profile.Performance dimension",
+      "transformation": "Low/Medium/High on the performance axis."
+    },
+    {
+      "helix_attribute": "nine_box_potential",
+      "source": "Talent Profile.Potential dimension",
+      "transformation": "Low/Medium/High on the potential axis."
+    },
+    {
+      "helix_attribute": "flight_risk",
+      "source": "Talent Profile.Retention_Risk",
+      "transformation": "Map: 'High' \u2192 'high', 'Medium' \u2192 'medium', 'Low' \u2192 'low'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "Performance data is restricted \u2014 accessible only to HR, the employee, their manager, and leadership in the reporting chain. Higher ed performance review has unique elements: faculty peer review, tenure review committees, and student evaluations of teaching (SETs) which are typically handled outside the HRIS. Staff performance may follow a different cycle and rating scale than faculty."
+}

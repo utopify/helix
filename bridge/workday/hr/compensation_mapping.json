@@ -1,0 +1,108 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Compensation",
+  "source_system": "workday",
+  "module": "HCM - Compensation",
+  "target_resource": "Compensation (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Worker Compensation",
+      "description": "Current pay: base salary, hourly rate, compensation grade/step, compensation plans, total base pay. Equivalent to PS_COMPENSATION."
+    },
+    {
+      "object": "Compensation Plan",
+      "description": "Salary plan, hourly plan, allowance plan, bonus plan, commission plan. Equivalent to PS_SAL_PLAN_TBL."
+    },
+    {
+      "object": "Compensation Grade",
+      "description": "Pay grade: minimum, midpoint, maximum. Equivalent to PS_SAL_GRADE_TBL."
+    },
+    {
+      "object": "Compensation Step",
+      "description": "Step within a grade (common in unionized/classified staff). Equivalent to PS_SAL_STEP_TBL."
+    },
+    {
+      "object": "One-Time Payment",
+      "description": "Bonuses, stipends, awards outside regular pay. Equivalent to PS_ONE_TIME_PAY."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "base_pay",
+      "source": "Worker Compensation.Total_Base_Pay",
+      "transformation": "Annualized base salary or hourly rate \u00d7 standard hours."
+    },
+    {
+      "helix_attribute": "pay_rate",
+      "source": "Worker Compensation.Compensation_Plan_Amount",
+      "transformation": "The actual rate: salary amount or hourly rate."
+    },
+    {
+      "helix_attribute": "pay_rate_type",
+      "source": "Compensation_Plan.Pay_Rate_Type",
+      "transformation": "Map: 'Salary' \u2192 'salary', 'Hourly' \u2192 'hourly'."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "Worker Compensation.Currency",
+      "transformation": "ISO 4217. Direct map."
+    },
+    {
+      "helix_attribute": "compensation_grade",
+      "source": "Worker Compensation.Compensation_Grade",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "compensation_step",
+      "source": "Worker Compensation.Compensation_Step",
+      "transformation": "Direct map if applicable. Null for non-step plans."
+    },
+    {
+      "helix_attribute": "grade_minimum",
+      "source": "Compensation Grade.Minimum_Amount",
+      "transformation": "Direct map. Bottom of the pay range."
+    },
+    {
+      "helix_attribute": "grade_midpoint",
+      "source": "Compensation Grade.Midpoint_Amount",
+      "transformation": "Direct map. Market reference point."
+    },
+    {
+      "helix_attribute": "grade_maximum",
+      "source": "Compensation Grade.Maximum_Amount",
+      "transformation": "Direct map. Top of the pay range."
+    },
+    {
+      "helix_attribute": "compa_ratio",
+      "source": "Derived: base_pay / grade_midpoint",
+      "transformation": "Ratio of actual pay to midpoint. <1.0 = below market, >1.0 = above."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "Worker Compensation event effective date",
+      "transformation": "Cast to ISO 8601. The date this compensation became effective."
+    },
+    {
+      "helix_attribute": "change_reason",
+      "source": "Business process event reason",
+      "transformation": "Map: 'Hire' \u2192 'hire', 'Promotion' \u2192 'promotion', 'Merit Increase' \u2192 'merit', 'Market Adjustment' \u2192 'market', 'Transfer' \u2192 'transfer', 'Reclassification' \u2192 'reclass'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "Compensation data is highly sensitive. Classify as restricted. Individual pay data should never appear in reports accessible to people outside HR/leadership unless aggregated. Faculty salary data may be public at public institutions (state open records laws vary)."
+}

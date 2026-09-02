@@ -1,0 +1,94 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Time Tracking",
+  "source_system": "workday",
+  "module": "HCM - Time Tracking",
+  "target_resource": "TimeEntry (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Time Tracking captures hours for non-exempt (hourly) employees, student workers, and any position requiring time entry. Time blocks are coded with worktags for labor distribution. Approval workflows route to the supervisory org manager. Unlike PeopleSoft Time & Labor (which uses Time Reporter Data and Reported Time), Workday time entry is tightly integrated with the worker's primary position and compensation.",
+  "source_objects": [
+    {
+      "object": "Time Block",
+      "description": "A reported time entry: worker, date, hours, time entry code (regular, overtime, holiday, sick), worktag coding. Equivalent to PS_TL_RPTD_TIME."
+    },
+    {
+      "object": "Time Entry Code",
+      "description": "Classification of time: Regular, Overtime, Double Time, Holiday, Comp Time. Equivalent to PS_TRC_TBL."
+    },
+    {
+      "object": "Time Clock Event",
+      "description": "Clock-in/clock-out events (if web clock or time clock integration enabled). Equivalent to PS_TL_PUNCH_DATA."
+    },
+    {
+      "object": "Worker Time Sheet",
+      "description": "Aggregated time blocks for a pay period, with approval status."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Time Block.Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "date",
+      "source": "Time Block.Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "hours",
+      "source": "Time Block.Hours",
+      "transformation": "Direct map. Reported hours for this entry."
+    },
+    {
+      "helix_attribute": "time_type",
+      "source": "Time Block.Time_Entry_Code",
+      "transformation": "Map: 'Regular' \u2192 'regular', 'Overtime' \u2192 'overtime', 'Double Time' \u2192 'double_time', 'Holiday' \u2192 'holiday', 'On Call' \u2192 'on_call'."
+    },
+    {
+      "helix_attribute": "in_time",
+      "source": "Time Clock Event.Clock_In_Time",
+      "transformation": "Cast to ISO 8601 datetime. Null if no clock events."
+    },
+    {
+      "helix_attribute": "out_time",
+      "source": "Time Clock Event.Clock_Out_Time",
+      "transformation": "Cast to ISO 8601 datetime."
+    },
+    {
+      "helix_attribute": "cost_center",
+      "source": "Time Block.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code. Where the labor cost is charged."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Time Block.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "grant_ref",
+      "source": "Time Block.Grant (worktag)",
+      "transformation": "If time is charged to a grant (common for student research assistants)."
+    },
+    {
+      "helix_attribute": "approval_status",
+      "source": "Worker Time Sheet.Status",
+      "transformation": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Denied' \u2192 'denied'."
+    },
+    {
+      "helix_attribute": "approver",
+      "source": "Worker Time Sheet.Approver",
+      "transformation": "Resolve to name. Typically the supervisory org manager."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

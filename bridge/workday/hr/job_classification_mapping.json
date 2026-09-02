@@ -1,0 +1,105 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Job Classification / EEO / Faculty Rank",
+  "source_system": "workday",
+  "module": "HCM - Job Profile / Worker Additional Data",
+  "target_resource": "JobClassification (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday's Job Profile serves as the primary classification entity (equivalent to PeopleSoft's Job Code). Job Profiles belong to Job Families and Job Family Groups, which drive reporting hierarchies. For higher ed, Job Profiles need to accommodate both the standard EEO/SOC classification system AND the academic rank system (Professor \u2192 Associate \u2192 Assistant \u2192 Instructor \u2192 Lecturer). Faculty tenure status is typically tracked via a custom field or worker additional data, as Workday has no native tenure tracking.",
+  "source_objects": [
+    {
+      "object": "Job Profile",
+      "description": "Job classification: title, family, level, EEO category, SOC code, FLSA status, pay rate type. Equivalent to PS_JOBCODE_TBL."
+    },
+    {
+      "object": "Job Family",
+      "description": "Grouping of related profiles. E.g., 'Faculty - STEM', 'IT - Infrastructure', 'Administrative - Finance'. Equivalent to PS_JOB_FAMILY_TBL."
+    },
+    {
+      "object": "Worker Additional Data (Faculty)",
+      "description": "Custom fields for academic-specific data: tenure status, academic rank, tenure date, sabbatical eligibility, tenure home department. Not native in Workday \u2014 requires configuration."
+    },
+    {
+      "object": "EEO/SOC Mapping",
+      "description": "Standard Occupational Classification (SOC) and EEO job category mapping for federal reporting."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "job_code",
+      "source": "Job Profile.Job_Profile_ID",
+      "transformation": "Direct map. The institution's job code."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "Job Profile.Job_Profile_Name",
+      "transformation": "Direct map. E.g., 'Professor of Computer Science'."
+    },
+    {
+      "helix_attribute": "job_family",
+      "source": "Job Profile.Job_Family.Name",
+      "transformation": "Direct map. E.g., 'Faculty - Engineering'."
+    },
+    {
+      "helix_attribute": "job_family_group",
+      "source": "Job Profile.Job_Family_Group.Name",
+      "transformation": "Higher-level grouping. E.g., 'Academic', 'Administrative', 'Facilities'."
+    },
+    {
+      "helix_attribute": "eeo_category",
+      "source": "Job Profile.EEO_Job_Category",
+      "transformation": "Map to IPEDS/EEO categories: 'Executive/Admin/Managerial', 'Faculty', 'Other Professional', 'Technical/Paraprofessional', 'Clerical/Secretarial', 'Skilled Crafts', 'Service/Maintenance'."
+    },
+    {
+      "helix_attribute": "soc_code",
+      "source": "Job Profile.Job_Classification where type = 'SOC'",
+      "transformation": "Standard Occupational Classification code. E.g., '25-1021' for CS professors."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "Job Profile custom field or department CIP",
+      "transformation": "Classification of Instructional Programs code. Relevant for faculty to link to academic discipline. E.g., '11.0101' for Computer Science."
+    },
+    {
+      "helix_attribute": "academic_rank",
+      "source": "Worker Additional Data.Academic_Rank",
+      "transformation": "Map: 'Distinguished Professor' \u2192 'distinguished', 'Professor' \u2192 'professor', 'Associate Professor' \u2192 'associate', 'Assistant Professor' \u2192 'assistant', 'Senior Lecturer' \u2192 'senior_lecturer', 'Lecturer' \u2192 'lecturer', 'Instructor' \u2192 'instructor', 'Visiting Professor' \u2192 'visiting', 'Professor Emeritus' \u2192 'emeritus', 'Clinical Professor' \u2192 'clinical', 'Research Professor' \u2192 'research'."
+    },
+    {
+      "helix_attribute": "tenure_status",
+      "source": "Worker Additional Data.Tenure_Status",
+      "transformation": "Map: 'Tenured' \u2192 'tenured', 'Tenure Track' \u2192 'tenure_track', 'Non-Tenure Track' \u2192 'ntt', 'Not Applicable' \u2192 'n/a'."
+    },
+    {
+      "helix_attribute": "tenure_date",
+      "source": "Worker Additional Data.Tenure_Date",
+      "transformation": "Date tenure was granted. Null if not tenured. Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "faculty_status",
+      "source": "Worker Additional Data.Faculty_Status",
+      "transformation": "Map: 'Full-Time' \u2192 'full_time', 'Part-Time/Adjunct' \u2192 'adjunct', 'Emeritus' \u2192 'emeritus', 'On Leave' \u2192 'on_leave', 'Visiting' \u2192 'visiting'."
+    },
+    {
+      "helix_attribute": "ipeds_faculty_category",
+      "source": "Derived from tenure_status + time_type",
+      "transformation": "For IPEDS HR survey: 'Tenured', 'On Tenure Track', 'Not on Tenure Track/Multi-Year Contract', 'Not on Tenure Track/Annual Contract', 'Not on Tenure Track/Less Than Annual'. Cross-reference with FTE and function."
+    },
+    {
+      "helix_attribute": "flsa_status",
+      "source": "Job Profile.Exempt",
+      "transformation": "Map: true \u2192 'exempt', false \u2192 'non_exempt'. Faculty are typically exempt."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Faculty classification in Workday is a known pain point. Workday has no native tenure tracking, academic rank system, or IPEDS faculty classification. Institutions must build these using custom fields (Worker Additional Data), custom objects, or calculated fields. The HELIX Bridge documents the recommended approach so institutions don't each reinvent it."
+}

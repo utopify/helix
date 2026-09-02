@@ -1,0 +1,94 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Learning Management",
+  "source_system": "workday",
+  "module": "HCM - Learning",
+  "target_resource": "LearningRecord (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Learning Course",
+      "description": "Course/training definition: title, type, delivery method, provider, required vs. optional, content. Equivalent to PS_TRAINING_TBL."
+    },
+    {
+      "object": "Learning Enrollment",
+      "description": "Worker enrollment in a course: status, completion date, score, grade. Equivalent to PS_TRAINING (enrollment detail)."
+    },
+    {
+      "object": "Learning Assignment",
+      "description": "Mandatory training assignments: compliance courses, safety training, DEI training, onboarding."
+    },
+    {
+      "object": "Learning Campaign",
+      "description": "Organization-wide training pushes with deadlines and completion tracking."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Worker.Worker_ID",
+      "transformation": "Link to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "course_id",
+      "source": "Learning Course.Course_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "course_title",
+      "source": "Learning Course.Title",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "course_type",
+      "source": "Learning Course.Course_Type",
+      "transformation": "Map: 'Compliance' \u2192 'compliance', 'Professional Development' \u2192 'professional_dev', 'Safety' \u2192 'safety', 'Onboarding' \u2192 'onboarding', 'Technical' \u2192 'technical', 'Leadership' \u2192 'leadership'."
+    },
+    {
+      "helix_attribute": "delivery_method",
+      "source": "Learning Course.Delivery_Mode",
+      "transformation": "Map: 'Online Self-Paced' \u2192 'online_async', 'Virtual Instructor-Led' \u2192 'online_sync', 'In Person' \u2192 'in_person', 'Blended' \u2192 'blended'."
+    },
+    {
+      "helix_attribute": "enrollment_date",
+      "source": "Learning Enrollment.Enrollment_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "Learning Enrollment.Completion_Date",
+      "transformation": "Cast to ISO 8601. Null if not completed."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Learning Enrollment.Status",
+      "transformation": "Map: 'Enrolled' \u2192 'enrolled', 'In Progress' \u2192 'in_progress', 'Completed' \u2192 'completed', 'Waived' \u2192 'waived', 'Not Started' \u2192 'not_started'."
+    },
+    {
+      "helix_attribute": "score",
+      "source": "Learning Enrollment.Score",
+      "transformation": "Direct map. Assessment score if applicable."
+    },
+    {
+      "helix_attribute": "required",
+      "source": "Learning Assignment.Required = true",
+      "transformation": "Boolean. Whether this is a mandatory assignment."
+    },
+    {
+      "helix_attribute": "due_date",
+      "source": "Learning Assignment.Due_Date",
+      "transformation": "For mandatory training: compliance deadline."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Higher ed compliance training typically includes: Title IX, FERPA, Clery Act, cybersecurity awareness, hazardous materials (lab workers), IRB (researchers), responsible conduct of research (federally funded researchers), ADA/accessibility, and anti-harassment. Completion tracking is audit-sensitive."
+}

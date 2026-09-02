@@ -1,0 +1,99 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Contracts",
+  "source_system": "workday",
+  "module": "Financial Management - Supplier Contracts",
+  "target_resource": "Contract (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Supplier Contract",
+      "description": "Contract header: supplier, type, dates, total value, status, owner. Equivalent to PS_CNTRCT_HDR."
+    },
+    {
+      "object": "Supplier Contract Line",
+      "description": "Contract line items: goods/services description, quantity, rate, spend category. Equivalent to PS_CNTRCT_LINE."
+    },
+    {
+      "object": "Supplier Contract Amendment",
+      "description": "Contract modifications: scope changes, extensions, price adjustments."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "contract_id",
+      "source": "Supplier Contract.Contract_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "contract_name",
+      "source": "Supplier Contract.Contract_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "Supplier Contract.Supplier.Supplier_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "Supplier.Supplier_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "contract_type",
+      "source": "Supplier Contract.Contract_Type",
+      "transformation": "Map: 'Blanket PO' \u2192 'blanket', 'Rate Contract' \u2192 'rate', 'Service Agreement' \u2192 'service', 'Construction' \u2192 'construction', 'Consulting' \u2192 'consulting'."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Supplier Contract.Start_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Supplier Contract.End_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "total_value",
+      "source": "Supplier Contract.Total_Contract_Value",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "amount_spent",
+      "source": "Derived from POs/invoices against contract",
+      "transformation": "Sum of invoiced amounts linked to this contract."
+    },
+    {
+      "helix_attribute": "contract_status",
+      "source": "Supplier Contract.Contract_Status",
+      "transformation": "Map: 'Draft' \u2192 'draft', 'Active' \u2192 'active', 'Expired' \u2192 'expired', 'Terminated' \u2192 'terminated', 'On Hold' \u2192 'on_hold'."
+    },
+    {
+      "helix_attribute": "owner",
+      "source": "Supplier Contract.Contract_Owner",
+      "transformation": "Resolve to name. Procurement officer or department contact."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Supplier Contract.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Supplier Contract.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

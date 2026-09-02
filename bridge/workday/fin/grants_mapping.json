@@ -1,0 +1,148 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Grants / Sponsored Programs",
+  "source_system": "workday",
+  "module": "Financial Management - Grants Management",
+  "target_resource": "Grant (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Grants Management handles the full sponsored programs lifecycle: award setup, budget management, effort certification, cost sharing, billing/draw-down, and closeout. Grants are a first-class worktag in Workday \u2014 every transaction coded to a grant automatically flows into grant financial reporting. This is a critical module for research universities. The Uniform Guidance (2 CFR 200) governs allowable costs, cost principles, and audit requirements for federal awards.",
+  "source_objects": [
+    {
+      "object": "Grant",
+      "description": "Award/grant header: sponsor, PI, title, award amount, project period, CFDA number, billing type (cost-reimbursable, fixed-price). Equivalent to PS_GM_AWD_HDR + PS_GM_AWD_PRJ."
+    },
+    {
+      "object": "Grant Budget",
+      "description": "Budget by grant/period/cost category. Equivalent to PS_GM_BUDGET_DTL. Direct costs, indirect costs (F&A), cost sharing."
+    },
+    {
+      "object": "Grant Hierarchy",
+      "description": "Parent/child structure: award \u2192 subaward \u2192 task/phase. Tracks budget at each level."
+    },
+    {
+      "object": "Effort Certification",
+      "description": "Faculty/staff effort reporting (% of time on each grant). Required for federal compliance. Equivalent to effort certification in PS Grants."
+    },
+    {
+      "object": "Sponsor",
+      "description": "Funding agency: federal (NSF, NIH, DOE, DOD), state, private foundation, industry. Equivalent to PS_GM_SPONSOR."
+    },
+    {
+      "object": "Grant Billing",
+      "description": "Invoice/draw-down against a grant. Letter of credit (LOC) draws for federal awards, invoices for others."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "grant_id",
+      "source": "Grant.Grant_ID",
+      "transformation": "Direct map. Institution's internal grant number."
+    },
+    {
+      "helix_attribute": "grant_name",
+      "source": "Grant.Grant_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "sponsor_id",
+      "source": "Grant.Sponsor.Sponsor_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "sponsor_name",
+      "source": "Sponsor.Sponsor_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "sponsor_type",
+      "source": "Sponsor.Sponsor_Type",
+      "transformation": "Map: 'Federal' \u2192 'federal', 'State' \u2192 'state', 'Private/Foundation' \u2192 'private', 'Industry' \u2192 'industry', 'Internal' \u2192 'internal'."
+    },
+    {
+      "helix_attribute": "sponsor_award_number",
+      "source": "Grant.Sponsor_Award_ID",
+      "transformation": "The sponsor's reference number (e.g., NIH grant number, NSF award number)."
+    },
+    {
+      "helix_attribute": "cfda_number",
+      "source": "Grant.CFDA_Number",
+      "transformation": "Catalog of Federal Domestic Assistance number. Required for federal awards. Direct map."
+    },
+    {
+      "helix_attribute": "principal_investigator",
+      "source": "Grant.Principal_Investigator",
+      "transformation": "Resolve to name. The faculty lead."
+    },
+    {
+      "helix_attribute": "project_start_date",
+      "source": "Grant.Grant_Begin_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "project_end_date",
+      "source": "Grant.Grant_End_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "total_award_amount",
+      "source": "Grant.Total_Award_Amount",
+      "transformation": "Direct map. Total sponsor commitment."
+    },
+    {
+      "helix_attribute": "total_budget",
+      "source": "Sum of Grant Budget lines",
+      "transformation": "Sum of direct + indirect budgets across all periods."
+    },
+    {
+      "helix_attribute": "direct_costs_budget",
+      "source": "Grant Budget where Cost_Type = 'Direct'",
+      "transformation": "Sum of direct cost budget lines."
+    },
+    {
+      "helix_attribute": "indirect_costs_budget",
+      "source": "Grant Budget where Cost_Type = 'Indirect'",
+      "transformation": "F&A/overhead. Calculated using the institution's negotiated IDC rate."
+    },
+    {
+      "helix_attribute": "idc_rate",
+      "source": "Grant.Indirect_Cost_Rate or institutional rate table",
+      "transformation": "Negotiated F&A rate (e.g., 55.5% MTDC for on-campus organized research). May vary by activity type and location."
+    },
+    {
+      "helix_attribute": "cost_sharing_amount",
+      "source": "Grant Budget where Cost_Sharing = true",
+      "transformation": "Institutional commitment (mandatory or voluntary cost sharing)."
+    },
+    {
+      "helix_attribute": "grant_status",
+      "source": "Grant.Grant_Status",
+      "transformation": "Map: 'Proposed' \u2192 'proposed', 'Awarded' \u2192 'active', 'Active' \u2192 'active', 'No-Cost Extension' \u2192 'nce', 'Closeout' \u2192 'closing', 'Closed' \u2192 'closed'."
+    },
+    {
+      "helix_attribute": "billing_type",
+      "source": "Grant.Billing_Type",
+      "transformation": "Map: 'Cost Reimbursable' \u2192 'cost_reimbursable', 'Fixed Price' \u2192 'fixed_price', 'LOC' \u2192 'letter_of_credit'."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Grant.Cost_Center (worktag) or administering department",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Grant.Fund (worktag)",
+      "transformation": "Map to HELIX fund code. Federal grants \u2192 restricted_federal, state \u2192 restricted_state, etc."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "compliance_notes": "Federal grants are subject to 2 CFR 200 (Uniform Guidance). Key requirements: allowable cost determination, effort certification (at least semi-annually), A-133/Uniform Guidance single audit for institutions spending \u2265$750K in federal awards. F&A rates negotiated with cognizant federal agency (usually DHHS or ONR). Cost sharing must be tracked and documented. Equipment (>$5K) purchased on federal grants is subject to disposition rules."
+}

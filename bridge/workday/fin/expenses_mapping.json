@@ -1,0 +1,103 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Expenses / Travel",
+  "source_system": "workday",
+  "module": "Financial Management - Expenses",
+  "target_resource": "ExpenseReport (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Expense Report",
+      "description": "Employee expense report header: traveler, trip purpose, total, status, approver. Equivalent to PS_EX_SHEET_HDR."
+    },
+    {
+      "object": "Expense Report Line",
+      "description": "Individual expenses: type (airfare, hotel, meals, mileage, registration), amount, date, worktag coding. Equivalent to PS_EX_SHEET_LINE."
+    },
+    {
+      "object": "Expense Item",
+      "description": "Expense type definition: per diem rates, mileage rates, receipt requirements."
+    },
+    {
+      "object": "Travel Booking",
+      "description": "If Workday Travel is enabled, bookings feed into expense reports automatically."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "report_id",
+      "source": "Expense Report.Report_Number",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "employee_ref",
+      "source": "Expense Report.Worker",
+      "transformation": "Resolve to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "report_date",
+      "source": "Expense Report.Report_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "purpose",
+      "source": "Expense Report.Business_Purpose or Memo",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "total_amount",
+      "source": "Expense Report.Total_Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "report_status",
+      "source": "Expense Report.Expense_Report_Status",
+      "transformation": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Paid' \u2192 'paid', 'Returned' \u2192 'returned'."
+    },
+    {
+      "helix_attribute": "expense_type",
+      "source": "Expense Report Line.Expense_Item",
+      "transformation": "Map: 'Airfare' \u2192 'airfare', 'Hotel' \u2192 'lodging', 'Meals' \u2192 'meals', 'Mileage' \u2192 'mileage', 'Registration' \u2192 'registration', 'Ground Transportation' \u2192 'ground_transport', 'Other' \u2192 'other'."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "Expense Report Line.Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_date",
+      "source": "Expense Report Line.Expense_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "account",
+      "source": "Expense Report Line.Ledger_Account (worktag)",
+      "transformation": "Map to HELIX account code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Expense Report Line.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Expense Report Line.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "grant_ref",
+      "source": "Expense Report Line.Grant (worktag)",
+      "transformation": "If charged to a grant. Travel on federal grants subject to Fly America Act and per diem limits."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

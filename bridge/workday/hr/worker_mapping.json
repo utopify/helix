@@ -1,0 +1,169 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Worker / Employee",
+  "source_system": "workday",
+  "module": "HCM - Core Worker",
+  "target_resource": "Employee (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday uses 'Worker' as the universal entity \u2014 an Employee is a worker type (the other is Contingent Worker). Every worker has one or more Job records (primary + additional). Unlike PeopleSoft (where EMPLID is a flat number), Workday Worker IDs can be system-generated or institution-defined. Worker data is effective-dated via Workday's native event framework: every change (hire, transfer, promotion, termination) is a discrete business process event with an effective date. Workday's security is role-based and tied to supervisory organizations.",
+  "source_objects": [
+    {
+      "object": "Worker",
+      "description": "Core identity: worker ID, name, contact info, SSN/national ID, date of birth, citizenship, visa. Equivalent to PS_PERSONAL_DATA + PS_PERSON + PS_PERS_NID."
+    },
+    {
+      "object": "Worker Job Data",
+      "description": "Current and historical job assignments: position, supervisory org, job profile, location, FTE, pay rate group, worker type (employee/contingent). Equivalent to PS_JOB."
+    },
+    {
+      "object": "Worker Employment Status",
+      "description": "Hire date, original hire date, continuous service date, termination date, termination reason, rehire status. Equivalent to PS_EMPLOYMENT + PS_JOB.EMPL_STATUS."
+    },
+    {
+      "object": "Worker Contact Information",
+      "description": "Home address, work address, phone numbers, email addresses (work, personal). Equivalent to PS_ADDRESSES + PS_PERSONAL_PHONE + PS_EMAIL_ADDRESSES."
+    },
+    {
+      "object": "Worker Document",
+      "description": "Attached documents: I-9, W-4, certifications, licenses."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_id",
+      "source": "Worker.Worker_ID",
+      "transformation": "Direct map. Institution's employee number."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Worker \u2192 Person cross-reference",
+      "transformation": "Link to HELIX Person resource. May be the same person as a Student (student employees, GAs)."
+    },
+    {
+      "helix_attribute": "legal_name.first",
+      "source": "Worker.Legal_Name.First_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.last",
+      "source": "Worker.Legal_Name.Last_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.middle",
+      "source": "Worker.Legal_Name.Middle_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "preferred_name.first",
+      "source": "Worker.Preferred_Name.First_Name",
+      "transformation": "Direct map. May differ from legal name."
+    },
+    {
+      "helix_attribute": "date_of_birth",
+      "source": "Worker.Date_of_Birth",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "Worker.Gender",
+      "transformation": "Map to HELIX gender terminology."
+    },
+    {
+      "helix_attribute": "national_id",
+      "source": "Worker.National_ID (SSN for US)",
+      "transformation": "Tokenize at silver layer. Display last 4 only."
+    },
+    {
+      "helix_attribute": "citizenship_status",
+      "source": "Worker.Citizenship_Status",
+      "transformation": "Map: 'Citizen' \u2192 'citizen', 'Permanent Resident' \u2192 'permanent_resident', 'Visa' \u2192 'visa_holder'."
+    },
+    {
+      "helix_attribute": "visa_type",
+      "source": "Worker.Visa_Type",
+      "transformation": "If non-citizen: H-1B, J-1, F-1/OPT, TN, etc."
+    },
+    {
+      "helix_attribute": "ethnicity",
+      "source": "Worker.Ethnicity",
+      "transformation": "Map to HELIX ethnicity terminology. IPEDS/EEO category."
+    },
+    {
+      "helix_attribute": "hire_date",
+      "source": "Worker.Hire_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "original_hire_date",
+      "source": "Worker.Original_Hire_Date",
+      "transformation": "If rehire, the first-ever hire date. Important for benefits eligibility and seniority."
+    },
+    {
+      "helix_attribute": "continuous_service_date",
+      "source": "Worker.Continuous_Service_Date",
+      "transformation": "Date for service-based calculations (vacation accrual, retirement vesting)."
+    },
+    {
+      "helix_attribute": "termination_date",
+      "source": "Worker.Termination_Date",
+      "transformation": "Null if active. Cast to ISO 8601 if terminated."
+    },
+    {
+      "helix_attribute": "termination_reason",
+      "source": "Worker.Termination_Reason",
+      "transformation": "Map: 'Voluntary - Resignation' \u2192 'resignation', 'Voluntary - Retirement' \u2192 'retirement', 'Involuntary - Termination' \u2192 'involuntary', 'End of Contract' \u2192 'contract_end', 'Deceased' \u2192 'deceased'."
+    },
+    {
+      "helix_attribute": "worker_type",
+      "source": "Worker.Worker_Type",
+      "transformation": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+    },
+    {
+      "helix_attribute": "employee_type",
+      "source": "Worker Job Data.Employee_Type or derived",
+      "transformation": "Higher ed specific: 'faculty_tenured', 'faculty_tenure_track', 'faculty_ntt', 'faculty_adjunct', 'staff_regular', 'staff_temp', 'student_worker', 'graduate_assistant', 'postdoc'."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "Worker Job Data.FTE_Percent / 100 or Scheduled_Weekly_Hours / 40",
+      "transformation": "Normalize to 0.0-1.0. Full-time = 1.0."
+    },
+    {
+      "helix_attribute": "flsa_status",
+      "source": "Worker Job Data.FLSA_Status or Job_Profile.Exempt",
+      "transformation": "Map: 'Exempt' \u2192 'exempt', 'Non-Exempt' \u2192 'non_exempt'."
+    },
+    {
+      "helix_attribute": "primary_work_email",
+      "source": "Worker Contact.Email where Type = 'Work' and Primary = true",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "primary_work_phone",
+      "source": "Worker Contact.Phone where Type = 'Work' and Primary = true",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "home_address",
+      "source": "Worker Contact.Address where Type = 'Home'",
+      "transformation": "Map to HELIX address structure."
+    },
+    {
+      "helix_attribute": "employment_status",
+      "source": "Worker.Employment_Status",
+      "transformation": "Map: 'Active' \u2192 'active', 'Terminated' \u2192 'terminated', 'Leave of Absence' \u2192 'leave', 'Suspended' \u2192 'suspended', 'Retired' \u2192 'retired'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Worker data is highly sensitive. SSN/national ID must be tokenized at the silver layer. PII handling per institutional policy. IPEDS reporting requires ethnicity, gender, FTE, and employee type for the annual HR survey."
+}

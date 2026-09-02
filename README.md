@@ -9,7 +9,7 @@ HELIX is an open framework of foundational data models, governance standards, an
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.1.7 (September 2026)
+**Version:** 0.1.8 (September 2026)
 **License:** Apache 2.0
 
 --- 
@@ -73,7 +73,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 | **HELIX Core** | 19 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
-| **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (8), Colleague (3) — 64 total | Implementation teams, system integrators |
+| **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (26), Colleague (3) — 82 total | Implementation teams, system integrators |
 
 ---
 
@@ -117,10 +117,10 @@ Column-level mapping templates from 4 major ERP systems:
 |-----|-------------|----------|----------|
 | **Oracle PeopleSoft** | Relational, effective-dated | **40 mappings** across CS (19), FIN (9), HCM (12) | 80-83% per module |
 | **Ellucian Banner** | Relational (Oracle) | **13 mappings** across SIS (11), HR (2) | Core + extended SIS |
-| **Workday** | Cloud-native (REST/business objects) | **8 mappings** across SIS (3), FIN (5) | Core SIS + Financial Management |
+| **Workday** | Cloud-native (REST/business objects) | **26 mappings** across SIS (3), FIN (11), HR (12) | 80%+ coverage: SIS + Financial Management + HCM |
 | **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | 3 mappings | Core SIS resources |
 
-PeopleSoft is the deepest Bridge — 40 mappings covering Student Records, Financial Aid, Admissions, Degree Audit, International/SEVIS, FERPA, General Ledger, AP, AR, Purchasing, Budgets, Grants, Assets, Expenses, Contracts, Core HR, Position Management, Compensation, Benefits, Payroll, Time & Labor, Recruiting, Absence/FMLA, Performance, Job Classification, Position Budgeting, and Learning Management. Workday now covers both SIS (Student, Enrollment, AcademicPeriod) and Financial Management (General Ledger, Accounts Payable, Budget, Cost Center, Fund) with worktag-to-HELIX mappings and 4 documented extraction methods.
+PeopleSoft is the deepest Bridge — 40 mappings covering Student Records, Financial Aid, Admissions, Degree Audit, International/SEVIS, FERPA, General Ledger, AP, AR, Purchasing, Budgets, Grants, Assets, Expenses, Contracts, Core HR, Position Management, Compensation, Benefits, Payroll, Time & Labor, Recruiting, Absence/FMLA, Performance, Job Classification, Position Budgeting, and Learning Management. Workday is now the second-deepest Bridge — 26 mappings covering SIS (Student, Enrollment, AcademicPeriod), Financial Management (General Ledger, AP, AR/Student Financials, Budget, Purchasing, Grants/Sponsored Programs, Asset Management, Expenses/Travel, Contracts, Cost Center, Fund), and HCM (Worker/Employee, Position, Compensation, Benefits, Payroll, Time Tracking, Recruiting, Absence/FMLA, Performance, Job Classification/EEO/Faculty Rank, Learning Management, Position Budgeting). All mappings use Workday-native terminology (worktags, business objects, supervisory organizations) with 4 documented extraction methods.
 
 See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Guide](docs/migration-adventure-guide.md) for details.
 
@@ -187,7 +187,7 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (160 files)
+## Repository Structure (178 files)
 
 ```
 helix/
@@ -217,9 +217,10 @@ helix/
 |   +-- banner/                        <-- Ellucian Banner mappings (13)
 |   |   +-- sis/                       <-- Student Information System (11)
 |   |   +-- hr/                        <-- Human Resources (2)
-|   +-- workday/                       <-- Workday mappings (8)
+|   +-- workday/                       <-- Workday mappings (26)
 |   |   +-- sis/                       <-- Student (3)
-|   |   +-- fin/                       <-- Financial Management (5)
+|   |   +-- fin/                       <-- Financial Management (11)
+|   |   +-- hr/                        <-- Human Capital Management (12)
 |   +-- colleague/                     <-- Ellucian Colleague mappings (3)
 |   +-- xref/                          <-- Machine-readable cross-references
 |       +-- ps-to-workday-fin/         <-- 4 dimensions, JSON + CSV
@@ -290,5 +291,5 @@ The double helix is a fitting metaphor. Two strands — data and governance — 
 
 ---
 
-*HELIX v0.1.7 — September 2026*
+*HELIX v0.1.8 — September 2026*
 *Licensed under Apache 2.0*

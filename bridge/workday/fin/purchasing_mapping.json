@@ -1,0 +1,133 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Financial Management \u2192 Purchasing / Procurement",
+  "source_system": "workday",
+  "module": "Financial Management - Procurement",
+  "target_resource": "PurchaseOrder (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Procurement covers requisitions, purchase orders, receipts, and supplier contract management. The procurement-to-pay cycle: Requisition \u2192 Approval \u2192 PO \u2192 Receipt \u2192 Supplier Invoice \u2192 Payment. Workday uses spend categories (worktags) for commodity classification and sourcing events for competitive bidding.",
+  "source_objects": [
+    {
+      "object": "Purchase Order",
+      "description": "PO header: supplier, date, total, status, buyer, payment terms. Equivalent to PS_PO_HDR."
+    },
+    {
+      "object": "Purchase Order Line",
+      "description": "PO line items: item description, quantity, unit price, spend category, worktag coding. Equivalent to PS_PO_LINE + PS_PO_LINE_DIST."
+    },
+    {
+      "object": "Requisition",
+      "description": "Purchase request before approval. Equivalent to PS_REQ_HDR."
+    },
+    {
+      "object": "Receipt",
+      "description": "Goods/services receipt against a PO line. Triggers three-way match with invoice. Equivalent to PS_RECV_HDR."
+    },
+    {
+      "object": "Supplier Contract",
+      "description": "Master agreements with suppliers (blanket POs, rate contracts). Equivalent to PS_CNTRCT_HDR."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "po_id",
+      "source": "Purchase Order.PO_Number",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "Purchase Order.Company (worktag)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "Purchase Order.Supplier.Supplier_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "Supplier.Supplier_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "po_date",
+      "source": "Purchase Order.Order_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "po_status",
+      "source": "Purchase Order.PO_Status",
+      "transformation": "Map: 'Draft' \u2192 'draft', 'In Progress' \u2192 'open', 'Fully Received' \u2192 'received', 'Closed' \u2192 'closed', 'Canceled' \u2192 'canceled'."
+    },
+    {
+      "helix_attribute": "total_amount",
+      "source": "Purchase Order.Total_Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_description",
+      "source": "Purchase Order Line.Item_Description",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_quantity",
+      "source": "Purchase Order Line.Quantity",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_unit_price",
+      "source": "Purchase Order Line.Unit_Cost",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "Purchase Order Line.Extended_Amount",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "Purchase Order Line.Spend_Category (worktag)",
+      "transformation": "Workday's commodity classification. Map to HELIX procurement category if defined."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "Purchase Order Line.Ledger_Account (worktag)",
+      "transformation": "Map to HELIX account code."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "Purchase Order Line.Fund (worktag)",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "Purchase Order Line.Cost_Center (worktag)",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "requisition_ref",
+      "source": "Purchase Order.Requisition_Reference",
+      "transformation": "Link back to originating requisition."
+    },
+    {
+      "helix_attribute": "contract_ref",
+      "source": "Purchase Order.Supplier_Contract_Reference",
+      "transformation": "Link to supplier contract if this PO is under a blanket agreement."
+    },
+    {
+      "helix_attribute": "buyer",
+      "source": "Purchase Order.Buyer",
+      "transformation": "Resolve to name/alias."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

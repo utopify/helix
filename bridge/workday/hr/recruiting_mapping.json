@@ -1,0 +1,113 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Recruiting / Talent Acquisition",
+  "source_system": "workday",
+  "module": "HCM - Recruiting",
+  "target_resource": "Requisition (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Job Requisition",
+      "description": "Position opening: title, job profile, supervisory org, recruiter, hiring manager, target start date. Equivalent to PS_HRS_JO_I + PS_HRS_JO_D."
+    },
+    {
+      "object": "Job Application",
+      "description": "Candidate application: candidate, resume, stage, disposition. Equivalent to PS_HRS_APP_I."
+    },
+    {
+      "object": "Candidate",
+      "description": "Person who applied: name, contact, source (job board, referral, internal). Equivalent to PS_HRS_APPLICANT."
+    },
+    {
+      "object": "Offer",
+      "description": "Employment offer: proposed compensation, start date, position, terms. Equivalent to PS_HRS_OFFER."
+    },
+    {
+      "object": "Recruiting Stage",
+      "description": "Pipeline stages: Applied \u2192 Screen \u2192 Interview \u2192 Assessment \u2192 Offer \u2192 Hired. Configurable per institution."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "requisition_id",
+      "source": "Job Requisition.Requisition_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "requisition_title",
+      "source": "Job Requisition.Requisition_Title or Job_Profile.Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "job_profile",
+      "source": "Job Requisition.Job_Profile.Job_Profile_ID",
+      "transformation": "Direct map. The classification being recruited."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Job Requisition.Supervisory_Organization \u2192 Cost_Center",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "hiring_manager",
+      "source": "Job Requisition.Hiring_Manager",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "recruiter",
+      "source": "Job Requisition.Recruiter",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "target_start_date",
+      "source": "Job Requisition.Target_Hire_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "requisition_status",
+      "source": "Job Requisition.Requisition_Status",
+      "transformation": "Map: 'Draft' \u2192 'draft', 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Closed Not Filled' \u2192 'closed_unfilled', 'On Hold' \u2192 'on_hold', 'Canceled' \u2192 'canceled'."
+    },
+    {
+      "helix_attribute": "applicant_count",
+      "source": "Count of Job Applications for this requisition",
+      "transformation": "Total applicants."
+    },
+    {
+      "helix_attribute": "candidate_name",
+      "source": "Candidate.Name (on application)",
+      "transformation": "Direct map. Sensitive \u2014 pre-hire data."
+    },
+    {
+      "helix_attribute": "application_stage",
+      "source": "Job Application.Current_Stage",
+      "transformation": "Map to institution's recruiting pipeline stages."
+    },
+    {
+      "helix_attribute": "application_disposition",
+      "source": "Job Application.Disposition",
+      "transformation": "Map: 'Hired' \u2192 'hired', 'Declined' \u2192 'declined', 'Withdrew' \u2192 'withdrew', 'Not Selected' \u2192 'rejected'."
+    },
+    {
+      "helix_attribute": "candidate_source",
+      "source": "Candidate.Source",
+      "transformation": "Map: 'Job Board' \u2192 'job_board', 'Employee Referral' \u2192 'referral', 'Internal' \u2192 'internal', 'Agency' \u2192 'agency', 'Career Site' \u2192 'career_site'."
+    },
+    {
+      "helix_attribute": "eeo_category",
+      "source": "Job Requisition.EEO_Job_Category",
+      "transformation": "For affirmative action reporting."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Recruiting data is confidential. Candidate PII must be handled carefully. EEO/affirmative action data is collected for compliance but must be kept separate from hiring decisions (Chinese wall). Higher ed recruiting has unique patterns: faculty searches take 6-12 months with committees, adjunct hiring is often fast-tracked, and student worker hiring is seasonal."
+}

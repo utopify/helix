@@ -1,0 +1,95 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday HCM \u2192 Position Budgeting / Staffing",
+  "source_system": "workday",
+  "module": "HCM - Workforce Planning / Position Budget",
+  "target_resource": "PositionBudget (planned)",
+  "version": "0.1",
+  "source_objects": [
+    {
+      "object": "Position Budget",
+      "description": "Budget allocated to a position: funded amount, funding source (worktags: fund, cost center, grant), fiscal year. Equivalent to PS_POSITION_DATA budget fields + PS_POS_BUDGET."
+    },
+    {
+      "object": "Staffing Model",
+      "description": "Planned vs. actual headcount by supervisory org: budgeted positions, filled, open, frozen."
+    },
+    {
+      "object": "Position Funding",
+      "description": "Split funding across multiple sources. A single position may be 50% operating fund, 30% grant A, 20% grant B."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "position_ref",
+      "source": "Position.Position_ID",
+      "transformation": "Link to HELIX position_id."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "Position Budget.Fiscal_Year",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "budgeted_amount",
+      "source": "Position Budget.Budget_Amount",
+      "transformation": "Total funded amount for this position/year."
+    },
+    {
+      "helix_attribute": "actual_spend",
+      "source": "Derived from payroll actuals charged to this position",
+      "transformation": "Actual compensation + benefits cost."
+    },
+    {
+      "helix_attribute": "variance",
+      "source": "Derived: budgeted_amount - actual_spend",
+      "transformation": "Positive = underspent, negative = overspent."
+    },
+    {
+      "helix_attribute": "funding_splits",
+      "source": "Position Funding distributions",
+      "transformation": "Array of {fund, cost_center, grant, percentage} objects. Sum of percentages = 100%."
+    },
+    {
+      "helix_attribute": "primary_fund",
+      "source": "Position Funding where percentage is highest",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "primary_cost_center",
+      "source": "Position Funding where percentage is highest",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "Position.Supervisory_Organization \u2192 Cost_Center",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "org_headcount_budget",
+      "source": "Staffing Model.Budgeted_Headcount for the supervisory org",
+      "transformation": "Planned headcount for the org."
+    },
+    {
+      "helix_attribute": "org_headcount_actual",
+      "source": "Staffing Model.Filled_Count",
+      "transformation": "Current filled headcount."
+    },
+    {
+      "helix_attribute": "org_headcount_open",
+      "source": "Staffing Model.Open_Count",
+      "transformation": "Unfilled positions."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Position budgeting in higher ed often involves split funding \u2014 a single faculty position might be funded 60% by the department operating budget, 30% by a federal research grant, and 10% by a state training grant. When grants end, funding shifts ('backfill') are a common and complex process. Workday's costing allocation rules handle this, but the HELIX Bridge captures the resulting funding distribution for analytics."
+}
