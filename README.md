@@ -144,6 +144,20 @@ OpenAPI 3.1 spec with 16 endpoints covering all core resources, bulk export (NDJ
 
 See the [Connect Overview](docs/connect-overview.md) for the full API reference.
 
+## HELIX Agents: Downloadable AI Assistants
+
+Ready-to-use AI agent templates that work with any LLM platform:
+
+| Agent | What It Does | Best For |
+|-------|-------------|----------|
+| **[HELIX Migration Companion](agents/helix-migration-companion.json)** | Interactive guide to the entire HELIX framework with a 9-option menu. Combines all specialist knowledge into one conversational entry point. | Anyone starting with HELIX. Drop into ChatGPT, Gemini, Claude, Grok, Amazon Q, or Bedrock. |
+| [PS-to-Workday FIN Agent](agents/ps-to-workday-fin-agent.json) | Chartfield-to-worktag mapping, GLBA guardrails, reconciliation | Finance teams migrating PeopleSoft to Workday |
+| [Enrollment Analytics Agent](agents/enrollment-analytics-agent.json) | Funnel analysis, marketing ROI, melt prediction, interventions | Enrollment management and student success |
+| [Advancement & Donor Agent](agents/advancement-donor-agent.json) | Stewardship acceleration, prospect identification, event briefings | Advancement and fundraising teams |
+| [Banner-to-Lakehouse Agent](agents/banner-to-lakehouse-agent.json) | PIDM handling, STV lookups, dbt model generation | Banner institutions building data lakes |
+
+**Setup:** Copy the `system_prompt` field from any agent JSON into your platform's system prompt / custom instructions. Upload the HELIX repository (or relevant files) as knowledge. Each agent template includes platform-specific setup guides for ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
+
 ---
 
 ## Conformance Levels
@@ -187,7 +201,7 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (178 files)
+## Repository Structure (179 files)
 
 ```
 helix/
@@ -229,6 +243,7 @@ helix/
 |           +-- department-xref.*      <-- 15 dept/cost center mappings
 |           +-- program-xref.*         <-- 12 functional classifications
 +-- agents/                            <-- Downloadable AI assistant templates
+|   +-- helix-migration-companion.json <-- START HERE: unified guide
 |   +-- ps-to-workday-fin-agent.json
 |   +-- enrollment-analytics-agent.json
 |   +-- advancement-donor-agent.json
