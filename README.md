@@ -302,7 +302,7 @@ At its core, HELIX is about the human element. Behind every data record is a stu
 
 HELIX is an open, philanthropic effort. It is not a product, not a consultancy, and not owned by any vendor. It belongs to the higher education community.
 
-The double helix is a fitting metaphor. Two strands — data and governance — wound together into a structure that carries the blueprint for something larger. HELIX is the blueprint. What the global higher education community builds from it is the point.
+The double helix is a fitting metaphor. Two strands — data and governance — wound together into a structure that carries the blueprint for something larger. HELIX is the blueprint.
 
 ---
 
