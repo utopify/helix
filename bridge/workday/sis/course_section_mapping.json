@@ -1,0 +1,99 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 CourseSection",
+  "source_system": "workday",
+  "module": "Student - Curriculum / Scheduling",
+  "target_resource": "CourseSection",
+  "version": "0.1",
+  "architecture_notes": "A Course Section (Course Offering in some Workday terminology) is the scheduled, enrollable instance of a Course Definition for a specific academic period. Carries meeting patterns, instructor assignments, location, and capacity. Equivalent to PS_CLASS_TBL + PS_CLASS_MTG_PAT + PS_CLASS_INSTR.",
+  "source_objects": [
+    {
+      "object": "Course Section",
+      "description": "Scheduled section: course, period, section number, capacity, status, delivery mode. Equivalent to PS_CLASS_TBL."
+    },
+    {
+      "object": "Course Section Meeting Pattern",
+      "description": "Days, times, dates, location. Equivalent to PS_CLASS_MTG_PAT."
+    },
+    {
+      "object": "Course Section Instructor",
+      "description": "Assigned instructor(s) and role. Equivalent to PS_CLASS_INSTR."
+    },
+    {
+      "object": "Location",
+      "description": "Building and room. Equivalent to PS_FACILITY_TBL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "section_id",
+      "source": "Course Section.Section_ID or Reference_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "Course Section.Course_Definition",
+      "transformation": "Resolve to HELIX course_id."
+    },
+    {
+      "helix_attribute": "period_ref",
+      "source": "Course Section.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "section_number",
+      "source": "Course Section.Section_Number",
+      "transformation": "Direct map. E.g., '001'."
+    },
+    {
+      "helix_attribute": "class_number",
+      "source": "Course Section.Section_ID (registration ID)",
+      "transformation": "The number students use to register."
+    },
+    {
+      "helix_attribute": "delivery_mode",
+      "source": "Course Section.Instructional_Format or Delivery_Mode",
+      "transformation": "Map to HELIX delivery-mode terminology (in_person, online_sync, online_async, hybrid)."
+    },
+    {
+      "helix_attribute": "enrollment_capacity",
+      "source": "Course Section.Section_Capacity",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "enrolled_count",
+      "source": "Course Section.Enrolled_Count",
+      "transformation": "Current enrollment."
+    },
+    {
+      "helix_attribute": "waitlist_capacity",
+      "source": "Course Section.Waitlist_Capacity",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "instructors[]",
+      "source": "Course Section Instructor (all)",
+      "transformation": "Array. Resolve each to person_id with role (primary/secondary/TA)."
+    },
+    {
+      "helix_attribute": "meeting_patterns[]",
+      "source": "Course Section Meeting Pattern (all)",
+      "transformation": "Array: {days, start_time, end_time, building, room, start_date, end_date}."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Course Section.Section_Status",
+      "transformation": "Map: 'Open' \u2192 'open', 'Closed' \u2192 'closed', 'Waitlist' \u2192 'waitlisted', 'Canceled' \u2192 'canceled'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

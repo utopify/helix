@@ -82,7 +82,7 @@ HELIX migration: **Source A → HELIX Core → Target B**
 | Target | How It Works |
 |--------|-------------|
 | **Data Lake** | Map PS tables → HELIX Person + Student schemas → Iceberg tables. Done. |
-| **Workday Student** | PS → HELIX Person/Student → `bridge/workday/student_mapping.json` (reverse). Map HELIX attributes to Workday Person + Student business objects. |
+| **Workday Student** | PS → HELIX Person/Student → `bridge/workday/sis/` (reversed). Full 19-mapping SIS coverage. Map HELIX attributes to Workday business objects. |
 | **Banner** | PS → HELIX Person/Student → `bridge/banner/student_mapping.json` (reverse). Map to SPRIDEN + SPBPERS + SGBSTDN. |
 | **Colleague** | PS → HELIX Person/Student → `bridge/colleague/student_mapping.json` (reverse). Map to PERSON + STUDENTS MV files. |
 
@@ -107,7 +107,7 @@ HELIX migration: **Source A → HELIX Core → Target B**
 | Target | How It Works |
 |--------|-------------|
 | **Data Lake** | Map PS_STDNT_ENRL → HELIX Enrollment → Iceberg. Highest-volume table. |
-| **Workday Student** | PS → HELIX Enrollment → `bridge/workday/enrollment_mapping.json` (reverse). Map to Workday Student Course Registration. |
+| **Workday Student** | PS → HELIX Enrollment → `bridge/workday/sis/enrollment_mapping.json` (reversed). Map to Workday Student Course Registration. |
 | **Banner** | PS → HELIX Enrollment → `bridge/banner/enrollment_mapping.json` (reverse). Map to SFRSTCR + SHRTCKN. |
 
 **Watch out for:**

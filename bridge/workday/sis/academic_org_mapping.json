@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 AcademicOrg",
+  "source_system": "workday",
+  "module": "Student - Academic Structure",
+  "target_resource": "AcademicOrg",
+  "version": "0.1",
+  "architecture_notes": "Workday Student models the academic hierarchy as Academic Units (school \u2192 college \u2192 division \u2192 department). Academic Units own courses, programs, and are distinct from the HCM supervisory organizations and FIN cost centers, though they often align. Equivalent to PS_ACAD_ORG_TBL.",
+  "source_objects": [
+    {
+      "object": "Academic Unit",
+      "description": "Academic organizational entity: college, school, division, department. Hierarchical. Equivalent to PS_ACAD_ORG_TBL."
+    },
+    {
+      "object": "Academic Unit Hierarchy",
+      "description": "Parent-child relationships. Equivalent to PS_TREE_NODE for ACAD_ORG."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "org_code",
+      "source": "Academic Unit.Academic_Unit_ID",
+      "transformation": "Direct map. E.g., 'CS'."
+    },
+    {
+      "helix_attribute": "org_name",
+      "source": "Academic Unit.Name",
+      "transformation": "Direct map. E.g., 'Department of Computer Science'."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "Academic Unit.Academic_Unit_Type or hierarchy level",
+      "transformation": "Map: 'College' \u2192 'college', 'School' \u2192 'school', 'Division' \u2192 'division', 'Department' \u2192 'department'."
+    },
+    {
+      "helix_attribute": "parent_org",
+      "source": "Academic Unit Hierarchy.Superior_Academic_Unit",
+      "transformation": "Resolve parent unit code."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Academic Unit.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "cost_center_ref",
+      "source": "Academic Unit.Related_Cost_Center (if mapped)",
+      "transformation": "Cross-reference to FIN cost center if the institution links academic and financial orgs."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ]
+}

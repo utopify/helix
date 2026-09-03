@@ -1,0 +1,100 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 AdmissionApplication",
+  "source_system": "workday",
+  "module": "Student - Recruiting & Admissions",
+  "target_resource": "AdmissionApplication",
+  "version": "0.1",
+  "architecture_notes": "Workday Student Recruiting & Admissions manages the prospect-to-applicant-to-admit lifecycle. An Application is submitted by a Prospect/Applicant for a specific Program of Study and academic period. Carries decision, decision date, and matriculation status. Equivalent to PS_ADM_APPL_DATA + PS_ADM_APPL_PROG.",
+  "source_objects": [
+    {
+      "object": "Student Application",
+      "description": "Admission application: applicant, program, period, admission type, status, decision. Equivalent to PS_ADM_APPL_DATA."
+    },
+    {
+      "object": "Application Decision",
+      "description": "Decision and date: admit, deny, waitlist, defer. Equivalent to PS_ADM_APPL_PROG.PROG_ACTION."
+    },
+    {
+      "object": "Applicant",
+      "description": "The prospect/applicant person record. Links to Academic Person."
+    },
+    {
+      "object": "Application Checklist Item",
+      "description": "Required materials: transcripts, test scores, essays, recommendations. Equivalent to PS_CHECKLIST."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "application_id",
+      "source": "Student Application.Application_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "applicant_ref",
+      "source": "Student Application.Applicant \u2192 Academic Person",
+      "transformation": "Resolve to HELIX person_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Student Application.Program_of_Study",
+      "transformation": "Resolve to HELIX program_id."
+    },
+    {
+      "helix_attribute": "period_ref",
+      "source": "Student Application.Academic_Period (entry term)",
+      "transformation": "Resolve to HELIX AcademicPeriod. The intended entry term."
+    },
+    {
+      "helix_attribute": "admission_type",
+      "source": "Student Application.Admission_Type",
+      "transformation": "Map: 'Freshman' \u2192 'first_year', 'Transfer' \u2192 'transfer', 'Graduate' \u2192 'graduate', 'Readmit' \u2192 'readmit', 'International' \u2192 'international', 'Non-Degree' \u2192 'non_degree'."
+    },
+    {
+      "helix_attribute": "application_date",
+      "source": "Student Application.Application_Date or Submitted_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Student Application.Application_Status",
+      "transformation": "Map to HELIX admission-status terminology (submitted, under_review, admitted, denied, waitlisted, deferred, withdrawn)."
+    },
+    {
+      "helix_attribute": "decision",
+      "source": "Application Decision.Decision",
+      "transformation": "Map: 'Admit' \u2192 'admitted', 'Deny' \u2192 'denied', 'Waitlist' \u2192 'waitlisted', 'Defer' \u2192 'deferred'."
+    },
+    {
+      "helix_attribute": "decision_date",
+      "source": "Application Decision.Decision_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "admit_type",
+      "source": "Student Application.Admit_Type (early/regular)",
+      "transformation": "Map: 'Early Decision' \u2192 'early_decision', 'Early Action' \u2192 'early_action', 'Regular' \u2192 'regular', 'Rolling' \u2192 'rolling'."
+    },
+    {
+      "helix_attribute": "matriculated",
+      "source": "Student Application.Matriculated flag or resulting Student record",
+      "transformation": "Boolean. True if the admit enrolled."
+    },
+    {
+      "helix_attribute": "checklist_complete",
+      "source": "Derived from Application Checklist Items",
+      "transformation": "Boolean. True if all required items received."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "FERPA applies once the applicant becomes a student. Pre-matriculation applicant data handling follows institutional admissions privacy policy."
+}

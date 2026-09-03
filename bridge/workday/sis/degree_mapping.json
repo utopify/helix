@@ -1,0 +1,86 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Degree",
+  "source_system": "workday",
+  "module": "Student - Academic Completion",
+  "target_resource": "Degree",
+  "version": "0.1",
+  "architecture_notes": "Workday Student records conferred degrees as Educational Credentials Awarded / Academic Completion records. Carries the credential, conferral date, honors, and GPA at completion. Equivalent to PS_ACAD_DEGR + PS_DEGREES.",
+  "source_objects": [
+    {
+      "object": "Awarded Credential",
+      "description": "Conferred degree: student, program, credential, conferral date, honors. Equivalent to PS_ACAD_DEGR."
+    },
+    {
+      "object": "Academic Completion",
+      "description": "The completion event tied to the program of study."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "degree_id",
+      "source": "Awarded Credential.Reference_ID",
+      "transformation": "Direct map or composite."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Awarded Credential.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Awarded Credential.Program_of_Study",
+      "transformation": "Resolve to HELIX program_id."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "Awarded Credential.Educational_Credential",
+      "transformation": "E.g., 'BS', 'BA', 'MS', 'PhD'."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "Awarded Credential.Academic_Level",
+      "transformation": "Map to HELIX degree-level terminology."
+    },
+    {
+      "helix_attribute": "conferral_date",
+      "source": "Awarded Credential.Award_Date or Conferral_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "conferral_period_ref",
+      "source": "Awarded Credential.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod (graduation term)."
+    },
+    {
+      "helix_attribute": "majors[]",
+      "source": "Awarded Credential.Fields_of_Study where Type='Major'",
+      "transformation": "Array of majors on the degree."
+    },
+    {
+      "helix_attribute": "minors[]",
+      "source": "Awarded Credential.Fields_of_Study where Type='Minor'",
+      "transformation": "Array of minors."
+    },
+    {
+      "helix_attribute": "honors",
+      "source": "Awarded Credential.Honors or Academic_Distinction",
+      "transformation": "Map: 'Cum Laude' \u2192 'cum_laude', 'Magna Cum Laude' \u2192 'magna_cum_laude', 'Summa Cum Laude' \u2192 'summa_cum_laude'."
+    },
+    {
+      "helix_attribute": "gpa_at_completion",
+      "source": "Awarded Credential.Final_GPA",
+      "transformation": "Cumulative GPA at graduation."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

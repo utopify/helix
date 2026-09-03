@@ -1,0 +1,110 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 FinAidAward",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "FinAidAward",
+  "version": "0.1",
+  "architecture_notes": "Workday Student Financial Aid manages the full aid lifecycle: FAFSA/ISIR load, need calculation, packaging, awarding, and disbursement. Awards are tied to a student, aid year, and fund. Equivalent to PS_STDNT_AWARDS + PS_STDNT_AWRD_DTL + PS_STDNT_AWRD_ACTN.",
+  "source_objects": [
+    {
+      "object": "Financial Aid Award",
+      "description": "Award record: student, aid year, fund, amount, status, disbursement. Equivalent to PS_STDNT_AWARDS."
+    },
+    {
+      "object": "Financial Aid Package",
+      "description": "The full package for an aid year: all awards, COA, need. Equivalent to PS_STDNT_AID_YR."
+    },
+    {
+      "object": "ISIR Record",
+      "description": "FAFSA/ISIR data: EFC/SAI, dependency status, need fields. Restricted (GLBA)."
+    },
+    {
+      "object": "Aid Fund",
+      "description": "The fund source: Pell, SEOG, Direct Loan, institutional, state. Equivalent to PS_FA_ITEM_TYPE."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "award_id",
+      "source": "Financial Aid Award.Reference_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Financial Aid Award.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "aid_year",
+      "source": "Financial Aid Award.Aid_Year",
+      "transformation": "E.g., '2026-2027'. Direct map."
+    },
+    {
+      "helix_attribute": "award_type",
+      "source": "Aid Fund.Fund_Type",
+      "transformation": "Map to HELIX award-type terminology (grant, loan, work_study, scholarship)."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "Aid Fund.Fund_Name",
+      "transformation": "E.g., 'Federal Pell Grant', 'Direct Subsidized Loan'."
+    },
+    {
+      "helix_attribute": "award_amount",
+      "source": "Financial Aid Award.Offered_Amount",
+      "transformation": "Amount offered."
+    },
+    {
+      "helix_attribute": "accepted_amount",
+      "source": "Financial Aid Award.Accepted_Amount",
+      "transformation": "Amount the student accepted."
+    },
+    {
+      "helix_attribute": "disbursed_amount",
+      "source": "Financial Aid Award.Disbursed_Amount",
+      "transformation": "Amount actually disbursed."
+    },
+    {
+      "helix_attribute": "award_status",
+      "source": "Financial Aid Award.Award_Status",
+      "transformation": "Map: 'Offered' \u2192 'offered', 'Accepted' \u2192 'accepted', 'Declined' \u2192 'declined', 'Disbursed' \u2192 'disbursed', 'Canceled' \u2192 'canceled'."
+    },
+    {
+      "helix_attribute": "cost_of_attendance",
+      "source": "Financial Aid Package.Cost_of_Attendance",
+      "transformation": "COA for the aid year."
+    },
+    {
+      "helix_attribute": "efc_sai",
+      "source": "ISIR Record.SAI (formerly EFC)",
+      "transformation": "Student Aid Index (replaced EFC in 2024-25). RESTRICTED \u2014 GLBA-covered."
+    },
+    {
+      "helix_attribute": "unmet_need",
+      "source": "Derived: COA - SAI - total_aid",
+      "transformation": "Remaining need after aid."
+    },
+    {
+      "helix_attribute": "sap_status",
+      "source": "Financial Aid Package.SAP_Status",
+      "transformation": "Map to HELIX sap-status terminology (meeting, warning, probation, suspension)."
+    },
+    {
+      "helix_attribute": "renewal_criteria",
+      "source": "Aid Fund.Renewal_Requirements",
+      "transformation": "Conditions for renewal (GPA, enrollment level)."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "Financial aid data is RESTRICTED \u2014 ISIR/SAI/EFC data is GLBA-covered customer financial information. Tokenize and encrypt with dedicated keys. Only individually-authorized financial aid staff should access. FERPA also applies."
+}

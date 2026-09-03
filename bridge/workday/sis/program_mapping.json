@@ -1,0 +1,80 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Program",
+  "source_system": "workday",
+  "module": "Student - Academic Structure",
+  "target_resource": "Program",
+  "version": "0.1",
+  "architecture_notes": "Workday Student models programs as Programs of Study, which combine an academic level, degree, and one or more fields of study (majors/minors/concentrations). Equivalent to PS_ACAD_PROG + PS_ACAD_PLAN.",
+  "source_objects": [
+    {
+      "object": "Program of Study",
+      "description": "Degree program: name, academic level, degree, CIP code, academic unit, requirements. Equivalent to PS_ACAD_PROG + PS_ACAD_PLAN_TBL."
+    },
+    {
+      "object": "Field of Study",
+      "description": "Major, minor, concentration, specialization. Equivalent to PS_ACAD_PLAN / PS_ACAD_SUBPLAN."
+    },
+    {
+      "object": "Educational Credential",
+      "description": "The degree/credential awarded (BS, BA, MS, PhD). Equivalent to PS_DEGREE_TBL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "program_id",
+      "source": "Program of Study.Program_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "program_name",
+      "source": "Program of Study.Program_Name",
+      "transformation": "Direct map. E.g., 'Bachelor of Science in Computer Science'."
+    },
+    {
+      "helix_attribute": "degree_level",
+      "source": "Program of Study.Academic_Level",
+      "transformation": "Map to HELIX degree-level terminology (undergraduate, masters, doctoral, certificate)."
+    },
+    {
+      "helix_attribute": "degree_type",
+      "source": "Program of Study.Educational_Credential",
+      "transformation": "E.g., 'BS', 'BA', 'MS', 'PhD'. Direct map."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "Program of Study.CIP_Code or Field_of_Study.CIP_Code",
+      "transformation": "Classification of Instructional Programs code. Direct map. E.g., '11.0701'."
+    },
+    {
+      "helix_attribute": "academic_org",
+      "source": "Program of Study.Academic_Unit",
+      "transformation": "Map to HELIX AcademicOrg (owning department/school)."
+    },
+    {
+      "helix_attribute": "fields_of_study[]",
+      "source": "Field of Study (all attached)",
+      "transformation": "Array: {name, type (major/minor/concentration), cip_code}."
+    },
+    {
+      "helix_attribute": "total_credits_required",
+      "source": "Program of Study.Required_Units",
+      "transformation": "Credits to complete."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Program of Study.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'public'"
+    }
+  ]
+}

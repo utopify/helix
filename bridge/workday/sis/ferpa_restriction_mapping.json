@@ -1,0 +1,77 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 FERPARestriction",
+  "source_system": "workday",
+  "module": "Student - Privacy / FERPA",
+  "target_resource": "FERPARestriction (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Student manages FERPA directory-information restrictions through Privacy settings / Student Privacy flags. When a student requests a FERPA block, directory information must be withheld from disclosure. Equivalent to PS_SCC_PRTCTN (privacy protection) / FERPA service indicators.",
+  "source_objects": [
+    {
+      "object": "Student Privacy Setting",
+      "description": "FERPA restriction flags: what directory info is restricted, effective date. Equivalent to PS_SCC_PRTCTN + FERPA service indicators."
+    },
+    {
+      "object": "Directory Information Category",
+      "description": "The categories a student can restrict: name, address, phone, email, enrollment status, degrees, honors, photo."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "restriction_id",
+      "source": "Student Privacy Setting.Reference_ID",
+      "transformation": "Direct map or composite of student + type."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student Privacy Setting.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "restriction_type",
+      "source": "Student Privacy Setting.Privacy_Type",
+      "transformation": "Map: 'Full FERPA Block' \u2192 'full', 'Directory Restriction' \u2192 'directory', 'Partial' \u2192 'partial'."
+    },
+    {
+      "helix_attribute": "restricted_categories[]",
+      "source": "Directory Information Category (restricted ones)",
+      "transformation": "Array: which directory items are withheld (name, address, phone, email, enrollment, degrees, honors, photo)."
+    },
+    {
+      "helix_attribute": "restrict_directory",
+      "source": "Student Privacy Setting.Restrict_Directory_Info = true",
+      "transformation": "Boolean. Master flag: withhold all directory info."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "Student Privacy Setting.Start_Date",
+      "transformation": "Cast to ISO 8601. When the restriction took effect."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Student Privacy Setting.End_Date",
+      "transformation": "Null if indefinite. FERPA blocks persist until the student removes them."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Student Privacy Setting.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "requested_date",
+      "source": "Student Privacy Setting.Request_Date",
+      "transformation": "When the student made the request."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "This resource is itself a FERPA compliance control. Any consumer of HELIX student data MUST check for an active FERPARestriction before disclosing directory information. Downstream systems (lakehouse, dashboards, third-party disclosures) must honor these flags \u2014 see govern/classification-handling-rules.json for the directory_information handling rule."
+}

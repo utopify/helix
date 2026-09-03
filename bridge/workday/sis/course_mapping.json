@@ -1,0 +1,100 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Course",
+  "source_system": "workday",
+  "module": "Student - Curriculum",
+  "target_resource": "Course",
+  "version": "0.1",
+  "architecture_notes": "Workday Student models the course catalog as Course Definitions owned by Academic Units. A Course Definition is the catalog-level template (e.g., 'CS 101 - Intro to Computer Science'); the scheduled offering is a Course Section (see course_section mapping). Equivalent to PeopleSoft's Course Catalog (CRSE_CATALOG).",
+  "source_objects": [
+    {
+      "object": "Course Definition",
+      "description": "Catalog course: subject, number, title, description, units/credits, academic unit, grading basis. Equivalent to PS_CRSE_CATALOG + PS_CRSE_OFFER."
+    },
+    {
+      "object": "Course Subject",
+      "description": "Subject area (e.g., CS, MATH, ENGL). Equivalent to PS_SUBJECT_TBL."
+    },
+    {
+      "object": "Academic Unit",
+      "description": "Owning department/school. Equivalent to owning PS_ACAD_ORG."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "course_id",
+      "source": "Course Definition.Course_ID or Reference_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "subject_code",
+      "source": "Course Definition.Course_Subject.Subject_Code",
+      "transformation": "Direct map. E.g., 'CS'."
+    },
+    {
+      "helix_attribute": "course_number",
+      "source": "Course Definition.Course_Number",
+      "transformation": "Direct map. E.g., '101'."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "Course Definition.Course_Title",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Course Definition.Course_Description",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "Course Definition.Units or Credits",
+      "transformation": "Direct map. Workday supports fixed or variable units."
+    },
+    {
+      "helix_attribute": "credit_hours_min",
+      "source": "Course Definition.Minimum_Units",
+      "transformation": "For variable-credit courses."
+    },
+    {
+      "helix_attribute": "credit_hours_max",
+      "source": "Course Definition.Maximum_Units",
+      "transformation": "For variable-credit courses."
+    },
+    {
+      "helix_attribute": "academic_org",
+      "source": "Course Definition.Academic_Unit",
+      "transformation": "Map to HELIX AcademicOrg code (owning department)."
+    },
+    {
+      "helix_attribute": "course_level",
+      "source": "Course Definition.Course_Level or derived from number",
+      "transformation": "Map to HELIX course-level terminology (undergraduate_lower, undergraduate_upper, graduate, etc.)."
+    },
+    {
+      "helix_attribute": "grading_basis",
+      "source": "Course Definition.Grading_Scheme",
+      "transformation": "Map to HELIX grade-mode terminology (graded, pass_fail, audit)."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Course Definition.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "Course Definition effective date",
+      "transformation": "Cast to ISO 8601. Workday course definitions are effective-dated."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'public'"
+    }
+  ]
+}

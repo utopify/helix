@@ -1,0 +1,81 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 StudentGroup / Cohort",
+  "source_system": "workday",
+  "module": "Student - Student Groups",
+  "target_resource": "StudentGroup (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Student uses Student Groups (and Student Cohorts) to tag students for population management: athletes, honors, first-gen, veterans, TRIO, EOP, specific scholarship cohorts. Used for reporting, communication, and service delivery. Equivalent to PS_STDNT_GROUP + PS_STDNT_GRPS.",
+  "source_objects": [
+    {
+      "object": "Student Group",
+      "description": "A named group/tag and its members. Equivalent to PS_STDNT_GROUP_TBL + PS_STDNT_GRPS."
+    },
+    {
+      "object": "Student Group Membership",
+      "description": "Student-to-group assignment with effective dates. Equivalent to PS_STDNT_GRPS."
+    },
+    {
+      "object": "Student Cohort",
+      "description": "Entry cohort for retention/graduation tracking (e.g., 'Fall 2026 First-Time Full-Time'). Used for IPEDS cohort reporting."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "group_membership_id",
+      "source": "Composite: Student + Student_Group + effective date",
+      "transformation": "Composite key."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student Group Membership.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "group_code",
+      "source": "Student Group.Student_Group_ID",
+      "transformation": "Direct map. E.g., 'ATHL', 'HONORS', 'FIRSTGEN', 'VET', 'TRIO'."
+    },
+    {
+      "helix_attribute": "group_name",
+      "source": "Student Group.Name",
+      "transformation": "Direct map. E.g., 'Student Athletes'."
+    },
+    {
+      "helix_attribute": "group_category",
+      "source": "Student Group.Category or derived",
+      "transformation": "Map: athletics, honors, access_program (TRIO/EOP), demographic (first-gen/veteran), scholarship, advising, other."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Student Group Membership.Start_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Student Group Membership.End_Date",
+      "transformation": "Null if active. Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Student Group Membership.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "cohort_ref",
+      "source": "Student Cohort assignment (if cohort-type group)",
+      "transformation": "For IPEDS entry cohorts: link to the cohort identifier (e.g., 'FA2026-FTFT')."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Some student groups (athletes, TRIO, disability services) carry additional FERPA sensitivity. Cohort assignment drives IPEDS retention and graduation rate reporting."
+}

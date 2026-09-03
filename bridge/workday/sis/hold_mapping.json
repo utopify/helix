@@ -1,0 +1,91 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Hold",
+  "source_system": "workday",
+  "module": "Student - Holds",
+  "target_resource": "Hold",
+  "version": "0.1",
+  "architecture_notes": "Workday Student uses Student Holds (Action Items / Service Indicators) to block or flag students \u2014 registration holds, financial holds, advising holds, transcript holds. Equivalent to PS_SRVC_IND_DATA (service indicators).",
+  "source_objects": [
+    {
+      "object": "Student Hold",
+      "description": "A hold placed on a student: type, reason, placed date, released date, impact. Equivalent to PS_SRVC_IND_DATA."
+    },
+    {
+      "object": "Hold Type",
+      "description": "The hold classification and what it blocks. Equivalent to PS_SRVC_IND_CD_TBL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "hold_id",
+      "source": "Student Hold.Reference_ID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student Hold.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "hold_type",
+      "source": "Student Hold.Hold_Type",
+      "transformation": "Map to HELIX hold-type terminology (registration, financial, advising, transcript, disciplinary, health, library, ferpa)."
+    },
+    {
+      "helix_attribute": "reason",
+      "source": "Student Hold.Reason",
+      "transformation": "Direct map. Why the hold was placed."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Student Hold.Comment",
+      "transformation": "Detailed description."
+    },
+    {
+      "helix_attribute": "amount_owed",
+      "source": "Student Hold.Amount (financial holds)",
+      "transformation": "For financial holds, the balance triggering it. GLBA-relevant if aid-related."
+    },
+    {
+      "helix_attribute": "placed_date",
+      "source": "Student Hold.Start_Date or Placed_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "released_date",
+      "source": "Student Hold.End_Date or Released_Date",
+      "transformation": "Null if active. Cast to ISO 8601 if released."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Student Hold.Status = 'Active'",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "blocks_registration",
+      "source": "Hold Type.Impact includes 'Registration'",
+      "transformation": "Boolean. Whether this hold blocks enrollment."
+    },
+    {
+      "helix_attribute": "blocks_transcript",
+      "source": "Hold Type.Impact includes 'Transcript'",
+      "transformation": "Boolean. Whether this hold blocks transcript release."
+    },
+    {
+      "helix_attribute": "placed_by_org",
+      "source": "Student Hold.Responsible_Party or Department",
+      "transformation": "Map to HELIX AcademicOrg (office that placed the hold)."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

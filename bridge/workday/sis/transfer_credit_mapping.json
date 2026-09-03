@@ -1,0 +1,100 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 TransferCredit",
+  "source_system": "workday",
+  "module": "Student - External Academic Records",
+  "target_resource": "TransferCredit",
+  "version": "0.1",
+  "architecture_notes": "Workday Student records transfer work as External Academic Records and the resulting awarded credit as Transfer Credit / Course Equivalencies. Equivalent to PS_TRNS_CRSE_DTL + PS_EXT_ACAD_DATA.",
+  "source_objects": [
+    {
+      "object": "External Academic Record",
+      "description": "Coursework from another institution: source institution, term, external course, grade, units. Equivalent to PS_EXT_COURSE + PS_EXT_ACAD_DATA."
+    },
+    {
+      "object": "Transfer Credit Award",
+      "description": "The internal equivalency granted: equivalent course, units awarded, applied status. Equivalent to PS_TRNS_CRSE_DTL."
+    },
+    {
+      "object": "External Organization",
+      "description": "The sending institution. Equivalent to PS_EXT_ORG_TBL."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "transfer_credit_id",
+      "source": "Transfer Credit Award.Reference_ID",
+      "transformation": "Direct map or composite."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "External Academic Record.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "source_institution",
+      "source": "External Organization.Organization_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "source_institution_id",
+      "source": "External Organization.External_Org_ID or FICE/OPEID",
+      "transformation": "Federal school code if available."
+    },
+    {
+      "helix_attribute": "external_course_code",
+      "source": "External Academic Record.External_Course_Number",
+      "transformation": "The sending institution's course code."
+    },
+    {
+      "helix_attribute": "external_course_title",
+      "source": "External Academic Record.External_Course_Title",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "external_grade",
+      "source": "External Academic Record.Grade",
+      "transformation": "Grade earned at sending institution."
+    },
+    {
+      "helix_attribute": "external_units",
+      "source": "External Academic Record.Units",
+      "transformation": "Credits at sending institution (may be quarter or semester \u2014 note conversion)."
+    },
+    {
+      "helix_attribute": "equivalent_course_ref",
+      "source": "Transfer Credit Award.Internal_Course_Equivalent",
+      "transformation": "Resolve to HELIX course_id. Null if awarded as elective."
+    },
+    {
+      "helix_attribute": "units_awarded",
+      "source": "Transfer Credit Award.Units_Awarded",
+      "transformation": "Internal credits granted (after quarter/semester conversion)."
+    },
+    {
+      "helix_attribute": "credit_type",
+      "source": "Transfer Credit Award.Credit_Type",
+      "transformation": "Map: 'Course Equivalent' \u2192 'course_equivalent', 'Elective' \u2192 'elective', 'Test Credit' \u2192 'test_credit' (AP/IB/CLEP)."
+    },
+    {
+      "helix_attribute": "applied_to_program",
+      "source": "Transfer Credit Award.Applied flag",
+      "transformation": "Boolean. Whether the credit counts toward the student's program."
+    },
+    {
+      "helix_attribute": "evaluation_date",
+      "source": "Transfer Credit Award.Award_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

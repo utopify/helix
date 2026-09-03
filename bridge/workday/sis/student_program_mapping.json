@@ -1,0 +1,96 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 StudentProgram",
+  "source_system": "workday",
+  "module": "Student - Program Enrollment",
+  "target_resource": "StudentProgram",
+  "version": "0.1",
+  "architecture_notes": "Workday Student tracks a student's enrollment in a Program of Study as a Program Enrollment (the student's active/historical academic program record). This is the join between Student and Program, carrying declaration dates, status, GPA within program, and expected completion. Equivalent to PS_ACAD_PROG (student-level rows) + PS_STDNT_CAR_TERM.",
+  "source_objects": [
+    {
+      "object": "Student Program Enrollment",
+      "description": "Student's enrollment in a program: student, program, status, start, expected completion, academic standing. Equivalent to PS_ACAD_PROG."
+    },
+    {
+      "object": "Student Field of Study Declaration",
+      "description": "Declared majors/minors and dates. Equivalent to PS_ACAD_PLAN (student rows)."
+    },
+    {
+      "object": "Academic Standing",
+      "description": "Good standing, probation, dismissal. Equivalent to PS_STDNT_CAR_TERM.ACAD_STNDNG_STAT."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "student_program_id",
+      "source": "Student Program Enrollment.Reference_ID",
+      "transformation": "Direct map or composite of student + program + start."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student Program Enrollment.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Student Program Enrollment.Program_of_Study",
+      "transformation": "Resolve to HELIX program_id."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Student Program Enrollment.Program_Status",
+      "transformation": "Map: 'Active' \u2192 'active', 'Completed' \u2192 'completed', 'Discontinued' \u2192 'discontinued', 'Suspended' \u2192 'suspended', 'Leave of Absence' \u2192 'leave'."
+    },
+    {
+      "helix_attribute": "declared_majors[]",
+      "source": "Student Field of Study Declaration where Type='Major'",
+      "transformation": "Array of declared majors with declaration dates."
+    },
+    {
+      "helix_attribute": "declared_minors[]",
+      "source": "Student Field of Study Declaration where Type='Minor'",
+      "transformation": "Array of declared minors."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Student Program Enrollment.Program_Start_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "expected_completion",
+      "source": "Student Program Enrollment.Expected_Completion_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "Student Program Enrollment.Completion_Date",
+      "transformation": "Null if not completed. Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "program_gpa",
+      "source": "Student Program Enrollment.Program_GPA",
+      "transformation": "GPA within this program."
+    },
+    {
+      "helix_attribute": "academic_standing",
+      "source": "Academic Standing.Standing_Status",
+      "transformation": "Map: 'Good Standing' \u2192 'good', 'Probation' \u2192 'probation', 'Suspension' \u2192 'suspension', 'Dismissal' \u2192 'dismissal'."
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "source": "Student Program Enrollment.Catalog_Year or Requirement_Effective_Date",
+      "transformation": "The catalog/requirement year governing this student's degree requirements."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "FERPA-protected. The catalog_year is critical for degree audit \u2014 it locks the requirements the student must satisfy."
+}

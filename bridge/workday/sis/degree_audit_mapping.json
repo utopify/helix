@@ -1,0 +1,106 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 DegreeAudit",
+  "source_system": "workday",
+  "module": "Student - Progress to Degree",
+  "target_resource": "DegreeAudit (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Student's Progress to Degree (Academic Progress) evaluates a student's completed and in-progress work against their program's requirements. It is the native degree-audit engine, equivalent to PeopleSoft's Academic Advisement (degree audit / APR). Note: many institutions use a third-party audit tool (DegreeWorks, Stellic) alongside the SIS \u2014 document both the native Workday source and the integration pattern.",
+  "source_objects": [
+    {
+      "object": "Academic Progress",
+      "description": "Progress-to-degree evaluation: requirements, satisfied/unsatisfied, in-progress. Equivalent to PS_SAA_ADB_RESULTS (Academic Advisement)."
+    },
+    {
+      "object": "Academic Requirement",
+      "description": "Individual requirement (e.g., 'Complete 3 courses from the CS core'). Equivalent to PS_RQ_GRP_DETAIL."
+    },
+    {
+      "object": "Requirement Status",
+      "description": "Satisfied, in-progress, not-started per requirement."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "audit_id",
+      "source": "Academic Progress.Reference_ID or run ID",
+      "transformation": "Direct map. Each audit run has an ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Academic Progress.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Academic Progress.Program_of_Study",
+      "transformation": "Resolve to HELIX program_id."
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "source": "Academic Progress.Requirement_Effective_Date",
+      "transformation": "The catalog year governing requirements."
+    },
+    {
+      "helix_attribute": "audit_date",
+      "source": "Academic Progress.Evaluation_Date",
+      "transformation": "Cast to ISO 8601. When the audit was run."
+    },
+    {
+      "helix_attribute": "overall_complete_pct",
+      "source": "Derived from satisfied vs total requirements",
+      "transformation": "Percentage of requirements satisfied."
+    },
+    {
+      "helix_attribute": "total_requirements",
+      "source": "Count of Academic Requirements",
+      "transformation": "Total requirement count for the program."
+    },
+    {
+      "helix_attribute": "satisfied_requirements",
+      "source": "Count where Requirement Status = 'Satisfied'",
+      "transformation": "Requirements complete."
+    },
+    {
+      "helix_attribute": "in_progress_requirements",
+      "source": "Count where Requirement Status = 'In Progress'",
+      "transformation": "Requirements being met by current enrollment."
+    },
+    {
+      "helix_attribute": "unsatisfied_requirements",
+      "source": "Count where Requirement Status = 'Not Satisfied'",
+      "transformation": "Requirements not yet met."
+    },
+    {
+      "helix_attribute": "units_required",
+      "source": "Academic Progress.Total_Units_Required",
+      "transformation": "Program credit requirement."
+    },
+    {
+      "helix_attribute": "units_completed",
+      "source": "Academic Progress.Units_Completed",
+      "transformation": "Credits earned toward the program."
+    },
+    {
+      "helix_attribute": "projected_completion",
+      "source": "Academic Progress.Projected_Completion_Date",
+      "transformation": "Estimated graduation date."
+    },
+    {
+      "helix_attribute": "requirements[]",
+      "source": "Academic Requirement (all) with status",
+      "transformation": "Array: {requirement_name, status, courses_applied}."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "If the institution uses DegreeWorks or Stellic instead of native Workday audit, the audit data comes from that system via integration \u2014 map the third-party audit output to this same HELIX structure. FERPA-protected."
+}

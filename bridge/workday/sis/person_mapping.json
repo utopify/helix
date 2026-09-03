@@ -1,0 +1,145 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 Person / Academic Person",
+  "source_system": "workday",
+  "module": "Student - Foundational Data",
+  "target_resource": "Person",
+  "version": "0.1",
+  "architecture_notes": "In Workday Student, a student is a Worker-like entity built on the same Workday foundational person model used by HCM. The 'Student' record links to a universal person identity. Person identity is shared across Student, Worker (HCM), and external constituents \u2014 Workday's single-person model is a key advantage over PeopleSoft, where CS and HCM often maintain separate EMPLIDs. Extraction via RaaS custom reports on Student data source, Workday REST API (Student endpoints), Prism, or Data Cloud.",
+  "source_objects": [
+    {
+      "object": "Academic Person",
+      "description": "The person identity for a student: legal name, preferred name, DOB, gender, contact info, national IDs. Equivalent to PS_PERSONAL_DATA + PS_PERSON + PS_NAMES + PS_PERS_NID."
+    },
+    {
+      "object": "Person Contact Information",
+      "description": "Addresses, phones, emails (home/campus/work), emergency contacts. Equivalent to PS_ADDRESSES + PS_PERSONAL_PHONE + PS_EMAIL_ADDRESSES + PS_EMERGENCY_CNTCT."
+    },
+    {
+      "object": "Person Identifier",
+      "description": "Institutional student ID, national ID (SSN), other IDs. Equivalent to PS_EXT_SYSTEM_ID + PS_PERS_NID."
+    },
+    {
+      "object": "Person Name",
+      "description": "Legal name, preferred name, former names. Effective-dated. Equivalent to PS_NAMES."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "person_id",
+      "source": "Academic Person.Universal_ID or Student_ID",
+      "transformation": "Direct map. Workday Universal ID is the cross-domain person key."
+    },
+    {
+      "helix_attribute": "identifiers[]",
+      "source": "Person Identifier (all)",
+      "transformation": "Array. Map each: Institutional ID \u2192 type 'institutional', National ID \u2192 type 'national_id' (tokenized), Workday ID \u2192 type 'workday'."
+    },
+    {
+      "helix_attribute": "legal_name.first",
+      "source": "Person Name where Type='Legal'.First_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.middle",
+      "source": "Person Name where Type='Legal'.Middle_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.last",
+      "source": "Person Name where Type='Legal'.Last_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.suffix",
+      "source": "Person Name where Type='Legal'.Suffix",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "preferred_name.first",
+      "source": "Person Name where Type='Preferred'.First_Name",
+      "transformation": "Direct map. Falls back to legal if no preferred."
+    },
+    {
+      "helix_attribute": "preferred_name.last",
+      "source": "Person Name where Type='Preferred'.Last_Name",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "former_names[]",
+      "source": "Person Name where Type='Legal' and effective-dated history",
+      "transformation": "Array of prior legal names with effective dates."
+    },
+    {
+      "helix_attribute": "date_of_birth",
+      "source": "Academic Person.Date_of_Birth",
+      "transformation": "Cast to ISO 8601. Confidential."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "Academic Person.Gender",
+      "transformation": "Map to HELIX gender terminology."
+    },
+    {
+      "helix_attribute": "gender_identity",
+      "source": "Academic Person.Gender_Identity",
+      "transformation": "Map to HELIX gender-identity terminology. Workday supports separate gender identity."
+    },
+    {
+      "helix_attribute": "pronouns",
+      "source": "Academic Person.Pronoun",
+      "transformation": "Direct map. Workday has native pronoun support."
+    },
+    {
+      "helix_attribute": "ethnicity[]",
+      "source": "Academic Person.Ethnicity (multi-select)",
+      "transformation": "Array. Map to HELIX ethnicity terminology. IPEDS categories."
+    },
+    {
+      "helix_attribute": "national_id",
+      "source": "Person Identifier where Type='National ID (SSN)'",
+      "transformation": "Tokenize at silver layer. Display last 4 only. Restricted."
+    },
+    {
+      "helix_attribute": "citizenship_status",
+      "source": "Academic Person.Citizenship_Status",
+      "transformation": "Map: 'Citizen' \u2192 'citizen', 'Permanent Resident' \u2192 'permanent_resident', 'Foreign National' \u2192 'foreign_national'."
+    },
+    {
+      "helix_attribute": "primary_email",
+      "source": "Person Contact.Email where Primary=true (Campus preferred)",
+      "transformation": "Direct map. Prefer campus email."
+    },
+    {
+      "helix_attribute": "emails[]",
+      "source": "Person Contact.Email (all)",
+      "transformation": "Array with type (campus/home/work) and primary flag."
+    },
+    {
+      "helix_attribute": "phones[]",
+      "source": "Person Contact.Phone (all)",
+      "transformation": "Array with type (mobile/home/work) and primary flag."
+    },
+    {
+      "helix_attribute": "addresses[]",
+      "source": "Person Contact.Address (all)",
+      "transformation": "Array with type (home/mailing/campus) and effective dates."
+    },
+    {
+      "helix_attribute": "emergency_contacts[]",
+      "source": "Person Contact.Emergency_Contact (all)",
+      "transformation": "Array with name, relationship, phone."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "Workday's single universal person model means the same person as Student and as Employee shares one identity \u2014 resolve person_id consistently across the SIS and HR bridges. National ID (SSN) is restricted; tokenize at silver. FERPA applies to all student person data."
+}

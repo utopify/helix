@@ -1,0 +1,96 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 InternationalStudent",
+  "source_system": "workday",
+  "module": "Student - International Student",
+  "target_resource": "InternationalStudent (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Student tracks international student data (visa, SEVIS, I-20/DS-2019) either natively via International Student Information or through integration with a SEVIS-reporting tool (e.g., Sunapsis, Terra Dotta). Equivalent to PS_VISA_PERMIT_DATA + PS_SEVIS fields.",
+  "source_objects": [
+    {
+      "object": "International Student Data",
+      "description": "Visa type, SEVIS ID, I-20/DS-2019 dates, country of citizenship, program dates. Equivalent to PS_VISA_PERMIT_DATA + PS_F1_J1_DATA."
+    },
+    {
+      "object": "Visa/Permit",
+      "description": "Visa record: type, issue/expiry, status. Equivalent to PS_VISA_PERMIT_TBL."
+    },
+    {
+      "object": "SEVIS Record",
+      "description": "SEVIS reporting data for F-1/J-1 compliance."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "intl_student_id",
+      "source": "Composite: Student + record",
+      "transformation": "Composite key."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "International Student Data.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "country_of_citizenship",
+      "source": "International Student Data.Country_of_Citizenship",
+      "transformation": "ISO 3166 country code."
+    },
+    {
+      "helix_attribute": "visa_type",
+      "source": "Visa/Permit.Visa_Type",
+      "transformation": "Map: 'F-1' \u2192 'f1', 'J-1' \u2192 'j1', 'M-1' \u2192 'm1', 'H-1B' \u2192 'h1b', etc."
+    },
+    {
+      "helix_attribute": "visa_status",
+      "source": "Visa/Permit.Status",
+      "transformation": "Map: 'Active' \u2192 'active', 'Expired' \u2192 'expired', 'Pending' \u2192 'pending'."
+    },
+    {
+      "helix_attribute": "visa_issue_date",
+      "source": "Visa/Permit.Issue_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "visa_expiry_date",
+      "source": "Visa/Permit.Expiration_Date",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "sevis_id",
+      "source": "SEVIS Record.SEVIS_ID",
+      "transformation": "The N00... SEVIS number. Restricted."
+    },
+    {
+      "helix_attribute": "i20_start_date",
+      "source": "International Student Data.Program_Start_Date (I-20/DS-2019)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "i20_end_date",
+      "source": "International Student Data.Program_End_Date (I-20/DS-2019)",
+      "transformation": "Cast to ISO 8601. Program completion date on the I-20."
+    },
+    {
+      "helix_attribute": "work_authorization",
+      "source": "International Student Data.Employment_Authorization (CPT/OPT)",
+      "transformation": "Map: 'CPT' \u2192 'cpt', 'OPT' \u2192 'opt', 'STEM OPT' \u2192 'stem_opt', 'None' \u2192 'none'."
+    },
+    {
+      "helix_attribute": "sevis_status",
+      "source": "SEVIS Record.Status",
+      "transformation": "Map: 'Initial' \u2192 'initial', 'Active' \u2192 'active', 'Completed' \u2192 'completed', 'Terminated' \u2192 'terminated'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ],
+  "notes": "International student data is RESTRICTED. SEVIS ID and immigration data are highly sensitive. If SEVIS reporting runs through Sunapsis/Terra Dotta rather than native Workday, map from that system to this same structure. Federal reporting obligations (SEVP) apply."
+}

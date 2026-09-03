@@ -1,0 +1,87 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student \u2192 AcademicTermRecord",
+  "source_system": "workday",
+  "module": "Student - Academic Records",
+  "target_resource": "AcademicTermRecord (planned)",
+  "version": "0.1",
+  "architecture_notes": "Workday Student maintains per-period academic summary records for each student: term GPA, cumulative GPA, units attempted/earned, academic standing, and enrollment status for that period. Equivalent to PS_STDNT_CAR_TERM.",
+  "source_objects": [
+    {
+      "object": "Student Academic Record (per period)",
+      "description": "Term-level summary: student, period, term GPA, cumulative GPA, units, standing. Equivalent to PS_STDNT_CAR_TERM."
+    },
+    {
+      "object": "Academic Standing",
+      "description": "Standing for the period. Equivalent to PS_STDNT_CAR_TERM.ACAD_STNDNG_STAT."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "term_record_id",
+      "source": "Composite: Student + Academic_Period",
+      "transformation": "Composite key."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Student Academic Record.Student",
+      "transformation": "Resolve to HELIX student_id."
+    },
+    {
+      "helix_attribute": "period_ref",
+      "source": "Student Academic Record.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "Student Academic Record.Enrollment_Status",
+      "transformation": "Map to HELIX enrollment-status (full_time, part_time, etc.) for this period."
+    },
+    {
+      "helix_attribute": "academic_level",
+      "source": "Student Academic Record.Academic_Level",
+      "transformation": "Level as of this period (freshman, sophomore, etc.)."
+    },
+    {
+      "helix_attribute": "units_attempted",
+      "source": "Student Academic Record.Units_Attempted",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "units_earned",
+      "source": "Student Academic Record.Units_Completed",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "term_gpa",
+      "source": "Student Academic Record.Term_GPA",
+      "transformation": "GPA for this period only."
+    },
+    {
+      "helix_attribute": "cumulative_gpa",
+      "source": "Student Academic Record.Cumulative_GPA",
+      "transformation": "Running cumulative GPA through this period."
+    },
+    {
+      "helix_attribute": "cumulative_units_earned",
+      "source": "Student Academic Record.Cumulative_Units",
+      "transformation": "Total units earned through this period."
+    },
+    {
+      "helix_attribute": "academic_standing",
+      "source": "Academic Standing.Standing_Status",
+      "transformation": "Map: 'Good Standing' \u2192 'good', 'Probation' \u2192 'probation', 'Suspension' \u2192 'suspension', 'Dean\\'s List' \u2192 'deans_list'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'workday'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "FERPA-protected. Term GPA and standing are education records."
+}
