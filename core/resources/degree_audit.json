@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/degree_audit.json",
+  "title": "HELIX DegreeAudit Resource",
+  "description": "A point-in-time evaluation of a student's progress toward completing their program requirements. Links courses taken to requirements satisfied.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "program_ref",
+    "audit_date"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this audit."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Student resource."
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Program resource."
+    },
+    "catalog_year": {
+      "type": "string",
+      "description": "The catalog year governing this student's requirements (e.g., '2024-2025')."
+    },
+    "audit_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the audit was run."
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "complete",
+        "deficient"
+      ],
+      "description": "Overall completion status."
+    },
+    "completion_percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Percentage of requirements satisfied."
+    },
+    "total_requirements": {
+      "type": "integer",
+      "description": "Total requirement count."
+    },
+    "satisfied_count": {
+      "type": "integer",
+      "description": "Requirements fully satisfied."
+    },
+    "in_progress_count": {
+      "type": "integer",
+      "description": "Requirements being met by current enrollment."
+    },
+    "unsatisfied_count": {
+      "type": "integer",
+      "description": "Requirements not yet met."
+    },
+    "units_required": {
+      "type": "number",
+      "description": "Total credits required by the program."
+    },
+    "units_completed": {
+      "type": "number",
+      "description": "Credits earned toward the program."
+    },
+    "units_in_progress": {
+      "type": "number",
+      "description": "Credits currently enrolled."
+    },
+    "units_remaining": {
+      "type": "number",
+      "description": "Credits still needed."
+    },
+    "gpa_required": {
+      "type": "number",
+      "description": "Minimum GPA required for completion."
+    },
+    "gpa_current": {
+      "type": "number",
+      "description": "Current GPA in program courses."
+    },
+    "projected_completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Estimated graduation date."
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_name": {
+            "type": "string"
+          },
+          "requirement_type": {
+            "type": "string",
+            "enum": [
+              "core",
+              "major",
+              "minor",
+              "general_education",
+              "elective",
+              "concentration",
+              "capstone",
+              "thesis"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "satisfied",
+              "in_progress",
+              "not_satisfied",
+              "waived"
+            ]
+          },
+          "courses_applied": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Course references that satisfy this requirement."
+          }
+        }
+      },
+      "description": "Individual requirements with status."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "source_system": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

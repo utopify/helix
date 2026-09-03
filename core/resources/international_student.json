@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/international_student.json",
+  "title": "HELIX InternationalStudent Resource",
+  "description": "Immigration and visa data for a non-citizen student. Covers F-1, J-1, M-1 visa holders, SEVIS tracking, I-20/DS-2019 program dates, and work authorization (CPT/OPT). Classified as restricted due to immigration data sensitivity.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "country_of_citizenship",
+    "visa_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Student resource."
+    },
+    "country_of_citizenship": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code."
+    },
+    "country_of_birth": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code."
+    },
+    "visa_type": {
+      "type": "string",
+      "enum": [
+        "f1",
+        "j1",
+        "m1",
+        "h1b",
+        "h4",
+        "l1",
+        "tn",
+        "o1",
+        "other",
+        "permanent_resident",
+        "asylee_refugee"
+      ],
+      "description": "Visa/immigration classification."
+    },
+    "visa_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "pending",
+        "revoked"
+      ],
+      "description": "Current visa status."
+    },
+    "visa_issue_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "visa_expiry_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "sevis_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "SEVIS N-number (e.g., N0012345678). Restricted."
+    },
+    "sevis_status": {
+      "type": "string",
+      "enum": [
+        "initial",
+        "active",
+        "completed",
+        "terminated",
+        "transferred_out",
+        "transferred_in"
+      ],
+      "description": "SEVIS record status."
+    },
+    "i20_program_start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Program start date on I-20 (F-1) or DS-2019 (J-1)."
+    },
+    "i20_program_end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Program completion date on I-20/DS-2019."
+    },
+    "work_authorization": {
+      "type": "string",
+      "enum": [
+        "none",
+        "cpt",
+        "opt",
+        "stem_opt",
+        "academic_training",
+        "economic_hardship",
+        "on_campus"
+      ],
+      "description": "Current work authorization type."
+    },
+    "work_auth_start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "work_auth_end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "english_proficiency_test": {
+      "type": "string",
+      "enum": [
+        "toefl",
+        "ielts",
+        "duolingo",
+        "pte",
+        "cambridge",
+        "waived",
+        "other"
+      ],
+      "description": "English proficiency exam taken."
+    },
+    "english_proficiency_score": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Test score (format varies by test)."
+    },
+    "sponsor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Sponsoring organization (for J-1) or government sponsor."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "source_system": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "restricted"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://helixedu.org/govern/schema-evolution-schema.json",
+  "title": "HELIX Govern: Schema Evolution Policy",
+  "description": "Defines how HELIX Core resources, terminologies, and API specs change over time. Ensures backward compatibility and orderly transitions.",
+  "version": "0.1",
+  "versioning": {
+    "format": "MAJOR.MINOR.PATCH",
+    "major": "Breaking changes requiring migration. Removed required attributes, changed types, removed resources.",
+    "minor": "Additive backward-compatible changes. New optional attributes, resources, terminology codes, endpoints.",
+    "patch": "Documentation, descriptions, examples, governance artifacts only."
+  },
+  "compatibility_rules": [
+    "Required attributes can never be removed (can be made optional = minor)",
+    "Optional attributes can be added freely (minor)",
+    "Attribute types cannot change (add new attribute with new type, deprecate old)",
+    "Enum values can be added, never removed (deprecate instead)",
+    "Resource names cannot change (create new, deprecate old)",
+    "API endpoints follow the same rules"
+  ],
+  "deprecation_process": [
+    "1. Mark deprecated: add 'deprecated: true' and 'deprecated_message' with version and replacement",
+    "2. Announce in release notes with migration guidance",
+    "3. Minimum 2 minor versions before removal (e.g., deprecated in 0.3, removable at 0.5)",
+    "4. Remove only in next major version with migration scripts"
+  ],
+  "extensions": {
+    "description": "Institutions extend HELIX via a standardized 'extensions' object on any resource.",
+    "rules": [
+      "Extensions live under the 'extensions' property",
+      "Keys MUST be namespaced: 'institution_code:attribute_name' (e.g., 'umd:housing_assignment')",
+      "Extensions are never validated by HELIX conformance checks",
+      "If 3+ institutions adopt the same extension, propose it as a core attribute"
+    ]
+  }
+}

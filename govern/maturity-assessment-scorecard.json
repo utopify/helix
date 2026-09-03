@@ -1,0 +1,91 @@
+{
+  "$schema": "https://helixedu.org/govern/scorecard-schema.json",
+  "title": "HELIX Govern: Maturity Assessment Scorecard",
+  "description": "A fillable self-assessment scorecard aligned to the HELIX 5-dimension maturity model. Score each dimension 1-5, provide evidence, and identify priority actions.",
+  "version": "0.1",
+  "institution_name": "[Your Institution]",
+  "assessment_date": "[YYYY-MM-DD]",
+  "assessed_by": "[Name and Title]",
+  "dimensions": [
+    {
+      "dimension": "Data Model & Standards",
+      "current_level": null,
+      "level_descriptions": {
+        "1": "No shared data definitions. Each system maintains its own terminology.",
+        "2": "HELIX Core reviewed as reference. Some definitions documented. Data dictionary started.",
+        "3": "Data lake silver layer maps to HELIX schemas. Data dictionary complete. Terminology code sets adopted.",
+        "4": "All major systems mapped to HELIX. Schema validation automated. Contributing extensions back to community.",
+        "5": "Full HELIX conformance. Schema evolution process in place. Serving as reference implementation."
+      },
+      "evidence": "",
+      "gaps": "",
+      "priority_actions": ""
+    },
+    {
+      "dimension": "Governance Organization",
+      "current_level": null,
+      "level_descriptions": {
+        "1": "No formal governance roles. Data ownership is ad hoc.",
+        "2": "CDO appointed. Data Governance Council formed. Domain trustees identified.",
+        "3": "RACI matrix implemented. Stewards active in each domain. Regular council meetings.",
+        "4": "Governance integrated into project lifecycle. Data impact assessments required.",
+        "5": "Governance culture embedded institution-wide. Self-service governance tools."
+      },
+      "evidence": "",
+      "gaps": "",
+      "priority_actions": ""
+    },
+    {
+      "dimension": "Data Quality",
+      "current_level": null,
+      "level_descriptions": {
+        "1": "No formal quality measurement. Issues found reactively.",
+        "2": "Quality rules defined (HELIX rules adopted). Baseline measurements taken.",
+        "3": "Automated quality monitoring. Quality dashboard published. SLAs for critical data.",
+        "4": "Root cause analysis standard practice. Preventive controls in source systems.",
+        "5": "Predictive quality monitoring. Near-zero critical defects."
+      },
+      "evidence": "",
+      "gaps": "",
+      "priority_actions": ""
+    },
+    {
+      "dimension": "Data Classification & Security",
+      "current_level": null,
+      "level_descriptions": {
+        "1": "No classification scheme. FERPA/GLBA compliance is ad hoc.",
+        "2": "HELIX 4-tier classification adopted. Resources classified.",
+        "3": "Classification enforced in data lake. Access controls aligned. Audit logging active.",
+        "4": "Automated classification enforcement. PII tokenization. GLBA Safeguards program documented.",
+        "5": "Real-time access anomaly detection. Zero-trust for restricted data."
+      },
+      "evidence": "",
+      "gaps": "",
+      "priority_actions": ""
+    },
+    {
+      "dimension": "Data Literacy & Culture",
+      "current_level": null,
+      "level_descriptions": {
+        "1": "Data governance seen as an IT concern. No shared vocabulary.",
+        "2": "Shared glossary (HELIX glossary) adopted. Training started.",
+        "3": "Governance awareness across departments. Self-service analytics with guardrails.",
+        "4": "Governance is a recognized priority. Embedded in onboarding. Champions in each dept.",
+        "5": "Data-informed culture. Leadership routinely uses governed data for decisions."
+      },
+      "evidence": "",
+      "gaps": "",
+      "priority_actions": ""
+    }
+  ],
+  "overall_score": null,
+  "overall_score_calculation": "Average of all 5 dimension scores. Round to one decimal.",
+  "helix_conformance_level": {
+    "1.0-1.9": "Explorer",
+    "2.0-2.9": "Aligned",
+    "3.0-3.9": "Governed",
+    "4.0-4.9": "Contributor",
+    "5.0": "Champion"
+  },
+  "next_assessment_date": "[YYYY-MM-DD]"
+}

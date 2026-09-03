@@ -1,0 +1,91 @@
+{
+  "$schema": "https://helixedu.org/govern/charter-schema.json",
+  "title": "HELIX Govern: Data Governance Committee Charter Template",
+  "description": "Fillable charter template for establishing a Data Governance Council. Institutions customize by replacing bracketed placeholders.",
+  "version": "0.1",
+  "charter": {
+    "committee_name": "[Institution Name] Data Governance Council",
+    "effective_date": "[YYYY-MM-DD]",
+    "purpose": "The Data Governance Council establishes and maintains the policies, standards, and practices that ensure institutional data is accurate, secure, accessible, and used responsibly. The Council adopts the HELIX open framework as its foundational data standard.",
+    "authority": "The Council operates under the authority of the [Provost / President / CIO]. It has the authority to: (a) set data policies and standards, (b) assign Data Trustees and Stewards, (c) approve classification decisions, (d) approve data sharing agreements, (e) prioritize quality remediation, (f) recommend technology investments.",
+    "scope": "All institutional data across the 9 HELIX domains: Student Identity, Academic Structure, Enrollment & Registration, Financial Aid, Academic Outcomes, Student Services, Human Resources, Financial Operations, and Advancement & Alumni.",
+    "membership": [
+      {
+        "role": "Chair",
+        "typical_title": "CDO / VP of Data & Analytics"
+      },
+      {
+        "role": "Executive Sponsor",
+        "typical_title": "Provost / President / VP"
+      },
+      {
+        "role": "Data Trustee, Student Identity & Enrollment",
+        "typical_title": "VP for Enrollment Management or Registrar"
+      },
+      {
+        "role": "Data Trustee, Academic Structure & Outcomes",
+        "typical_title": "Vice Provost for Academic Affairs"
+      },
+      {
+        "role": "Data Trustee, Financial Aid",
+        "typical_title": "Director of Financial Aid"
+      },
+      {
+        "role": "Data Trustee, Financial Operations",
+        "typical_title": "CFO or Controller"
+      },
+      {
+        "role": "Data Trustee, Human Resources",
+        "typical_title": "CHRO or VP for HR"
+      },
+      {
+        "role": "Data Trustee, Advancement & Alumni",
+        "typical_title": "VP for Advancement"
+      },
+      {
+        "role": "Data Trustee, Student Services",
+        "typical_title": "VP for Student Affairs"
+      },
+      {
+        "role": "Data Trustee, Information Technology",
+        "typical_title": "CIO"
+      },
+      {
+        "role": "Compliance/Legal",
+        "typical_title": "General Counsel or FERPA Officer"
+      },
+      {
+        "role": "Institutional Research",
+        "typical_title": "Director of IR"
+      },
+      {
+        "role": "Faculty Representative",
+        "typical_title": "Faculty Senate designee"
+      }
+    ],
+    "meeting_cadence": {
+      "council": "Monthly, 1 hour",
+      "steward_working_sessions": "Bi-weekly as needed",
+      "annual_review": "Annual maturity assessment and charter review"
+    },
+    "decision_making": "Consensus when possible. Chair decides when consensus cannot be reached. Executive Sponsor is escalation authority. Classification and data sharing decisions require a quorum.",
+    "responsibilities": [
+      "Approve and maintain institutional data governance policy",
+      "Assign Data Trustees and Stewards to each HELIX domain",
+      "Approve data classification for each domain",
+      "Review data quality metrics quarterly",
+      "Approve data sharing agreements",
+      "Approve schema changes and HELIX version adoption",
+      "Conduct annual maturity assessment",
+      "Resolve cross-domain data ownership disputes"
+    ],
+    "success_metrics": [
+      "Maturity model score improvement (year over year)",
+      "Data quality rule pass rate",
+      "Data dictionary completeness",
+      "Time to resolve data quality issues",
+      "Data sharing agreement turnaround time",
+      "Stakeholder satisfaction (annual survey)"
+    ]
+  }
+}

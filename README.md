@@ -51,7 +51,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
   |   |                 |  |                 |  |               | |
   |   | The data model. |  | The API &       |  | The governance| |
   |   |                 |  | exchange        |  | framework.    | |
-  |   | 19 resources,   |  | standard.       |  |               | |
+  |   | 24 resources,   |  | standard.       |  |               | |
   |   | 23 terminology  |  |                 |  | Roles, rules, | |
   |   | code sets.      |  | 16 REST endpts, |  | quality, and  | |
   |   |                 |  | bulk export,    |  | maturity      | |
@@ -70,7 +70,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | 19 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
+| **HELIX Core** | 24 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
 | **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (42), Colleague (3) — 98 total | Implementation teams, system integrators |
@@ -79,16 +79,16 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 ## HELIX Core: Resources (v0.1)
 
-19 foundational resources across 7 domains:
+24 foundational resources across 7 domains:
 
 | Domain | Resources |
 |--------|-----------|
 | **Identity** | `Person`, `Student`, `Institution` |
 | **Academic Structure** | `AcademicOrg`, `Course`, `CourseSection`, `Program`, `AcademicPeriod` |
-| **Enrollment & Registration** | `Enrollment`, `StudentProgram`, `AdmissionApplication`, `TransferCredit` |
+| **Enrollment & Registration** | `Enrollment`, `StudentProgram`, `AdmissionApplication`, `TransferCredit`, `AcademicTermRecord` |
 | **Financial Aid** | `FinAidAward` |
-| **Outcomes** | `Degree` |
-| **Student Services** | `Hold` |
+| **Outcomes** | `Degree`, `DegreeAudit` |
+| **Student Services** | `Hold`, `FERPARestriction`, `InternationalStudent`, `StudentGroup` |
 | **Advancement** | `Constituent`, `Gift`, `Campaign`, `EngagementActivity` |
 
 Each resource includes a `meta` block with embedded governance: version, source system, data owner, and classification level.
@@ -131,10 +131,14 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 | **Roles** | 6 governance roles (Data Trustee, CDO, Data Steward, Data Custodian, Data Consumer, HELIX Champion) with RACI matrix |
 | **Quality Rules** | 22 rules across 5 domains with severity, testable expressions, and remediation |
 | **Maturity Model** | 5 dimensions × 5 levels, aligned to conformance levels |
+| **Maturity Scorecard** | Fillable self-assessment scorecard with evidence fields and priority actions per dimension |
 | **Domain Taxonomy** | 9 data domains with steward assignments and regulatory context |
 | **RACI Matrix** | 18 activities × 5 roles with Responsible/Accountable/Consulted/Informed assignments |
-| **Classification Handling** | 4 tiers (Public, Internal, Confidential, Restricted) with encryption, access, audit, masking, retention, sharing, and disposal rules — FERPA and GLBA specific guidance |
-| **Data Dictionary** | 537-entry structured dictionary (JSON + CSV) of every resource attribute and terminology code — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
+| **Classification Handling** | 4 tiers (Public, Internal, Confidential, Restricted) with encryption, access, audit, masking, retention, and disposal rules — FERPA and GLBA specific |
+| **Committee Charter** | Fillable charter template for Data Governance Council with membership roles, cadence, responsibilities, and success metrics |
+| **Data Sharing Agreement** | Template with FERPA/GLBA provisions, security requirements, breach notification, and audit rights |
+| **Schema Evolution Policy** | Versioning rules (MAJOR.MINOR.PATCH), backward compatibility guarantees, deprecation process, and institutional extension patterns |
+| **Data Dictionary** | 537-entry structured dictionary (JSON + CSV) — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
 
 See the [Govern Overview](docs/govern-overview.md) for details.
 
@@ -201,14 +205,14 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (195 files)
+## Repository Structure (204 files)
 
 ```
 helix/
 +-- README.md                          <-- You are here
 +-- CONTRIBUTING.md                    <-- How to participate
 +-- core/
-|   +-- resources/                     <-- 19 JSON Schema resource definitions
+|   +-- resources/                     <-- 24 JSON Schema resource definitions
 |   +-- terminologies/                 <-- 23 standardized code sets
 |   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (34K words)
 |   +-- data-dictionary.json           <-- 537-entry structured data dictionary
@@ -220,9 +224,13 @@ helix/
 |   +-- roles.json                     <-- Governance role definitions
 |   +-- quality-rules.json             <-- Data quality rule library (22 rules)
 |   +-- maturity-model.json            <-- 5-dimension maturity assessment
+|   +-- maturity-assessment-scorecard.json  <-- Fillable self-assessment
 |   +-- domain-taxonomy.json           <-- 9 data domains with steward assignments
 |   +-- raci-matrix.json               <-- 18 activities x 5 roles (R/A/C/I)
 |   +-- classification-handling-rules.json  <-- 4-tier handling (FERPA/GLBA)
+|   +-- governance-committee-charter.json   <-- Council charter template
+|   +-- data-sharing-agreement-template.json <-- DSA with FERPA/GLBA
+|   +-- schema-evolution-policy.json   <-- Versioning + extension rules
 +-- bridge/
 |   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (40)
 |   |   +-- cs/                        <-- Campus Solutions / SIS (19)

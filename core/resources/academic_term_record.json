@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/academic_term_record.json",
+  "title": "HELIX AcademicTermRecord Resource",
+  "description": "A student's academic summary for a single academic period: term GPA, cumulative GPA, units attempted/earned, academic standing, and enrollment status. One record per student per period.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "period_ref"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this term record."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Student resource."
+    },
+    "period_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX AcademicPeriod resource."
+    },
+    "enrollment_status": {
+      "type": "string",
+      "enum": [
+        "full_time",
+        "half_time",
+        "less_than_half_time",
+        "not_enrolled",
+        "withdrawn"
+      ],
+      "description": "Enrollment load for this period."
+    },
+    "academic_level": {
+      "type": "string",
+      "enum": [
+        "freshman",
+        "sophomore",
+        "junior",
+        "senior",
+        "post_baccalaureate",
+        "masters",
+        "doctoral",
+        "professional",
+        "non_degree"
+      ],
+      "description": "Academic level as of this period."
+    },
+    "units_attempted": {
+      "type": "number",
+      "description": "Credit hours attempted this period."
+    },
+    "units_earned": {
+      "type": "number",
+      "description": "Credit hours earned (passed) this period."
+    },
+    "units_passed": {
+      "type": "number",
+      "description": "Credit hours with passing grade (may differ from earned if institution distinguishes)."
+    },
+    "quality_points": {
+      "type": "number",
+      "description": "Total quality points this period (grade points \u00d7 credit hours per course)."
+    },
+    "term_gpa": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 4.0,
+      "description": "GPA for this period only."
+    },
+    "cumulative_gpa": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 4.0,
+      "description": "Running cumulative GPA through this period."
+    },
+    "cumulative_units_earned": {
+      "type": "number",
+      "description": "Total earned units through this period (all terms)."
+    },
+    "cumulative_units_attempted": {
+      "type": "number",
+      "description": "Total attempted units through this period."
+    },
+    "academic_standing": {
+      "type": "string",
+      "enum": [
+        "good",
+        "probation",
+        "suspension",
+        "dismissal",
+        "deans_list",
+        "presidents_list"
+      ],
+      "description": "Academic standing for this period."
+    },
+    "dean_list": {
+      "type": "boolean",
+      "description": "Whether the student made the Dean's List this period."
+    },
+    "academic_load": {
+      "type": "string",
+      "enum": [
+        "full_time",
+        "three_quarter",
+        "half_time",
+        "less_than_half_time"
+      ],
+      "description": "Official academic load classification (drives financial aid eligibility)."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "source_system": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

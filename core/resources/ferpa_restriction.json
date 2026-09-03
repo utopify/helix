@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/ferpa_restriction.json",
+  "title": "HELIX FERPARestriction Resource",
+  "description": "A student's FERPA directory information restriction. When active, directory information must be withheld from any disclosure not covered by a FERPA exception. Every downstream consumer of HELIX student data MUST check this resource before disclosing directory information.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "restriction_type",
+    "is_active"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Student resource."
+    },
+    "restriction_type": {
+      "type": "string",
+      "enum": [
+        "full",
+        "directory",
+        "partial"
+      ],
+      "description": "Full = withhold everything. Directory = withhold directory info only. Partial = specific categories."
+    },
+    "restricted_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "name",
+          "address",
+          "phone",
+          "email",
+          "enrollment_status",
+          "dates_of_attendance",
+          "degrees_awarded",
+          "honors",
+          "major_field",
+          "photo",
+          "participation_activities"
+        ]
+      },
+      "description": "Specific directory information categories restricted by the student."
+    },
+    "restrict_directory": {
+      "type": "boolean",
+      "description": "Master flag: if true, withhold ALL directory information."
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the restriction took effect."
+    },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Null if indefinite (most FERPA blocks persist until removed by the student)."
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Whether the restriction is currently in effect."
+    },
+    "requested_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the student submitted the restriction request."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "source_system": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

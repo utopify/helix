@@ -1,0 +1,70 @@
+{
+  "$schema": "https://helixedu.org/govern/data-sharing-schema.json",
+  "title": "HELIX Govern: Data Sharing Agreement Template",
+  "description": "Template for data sharing agreements between institutions, vendors, researchers, or agencies. Pre-populated with FERPA and GLBA requirements. Legal counsel should review and customize.",
+  "version": "0.1",
+  "sections": [
+    {
+      "section": "1. Purpose",
+      "template": "This Agreement governs the sharing of [HELIX resources] between [Institution] (Provider) and [Receiving Party] (Recipient) for the purpose of [specific purpose]."
+    },
+    {
+      "section": "2. Data Description",
+      "fields": {
+        "helix_resources": "[List resources, e.g., Student, Enrollment, AcademicTermRecord]",
+        "classification": "[Public / Internal / Confidential / Restricted]",
+        "record_count": "[Approximate]",
+        "date_range": "[Time period]",
+        "includes_pii": "[Yes/No]",
+        "ferpa_records": "[Yes/No]",
+        "glba_data": "[Yes/No]"
+      }
+    },
+    {
+      "section": "3. Legal Basis",
+      "ferpa_exceptions": [
+        "Written student consent (34 CFR 99.30)",
+        "Directory information (34 CFR 99.37)",
+        "School official with legitimate educational interest (34 CFR 99.31(a)(1))",
+        "Studies exception (34 CFR 99.31(a)(6))",
+        "Health or safety emergency (34 CFR 99.31(a)(10))",
+        "Audit or evaluation (34 CFR 99.31(a)(3))"
+      ]
+    },
+    {
+      "section": "4. Permitted Uses",
+      "template": "Recipient may use data solely for [stated purpose]. No re-sharing, marketing, or automated decision-making about individuals without human review."
+    },
+    {
+      "section": "5. Security Requirements",
+      "requirements": [
+        "Encryption at rest (AES-256) and in transit (TLS 1.2+)",
+        "Access limited to named individuals",
+        "MFA required",
+        "Audit logging of all access",
+        "No personal devices or unauthorized cloud storage",
+        "GLBA Safeguards Rule compliance if applicable"
+      ]
+    },
+    {
+      "section": "6. Retention & Destruction",
+      "template": "Retain only for [period]. Destroy all copies within [30/60/90] days of completion. Provide certificate of destruction."
+    },
+    {
+      "section": "7. Breach Notification",
+      "template": "Notify within [24/48/72] hours. Include: nature, elements affected, record count, remediation steps."
+    },
+    {
+      "section": "8. Audit Rights",
+      "template": "Provider may audit Recipient's compliance with [30] days written notice."
+    },
+    {
+      "section": "9. FERPA Recordkeeping",
+      "template": "Per 34 CFR 99.32, Provider will maintain a record of this disclosure."
+    },
+    {
+      "section": "10. Termination",
+      "template": "Either party may terminate with [30] days notice. Security and destruction obligations survive."
+    }
+  ]
+}

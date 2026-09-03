@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/student_group.json",
+  "title": "HELIX StudentGroup Resource",
+  "description": "A student's membership in an institutional group or cohort. Used for population management, IPEDS cohort tracking, targeted communications, and service delivery. Examples: student athletes, honors students, first-generation, veterans, TRIO participants.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "group_code"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Reference to the HELIX Student resource."
+    },
+    "group_code": {
+      "type": "string",
+      "description": "Institutional group identifier (e.g., 'ATHL', 'HONORS', 'FIRSTGEN', 'VET', 'TRIO')."
+    },
+    "group_name": {
+      "type": "string",
+      "description": "Human-readable group name (e.g., 'Student Athletes')."
+    },
+    "group_category": {
+      "type": "string",
+      "enum": [
+        "athletics",
+        "honors",
+        "access_program",
+        "demographic",
+        "scholarship",
+        "advising",
+        "residential",
+        "cohort",
+        "other"
+      ],
+      "description": "Classification of the group type."
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the student joined this group."
+    },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Null if active membership."
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Whether the membership is current."
+    },
+    "ipeds_cohort_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "For IPEDS entry cohorts: the cohort identifier (e.g., 'FA2026-FTFT' = Fall 2026 First-Time Full-Time)."
+    },
+    "sport_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "For athletics groups: NCAA/NAIA sport code."
+    },
+    "scholarship_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "For scholarship cohorts: reference to the associated award/fund."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "source_system": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}
