@@ -1,0 +1,111 @@
+{
+  "$schema": "https://helixedu.org/govern/ferpa-disclosure-framework-schema.json",
+  "title": "HELIX Govern: FERPA Disclosure & Enforcement Framework",
+  "description": "Operationalizes FERPA (34 CFR Part 99) across the HELIX medallion lakehouse. Where the GLBA framework is mostly encryption and security, this framework governs DISCLOSURE: who may receive education records, under which statutory basis, and how each basis is enforced as a flag from Bronze through Silver. Focuses on the disclosure exceptions in 34 CFR 99.31(a)(1) (school officials with legitimate educational interest), (a)(6) (organizations conducting studies), and (a)(11) (directory information, which is actually governed by 99.31(a) via 99.37).",
+  "version": "0.1",
+  "core_principle": "FERPA is disclosure-centric. Education records may not be disclosed without written consent (34 CFR 99.30) UNLESS a specific exception in 99.31 applies. HELIX enforces this by (1) resolving every record to a single student identity at Bronze->Silver, (2) attaching the active FERPARestriction state to that identity, and (3) requiring every consumer to assert a disclosure basis that is checked against the record's flags before data is returned.",
+  "identity_resolution": {
+    "why_it_matters": "FERPA enforcement is only as good as identity resolution. If the same student exists as two unlinked identities (e.g., a Banner PIDM and a separate application record), a FERPA restriction on one will not protect the other. Identity must be resolved to ONE HELIX Person before FERPA flags can be reliably applied.",
+    "bronze_to_silver_flow": [
+      {
+        "step": 1,
+        "layer": "bronze",
+        "action": "Land raw source records with their native keys intact (PS EMPLID, Banner PIDM/SPRIDEN_ID, Workday Universal ID, application system ID). Do not attempt matching in bronze. Capture _source_system and native key on every row."
+      },
+      {
+        "step": 2,
+        "layer": "bronze->silver",
+        "action": "Identity resolution: match source records to a single HELIX Person via deterministic keys first (SSN token, institutional ID, verified email), then probabilistic matching (name + DOB + address) for the remainder. Emit a crosswalk table (person_xref) mapping every source key to one helix Person.helix_id. Unresolved/ambiguous matches route to a stewardship queue, NOT auto-merged."
+      },
+      {
+        "step": 3,
+        "layer": "silver",
+        "action": "Attach FERPA state to the resolved identity: join Person -> FERPARestriction. The active restriction (and its restricted_categories) now travels with every downstream read of that student, regardless of which source system the underlying row came from."
+      },
+      {
+        "step": 4,
+        "layer": "silver",
+        "action": "Stamp each silver row's meta block with the governing disclosure controls: meta.classification plus a ferpa_flags object (see below). Consumers never see raw source rows; they see HELIX silver rows that already carry the FERPA state."
+      }
+    ],
+    "identity_resolution_risks": [
+      "Split identity: one human, two unlinked records -> a restriction protects only one. Mitigate with deterministic keys and a stewardship review queue.",
+      "Over-merge: two humans collapsed into one identity -> one student's records exposed under another. Mitigate by never auto-merging ambiguous probabilistic matches.",
+      "Late-arriving restriction: a student files a FERPA block after records already flowed to gold. Mitigate by re-evaluating flags on every silver refresh and cascading to gold."
+    ]
+  },
+  "ferpa_flags_model": {
+    "description": "Every silver row carrying student data gets a ferpa_flags object in its meta block. Consumers assert a disclosure_basis; the enforcement layer compares it to these flags before returning data.",
+    "fields": {
+      "is_education_record": "boolean \u2014 true if this data is a FERPA education record (most student data is).",
+      "directory_restricted": "boolean \u2014 true if the student has an active directory-information restriction (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the (a) directory exception.",
+      "restricted_categories": "array \u2014 specific directory categories the student restricted (name, address, phone, email, enrollment_status, dates_of_attendance, degrees_awarded, honors, major_field, photo). Empty when directory_restricted is false.",
+      "disclosure_basis_required": "boolean \u2014 true for any education-record field; the consumer must assert a valid 99.31 basis or hold consent.",
+      "legitimate_interest_scope": "array \u2014 the set of roles/purposes pre-authorized as school officials with legitimate educational interest for this record type (drives the (a)(1) check).",
+      "study_disclosure_allowed": "boolean \u2014 whether this record type may be released under an (a)(6) studies agreement (typically de-identified or under a written agreement)."
+    },
+    "schema_location": "As of v0.2.0, the ferpa_flags object is embedded in the meta block of all 14 FERPA education-record Core resources (person, student, enrollment, student_program, admission_application, transfer_credit, fin_aid_award, degree, hold, academic_term_record, degree_audit, ferpa_restriction, international_student, student_group). It is NOT present on non-education-record resources (course, program, institution, and advancement resources)."
+  },
+  "disclosure_exceptions": [
+    {
+      "exception": "34 CFR 99.31(a)(1) \u2014 School Officials with Legitimate Educational Interest",
+      "plain_language": "Internal staff/faculty (and contractors acting as school officials) may access education records when they need them to perform their job duties.",
+      "flag": "legitimate_interest_scope",
+      "enforcement": {
+        "check": "The consumer's role/purpose MUST appear in the record's legitimate_interest_scope. This is the day-to-day basis for internal analytics, advising, registrar, financial aid operations.",
+        "how_helix_enforces": "Map each HELIX governance role and each gold-table audience to a defined legitimate educational interest. A consumer querying silver asserts disclosure_basis='99.31(a)(1)' with their role; the access layer confirms the role is in legitimate_interest_scope for that resource. Deny if not.",
+        "criteria_to_define": [
+          "Direct/contractor 'school official' definition documented in the annual FERPA notification",
+          "The 'legitimate educational interest' criteria (what job functions justify access)",
+          "For contractors/vendors as school officials: under institutional direct control and use limited to authorized purposes (the outsourcing provision)"
+        ],
+        "important": "The (a)(1) basis does NOT require checking the directory restriction \u2014 a school official with legitimate interest may see restricted directory info internally. Directory restrictions govern EXTERNAL disclosure, not internal legitimate-interest access."
+      }
+    },
+    {
+      "exception": "34 CFR 99.31(a)(6) \u2014 Organizations Conducting Studies For or On Behalf of the Institution",
+      "plain_language": "External researchers/organizations may receive education records to conduct studies that develop/validate predictive tests, administer student aid, or improve instruction \u2014 under a strict written agreement.",
+      "flag": "study_disclosure_allowed",
+      "enforcement": {
+        "check": "Disclosure only under a written agreement (the 'studies exception agreement') that: specifies the study purpose; limits use to that purpose; limits access to representatives with legitimate interests; requires destruction when no longer needed; and bars re-disclosure. Data should be de-identified where the study design permits.",
+        "how_helix_enforces": "study_disclosure_allowed gates whether a resource can flow into a research extract. A study extract is produced from silver into a governed gold/research zone with: (a) a signed agreement referenced in the data sharing agreement template, (b) de-identification or tokenization applied, (c) time-boxed access, (d) destruction tracking. Directory restrictions still apply to any re-identifiable output.",
+        "criteria_to_define": [
+          "Written agreement on file (link to govern/data-sharing-agreement-template.json)",
+          "Study purpose and scope",
+          "De-identification standard applied (or justification if identifiable data is required)",
+          "Data destruction date and certificate",
+          "No re-disclosure clause"
+        ]
+      }
+    },
+    {
+      "exception": "34 CFR 99.31(a)(11) \u2014 Directory Information (conditions at 99.37, definition at 99.3)",
+      "plain_language": "The institution may disclose 'directory information' (name, address, enrollment status, degrees, honors, etc.) without consent IF it has given public notice of what it treats as directory information AND the student has not opted out.",
+      "flag": "directory_restricted + restricted_categories",
+      "enforcement": {
+        "check": "Directory information may be disclosed ONLY when directory_restricted is false for that student AND the specific field is in the institution's published directory-information list AND the field is not in the student's restricted_categories. If directory_restricted is true, withhold ALL directory information for that student.",
+        "how_helix_enforces": "Any query that could disclose data outside the institution (public reports, enrollment verification, external requests, gold tables consumed by non-school-officials) MUST join FERPARestriction and exclude students where directory_restricted=true, and MUST drop any field present in restricted_categories. HELIX ships this as a canonical view pattern (see enforcement_patterns below).",
+        "criteria_to_define": [
+          "The institution's published directory-information list (which HELIX fields are directory info)",
+          "The annual public notice / notification of the opt-out right",
+          "The opt-out capture path -> FERPARestriction record (restrict_directory=true, restricted_categories populated)"
+        ],
+        "note_on_citation": "34 CFR 99.31(a)(11) is the disclosure exception that authorizes releasing directory information without consent. It operates together with 99.37 (which sets the public-notice requirement and the student's right to opt out) and 99.3 (which defines 'directory information'). All three sections are operative: (a)(11) is the authority to disclose, 99.37 is the condition, 99.3 is the definition."
+      }
+    }
+  ],
+  "enforcement_patterns": {
+    "description": "Canonical SQL/view patterns HELIX recommends for enforcing each basis at the silver layer.",
+    "directory_disclosure_view": "CREATE VIEW gold.directory_safe AS SELECT p.helix_id, p.legal_name, p.primary_email, atr.enrollment_status FROM silver.person p JOIN silver.academic_term_record atr ON atr.student_ref = p.helix_id WHERE NOT EXISTS (SELECT 1 FROM silver.ferpa_restriction fr WHERE fr.student_ref = p.helix_id AND fr.is_active = true AND (fr.restrict_directory = true OR 'enrollment_status' = ANY(fr.restricted_categories)));",
+    "legitimate_interest_access": "Access policy (not a view): the query engine role must map to a legitimate_educational_interest for the resource. Enforced via lake-formation-style tag policies or row/column security referencing meta.ferpa_flags.legitimate_interest_scope.",
+    "studies_extract": "Materialize a research extract only from resources where study_disclosure_allowed=true, apply de-identification, exclude directory_restricted students from any re-identifiable column, and stamp the extract with the governing agreement ID and destruction date."
+  },
+  "consumer_contract": "Every consumer of HELIX student data must assert a disclosure_basis on each read: one of '99.30_consent', '99.31(a)(1)_legitimate_interest', '99.31(a)(6)_study', '99.37_directory', or another enumerated 99.31 exception. The enforcement layer validates the asserted basis against the record's ferpa_flags and the student's active FERPARestriction before returning data. Reads are logged with the asserted basis for audit.",
+  "references": [
+    "FERPA, 20 U.S.C. 1232g",
+    "34 CFR Part 99 (FERPA regulations)",
+    "34 CFR 99.30 (prior consent), 99.31 (disclosure without consent), 99.37 (directory information), 99.3 (definitions), 99.32 (recordkeeping)",
+    "34 CFR 99.31(a)(1) legitimate educational interest; (a)(6) studies exception",
+    "PTAC (Privacy Technical Assistance Center) best-practice guidance"
+  ]
+}

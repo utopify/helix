@@ -9,7 +9,7 @@ HELIX is an open framework of foundational data models, governance standards, an
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.1.9 (September 2026)
+**Version:** 0.2.0 (September 2026)
 **License:** Apache 2.0
 
 --- 
@@ -135,6 +135,8 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 | **Domain Taxonomy** | 9 data domains with steward assignments and regulatory context |
 | **RACI Matrix** | 18 activities × 5 roles with Responsible/Accountable/Consulted/Informed assignments |
 | **Classification Handling** | 4 tiers (Public, Internal, Confidential, Restricted) with encryption, access, audit, masking, retention, and disposal rules — FERPA and GLBA specific |
+| **GLBA Safeguards Framework** | All 9 FTC Safeguards Rule elements (16 CFR 314) mapped to Bronze/Silver/Gold controls: Qualified Individual, risk assessment, access controls, encryption, MFA, monitoring, disposal, incident response, annual board report |
+| **FERPA Disclosure Framework** | Disclosure-basis enforcement for 99.31(a)(1) legitimate interest, (a)(6) studies, and (a)(11) directory information; Bronze→Silver identity resolution; per-row FERPA flag model (embedded as `meta.ferpa_flags` on all 14 education-record resources) and canonical enforcement views |
 | **Committee Charter** | Fillable charter template for Data Governance Council with membership roles, cadence, responsibilities, and success metrics |
 | **Data Sharing Agreement** | Template with FERPA/GLBA provisions, security requirements, breach notification, and audit rights |
 | **Schema Evolution Policy** | Versioning rules (MAJOR.MINOR.PATCH), backward compatibility guarantees, deprecation process, and institutional extension patterns |
@@ -205,7 +207,7 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (204 files)
+## Repository Structure (206 files)
 
 ```
 helix/
@@ -231,6 +233,8 @@ helix/
 |   +-- governance-committee-charter.json   <-- Council charter template
 |   +-- data-sharing-agreement-template.json <-- DSA with FERPA/GLBA
 |   +-- schema-evolution-policy.json   <-- Versioning + extension rules
+|   +-- glba-safeguards-framework.json <-- FTC Safeguards Rule (16 CFR 314)
+|   +-- ferpa-disclosure-framework.json <-- 99.31(a)(1)/(6)/(11) enforcement
 +-- bridge/
 |   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (40)
 |   |   +-- cs/                        <-- Campus Solutions / SIS (19)
@@ -314,5 +318,5 @@ The double helix is a fitting metaphor. Two strands — data and governance — 
 
 ---
 
-*HELIX v0.1.9 — September 2026*
+*HELIX v0.2.0 — September 2026*
 *Licensed under Apache 2.0*

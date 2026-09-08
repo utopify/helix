@@ -1,0 +1,134 @@
+{
+  "$schema": "https://helixedu.org/govern/glba-safeguards-framework-schema.json",
+  "title": "HELIX Govern: GLBA Safeguards Framework",
+  "description": "Operational framework aligning the FTC Safeguards Rule (16 CFR Part 314, revised rule fully effective June 2023) to a HELIX-conformant medallion lakehouse. GLBA applies to higher education institutions because participation in Title IV federal student aid makes them 'financial institutions' handling 'customer information'. This framework maps each of the nine required Safeguards Rule elements to concrete controls at the Bronze, Silver, and Gold layers.",
+  "version": "0.1",
+  "applicability": {
+    "why_higher_ed_is_covered": "Institutions that participate in Title IV student financial aid are treated as financial institutions under GLBA. The 2003 FTC guidance and the institution's Program Participation Agreement (PPA) with the U.S. Department of Education both obligate compliance with the Safeguards Rule.",
+    "covered_data": "GLBA-covered 'customer information' is nonpublic personal information about a student or family obtained in connection with a financial product or service (primarily financial aid). In HELIX this is the data classified 'restricted' on the FinAidAward resource and financial identifiers on Person.",
+    "covered_data_elements": [
+      "FAFSA / ISIR data",
+      "Student Aid Index (SAI, formerly EFC)",
+      "Family financial and income data from the FAFSA",
+      "Bank account and routing numbers",
+      "Tax return information used for aid verification",
+      "SSN when collected for aid processing",
+      "Loan and disbursement records"
+    ],
+    "helix_mapping": "GLBA-covered elements are the subset of the HELIX 'restricted' classification tier tied to financial aid. See govern/classification-handling-rules.json (restricted tier) and core/resources/fin_aid_award.json."
+  },
+  "qualified_individual": {
+    "requirement": "16 CFR 314.4(a) requires designation of a single Qualified Individual responsible for overseeing, implementing, and enforcing the information security program.",
+    "helix_role_mapping": "Maps to the Data Trustee for Financial Operations or a dedicated GLBA Coordinator/CISO. Record in govern/roles.json and the RACI matrix (activity: 'Enforce access controls (FERPA/GLBA)').",
+    "board_reporting": "The Qualified Individual must report in writing at least annually to a governing board or senior leadership on the state of the program, risks, and incidents. 16 CFR 314.4(i)."
+  },
+  "safeguards_rule_elements": [
+    {
+      "element": "(a) Qualified Individual",
+      "citation": "16 CFR 314.4(a)",
+      "control": "Designate and empower a single accountable owner. Document in roles.json.",
+      "lakehouse_layer": "governance (cross-cutting)"
+    },
+    {
+      "element": "(b) Written Risk Assessment",
+      "citation": "16 CFR 314.4(b)",
+      "control": "Maintain a written risk assessment covering confidentiality, integrity, and availability of customer information. Re-perform periodically and after material changes. Enumerate every system and store where GLBA-covered data lands, including bronze landing zones and any silver tables.",
+      "lakehouse_layer": "governance (cross-cutting); inventory must list bronze/silver locations of restricted financial-aid data"
+    },
+    {
+      "element": "(c)(1) Access Controls",
+      "citation": "16 CFR 314.4(c)(1)",
+      "control": "Named-individual authorization for GLBA-covered data (no broad role grants). Periodic access reviews. In the lakehouse, restrict the bronze financial-aid landing zone and any silver column carrying SAI/EFC or financial identifiers to an explicitly enumerated grant list.",
+      "lakehouse_layer": "bronze (financial-aid raw), silver (fin_aid_award restricted columns)"
+    },
+    {
+      "element": "(c)(2) Data Inventory",
+      "citation": "16 CFR 314.4(c)(2)",
+      "control": "Maintain an inventory of where GLBA data is collected, stored, and transmitted. The HELIX data dictionary (core/data-dictionary.json) plus the lakehouse resource-classification map serve as the inventory; tag every relevant field with glba=true.",
+      "lakehouse_layer": "governance; sourced from bronze + silver metadata"
+    },
+    {
+      "element": "(c)(3) Encryption",
+      "citation": "16 CFR 314.4(c)(3)",
+      "control": "Encrypt customer information at rest and in transit. At rest: AES-256 with a dedicated KMS key set separate from confidential-tier keys. In transit: TLS 1.2+ (1.3 preferred). Where encryption is infeasible, the Qualified Individual must approve a compensating control in writing.",
+      "lakehouse_layer": "bronze + silver + gold + all transport"
+    },
+    {
+      "element": "(c)(4) Secure Development",
+      "citation": "16 CFR 314.4(c)(4)",
+      "control": "Apply secure development practices to in-house apps and evaluate the security of externally developed apps that touch GLBA data. Includes the Bridge transform code and any ETL/dbt models handling financial-aid data.",
+      "lakehouse_layer": "silver (transform pipeline code)"
+    },
+    {
+      "element": "(c)(5) Multi-Factor Authentication",
+      "citation": "16 CFR 314.4(c)(5)",
+      "control": "MFA for any individual accessing customer information. Phishing-resistant MFA (hardware token, FIDO2) preferred for the financial-aid data store.",
+      "lakehouse_layer": "bronze + silver access paths"
+    },
+    {
+      "element": "(c)(6) Secure Disposal",
+      "citation": "16 CFR 314.4(c)(6)",
+      "control": "Dispose of customer information no later than two years after the last date it was used to serve the customer, unless retention is otherwise required. ISIR data: retain per federal rule (through the end of the award year plus the required period), then crypto-shred with a certificate of destruction across all copies including backups.",
+      "lakehouse_layer": "bronze (source of record) + silver + backups"
+    },
+    {
+      "element": "(c)(7) Change Management",
+      "citation": "16 CFR 314.4(c)(7)",
+      "control": "Assess security impact of changes to systems handling GLBA data. Tie into the HELIX schema-evolution policy (govern/schema-evolution-policy.json) for any change touching financial-aid resources.",
+      "lakehouse_layer": "governance; silver schema changes"
+    },
+    {
+      "element": "(c)(8) Monitoring & Logging of Authorized Users",
+      "citation": "16 CFR 314.4(c)(8)",
+      "control": "Log and monitor activity of authorized users and detect unauthorized access to customer information. Enhanced logging: capture query text (not just access metadata) for any read against restricted financial-aid data. Real-time alerting on anomalous access. Retain logs 7+ years.",
+      "lakehouse_layer": "bronze + silver (restricted reads)"
+    },
+    {
+      "element": "(d) Regular Testing & Monitoring",
+      "citation": "16 CFR 314.4(d)",
+      "control": "Either continuous monitoring, OR annual penetration testing plus vulnerability assessments at least every six months and after material changes.",
+      "lakehouse_layer": "governance; infrastructure"
+    },
+    {
+      "element": "(e) Policies, Procedures & Training",
+      "citation": "16 CFR 314.4(e)",
+      "control": "Security awareness training for all personnel and specialized training for those handling GLBA data (financial aid staff, data engineers on the aid pipeline). Track completion via the LearningRecord resource.",
+      "lakehouse_layer": "governance"
+    },
+    {
+      "element": "(f) Service Provider Oversight",
+      "citation": "16 CFR 314.4(f)",
+      "control": "Select and retain service providers capable of maintaining safeguards. Contractually require them to implement and maintain safeguards. Periodically assess them. Any vendor touching restricted financial-aid data needs a data sharing agreement with GLBA provisions (see govern/data-sharing-agreement-template.json).",
+      "lakehouse_layer": "governance; external"
+    },
+    {
+      "element": "(g) Keep the Program Current",
+      "citation": "16 CFR 314.4(g)",
+      "control": "Evaluate and adjust the information security program in light of testing results, material changes, and emerging threats.",
+      "lakehouse_layer": "governance"
+    },
+    {
+      "element": "(h) Written Incident Response Plan",
+      "citation": "16 CFR 314.4(h)",
+      "control": "Maintain a written incident response plan. Any unauthorized access to GLBA-covered data must be reported to the Qualified Individual and incident response team within 24 hours. Note the separate FTC breach-notification requirement: notify the FTC as soon as possible and no later than 30 days after discovery of a security event involving the unencrypted information of 500 or more consumers.",
+      "lakehouse_layer": "governance"
+    },
+    {
+      "element": "(i) Annual Board Report",
+      "citation": "16 CFR 314.4(i)",
+      "control": "The Qualified Individual reports in writing at least annually to the board or senior leadership on program status, risk assessment results, and incidents.",
+      "lakehouse_layer": "governance"
+    }
+  ],
+  "lakehouse_control_summary": {
+    "bronze": "Financial-aid raw landing zone encrypted with dedicated KMS keys, named-individual access only, every read logged with query text, immutable and append-only. Bank/routing numbers stay here and are never promoted.",
+    "silver": "fin_aid_award restricted columns (SAI/EFC, unmet need) tokenized or column-encrypted. Additional access grant required beyond standard FERPA authorization. Bank/routing numbers not present in silver.",
+    "gold": "Aggregated/de-identified aid metrics only. No individual GLBA-covered values in gold tables that feed dashboards."
+  },
+  "references": [
+    "16 CFR Part 314 (FTC Safeguards Rule, revised rule effective June 9, 2023)",
+    "Gramm-Leach-Bliley Act, 15 U.S.C. 6801-6809",
+    "U.S. Dept. of Education Program Participation Agreement (Title IV) GLBA provisions",
+    "Federal Student Aid cybersecurity compliance guidance (Dear Colleague Letters)"
+  ]
+}

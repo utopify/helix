@@ -58,7 +58,8 @@
         "directory_information": "Check FERPA restriction flags (HELIX Hold, type: ferpa) before any disclosure of directory information",
         "legitimate_educational_interest": "Document in role definitions which data each role needs and why",
         "annual_notification": "Institution must annually notify students of their FERPA rights",
-        "third_party_disclosure": "Requires written consent OR a FERPA exception (health/safety emergency, judicial order, financial aid audit, authorized research, etc.)"
+        "third_party_disclosure": "Requires written consent OR a FERPA exception (health/safety emergency, judicial order, financial aid audit, authorized research, etc.)",
+        "framework_reference": "See govern/ferpa-disclosure-framework.json for disclosure-basis enforcement (99.31(a)(1) legitimate interest, (a)(6) studies, (a)(11) directory) and Bronze->Silver identity resolution."
       }
     },
     {
@@ -82,7 +83,8 @@
       "glba_specific": {
         "safeguards_rule": "Designate a GLBA coordinator. Conduct annual risk assessment. Implement safeguards. Oversee service providers. Evaluate and adjust.",
         "service_providers": "Any third-party with access to restricted financial data must have a contract with GLBA safeguards provisions",
-        "ftc_rule": "FTC Safeguards Rule (16 CFR 314) requires documented information security program for customer financial information"
+        "ftc_rule": "FTC Safeguards Rule (16 CFR 314) requires documented information security program for customer financial information",
+        "framework_reference": "See govern/glba-safeguards-framework.json for the full FTC Safeguards Rule (16 CFR 314) mapping across all nine required elements and the Bronze/Silver/Gold control summary."
       }
     }
   ]
