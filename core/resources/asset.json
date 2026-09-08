@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/asset.json",
+  "title": "HELIX Asset Resource",
+  "description": "A capital asset \u2014 land, buildings, equipment, software. Carries acquisition cost, depreciation, location, custodian, and grant funding source.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Asset record."
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "description": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "asset_category": {
+      "type": "string",
+      "description": "Map: 'Land' \u2192 'land', 'Buildings' \u2192 'building', 'Equipment' \u2192 'equipment', 'Software' \u2192 'software', 'Vehicles' \u2192 'vehicle', 'Leasehold Improvements' \u2192 'leasehold', 'Library Collections' \u2192 'library', 'Construction in Progress' \u2192 'cip'."
+    },
+    "acquisition_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "acquisition_cost": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "useful_life_months": {
+      "type": "number",
+      "description": "Convert to months if in years."
+    },
+    "salvage_value": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "depreciation_method": {
+      "type": "string",
+      "description": "Map: 'Straight Line' \u2192 'straight_line', 'Declining Balance' \u2192 'declining_balance'."
+    },
+    "accumulated_depreciation": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "net_book_value": {
+      "type": "number",
+      "description": "acquisition_cost - accumulated_depreciation."
+    },
+    "location_building": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "location_room": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "custodian": {
+      "type": "string",
+      "description": "Resolve to name. Person responsible."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code. Equipment on grants \u2192 restricted fund."
+    },
+    "grant_ref": {
+      "type": "string",
+      "description": "If purchased on a grant, link to grant. Subject to federal disposition rules if federally funded."
+    },
+    "status": {
+      "type": "string",
+      "description": "Map: 'Active' \u2192 'in_service', 'Disposed' \u2192 'disposed', 'Under Construction' \u2192 'cip', 'Fully Depreciated' \u2192 'fully_depreciated'."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

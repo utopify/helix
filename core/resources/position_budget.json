@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/position_budget.json",
+  "title": "HELIX PositionBudget Resource",
+  "description": "A position budget \u2014 funded amount, actuals, variance, and split funding across funds/grants for a position and fiscal year. Captures higher-ed split-funding and backfill patterns.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this PositionBudget record."
+    },
+    "position_ref": {
+      "type": "string",
+      "description": "Link to HELIX position_id."
+    },
+    "fiscal_year": {
+      "type": "integer",
+      "description": "Direct map."
+    },
+    "budgeted_amount": {
+      "type": "number",
+      "description": "Total funded amount for this position/year."
+    },
+    "actual_spend": {
+      "type": "number",
+      "description": "Actual compensation + benefits cost."
+    },
+    "variance": {
+      "type": "number",
+      "description": "Positive = underspent, negative = overspent."
+    },
+    "funding_splits": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Array of {fund, cost_center, grant, percentage} objects. Sum of percentages = 100%."
+    },
+    "primary_fund": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "primary_cost_center": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "org_headcount_budget": {
+      "type": "integer",
+      "description": "Planned headcount for the org."
+    },
+    "org_headcount_actual": {
+      "type": "integer",
+      "description": "Current filled headcount."
+    },
+    "org_headcount_open": {
+      "type": "integer",
+      "description": "Unfilled positions."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

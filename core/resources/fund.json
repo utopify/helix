@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/fund.json",
+  "title": "HELIX Fund Resource",
+  "description": "A fund \u2014 the fund-accounting dimension (GASB for public institutions, FASB ASU 2016-14 restriction classes for private). Normalizes GASB and FASB conventions into one taxonomy.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Fund record."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Direct map. E.g., 'FD100'."
+    },
+    "fund_name": {
+      "type": "string",
+      "description": "Direct map. E.g., 'General Operating'."
+    },
+    "fund_category": {
+      "type": "string",
+      "description": "Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d"
+    },
+    "restriction_type": {
+      "type": "string",
+      "description": "Map: 'Without Donor Restrictions'\u2192'unrestricted', 'With Donor Restrictions'\u2192'restricted'. ASU 2016-14 terminology for FASB institutions. GASB institutions use fund-type-based restrictions."
+    },
+    "parent_fund": {
+      "type": "string",
+      "description": "Resolve parent fund ID for roll-up."
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Map."
+    },
+    "gasb_fund_type": {
+      "type": "string",
+      "description": "For public (GASB) institutions: 'current_unrestricted', 'current_restricted', 'loan', 'endowment', 'plant', 'agency'. Maps to GASB fund types for statement of net position."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

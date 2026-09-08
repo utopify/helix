@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/learning_record.json",
+  "title": "HELIX LearningRecord Resource",
+  "description": "A learning record \u2014 an employee's enrollment/completion of a training course (compliance, safety, professional development). Completion tracking is audit-sensitive for compliance training.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this LearningRecord record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "course_title": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "course_type": {
+      "type": "string",
+      "description": "Map: 'Compliance' \u2192 'compliance', 'Professional Development' \u2192 'professional_dev', 'Safety' \u2192 'safety', 'Onboarding' \u2192 'onboarding', 'Technical' \u2192 'technical', 'Leadership' \u2192 'leadership'."
+    },
+    "delivery_method": {
+      "type": "string",
+      "description": "Map: 'Online Self-Paced' \u2192 'online_async', 'Virtual Instructor-Led' \u2192 'online_sync', 'In Person' \u2192 'in_person', 'Blended' \u2192 'blended'."
+    },
+    "enrollment_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "completion_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601. Null if not completed."
+    },
+    "status": {
+      "type": "string",
+      "description": "Map: 'Enrolled' \u2192 'enrolled', 'In Progress' \u2192 'in_progress', 'Completed' \u2192 'completed', 'Waived' \u2192 'waived', 'Not Started' \u2192 'not_started'."
+    },
+    "score": {
+      "type": "number",
+      "description": "Direct map. Assessment score if applicable."
+    },
+    "required": {
+      "type": "boolean",
+      "description": "Boolean. Whether this is a mandatory assignment."
+    },
+    "due_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "For mandatory training: compliance deadline."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

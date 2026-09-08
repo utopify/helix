@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/budget.json",
+  "title": "HELIX Budget Resource",
+  "description": "A budget line \u2014 planned, encumbered, expended, and available amounts by account/fund/department for a fiscal year.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Budget record."
+    },
+    "budget_id": {
+      "type": "string",
+      "description": "Composite key."
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "fiscal_year": {
+      "type": "integer",
+      "description": "Direct map."
+    },
+    "account": {
+      "type": "string",
+      "description": "Map to HELIX account code."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "budget_amount": {
+      "type": "number",
+      "description": "Original budget + amendments."
+    },
+    "encumbered": {
+      "type": "number",
+      "description": "Sum of open commitments (POs, contracts)."
+    },
+    "expended": {
+      "type": "number",
+      "description": "Sum of posted actuals."
+    },
+    "available_balance": {
+      "type": "number",
+      "description": "budget_amount - encumbered - expended."
+    },
+    "budget_status": {
+      "type": "string",
+      "description": "Map: 'Draft'\u2192'draft', 'Approved'\u2192'open', 'Closed'\u2192'closed', 'Frozen'\u2192'frozen'."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

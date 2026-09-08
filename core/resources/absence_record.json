@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/absence_record.json",
+  "title": "HELIX AbsenceRecord Resource",
+  "description": "An absence / leave record \u2014 vacation, sick, FMLA, sabbatical, etc., with balances and FMLA tracking. FMLA medical certification stored separately with restricted access.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this AbsenceRecord record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "absence_type": {
+      "type": "string",
+      "description": "Map: 'Vacation' \u2192 'vacation', 'Sick' \u2192 'sick', 'Personal' \u2192 'personal', 'FMLA' \u2192 'fmla', 'Sabbatical' \u2192 'sabbatical', 'Bereavement' \u2192 'bereavement', 'Jury Duty' \u2192 'jury_duty', 'Military' \u2192 'military', 'Parental' \u2192 'parental', 'Workers Comp'"
+    },
+    "start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "hours_requested": {
+      "type": "number",
+      "description": "For day-level absences. Direct map."
+    },
+    "fmla_qualifying": {
+      "type": "boolean",
+      "description": "Boolean. Whether this leave counts against FMLA entitlement (12 weeks/year for eligible employees)."
+    },
+    "fmla_hours_used": {
+      "type": "number",
+      "description": "Running total of FMLA hours used in the 12-month measurement period."
+    },
+    "status": {
+      "type": "string",
+      "description": "Map: 'Requested' \u2192 'requested', 'Approved' \u2192 'approved', 'Denied' \u2192 'denied', 'In Progress' \u2192 'active', 'Returned' \u2192 'completed', 'Canceled' \u2192 'canceled'."
+    },
+    "balance_vacation": {
+      "type": "number",
+      "description": "Current available vacation hours."
+    },
+    "balance_sick": {
+      "type": "number",
+      "description": "Current available sick hours."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

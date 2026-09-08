@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/compensation.json",
+  "title": "HELIX Compensation Resource",
+  "description": "An employee compensation record \u2014 base pay, rate, grade/step, and compa-ratio. Restricted: individual pay data accessible only to HR and leadership.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Compensation record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "base_pay": {
+      "type": "number",
+      "description": "Annualized base salary or hourly rate \u00d7 standard hours."
+    },
+    "pay_rate": {
+      "type": "number",
+      "description": "The actual rate: salary amount or hourly rate."
+    },
+    "pay_rate_type": {
+      "type": "string",
+      "description": "Map: 'Salary' \u2192 'salary', 'Hourly' \u2192 'hourly'."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217. Direct map."
+    },
+    "compensation_grade": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "compensation_step": {
+      "type": "string",
+      "description": "Direct map if applicable. Null for non-step plans."
+    },
+    "grade_minimum": {
+      "type": "number",
+      "description": "Direct map. Bottom of the pay range."
+    },
+    "grade_midpoint": {
+      "type": "number",
+      "description": "Direct map. Market reference point."
+    },
+    "grade_maximum": {
+      "type": "number",
+      "description": "Direct map. Top of the pay range."
+    },
+    "compa_ratio": {
+      "type": "number",
+      "description": "Ratio of actual pay to midpoint. <1.0 = below market, >1.0 = above."
+    },
+    "effective_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601. The date this compensation became effective."
+    },
+    "change_reason": {
+      "type": "string",
+      "description": "Map: 'Hire' \u2192 'hire', 'Promotion' \u2192 'promotion', 'Merit Increase' \u2192 'merit', 'Market Adjustment' \u2192 'market', 'Transfer' \u2192 'transfer', 'Reclassification' \u2192 'reclass'."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "restricted"
+        }
+      }
+    }
+  }
+}

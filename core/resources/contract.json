@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/contract.json",
+  "title": "HELIX Contract Resource",
+  "description": "A supplier contract \u2014 blanket POs, rate contracts, service agreements. Carries term, value, spend-to-date, and owner.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Contract record."
+    },
+    "contract_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "contract_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "contract_type": {
+      "type": "string",
+      "description": "Map: 'Blanket PO' \u2192 'blanket', 'Rate Contract' \u2192 'rate', 'Service Agreement' \u2192 'service', 'Construction' \u2192 'construction', 'Consulting' \u2192 'consulting'."
+    },
+    "start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "total_value": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "amount_spent": {
+      "type": "number",
+      "description": "Sum of invoiced amounts linked to this contract."
+    },
+    "contract_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'Active' \u2192 'active', 'Expired' \u2192 'expired', 'Terminated' \u2192 'terminated', 'On Hold' \u2192 'on_hold'."
+    },
+    "owner": {
+      "type": "string",
+      "description": "Resolve to name. Procurement officer or department contact."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

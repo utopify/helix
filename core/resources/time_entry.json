@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/time_entry.json",
+  "title": "HELIX TimeEntry Resource",
+  "description": "A time entry \u2014 reported hours for a non-exempt employee or student worker, with worktag/chartfield distribution and approval status.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this TimeEntry record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "hours": {
+      "type": "number",
+      "description": "Direct map. Reported hours for this entry."
+    },
+    "time_type": {
+      "type": "string",
+      "description": "Map: 'Regular' \u2192 'regular', 'Overtime' \u2192 'overtime', 'Double Time' \u2192 'double_time', 'Holiday' \u2192 'holiday', 'On Call' \u2192 'on_call'."
+    },
+    "in_time": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Cast to ISO 8601 datetime. Null if no clock events."
+    },
+    "out_time": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Cast to ISO 8601 datetime."
+    },
+    "cost_center": {
+      "type": "string",
+      "description": "Map to HELIX org code. Where the labor cost is charged."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "grant_ref": {
+      "type": "string",
+      "description": "If time is charged to a grant (common for student research assistants)."
+    },
+    "approval_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Denied' \u2192 'denied'."
+    },
+    "approver": {
+      "type": "string",
+      "description": "Resolve to name. Typically the supervisory org manager."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

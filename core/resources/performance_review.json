@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/performance_review.json",
+  "title": "HELIX PerformanceReview Resource",
+  "description": "A performance review \u2014 rating, goals, and 9-box talent placement. Restricted: accessible only to the employee, their management chain, HR, and leadership.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this PerformanceReview record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "review_period_start": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "review_period_end": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "overall_rating": {
+      "type": "string",
+      "description": "Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'."
+    },
+    "numeric_rating": {
+      "type": "string",
+      "description": "Numeric equivalent if available (e.g., 1-5 scale)."
+    },
+    "reviewer": {
+      "type": "string",
+      "description": "Resolve to name. The reviewing manager."
+    },
+    "review_status": {
+      "type": "string",
+      "description": "Map: 'Not Started' \u2192 'not_started', 'In Progress' \u2192 'in_progress', 'Manager Review' \u2192 'manager_review', 'Completed' \u2192 'completed', 'Acknowledged' \u2192 'acknowledged'."
+    },
+    "goals_count": {
+      "type": "integer",
+      "description": "Number of goals."
+    },
+    "goals_achieved": {
+      "type": "integer",
+      "description": "Number of goals met."
+    },
+    "nine_box_performance": {
+      "type": "string",
+      "description": "Low/Medium/High on the performance axis."
+    },
+    "nine_box_potential": {
+      "type": "string",
+      "description": "Low/Medium/High on the potential axis."
+    },
+    "flight_risk": {
+      "type": "string",
+      "description": "Map: 'High' \u2192 'high', 'Medium' \u2192 'medium', 'Low' \u2192 'low'."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "restricted"
+        }
+      }
+    }
+  }
+}

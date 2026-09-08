@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/employee.json",
+  "title": "HELIX Employee Resource",
+  "description": "An employee / worker \u2014 the core HR identity. Links to a HELIX Person (a single human may be both Employee and Student). Carries hire/termination, worker type, FTE, FLSA, citizenship/visa, and contact info. SSN/national ID tokenized at silver.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Employee record."
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Direct map. Institution's employee number."
+    },
+    "person_ref": {
+      "type": "string",
+      "description": "Link to HELIX Person resource. May be the same person as a Student (student employees, GAs)."
+    },
+    "legal_name": {
+      "type": "object",
+      "description": "Legal Name (structured sub-object)."
+    },
+    "preferred_name": {
+      "type": "object",
+      "description": "Preferred Name (structured sub-object)."
+    },
+    "date_of_birth": {
+      "type": "string",
+      "description": "Cast to ISO 8601."
+    },
+    "gender": {
+      "type": "string",
+      "description": "Map to HELIX gender terminology."
+    },
+    "national_id": {
+      "type": "string",
+      "description": "Tokenize at silver layer. Display last 4 only."
+    },
+    "citizenship_status": {
+      "type": "string",
+      "description": "Map: 'Citizen' \u2192 'citizen', 'Permanent Resident' \u2192 'permanent_resident', 'Visa' \u2192 'visa_holder'."
+    },
+    "visa_type": {
+      "type": "string",
+      "description": "If non-citizen: H-1B, J-1, F-1/OPT, TN, etc."
+    },
+    "ethnicity": {
+      "type": "string",
+      "description": "Map to HELIX ethnicity terminology. IPEDS/EEO category."
+    },
+    "hire_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "original_hire_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "If rehire, the first-ever hire date. Important for benefits eligibility and seniority."
+    },
+    "continuous_service_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Date for service-based calculations (vacation accrual, retirement vesting)."
+    },
+    "termination_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Null if active. Cast to ISO 8601 if terminated."
+    },
+    "termination_reason": {
+      "type": "string",
+      "description": "Map: 'Voluntary - Resignation' \u2192 'resignation', 'Voluntary - Retirement' \u2192 'retirement', 'Involuntary - Termination' \u2192 'involuntary', 'End of Contract' \u2192 'contract_end', 'Deceased' \u2192 'deceased'."
+    },
+    "worker_type": {
+      "type": "string",
+      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+    },
+    "employee_type": {
+      "type": "string",
+      "description": "Higher ed specific: 'faculty_tenured', 'faculty_tenure_track', 'faculty_ntt', 'faculty_adjunct', 'staff_regular', 'staff_temp', 'student_worker', 'graduate_assistant', 'postdoc'."
+    },
+    "fte": {
+      "type": "number",
+      "description": "Normalize to 0.0-1.0. Full-time = 1.0."
+    },
+    "flsa_status": {
+      "type": "string",
+      "description": "Map: 'Exempt' \u2192 'exempt', 'Non-Exempt' \u2192 'non_exempt'."
+    },
+    "primary_work_email": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "primary_work_phone": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "home_address": {
+      "type": "string",
+      "description": "Map to HELIX address structure."
+    },
+    "employment_status": {
+      "type": "string",
+      "description": "Map: 'Active' \u2192 'active', 'Terminated' \u2192 'terminated', 'Leave of Absence' \u2192 'leave', 'Suspended' \u2192 'suspended', 'Retired' \u2192 'retired'."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

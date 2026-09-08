@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/requisition.json",
+  "title": "HELIX Requisition Resource",
+  "description": "A job requisition \u2014 a position opening in recruiting, with applicant pipeline, disposition, and EEO data. Candidate PII is confidential; EEO data kept separate from hiring decisions.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Requisition record."
+    },
+    "requisition_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "requisition_title": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "job_profile": {
+      "type": "string",
+      "description": "Direct map. The classification being recruited."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "hiring_manager": {
+      "type": "string",
+      "description": "Resolve to name."
+    },
+    "recruiter": {
+      "type": "string",
+      "description": "Resolve to name."
+    },
+    "target_start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "requisition_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Closed Not Filled' \u2192 'closed_unfilled', 'On Hold' \u2192 'on_hold', 'Canceled' \u2192 'canceled'."
+    },
+    "applicant_count": {
+      "type": "integer",
+      "description": "Total applicants."
+    },
+    "candidate_name": {
+      "type": "string",
+      "description": "Direct map. Sensitive \u2014 pre-hire data."
+    },
+    "application_stage": {
+      "type": "string",
+      "description": "Map to institution's recruiting pipeline stages."
+    },
+    "application_disposition": {
+      "type": "string",
+      "description": "Map: 'Hired' \u2192 'hired', 'Declined' \u2192 'declined', 'Withdrew' \u2192 'withdrew', 'Not Selected' \u2192 'rejected'."
+    },
+    "candidate_source": {
+      "type": "string",
+      "description": "Map: 'Job Board' \u2192 'job_board', 'Employee Referral' \u2192 'referral', 'Internal' \u2192 'internal', 'Agency' \u2192 'agency', 'Career Site' \u2192 'career_site'."
+    },
+    "eeo_category": {
+      "type": "string",
+      "description": "For affirmative action reporting."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

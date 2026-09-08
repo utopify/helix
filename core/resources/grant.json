@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/grant.json",
+  "title": "HELIX Grant Resource",
+  "description": "A sponsored program / grant award \u2014 the full lifecycle record for research and other externally funded awards. Carries sponsor, PI, CFDA, budget (direct/indirect), F&A rate, and cost sharing. Subject to 2 CFR 200 (Uniform Guidance) for federal awards.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Grant record."
+    },
+    "grant_id": {
+      "type": "string",
+      "description": "Direct map. Institution's internal grant number."
+    },
+    "grant_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "sponsor_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "sponsor_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "sponsor_type": {
+      "type": "string",
+      "description": "Map: 'Federal' \u2192 'federal', 'State' \u2192 'state', 'Private/Foundation' \u2192 'private', 'Industry' \u2192 'industry', 'Internal' \u2192 'internal'."
+    },
+    "sponsor_award_number": {
+      "type": "string",
+      "description": "The sponsor's reference number (e.g., NIH grant number, NSF award number)."
+    },
+    "cfda_number": {
+      "type": "string",
+      "description": "Catalog of Federal Domestic Assistance number. Required for federal awards. Direct map."
+    },
+    "principal_investigator": {
+      "type": "string",
+      "description": "Resolve to name. The faculty lead."
+    },
+    "project_start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "project_end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "total_award_amount": {
+      "type": "number",
+      "description": "Direct map. Total sponsor commitment."
+    },
+    "total_budget": {
+      "type": "number",
+      "description": "Sum of direct + indirect budgets across all periods."
+    },
+    "direct_costs_budget": {
+      "type": "number",
+      "description": "Sum of direct cost budget lines."
+    },
+    "indirect_costs_budget": {
+      "type": "number",
+      "description": "F&A/overhead. Calculated using the institution's negotiated IDC rate."
+    },
+    "idc_rate": {
+      "type": "number",
+      "description": "Negotiated F&A rate (e.g., 55.5% MTDC for on-campus organized research). May vary by activity type and location."
+    },
+    "cost_sharing_amount": {
+      "type": "number",
+      "description": "Institutional commitment (mandatory or voluntary cost sharing)."
+    },
+    "grant_status": {
+      "type": "string",
+      "description": "Map: 'Proposed' \u2192 'proposed', 'Awarded' \u2192 'active', 'Active' \u2192 'active', 'No-Cost Extension' \u2192 'nce', 'Closeout' \u2192 'closing', 'Closed' \u2192 'closed'."
+    },
+    "billing_type": {
+      "type": "string",
+      "description": "Map: 'Cost Reimbursable' \u2192 'cost_reimbursable', 'Fixed Price' \u2192 'fixed_price', 'LOC' \u2192 'letter_of_credit'."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code. Federal grants \u2192 restricted_federal, state \u2192 restricted_state, etc."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

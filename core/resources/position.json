@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/position.json",
+  "title": "HELIX Position Resource",
+  "description": "A position \u2014 the organizational 'seat' defined independently of who fills it. Carries job profile, supervisory org, compensation grade, EEO category, and funding source. Workday position-management model.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this Position record."
+    },
+    "position_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "position_title": {
+      "type": "string",
+      "description": "Position-specific title if overridden, otherwise from job profile."
+    },
+    "job_profile": {
+      "type": "string",
+      "description": "Workday Job Profile = PS Job Code. The classification template."
+    },
+    "job_family": {
+      "type": "string",
+      "description": "Grouping of related job profiles. E.g., 'Information Technology', 'Faculty - Arts & Sciences'."
+    },
+    "job_level": {
+      "type": "string",
+      "description": "Map to institutional level structure or HELIX level codes."
+    },
+    "management_level": {
+      "type": "string",
+      "description": "Map: 'Individual Contributor' \u2192 'individual', 'Manager' \u2192 'manager', 'Director' \u2192 'director', 'Vice President' \u2192 'vp', 'Executive' \u2192 'executive'."
+    },
+    "supervisory_org": {
+      "type": "string",
+      "description": "The org unit this position reports into."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "location": {
+      "type": "string",
+      "description": "Physical work location (campus, building)."
+    },
+    "compensation_grade": {
+      "type": "string",
+      "description": "Pay grade/band for this position."
+    },
+    "worker_type": {
+      "type": "string",
+      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+    },
+    "time_type": {
+      "type": "string",
+      "description": "Map: 'Full time' \u2192 'full_time', 'Part time' \u2192 'part_time'."
+    },
+    "position_status": {
+      "type": "string",
+      "description": "Map: 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Frozen' \u2192 'frozen', 'Closed' \u2192 'closed'."
+    },
+    "incumbent_ref": {
+      "type": "string",
+      "description": "Resolve to HELIX employee_id if position is filled."
+    },
+    "headcount": {
+      "type": "integer",
+      "description": "Number of workers that can fill this position (usually 1)."
+    },
+    "eeo_job_category": {
+      "type": "string",
+      "description": "Map to IPEDS EEO category for federal reporting. E.g., 'Executive/Admin/Managerial', 'Faculty', 'Professional', 'Clerical', 'Technical', 'Skilled Craft', 'Service/Maintenance'."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code. Faculty positions on grants \u2192 restricted fund."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

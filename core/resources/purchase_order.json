@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/purchase_order.json",
+  "title": "HELIX PurchaseOrder Resource",
+  "description": "A purchase order \u2014 a commitment to a supplier for goods or services. Carries lines, spend category, and worktag/chartfield distribution.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this PurchaseOrder record."
+    },
+    "po_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "po_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "po_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'In Progress' \u2192 'open', 'Fully Received' \u2192 'received', 'Closed' \u2192 'closed', 'Canceled' \u2192 'canceled'."
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "line_description": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "line_quantity": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "line_unit_price": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "line_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "spend_category": {
+      "type": "string",
+      "description": "Workday's commodity classification. Map to HELIX procurement category if defined."
+    },
+    "line_account": {
+      "type": "string",
+      "description": "Map to HELIX account code."
+    },
+    "line_fund": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "line_department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "requisition_ref": {
+      "type": "string",
+      "description": "Link back to originating requisition."
+    },
+    "contract_ref": {
+      "type": "string",
+      "description": "Link to supplier contract if this PO is under a blanket agreement."
+    },
+    "buyer": {
+      "type": "string",
+      "description": "Resolve to name/alias."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

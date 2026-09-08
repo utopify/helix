@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/financial_org.json",
+  "title": "HELIX FinancialOrg Resource",
+  "description": "A financial organization unit \u2014 the cost center / department in the financial dimension (Workday Cost Center, PeopleSoft DeptID). Distinct from AcademicOrg, though the two often align. Used for financial reporting and budget ownership.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this FinancialOrg record."
+    },
+    "org_code": {
+      "type": "string",
+      "description": "Direct map. E.g., 'CC-CS'."
+    },
+    "org_name": {
+      "type": "string",
+      "description": "Direct map. E.g., 'Computer Science'."
+    },
+    "org_type": {
+      "type": "string",
+      "description": "Top-level cost centers \u2192 'college'/'division', mid-level \u2192 'school', leaf \u2192 'department'."
+    },
+    "parent_org": {
+      "type": "string",
+      "description": "Resolve parent cost center ID."
+    },
+    "company": {
+      "type": "string",
+      "description": "The legal entity / campus this cost center belongs to."
+    },
+    "manager": {
+      "type": "string",
+      "description": "Resolve to name. Budget owner / department head."
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "Map: false \u2192 true (active), true \u2192 false (inactive)."
+    },
+    "fund_type": {
+      "type": "string",
+      "description": "Some institutions configure cost centers with a default fund type for budgeting."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

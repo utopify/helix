@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/ap_voucher.json",
+  "title": "HELIX APVoucher Resource",
+  "description": "An accounts payable voucher \u2014 a supplier invoice approved for payment. Carries vendor, invoice, amount, payment, and worktag/chartfield distribution.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this APVoucher record."
+    },
+    "voucher_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "vendor_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "Supplier's invoice number."
+    },
+    "invoice_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "gross_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "voucher_status": {
+      "type": "string",
+      "description": "Map: 'Draft'\u2192'pending', 'Awaiting Approval'\u2192'pending', 'Approved'\u2192'approved', 'Paid'\u2192'paid', 'Canceled'\u2192'void'."
+    },
+    "payment_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Map: 'Check'\u2192'check', 'ACH'\u2192'eft', 'Wire'\u2192'wire'."
+    },
+    "line_account": {
+      "type": "string",
+      "description": "Map to HELIX account code."
+    },
+    "line_fund": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "line_department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "line_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "spend_category": {
+      "type": "string",
+      "description": "Direct map. Workday-specific classification."
+    },
+    "po_reference": {
+      "type": "string",
+      "description": "Link to originating PO if three-way match."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

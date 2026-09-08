@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/gl_transaction.json",
+  "title": "HELIX GLTransaction Resource",
+  "description": "A general ledger journal transaction \u2014 the atomic unit of financial accounting. Carries account, fund, department, program, amount, and ledger coding. Maps from PeopleSoft chartfields and Workday worktags.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this GLTransaction record."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Composite key."
+    },
+    "business_unit": {
+      "type": "string",
+      "description": "Workday Company = organizational entity. Map to HELIX Institution or business unit."
+    },
+    "journal_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "journal_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "fiscal_year": {
+      "type": "integer",
+      "description": "Workday uses fiscal period calendars. Derive year from the fiscal period containing the accounting date."
+    },
+    "accounting_period": {
+      "type": "integer",
+      "description": "Workday fiscal periods are configurable. Standard: 12 monthly + adjustment periods."
+    },
+    "account": {
+      "type": "string",
+      "description": "Map Workday ledger account to HELIX account code via XREF. E.g., WD '6200 - Travel' \u2192 HELIX 'EXP-TRAVEL-DOM'."
+    },
+    "account_description": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "account_type": {
+      "type": "string",
+      "description": "Map: 'Asset'\u2192'asset', 'Liability'\u2192'liability', 'Equity'\u2192'equity', 'Revenue'\u2192'revenue', 'Expense'\u2192'expense'."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map Workday Fund worktag to HELIX fund category. E.g., WD 'FD100 - General Operating' \u2192 HELIX 'unrestricted_general'."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map Workday Cost Center to HELIX org code. E.g., WD 'CC-CS - Computer Science' \u2192 HELIX 'CS'."
+    },
+    "program_code": {
+      "type": "string",
+      "description": "Map Workday Revenue/Spend Category to HELIX functional classification. E.g., WD 'Instruction' \u2192 HELIX 'instruction'."
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Map Workday Grant/Project worktag to HELIX project ID."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Debit amounts positive, credit amounts negative. Or use Ledger_Debit_Amount / Ledger_Credit_Amount for ledger currency."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 code. Workday natively uses ISO currency codes."
+    },
+    "description": {
+      "type": "string",
+      "description": "Line-level memo, or journal-level description."
+    },
+    "journal_source": {
+      "type": "string",
+      "description": "Source of the journal: 'Manual', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Asset Accounting', etc."
+    },
+    "journal_status": {
+      "type": "string",
+      "description": "Map: 'Draft'\u2192'not_edited', 'Submitted'\u2192'valid', 'Approved'\u2192'valid', 'Posted'\u2192'posted', 'Reversed'\u2192'reversed'."
+    },
+    "ledger": {
+      "type": "string",
+      "description": "Direct map. Workday ledgers: 'Actuals', 'Budget', 'Encumbrance', etc."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}

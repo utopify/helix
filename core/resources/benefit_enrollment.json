@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/benefit_enrollment.json",
+  "title": "HELIX BenefitEnrollment Resource",
+  "description": "A benefit enrollment \u2014 an employee's election in a benefit plan (medical, dental, retirement, tuition waiver, etc.) with coverage level and contributions. Restricted; dependent PII tokenized.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this BenefitEnrollment record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "plan_type": {
+      "type": "string",
+      "description": "Map: 'Medical' \u2192 'medical', 'Dental' \u2192 'dental', 'Vision' \u2192 'vision', 'Life Insurance' \u2192 'life', 'Disability' \u2192 'disability', 'Retirement' \u2192 'retirement', 'FSA' \u2192 'fsa', 'HSA' \u2192 'hsa', 'Tuition Waiver' \u2192 'tuition_waiver'."
+    },
+    "coverage_level": {
+      "type": "string",
+      "description": "Map: 'Employee Only' \u2192 'employee', 'Employee + Spouse' \u2192 'employee_spouse', 'Employee + Children' \u2192 'employee_children', 'Family' \u2192 'family'."
+    },
+    "enrollment_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "termination_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Null if active. Cast to ISO 8601 if ended."
+    },
+    "employee_contribution": {
+      "type": "number",
+      "description": "Per-pay-period employee contribution."
+    },
+    "employer_contribution": {
+      "type": "number",
+      "description": "Per-pay-period employer contribution."
+    },
+    "retirement_contribution_pct": {
+      "type": "number",
+      "description": "Employee deferral percentage for 403(b), 457(b), state pension."
+    },
+    "employer_match_pct": {
+      "type": "number",
+      "description": "Employer matching percentage."
+    },
+    "dependent_count": {
+      "type": "integer",
+      "description": "Number of covered dependents."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "restricted"
+        }
+      }
+    }
+  }
+}

@@ -51,7 +51,7 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
   |   |                 |  |                 |  |               | |
   |   | The data model. |  | The API &       |  | The governance| |
   |   |                 |  | exchange        |  | framework.    | |
-  |   | 24 resources,   |  | standard.       |  |               | |
+  |   | 47 resources,   |  | standard.       |  |               | |
   |   | 23 terminology  |  |                 |  | Roles, rules, | |
   |   | code sets.      |  | 16 REST endpts, |  | quality, and  | |
   |   |                 |  | bulk export,    |  | maturity      | |
@@ -70,16 +70,16 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | 24 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
+| **HELIX Core** | 47 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
 | **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (40), Banner (13), Workday (42), Colleague (3) — 98 total | Implementation teams, system integrators |
 
 ---
 
-## HELIX Core: Resources (v0.1)
+## HELIX Core: Resources (v0.2)
 
-24 foundational resources across 7 domains:
+47 foundational resources across 9 domains:
 
 | Domain | Resources |
 |--------|-----------|
@@ -90,6 +90,8 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 | **Outcomes** | `Degree`, `DegreeAudit` |
 | **Student Services** | `Hold`, `FERPARestriction`, `InternationalStudent`, `StudentGroup` |
 | **Advancement** | `Constituent`, `Gift`, `Campaign`, `EngagementActivity` |
+| **Human Resources** | `Employee`, `Position`, `Compensation`, `BenefitEnrollment`, `PayrollResult`, `TimeEntry`, `Requisition`, `AbsenceRecord`, `PerformanceReview`, `JobClassification`, `LearningRecord`, `PositionBudget` |
+| **Financial Operations** | `GLTransaction`, `APVoucher`, `ARTransaction`, `Budget`, `PurchaseOrder`, `Grant`, `Asset`, `ExpenseReport`, `Contract`, `Fund`, `FinancialOrg` |
 
 Each resource includes a `meta` block with embedded governance: version, source system, data owner, and classification level.
 
@@ -207,14 +209,14 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (206 files)
+## Repository Structure (229 files)
 
 ```
 helix/
 +-- README.md                          <-- You are here
 +-- CONTRIBUTING.md                    <-- How to participate
 +-- core/
-|   +-- resources/                     <-- 24 JSON Schema resource definitions
+|   +-- resources/                     <-- 47 JSON Schema resource definitions
 |   +-- terminologies/                 <-- 23 standardized code sets
 |   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (34K words)
 |   +-- data-dictionary.json           <-- 537-entry structured data dictionary

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/ar_transaction.json",
+  "title": "HELIX ARTransaction Resource",
+  "description": "An accounts receivable / student financials transaction \u2014 a charge, payment, or refund on a student account. FERPA/GLBA-relevant when linked to a student and financial aid.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this ARTransaction record."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "Resolve customer to HELIX student_id. In Workday Student, Customer = Student record."
+    },
+    "transaction_type": {
+      "type": "string",
+      "description": "Map: Customer Invoice \u2192 'charge', Customer Payment \u2192 'payment', Customer Refund \u2192 'refund', Credit Memo \u2192 'adjustment'."
+    },
+    "charge_code": {
+      "type": "string",
+      "description": "Map Workday Revenue Category to HELIX charge code. E.g., 'Tuition - Undergraduate' \u2192 'tuition_ug'."
+    },
+    "description": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Charges positive, payments/refunds negative."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217. Direct map."
+    },
+    "transaction_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "due_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "term_ref": {
+      "type": "string",
+      "description": "Link to HELIX AcademicPeriod. Institutions typically code tuition charges to an academic period."
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Map: 'Check' \u2192 'check', 'ACH' \u2192 'eft', 'Credit Card' \u2192 'credit_card', 'Wire' \u2192 'wire', 'Financial Aid' \u2192 'fin_aid_disbursement'."
+    },
+    "invoice_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'Approved' \u2192 'open', 'Paid' \u2192 'paid', 'Partially Paid' \u2192 'partial', 'Canceled' \u2192 'void'."
+    },
+    "balance_due": {
+      "type": "number",
+      "description": "Direct map. Remaining balance after payments applied."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "third_party_ref": {
+      "type": "string",
+      "description": "If charge is covered by a third-party contract, reference the contract."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "confidential"
+        }
+      }
+    }
+  }
+}

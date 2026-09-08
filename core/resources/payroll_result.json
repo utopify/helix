@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/payroll_result.json",
+  "title": "HELIX PayrollResult Resource",
+  "description": "A payroll result \u2014 a processed pay statement for one pay period: gross, taxes, deductions, net, and labor distribution across funds/grants. Restricted; contains tax-linked data.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this PayrollResult record."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Link to HELIX employee_id."
+    },
+    "pay_period_start": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "pay_period_end": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "pay_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "gross_pay": {
+      "type": "number",
+      "description": "Direct map. Sum of all earnings."
+    },
+    "total_taxes": {
+      "type": "number",
+      "description": "Federal + state + local + FICA."
+    },
+    "total_deductions": {
+      "type": "number",
+      "description": "Benefits + retirement + garnishments + other pre/post-tax deductions."
+    },
+    "net_pay": {
+      "type": "number",
+      "description": "Gross - taxes - deductions."
+    },
+    "regular_earnings": {
+      "type": "number",
+      "description": "Base pay earnings for the period."
+    },
+    "overtime_earnings": {
+      "type": "number",
+      "description": "OT earnings (non-exempt employees only)."
+    },
+    "supplemental_earnings": {
+      "type": "number",
+      "description": "Additional earnings beyond regular pay."
+    },
+    "retirement_deduction": {
+      "type": "number",
+      "description": "403(b), 457(b), state pension employee contribution."
+    },
+    "benefit_deductions": {
+      "type": "number",
+      "description": "Employee benefit premium contributions."
+    },
+    "cost_center": {
+      "type": "string",
+      "description": "Map to HELIX org code. Where the labor cost is charged."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code. Grant-funded positions \u2192 restricted fund."
+    },
+    "grant_ref": {
+      "type": "string",
+      "description": "If labor is charged to a grant."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "restricted"
+        }
+      }
+    }
+  }
+}

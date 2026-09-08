@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/expense_report.json",
+  "title": "HELIX ExpenseReport Resource",
+  "description": "An employee expense report \u2014 travel and reimbursable expenses with line detail and worktag/chartfield distribution.",
+  "type": "object",
+  "required": [
+    "helix_id"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "description": "HELIX-assigned unique identifier for this ExpenseReport record."
+    },
+    "report_id": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "employee_ref": {
+      "type": "string",
+      "description": "Resolve to HELIX employee_id."
+    },
+    "report_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Direct map."
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "report_status": {
+      "type": "string",
+      "description": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Paid' \u2192 'paid', 'Returned' \u2192 'returned'."
+    },
+    "expense_type": {
+      "type": "string",
+      "description": "Map: 'Airfare' \u2192 'airfare', 'Hotel' \u2192 'lodging', 'Meals' \u2192 'meals', 'Mileage' \u2192 'mileage', 'Registration' \u2192 'registration', 'Ground Transportation' \u2192 'ground_transport', 'Other' \u2192 'other'."
+    },
+    "line_amount": {
+      "type": "number",
+      "description": "Direct map."
+    },
+    "line_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Cast to ISO 8601."
+    },
+    "account": {
+      "type": "string",
+      "description": "Map to HELIX account code."
+    },
+    "fund_code": {
+      "type": "string",
+      "description": "Map to HELIX fund code."
+    },
+    "department": {
+      "type": "string",
+      "description": "Map to HELIX org code."
+    },
+    "grant_ref": {
+      "type": "string",
+      "description": "If charged to a grant. Travel on federal grants subject to Fly America Act and per diem limits."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource.",
+      "properties": {
+        "version": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'peoplesoft', 'workday', 'banner')."
+        },
+        "data_owner": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "default": "internal"
+        }
+      }
+    }
+  }
+}
