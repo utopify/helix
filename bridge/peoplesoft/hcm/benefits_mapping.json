@@ -1,101 +1,95 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Benefits",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 BenefitEnrollment",
   "source_system": "peoplesoft",
   "module": "HCM - Benefits Administration",
-  "target_resource": "BenefitEnrollment (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "target_resource": "BenefitEnrollment",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_HEALTH_BENEFIT",
-      "description": "Health plan enrollment. Medical, dental, vision. Plan type, coverage code, effective date."
+      "object": "PS_HEALTH_BENEFIT",
+      "description": "Health plan enrollment: EMPLID, PLAN_TYPE, BENEFIT_PLAN, COVERAGE_BEGIN_DT, COVERAGE_END_DT, COVRG_CD (coverage code: EE, EE+SP, EE+CH, FAM)."
     },
     {
-      "table": "PS_LIFE_ADD_BEN",
-      "description": "Life and AD&D insurance enrollment."
+      "object": "PS_LIFE_ADD_BEN",
+      "description": "Life/AD&D insurance enrollment: PLAN_TYPE, BENEFIT_PLAN, FLAT_AMOUNT or COVERAGE_MULTIPLE."
     },
     {
-      "table": "PS_SAVINGS_PLAN",
-      "description": "Retirement/savings plan enrollment. 401(a), 403(b), 457, TIAA, state retirement."
+      "object": "PS_SAVINGS_PLAN",
+      "description": "Retirement/savings: PLAN_TYPE, BENEFIT_PLAN, SAVINGS_PCT (employee contrib %), EMPL_CONTRBN_PCT, ER_MATCH_PCT."
     },
     {
-      "table": "PS_FSA_BENEFIT",
-      "description": "Flexible spending account enrollment. Healthcare FSA, dependent care FSA."
+      "object": "PS_PENSION_PLAN",
+      "description": "Defined benefit pension: PLAN_TYPE, BENEFIT_PLAN, SERVICE_DT."
     },
     {
-      "table": "PS_BEN_PROG_PARTIC",
-      "description": "Benefit program participation. Links employee to benefit program and event."
+      "object": "PS_FSA_BENEFIT",
+      "description": "FSA/HSA enrollment: PLAN_TYPE, ANNUAL_PLEDGE."
     },
     {
-      "table": "PS_DEPENDENT_BENEF",
-      "description": "Dependent/beneficiary data for benefit elections."
+      "object": "PS_BENEF_PLAN_TBL",
+      "description": "Plan definitions: PLAN_TYPE, BENEFIT_PLAN, DESCR, PROVIDER."
+    },
+    {
+      "object": "PS_DEPENDENT_BENEF",
+      "description": "Dependent/beneficiary: DEPENDENT_BENEF, NAME, RELATIONSHIP, BIRTHDATE."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "employee_ref",
-      "source": "EMPLID + EMPL_RCD",
-      "transformation": "Resolve to HELIX Employee.helix_id."
+      "source": "PS_HEALTH_BENEFIT.EMPLID (or any benefit record)",
+      "transformation": "Resolve to HELIX employee_id."
     },
     {
-      "helix_attribute": "benefit_program",
-      "source": "PS_BEN_PROG_PARTIC.BENEFIT_PROGRAM",
-      "transformation": "Direct map. Groups of benefit plans offered together."
+      "helix_attribute": "plan_name",
+      "source": "PS_BENEF_PLAN_TBL.DESCR (joined on PLAN_TYPE + BENEFIT_PLAN)",
+      "transformation": "Human-readable plan name."
     },
     {
-      "helix_attribute": "health_plan_type",
+      "helix_attribute": "plan_type",
       "source": "PS_HEALTH_BENEFIT.PLAN_TYPE",
-      "transformation": "Map: '10'-'19'\u2192'medical', '20'-'29'\u2192'dental', '30'-'39'\u2192'vision'. PS uses numeric plan type ranges."
+      "transformation": "Map PS PLAN_TYPE codes: '1x' \u2192 'medical', '2x' \u2192 'dental', '3x' \u2192 'vision', '4x' \u2192 'life', '5x' \u2192 'disability', '6x' \u2192 'retirement', '7x' \u2192 'fsa'. Actual codes are institution-configurable."
     },
     {
-      "helix_attribute": "health_plan",
-      "source": "PS_HEALTH_BENEFIT.BENEFIT_PLAN",
-      "transformation": "Direct map. Specific plan code (e.g., 'PPO1', 'HDHP', 'HMO2')."
-    },
-    {
-      "helix_attribute": "health_coverage_code",
+      "helix_attribute": "coverage_level",
       "source": "PS_HEALTH_BENEFIT.COVRG_CD",
-      "transformation": "Map: '1'\u2192'employee_only', '2'\u2192'employee_spouse', '3'\u2192'employee_children', '4'\u2192'family'."
-    },
-    {
-      "helix_attribute": "retirement_plan",
-      "source": "PS_SAVINGS_PLAN.BENEFIT_PLAN",
-      "transformation": "Direct map (e.g., '403B_TIAA', 'STATE_RETIRE')."
-    },
-    {
-      "helix_attribute": "retirement_employee_pct",
-      "source": "PS_SAVINGS_PLAN.FLAT_DED_AMT or PCT",
-      "transformation": "Employee contribution rate or flat amount."
-    },
-    {
-      "helix_attribute": "retirement_employer_pct",
-      "source": "PS_SAVINGS_PLAN.EMPLR_PCT_MATCH",
-      "transformation": "Employer match percentage."
-    },
-    {
-      "helix_attribute": "life_coverage_amount",
-      "source": "PS_LIFE_ADD_BEN.FLAT_AMOUNT",
-      "transformation": "Life insurance coverage amount."
-    },
-    {
-      "helix_attribute": "fsa_annual_pledge",
-      "source": "PS_FSA_BENEFIT.ANNUAL_PLEDGE",
-      "transformation": "Annual FSA election amount."
+      "transformation": "Map: '1' \u2192 'employee', '2' \u2192 'employee_spouse', '3' \u2192 'employee_children', '4' \u2192 'family'."
     },
     {
       "helix_attribute": "enrollment_date",
-      "source": "PS_HEALTH_BENEFIT.EFFDT (or BEN_PROG_PARTIC.EFFDT)",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "coverage_begin_date",
       "source": "PS_HEALTH_BENEFIT.COVERAGE_BEGIN_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "dependents_covered",
-      "source": "PS_DEPENDENT_BENEF (count)",
-      "transformation": "Number of dependents enrolled on this plan."
+      "helix_attribute": "termination_date",
+      "source": "PS_HEALTH_BENEFIT.COVERAGE_END_DT",
+      "transformation": "Null if active."
+    },
+    {
+      "helix_attribute": "employee_contribution",
+      "source": "Derived from deduction tables (PS_DEDUCTION_TBL) or benefit cost tables",
+      "transformation": "Per-period employee premium. PS stores this in payroll deduction tables, not directly on the benefit enrollment."
+    },
+    {
+      "helix_attribute": "employer_contribution",
+      "source": "Derived from benefit cost tables",
+      "transformation": "Per-period employer cost."
+    },
+    {
+      "helix_attribute": "retirement_contribution_pct",
+      "source": "PS_SAVINGS_PLAN.SAVINGS_PCT",
+      "transformation": "Employee deferral % for 403(b)/457(b)/state pension."
+    },
+    {
+      "helix_attribute": "employer_match_pct",
+      "source": "PS_SAVINGS_PLAN.ER_MATCH_PCT or plan-level match table",
+      "transformation": "Employer matching %."
+    },
+    {
+      "helix_attribute": "dependent_count",
+      "source": "Count of PS_DEPENDENT_BENEF where COVERAGE_IND = 'Y'",
+      "transformation": "Number of covered dependents."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -108,5 +102,5 @@
       "transformation": "'restricted'"
     }
   ],
-  "notes": "PeopleSoft Benefits uses plan types (numeric ranges) to categorize benefit plans. Health (10-39), Life/AD&D (40-49), Disability (50-59), Savings/Retirement (60-69), FSA (70-79), other (80-99). Each employee has a benefit program assignment that controls which plans they can elect. Open enrollment creates new effective-dated rows."
+  "notes": "PS Benefits uses PLAN_TYPE as the primary classifier (10=Medical, 2x=Dental, etc. \u2014 institution-configurable). COVRG_CD drives the coverage level and premium. Dependent data is in PS_DEPENDENT_BENEF. Tuition waiver is often a separate PLAN_TYPE. 403(b) and state pension are in PS_SAVINGS_PLAN/PS_PENSION_PLAN."
 }

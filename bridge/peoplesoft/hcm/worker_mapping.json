@@ -1,0 +1,193 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Employee / Worker",
+  "source_system": "peoplesoft",
+  "module": "HCM - Core HR / Job Data",
+  "target_resource": "Employee",
+  "version": "0.2",
+  "architecture_notes": "PeopleSoft HCM stores employee data across PS_JOB (the master employment record, effective-dated with ACTION/ACTION_REASON), PS_PERSONAL_DATA (person identity), PS_EMPLOYMENT (hire/termination dates), and PS_NAMES/PS_ADDRESSES/PS_EMAIL_ADDRESSES (contact info). Every change to an employee's job is an effective-dated row in PS_JOB with an ACTION code (HIR=hire, PRO=promotion, XFR=transfer, TER=termination, DTA=data change, etc.). EMPLID is the universal person key.",
+  "source_objects": [
+    {
+      "object": "PS_JOB",
+      "description": "Master employment record: EMPLID, EMPL_RCD, EFFDT, EFFSEQ, ACTION, ACTION_REASON, DEPTID, JOBCODE, POSITION_NBR, LOCATION, COMPANY, EMPL_STATUS (A=active, T=terminated, L=leave, S=suspended, R=retired, D=deceased), REG_TEMP (R=regular, T=temp), FULL_PART_TIME (F/P), FTE, STD_HOURS, FLSA_STATUS (E=exempt, N=non-exempt), SAL_ADMIN_PLAN, GRADE, STEP, REPORTS_TO, UNION_CD, EMPL_CLASS. Effective-dated \u2014 multiple rows per employee."
+    },
+    {
+      "object": "PS_PERSONAL_DATA",
+      "description": "Person identity: EMPLID, NAME, FIRST_NAME, LAST_NAME, MIDDLE_NAME, NAME_PREFIX, NAME_SUFFIX, SEX (M/F/U/O), BIRTHDATE, MAR_STATUS, NID_COUNTRY + NATIONAL_ID (SSN for US), CITIZENSHIP_STATUS, ETHNIC_GRP_CD."
+    },
+    {
+      "object": "PS_EMPLOYMENT",
+      "description": "Employment dates: EMPLID, EMPL_RCD, HIRE_DT, REHIRE_DT, TERMINATION_DT, LAST_DATE_WORKED, CMPNY_SENIORITY_DT (continuous service date), ORIG_HIRE_DT."
+    },
+    {
+      "object": "PS_NAMES",
+      "description": "Name history (effective-dated): EMPLID, NAME_TYPE (PRI=primary, PRF=preferred), EFFDT, FIRST_NAME, LAST_NAME, MIDDLE_NAME."
+    },
+    {
+      "object": "PS_ADDRESSES",
+      "description": "Addresses: EMPLID, ADDRESS_TYPE (HOME, MAIL, BUS), EFFDT, ADDRESS1-4, CITY, STATE, POSTAL, COUNTRY."
+    },
+    {
+      "object": "PS_EMAIL_ADDRESSES",
+      "description": "Email: EMPLID, E_ADDR_TYPE (BUS=business, HOME=home, CAMP=campus), EMAIL_ADDR, PREF_EMAIL_FLAG."
+    },
+    {
+      "object": "PS_PERSONAL_PHONE",
+      "description": "Phone: EMPLID, PHONE_TYPE (MAIN, BUSN, HOME, CELL), PHONE."
+    },
+    {
+      "object": "PS_PERS_NID",
+      "description": "National ID: EMPLID, NATIONAL_ID, NID_TYPE (PR=SSN). Restricted."
+    },
+    {
+      "object": "PS_VISA_PERMIT_DATA",
+      "description": "Visa/immigration: VISA_PERMIT_TYPE, VISA_DT, VISA_EXPIRE_DT, VISA_STATUS."
+    },
+    {
+      "object": "PS_ETHNIC_GRP_TBL",
+      "description": "Ethnicity code decode: ETHNIC_GRP_CD, DESCR. IPEDS/EEO categories."
+    },
+    {
+      "object": "PS_ACTION_TBL",
+      "description": "Action code decode: ACTION, DESCR. HIR, REH, PRO, XFR, TER, DTA, LOA, RFL, RET, etc."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_id",
+      "source": "PS_JOB.EMPLID",
+      "transformation": "Direct map. EMPLID is the universal PS person key (shared with Student in CS)."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "PS_JOB.EMPLID \u2192 HELIX Person cross-reference",
+      "transformation": "Resolve to HELIX person_id. Same EMPLID may appear in CS (as a student) and HCM (as an employee)."
+    },
+    {
+      "helix_attribute": "legal_name.first",
+      "source": "PS_NAMES.FIRST_NAME where NAME_TYPE='PRI' (max EFFDT)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.last",
+      "source": "PS_NAMES.LAST_NAME where NAME_TYPE='PRI' (max EFFDT)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "legal_name.middle",
+      "source": "PS_NAMES.MIDDLE_NAME where NAME_TYPE='PRI'",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "preferred_name.first",
+      "source": "PS_NAMES.FIRST_NAME where NAME_TYPE='PRF'",
+      "transformation": "Falls back to PRI if no PRF row."
+    },
+    {
+      "helix_attribute": "date_of_birth",
+      "source": "PS_PERSONAL_DATA.BIRTHDATE",
+      "transformation": "Cast to ISO 8601. Confidential."
+    },
+    {
+      "helix_attribute": "gender",
+      "source": "PS_PERSONAL_DATA.SEX",
+      "transformation": "Map: 'M' \u2192 'male', 'F' \u2192 'female', 'U' \u2192 'unknown', 'O' \u2192 'other'."
+    },
+    {
+      "helix_attribute": "national_id",
+      "source": "PS_PERS_NID.NATIONAL_ID where NID_TYPE='PR'",
+      "transformation": "SSN. Tokenize at silver. Restricted."
+    },
+    {
+      "helix_attribute": "citizenship_status",
+      "source": "PS_PERSONAL_DATA.CITIZENSHIP_STATUS",
+      "transformation": "Map: '1' \u2192 'citizen', '2' \u2192 'permanent_resident', '3' \u2192 'foreign_national'. Codes are institution-configurable."
+    },
+    {
+      "helix_attribute": "visa_type",
+      "source": "PS_VISA_PERMIT_DATA.VISA_PERMIT_TYPE",
+      "transformation": "Map: 'H1B' \u2192 'h1b', 'J1' \u2192 'j1', 'F1' \u2192 'f1', 'TN' \u2192 'tn', etc."
+    },
+    {
+      "helix_attribute": "ethnicity",
+      "source": "PS_PERSONAL_DATA.ETHNIC_GRP_CD \u2192 PS_ETHNIC_GRP_TBL.DESCR",
+      "transformation": "Map to HELIX ethnicity terminology. IPEDS/EEO categories."
+    },
+    {
+      "helix_attribute": "hire_date",
+      "source": "PS_EMPLOYMENT.HIRE_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "original_hire_date",
+      "source": "PS_EMPLOYMENT.ORIG_HIRE_DT",
+      "transformation": "First-ever hire date (if rehired)."
+    },
+    {
+      "helix_attribute": "continuous_service_date",
+      "source": "PS_EMPLOYMENT.CMPNY_SENIORITY_DT",
+      "transformation": "Date for service-based calculations."
+    },
+    {
+      "helix_attribute": "termination_date",
+      "source": "PS_EMPLOYMENT.TERMINATION_DT",
+      "transformation": "Null if active."
+    },
+    {
+      "helix_attribute": "termination_reason",
+      "source": "PS_JOB.ACTION_REASON where ACTION='TER'",
+      "transformation": "Map: 'RES' \u2192 'resignation', 'RET' \u2192 'retirement', 'INV' \u2192 'involuntary', 'DEC' \u2192 'deceased', 'COE' \u2192 'contract_end'."
+    },
+    {
+      "helix_attribute": "worker_type",
+      "source": "PS_JOB.REG_TEMP",
+      "transformation": "Map: 'R' \u2192 'employee', 'T' \u2192 'contingent'."
+    },
+    {
+      "helix_attribute": "employee_type",
+      "source": "PS_JOB.EMPL_CLASS or derived from JOBCODE + DEPTID",
+      "transformation": "Higher-ed types: 'FAC' \u2192 'faculty_tenured' (needs tenure flag), 'STF' \u2192 'staff_regular', 'TMP' \u2192 'staff_temp', 'STU' \u2192 'student_worker', 'GRA' \u2192 'graduate_assistant'."
+    },
+    {
+      "helix_attribute": "fte",
+      "source": "PS_JOB.FTE",
+      "transformation": "Direct map. 0.0-1.0."
+    },
+    {
+      "helix_attribute": "flsa_status",
+      "source": "PS_JOB.FLSA_STATUS",
+      "transformation": "Map: 'E' \u2192 'exempt', 'N' \u2192 'non_exempt'."
+    },
+    {
+      "helix_attribute": "primary_work_email",
+      "source": "PS_EMAIL_ADDRESSES where E_ADDR_TYPE='BUS' and PREF_EMAIL_FLAG='Y'",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "primary_work_phone",
+      "source": "PS_PERSONAL_PHONE where PHONE_TYPE='BUSN'",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "home_address",
+      "source": "PS_ADDRESSES where ADDRESS_TYPE='HOME' (max EFFDT)",
+      "transformation": "Map to HELIX address structure."
+    },
+    {
+      "helix_attribute": "employment_status",
+      "source": "PS_JOB.EMPL_STATUS (latest effective-dated row)",
+      "transformation": "Map: 'A' \u2192 'active', 'T' \u2192 'terminated', 'L' \u2192 'leave', 'S' \u2192 'suspended', 'R' \u2192 'retired', 'D' \u2192 'deceased'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ],
+  "notes": "PS_JOB is effective-dated with ACTION/EFFSEQ. Always get the current row: max EFFDT \u2264 today, max EFFSEQ within that EFFDT. EMPL_RCD handles concurrent jobs (0=primary, 1+=additional). The ACTION field on every row tells you WHY it exists (HIR, PRO, XFR, TER, DTA, PAY, etc.) \u2014 this is critical for reconstruction of employment history. EMPLID is shared between CS and HCM, so the same person may be both a student and an employee."
+}

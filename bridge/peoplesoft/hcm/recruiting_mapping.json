@@ -1,83 +1,102 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Recruiting",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 Requisition",
   "source_system": "peoplesoft",
-  "module": "HCM - Talent Acquisition Manager (TAM) / Recruiting",
-  "target_resource": "JobOpening (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "module": "HCM - Recruiting Solutions (TAM)",
+  "target_resource": "Requisition",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_HRS_JO_I",
-      "description": "Job opening. Requisition/posting. Position, department, hiring manager, status."
+      "object": "PS_HRS_JO_I / PS_HRS_JO_D",
+      "description": "Job opening: HRS_JOB_OPENING_ID, JOBCODE, DEPTID, POSITION_NBR, STATUS_CODE (010=draft, 020=open, 040=filled, 050=canceled), RECRUITER_ID, MANAGER_ID, DESIRED_START_DT."
     },
     {
-      "table": "PS_HRS_APP_I",
-      "description": "Applicant profile. Candidate information, resume, source."
+      "object": "PS_HRS_APP_I",
+      "description": "Applicant/application: HRS_PERSON_ID, HRS_JOB_OPENING_ID, STATUS_CODE, DISPOSITION."
     },
     {
-      "table": "PS_HRS_APP_JO_I",
-      "description": "Applicant-job opening link. Candidate's disposition per job opening."
+      "object": "PS_HRS_APPLICANT",
+      "description": "Applicant person: HRS_PERSON_ID, NAME, SOURCE (where they applied from)."
     },
     {
-      "table": "PS_HRS_JO_PST_I",
-      "description": "Job posting. Where the opening was posted (internal, external, job boards)."
+      "object": "PS_HRS_OFFER",
+      "description": "Offer: EMPLID, OFFER_DT, COMP_RATE, EXPECTED_START_DT, OFFER_STATUS."
+    },
+    {
+      "object": "PS_HRS_SOURCE_TBL",
+      "description": "Applicant source decode: SOURCE, DESCR (Job Board, Referral, Internal, Career Site)."
     }
   ],
   "attribute_mappings": [
     {
-      "helix_attribute": "job_opening_id",
+      "helix_attribute": "requisition_id",
       "source": "PS_HRS_JO_I.HRS_JOB_OPENING_ID",
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "position_ref",
-      "source": "PS_HRS_JO_I.POSITION_NBR",
-      "transformation": "Resolve to HELIX Position."
+      "helix_attribute": "requisition_title",
+      "source": "PS_HRS_JO_D.DESCR or PS_JOBCODE_TBL.DESCR (via JOBCODE)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "job_profile",
+      "source": "PS_HRS_JO_D.JOBCODE",
+      "transformation": "Map to HELIX job_classification."
     },
     {
       "helix_attribute": "department",
-      "source": "PS_HRS_JO_I.DEPTID",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "job_title",
-      "source": "PS_HRS_JO_I.DESCR or POSTING_TITLE",
-      "transformation": "Direct map."
+      "source": "PS_HRS_JO_D.DEPTID \u2192 PS_DEPT_TBL.DESCR",
+      "transformation": "Map to HELIX org code."
     },
     {
       "helix_attribute": "hiring_manager",
-      "source": "PS_HRS_JO_I.MANAGER_ID",
-      "transformation": "Resolve EMPLID to name."
+      "source": "PS_HRS_JO_D.MANAGER_ID \u2192 name",
+      "transformation": "Resolve to name."
     },
     {
-      "helix_attribute": "opening_date",
-      "source": "PS_HRS_JO_I.OPEN_DT",
+      "helix_attribute": "recruiter",
+      "source": "PS_HRS_JO_D.RECRUITER_ID \u2192 name",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "target_start_date",
+      "source": "PS_HRS_JO_D.DESIRED_START_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "target_fill_date",
-      "source": "PS_HRS_JO_I.TARGET_DT",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "close_date",
-      "source": "PS_HRS_JO_I.CLOSE_DT",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "status",
+      "helix_attribute": "requisition_status",
       "source": "PS_HRS_JO_I.STATUS_CODE",
-      "transformation": "Map: '010'\u2192'draft', '020'\u2192'open', '030'\u2192'filled', '040'\u2192'closed/cancelled'. Codes from STATUS_CODE table."
+      "transformation": "Map: '010' \u2192 'draft', '020' \u2192 'open', '030' \u2192 'on_hold', '040' \u2192 'filled', '050' \u2192 'canceled'."
     },
     {
       "helix_attribute": "applicant_count",
-      "source": "COUNT(PS_HRS_APP_JO_I) for this opening",
-      "transformation": "Derived."
+      "source": "Count of PS_HRS_APP_I for this opening",
+      "transformation": "Total applicants."
     },
     {
-      "helix_attribute": "posting_channels[]",
-      "source": "PS_HRS_JO_PST_I.HRS_SOURCE_TYPE",
-      "transformation": "Array of posting destinations."
+      "helix_attribute": "candidate_name",
+      "source": "PS_HRS_APPLICANT.NAME",
+      "transformation": "Confidential \u2014 pre-hire data."
+    },
+    {
+      "helix_attribute": "application_stage",
+      "source": "PS_HRS_APP_I.STATUS_CODE",
+      "transformation": "Map to recruiting pipeline stages."
+    },
+    {
+      "helix_attribute": "application_disposition",
+      "source": "PS_HRS_APP_I.DISPOSITION",
+      "transformation": "Map: 'HIR' \u2192 'hired', 'REJ' \u2192 'rejected', 'WDR' \u2192 'withdrew', 'DEC' \u2192 'declined'."
+    },
+    {
+      "helix_attribute": "candidate_source",
+      "source": "PS_HRS_APPLICANT.SOURCE \u2192 PS_HRS_SOURCE_TBL",
+      "transformation": "Map: 'JB' \u2192 'job_board', 'RF' \u2192 'referral', 'INT' \u2192 'internal', 'AG' \u2192 'agency', 'CS' \u2192 'career_site'."
+    },
+    {
+      "helix_attribute": "eeo_category",
+      "source": "PS_HRS_JO_D.EEO_JOB_GROUP or PS_JOBCODE_TBL.EEO_JOB_GROUP",
+      "transformation": "For affirmative action reporting."
     },
     {
       "helix_attribute": "meta.source_system",

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft Fund \u2192 Fund",
+  "source_system": "peoplesoft",
+  "module": "Financials - ChartField: Fund Code",
+  "target_resource": "Fund",
+  "version": "0.2",
+  "source_objects": [
+    {
+      "object": "PS_FUND_TBL",
+      "description": "Fund code table: SETID, FUND_CODE, EFFDT, DESCR, FUND_TYPE, EFF_STATUS. Effective-dated."
+    },
+    {
+      "object": "PSTREENODE (FUND tree)",
+      "description": "Fund hierarchy: parent-child for roll-up reporting (e.g., all restricted funds roll up to 'Restricted')."
+    },
+    {
+      "object": "PS_FUND_TYPE_TBL",
+      "description": "Fund type definitions: FUND_TYPE, DESCR. E.g., 'UR' = Unrestricted, 'RE' = Restricted, 'EN' = Endowment, 'PL' = Plant, 'AG' = Agency."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_FUND_TBL.FUND_CODE",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "PS_FUND_TBL.DESCR (max EFFDT)",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "fund_category",
+      "source": "PS_FUND_TBL.FUND_TYPE \u2192 PS_FUND_TYPE_TBL",
+      "transformation": "Map PS fund type to HELIX fund categories: 'UR' \u2192 'unrestricted_general', 'DG' \u2192 'unrestricted_designated', 'AX' \u2192 'auxiliary', 'RF' \u2192 'restricted_federal', 'RS' \u2192 'restricted_state', 'RP' \u2192 'restricted_private', 'ET' \u2192 'endowment_true', 'EQ' \u2192 'endowment_quasi', 'PU' \u2192 'plant_unexpended', 'PR' \u2192 'plant_renewal', 'PD' \u2192 'plant_debt', 'SA' \u2192 'student_aid', 'AG' \u2192 'agency'. Actual codes are institution-specific \u2014 this is the mapping pattern."
+    },
+    {
+      "helix_attribute": "restriction_type",
+      "source": "Derived from FUND_TYPE",
+      "transformation": "For GASB: fund type drives restriction. For FASB: 'Without Donor Restrictions' \u2192 'unrestricted', 'With Donor Restrictions' \u2192 'restricted'."
+    },
+    {
+      "helix_attribute": "parent_fund",
+      "source": "PSTREENODE.PARENT_NODE_NUM \u2192 FUND_CODE",
+      "transformation": "Resolve parent fund from the tree for roll-up."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_FUND_TBL.EFF_STATUS = 'A'",
+      "transformation": "Map: 'A' \u2192 true, 'I' \u2192 false."
+    },
+    {
+      "helix_attribute": "gasb_fund_type",
+      "source": "PS_FUND_TYPE_TBL.DESCR or derived",
+      "transformation": "For public (GASB) institutions: 'Current Unrestricted', 'Current Restricted', 'Loan', 'Endowment', 'Plant', 'Agency'. Maps to GASB fund types for Statement of Net Position."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "Fund accounting is the cornerstone of higher ed finance. PS_FUND_TBL is effective-dated \u2014 always join on max EFFDT. The FUND_TYPE codes are institution-configurable, so the mapping pattern matters more than the specific code values. Public (GASB) institutions report by fund type on the Statement of Net Position; private (FASB) institutions report by restriction class (with/without donor restrictions) per ASU 2016-14."
+}

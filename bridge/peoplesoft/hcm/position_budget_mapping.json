@@ -2,77 +2,87 @@
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
   "title": "HELIX Bridge: PeopleSoft HCM \u2192 PositionBudget",
   "source_system": "peoplesoft",
-  "module": "HCM - Position Management / Budget",
-  "target_resource": "PositionBudget (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "module": "HCM - Position Budgeting / Workforce Planning",
+  "target_resource": "PositionBudget",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_POSITION_DATA",
-      "description": "Position master (budget FTE, budget amount per position)."
+      "object": "PS_POSITION_DATA",
+      "description": "Position funding fields: POSITION_NBR, FTE, STD_HOURS, DEPTID, FUND_CODE, PROJECT_ID."
     },
     {
-      "table": "PS_POS_BUDGET",
-      "description": "Position budget. Funding source, chartfield allocation for each position."
+      "object": "PS_POS_BUDGET",
+      "description": "Position budget: POSITION_NBR, FISCAL_YEAR, BUDGET_AMT, ENCUM_AMT, EXPEND_AMT, AVAILABLE_BAL. Institution-specific \u2014 not all PS implementations use position budgeting."
     },
     {
-      "table": "PS_DEPT_BUDGET_ERN",
-      "description": "Department budget by earnings. Budget amounts by department, account, fund for compensation."
+      "object": "PS_POS_DIST",
+      "description": "Position funding distribution (split funding): POSITION_NBR, FUND_CODE, DEPTID, PROJECT_ID, DIST_PCT. One position may have multiple distributions summing to 100%."
     },
     {
-      "table": "PS_HP_POS_FUND_DTL",
-      "description": "Position funding detail (Higher Ed add-on). Funding splits across chartfields for a single position."
+      "object": "PS_JOB (incumbent join)",
+      "description": "Count incumbents in each position by joining PS_JOB on POSITION_NBR."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "position_ref",
-      "source": "PS_POS_BUDGET.POSITION_NBR",
-      "transformation": "Resolve to HELIX Position."
+      "source": "PS_POS_BUDGET.POSITION_NBR or PS_POSITION_DATA.POSITION_NBR",
+      "transformation": "Resolve to HELIX position_id."
     },
     {
       "helix_attribute": "fiscal_year",
-      "source": "PS_POS_BUDGET.FISCAL_YEAR or BUDGET_PERIOD",
+      "source": "PS_POS_BUDGET.FISCAL_YEAR",
       "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "budgeted_fte",
-      "source": "PS_POSITION_DATA.FTE",
-      "transformation": "Budgeted FTE for the position."
     },
     {
       "helix_attribute": "budgeted_amount",
       "source": "PS_POS_BUDGET.BUDGET_AMT",
-      "transformation": "Annual budgeted compensation for the position."
+      "transformation": "Funded amount."
     },
     {
-      "helix_attribute": "funding_sources[]",
-      "source": "PS_HP_POS_FUND_DTL or PS_POS_BUDGET (multiple rows)",
-      "transformation": "Array of funding splits: {fund_code, department, account, percent, amount}. A single position can be funded from multiple sources (e.g., 50% state funds, 30% grant, 20% auxiliary)."
+      "helix_attribute": "actual_spend",
+      "source": "PS_POS_BUDGET.EXPEND_AMT or derived from payroll actuals",
+      "transformation": "Actual compensation + benefits cost."
     },
     {
-      "helix_attribute": "encumbered_amount",
-      "source": "Derived from PS_LEDGER_KK (ENCUMB ledger for position's chartfield)",
-      "transformation": "Actual salary encumbrance against the position budget."
+      "helix_attribute": "variance",
+      "source": "Derived: BUDGET_AMT - EXPEND_AMT",
+      "transformation": "Positive = underspent."
     },
     {
-      "helix_attribute": "expended_amount",
-      "source": "Derived from PS_LEDGER (ACTUALS for position's chartfield)",
-      "transformation": "Actual salary expense to date."
+      "helix_attribute": "funding_splits",
+      "source": "PS_POS_DIST (all rows for this position)",
+      "transformation": "Array: {fund_code, deptid, project_id, dist_pct}."
     },
     {
-      "helix_attribute": "available_balance",
-      "source": "Derived",
-      "transformation": "budgeted_amount - encumbered_amount - expended_amount."
+      "helix_attribute": "primary_fund",
+      "source": "PS_POS_DIST where DIST_PCT is highest \u2192 FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
-      "helix_attribute": "position_status",
-      "source": "PS_POSITION_DATA.POSN_STATUS",
-      "transformation": "Map: 'A'\u2192'active/filled', 'V'\u2192'active/vacant', 'F'\u2192'frozen'."
+      "helix_attribute": "primary_cost_center",
+      "source": "PS_POS_DIST where DIST_PCT is highest \u2192 DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
-      "helix_attribute": "incumbent_count",
-      "source": "COUNT(PS_JOB where POSITION_NBR and active)",
-      "transformation": "Number of current incumbents."
+      "helix_attribute": "department",
+      "source": "PS_POSITION_DATA.DEPTID",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "org_headcount_budget",
+      "source": "Count of active positions in DEPTID from PS_POSITION_DATA",
+      "transformation": "Planned headcount."
+    },
+    {
+      "helix_attribute": "org_headcount_actual",
+      "source": "Count of filled positions (PS_JOB match) in DEPTID",
+      "transformation": "Current filled headcount."
+    },
+    {
+      "helix_attribute": "org_headcount_open",
+      "source": "org_headcount_budget - org_headcount_actual",
+      "transformation": "Unfilled positions."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -84,6 +94,5 @@
       "source": "Constant",
       "transformation": "'internal'"
     }
-  ],
-  "notes": "Position budgeting bridges HCM and Financials. Higher ed institutions with position management use it to control headcount and compensation spending. Split funding (one position funded from multiple chartfields) is extremely common \u2014 a professor might be 60% state-funded instruction, 30% grant-funded research, 10% department service. The PS_HP_POS_FUND_DTL table (Higher Ed add-on) handles these splits."
+  ]
 }

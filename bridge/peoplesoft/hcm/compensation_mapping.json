@@ -3,101 +3,91 @@
   "title": "HELIX Bridge: PeopleSoft HCM \u2192 Compensation",
   "source_system": "peoplesoft",
   "module": "HCM - Compensation",
-  "target_resource": "Compensation (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "target_resource": "Compensation",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_COMPENSATION",
-      "description": "Compensation detail. One or more comp rows per job row. Rate, frequency, plan, grade, step."
+      "object": "PS_COMPENSATION",
+      "description": "Compensation detail: EMPLID, COMP_RATECD, COMPRATE, COMP_FREQUENCY, CHANGE_AMT, CHANGE_PCT. Effective-dated."
     },
     {
-      "table": "PS_JOB",
-      "description": "Job record (for annual rate, comp frequency, and effective dating)."
+      "object": "PS_JOB",
+      "description": "SAL_ADMIN_PLAN, GRADE, STEP, ANNUAL_RT, HOURLY_RT, COMPRATE, COMP_FREQUENCY, CHANGE_AMT."
     },
     {
-      "table": "PS_SAL_PLAN_TBL",
-      "description": "Salary plan definitions. Pay structures and ranges."
+      "object": "PS_SAL_GRADE_TBL",
+      "description": "Grade range: MIN_RT_ANNUAL, MID_RT_ANNUAL, MAX_RT_ANNUAL."
     },
     {
-      "table": "PS_SAL_GRADE_TBL",
-      "description": "Salary grade table. Min/mid/max for each grade within a plan."
+      "object": "PS_SAL_STEP_TBL",
+      "description": "Step within grade: STEP, STEP_RT (for step-based plans)."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "employee_ref",
-      "source": "PS_JOB.EMPLID + EMPL_RCD",
-      "transformation": "Resolve to HELIX Employee.helix_id."
+      "source": "PS_JOB.EMPLID",
+      "transformation": "Resolve to HELIX employee_id."
     },
     {
-      "helix_attribute": "annual_rate",
+      "helix_attribute": "base_pay",
       "source": "PS_JOB.ANNUAL_RT",
-      "transformation": "Direct map. Annualized salary/wage."
+      "transformation": "Annualized base. For hourly: HOURLY_RT \u00d7 STD_HOURS \u00d7 52."
     },
     {
-      "helix_attribute": "comp_frequency",
+      "helix_attribute": "pay_rate",
+      "source": "PS_JOB.COMPRATE",
+      "transformation": "The actual rate (annual salary or hourly rate)."
+    },
+    {
+      "helix_attribute": "pay_rate_type",
       "source": "PS_JOB.COMP_FREQUENCY",
-      "transformation": "Map: 'A'\u2192'annual', 'M'\u2192'monthly', 'B'\u2192'biweekly', 'H'\u2192'hourly', 'W'\u2192'weekly'."
-    },
-    {
-      "helix_attribute": "hourly_rate",
-      "source": "PS_JOB.HOURLY_RT",
-      "transformation": "Direct map. Calculated from annual rate and standard hours."
-    },
-    {
-      "helix_attribute": "comp_rate",
-      "source": "PS_COMPENSATION.COMP_RATE",
-      "transformation": "Rate for this specific compensation component."
-    },
-    {
-      "helix_attribute": "comp_rate_type",
-      "source": "PS_COMPENSATION.COMP_RATECD",
-      "transformation": "Rate code (e.g., 'BASE', 'ADMIN', 'SHIFT', 'STIPEND'). Institution-defined."
-    },
-    {
-      "helix_attribute": "salary_plan",
-      "source": "PS_JOB.SAL_ADMIN_PLAN",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "pay_grade",
-      "source": "PS_JOB.GRADE",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "step",
-      "source": "PS_JOB.STEP",
-      "transformation": "Direct map. Step within grade (if step-based pay)."
-    },
-    {
-      "helix_attribute": "grade_min",
-      "source": "PS_SAL_GRADE_TBL.MIN_RT_ANNUAL",
-      "transformation": "Minimum of salary range for this grade."
-    },
-    {
-      "helix_attribute": "grade_mid",
-      "source": "PS_SAL_GRADE_TBL.MID_RT_ANNUAL",
-      "transformation": "Midpoint."
-    },
-    {
-      "helix_attribute": "grade_max",
-      "source": "PS_SAL_GRADE_TBL.MAX_RT_ANNUAL",
-      "transformation": "Maximum."
-    },
-    {
-      "helix_attribute": "compa_ratio",
-      "source": "Derived",
-      "transformation": "annual_rate / grade_mid. Indicates position within salary range."
-    },
-    {
-      "helix_attribute": "effective_date",
-      "source": "PS_JOB.EFFDT",
-      "transformation": "Cast to ISO 8601."
+      "transformation": "Map: 'A' \u2192 'salary', 'H' \u2192 'hourly', 'M' \u2192 'salary', 'B' \u2192 'salary'."
     },
     {
       "helix_attribute": "currency",
-      "source": "PS_JOB.CURRENCY_CD",
+      "source": "PS_JOB.CURRENCY_CD or PS_BUS_UNIT_TBL_HR.CURRENCY_CD",
       "transformation": "ISO 4217."
+    },
+    {
+      "helix_attribute": "compensation_grade",
+      "source": "PS_JOB.SAL_ADMIN_PLAN + '/' + GRADE",
+      "transformation": "Composite."
+    },
+    {
+      "helix_attribute": "compensation_step",
+      "source": "PS_JOB.STEP",
+      "transformation": "Null if not step-based."
+    },
+    {
+      "helix_attribute": "grade_minimum",
+      "source": "PS_SAL_GRADE_TBL.MIN_RT_ANNUAL",
+      "transformation": "Bottom of range."
+    },
+    {
+      "helix_attribute": "grade_midpoint",
+      "source": "PS_SAL_GRADE_TBL.MID_RT_ANNUAL",
+      "transformation": "Market reference."
+    },
+    {
+      "helix_attribute": "grade_maximum",
+      "source": "PS_SAL_GRADE_TBL.MAX_RT_ANNUAL",
+      "transformation": "Top of range."
+    },
+    {
+      "helix_attribute": "compa_ratio",
+      "source": "Derived: ANNUAL_RT / MID_RT_ANNUAL",
+      "transformation": "Ratio of actual to midpoint."
+    },
+    {
+      "helix_attribute": "effective_date",
+      "source": "PS_JOB.EFFDT (compensation change row)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "change_reason",
+      "source": "PS_JOB.ACTION + ACTION_REASON",
+      "transformation": "Map: HIR \u2192 'hire', PRO \u2192 'promotion', MER \u2192 'merit', PAY \u2192 'market', XFR \u2192 'transfer', RCL \u2192 'reclass'."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -109,5 +99,6 @@
       "source": "Constant",
       "transformation": "'restricted'"
     }
-  ]
+  ],
+  "notes": "PS compensation lives on PS_JOB (the primary rate) and PS_COMPENSATION (component breakdown). COMP_FREQUENCY determines annualization: 'A'=annual, 'H'=hourly, 'M'=monthly, 'B'=biweekly. For faculty on 9-month contracts, the ANNUAL_RT may be the 9-month amount \u2014 check the institution's pay distribution setup."
 }

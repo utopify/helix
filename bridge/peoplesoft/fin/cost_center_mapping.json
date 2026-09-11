@@ -1,0 +1,75 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft Department / Cost Center \u2192 FinancialOrg",
+  "source_system": "peoplesoft",
+  "module": "Financials - ChartField: Department",
+  "target_resource": "AcademicOrg / FinancialOrg",
+  "version": "0.2",
+  "source_objects": [
+    {
+      "object": "PS_DEPT_TBL",
+      "description": "Department table: SETID, DEPTID, EFFDT, DESCR, MANAGER_ID, BUDGET_DEPTID, COMPANY, EFF_STATUS. Effective-dated."
+    },
+    {
+      "object": "PSTREENODE (DEPT_SECURITY tree)",
+      "description": "Department hierarchy: parent-child relationships for roll-up reporting. Tree name varies by institution (commonly 'DEPT_SECURITY' or institution-specific)."
+    },
+    {
+      "object": "PS_COMPANY_TBL",
+      "description": "Company / legal entity: COMPANY, DESCR. Top-level organizational entity (campus, school, affiliated entity)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "org_code",
+      "source": "PS_DEPT_TBL.DEPTID",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "org_name",
+      "source": "PS_DEPT_TBL.DESCR (max EFFDT \u2264 current date)",
+      "transformation": "Direct map. Effective-dated \u2014 use latest active row."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "Derived from tree level",
+      "transformation": "Top-level nodes \u2192 'college'/'division', mid-level \u2192 'school', leaf \u2192 'department'."
+    },
+    {
+      "helix_attribute": "parent_org",
+      "source": "PSTREENODE.PARENT_NODE_NUM \u2192 DEPTID",
+      "transformation": "Resolve parent department from the tree."
+    },
+    {
+      "helix_attribute": "company",
+      "source": "PS_DEPT_TBL.COMPANY \u2192 PS_COMPANY_TBL.DESCR",
+      "transformation": "The legal entity / campus this department belongs to."
+    },
+    {
+      "helix_attribute": "manager",
+      "source": "PS_DEPT_TBL.MANAGER_ID \u2192 PS_PERSONAL_DATA.NAME",
+      "transformation": "Resolve to name. Department head / budget owner."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "PS_DEPT_TBL.EFF_STATUS = 'A'",
+      "transformation": "Map: 'A' \u2192 true, 'I' \u2192 false."
+    },
+    {
+      "helix_attribute": "fund_type",
+      "source": "PS_DEPT_TBL.BUDGET_DEPTID or derived from default fund on the dept",
+      "transformation": "Some institutions configure a default fund type per department for budgeting."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'internal'"
+    }
+  ],
+  "notes": "PS departments are effective-dated \u2014 always join on max EFFDT \u2264 target date. The tree structure (PSTREENODE) is how PS does hierarchies; the tree name and SETID must be known to query it correctly. BUDGET_DEPTID may differ from DEPTID if the institution uses a separate budget department structure."
+}

@@ -3,16 +3,28 @@
   "title": "HELIX Bridge: PeopleSoft HCM \u2192 Position",
   "source_system": "peoplesoft",
   "module": "HCM - Position Management",
-  "target_resource": "Position (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "target_resource": "Position",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_POSITION_DATA",
-      "description": "Position master. Position number, title, department, reports-to, FTE, status. Effective-dated."
+      "object": "PS_POSITION_DATA",
+      "description": "Position master: POSITION_NBR, DESCR, JOBCODE, DEPTID, LOCATION, SAL_ADMIN_PLAN, GRADE, REG_TEMP, FULL_PART_TIME, FTE, REPORTS_TO, MAX_HEAD_COUNT, POSN_STATUS (A/I/F), EFFDT."
     },
     {
-      "table": "PS_POS_DATA_EFFDT",
-      "description": "Position effective date control."
+      "object": "PS_JOBCODE_TBL",
+      "description": "Job code table: JOBCODE, DESCR, JOB_FAMILY, JOB_FUNCTION, SAL_ADMIN_PLAN, GRADE, EEO_JOB_GROUP, FLSA_STATUS."
+    },
+    {
+      "object": "PS_SAL_GRADE_TBL",
+      "description": "Salary grade: SAL_ADMIN_PLAN, GRADE, MIN_RT_ANNUAL, MID_RT_ANNUAL, MAX_RT_ANNUAL."
+    },
+    {
+      "object": "PS_DEPT_TBL",
+      "description": "Department: DEPTID, DESCR, MANAGER_ID."
+    },
+    {
+      "object": "PS_LOCATION_TBL",
+      "description": "Work location: LOCATION, DESCR, BUILDING, CAMPUS."
     }
   ],
   "attribute_mappings": [
@@ -22,59 +34,84 @@
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "title",
-      "source": "PS_POSITION_DATA.DESCR",
-      "transformation": "Position title."
+      "helix_attribute": "position_title",
+      "source": "PS_POSITION_DATA.DESCR or PS_JOBCODE_TBL.DESCR",
+      "transformation": "Position-specific title if populated, otherwise from job code."
+    },
+    {
+      "helix_attribute": "job_profile",
+      "source": "PS_POSITION_DATA.JOBCODE \u2192 PS_JOBCODE_TBL",
+      "transformation": "PS JOBCODE = Workday Job Profile. The classification template."
+    },
+    {
+      "helix_attribute": "job_family",
+      "source": "PS_JOBCODE_TBL.JOB_FAMILY",
+      "transformation": "Grouping of related job codes."
+    },
+    {
+      "helix_attribute": "job_level",
+      "source": "PS_JOBCODE_TBL.GRADE or derived from SAL_ADMIN_PLAN + GRADE",
+      "transformation": "Map to institutional level structure."
+    },
+    {
+      "helix_attribute": "management_level",
+      "source": "PS_JOBCODE_TBL.MANAGER_LEVEL or derived",
+      "transformation": "Map: individual contributor, manager, director, VP, executive."
+    },
+    {
+      "helix_attribute": "supervisory_org",
+      "source": "PS_POSITION_DATA.DEPTID (PS uses dept as the reporting unit)",
+      "transformation": "PS doesn't have supervisory orgs like Workday. DEPTID is the closest equivalent."
     },
     {
       "helix_attribute": "department",
-      "source": "PS_POSITION_DATA.DEPTID",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "job_code",
-      "source": "PS_POSITION_DATA.JOBCODE",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "reports_to_position",
-      "source": "PS_POSITION_DATA.REPORTS_TO",
-      "transformation": "Position number this position reports to."
+      "source": "PS_POSITION_DATA.DEPTID \u2192 PS_DEPT_TBL.DESCR",
+      "transformation": "Map to HELIX org code."
     },
     {
       "helix_attribute": "location",
-      "source": "PS_POSITION_DATA.LOCATION",
-      "transformation": "Direct map."
+      "source": "PS_POSITION_DATA.LOCATION \u2192 PS_LOCATION_TBL.DESCR",
+      "transformation": "Physical work location."
     },
     {
-      "helix_attribute": "fte",
-      "source": "PS_POSITION_DATA.FTE",
-      "transformation": "Budgeted FTE for the position."
+      "helix_attribute": "compensation_grade",
+      "source": "PS_POSITION_DATA.SAL_ADMIN_PLAN + GRADE",
+      "transformation": "Composite: salary plan + grade. E.g., 'STF/12'."
     },
     {
-      "helix_attribute": "max_head_count",
-      "source": "PS_POSITION_DATA.MAX_HEAD_COUNT",
-      "transformation": "Maximum number of incumbents."
+      "helix_attribute": "worker_type",
+      "source": "PS_POSITION_DATA.REG_TEMP",
+      "transformation": "Map: 'R' \u2192 'employee', 'T' \u2192 'contingent'."
+    },
+    {
+      "helix_attribute": "time_type",
+      "source": "PS_POSITION_DATA.FULL_PART_TIME",
+      "transformation": "Map: 'F' \u2192 'full_time', 'P' \u2192 'part_time'."
     },
     {
       "helix_attribute": "position_status",
       "source": "PS_POSITION_DATA.POSN_STATUS",
-      "transformation": "Map: 'A'\u2192'active', 'I'\u2192'inactive', 'F'\u2192'frozen'."
+      "transformation": "Map: 'A' \u2192 'open' or 'filled' (check incumbent), 'I' \u2192 'closed', 'F' \u2192 'frozen'."
     },
     {
-      "helix_attribute": "salary_plan",
-      "source": "PS_POSITION_DATA.SAL_ADMIN_PLAN",
-      "transformation": "Salary administration plan (pay grade structure)."
+      "helix_attribute": "incumbent_ref",
+      "source": "PS_JOB.EMPLID where POSITION_NBR matches (current effective row)",
+      "transformation": "Resolve to HELIX employee_id."
     },
     {
-      "helix_attribute": "pay_grade",
-      "source": "PS_POSITION_DATA.GRADE",
+      "helix_attribute": "headcount",
+      "source": "PS_POSITION_DATA.MAX_HEAD_COUNT",
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "effective_date",
-      "source": "PS_POSITION_DATA.EFFDT",
-      "transformation": "Cast to ISO 8601."
+      "helix_attribute": "eeo_job_category",
+      "source": "PS_JOBCODE_TBL.EEO_JOB_GROUP",
+      "transformation": "Map to IPEDS EEO categories."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_POSITION_DATA.FUND_CODE or default from DEPTID",
+      "transformation": "Map to HELIX fund code."
     },
     {
       "helix_attribute": "meta.source_system",

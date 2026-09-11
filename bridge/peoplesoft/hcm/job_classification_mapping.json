@@ -2,29 +2,29 @@
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
   "title": "HELIX Bridge: PeopleSoft HCM \u2192 JobClassification",
   "source_system": "peoplesoft",
-  "module": "HCM - Job Classification / EEO",
-  "target_resource": "JobClassification (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "module": "HCM - Job Classification / EEO / Faculty",
+  "target_resource": "JobClassification",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_JOBCODE_TBL",
-      "description": "Job code master. Job family, FLSA status, EEO category, salary admin plan, pay grade, SOC code."
+      "object": "PS_JOBCODE_TBL",
+      "description": "Job code: JOBCODE, DESCR, JOB_FAMILY, JOB_FUNCTION, SAL_ADMIN_PLAN, GRADE, EEO_JOB_GROUP, FLSA_STATUS, MANAGER_LEVEL, SOC_CD."
     },
     {
-      "table": "PS_SAL_PLAN_TBL",
-      "description": "Salary plan definitions."
+      "object": "PS_JOB_FAMILY_TBL",
+      "description": "Job family: JOB_FAMILY, DESCR."
     },
     {
-      "table": "PS_SAL_GRADE_TBL",
-      "description": "Salary grade ranges within each plan."
+      "object": "PS_EEO_JOB_GRP_TBL",
+      "description": "EEO category decode: EEO_JOB_GROUP, DESCR."
     },
     {
-      "table": "PS_JOB_FAMILY_TBL",
-      "description": "Job family definitions. Groups of related job codes."
+      "object": "PS_FACULTY_TABLE (custom)",
+      "description": "Faculty-specific fields (typically custom or via EMPL_CLASS): ACADEMIC_RANK, TENURE_STATUS, TENURE_DT. PS has no native tenure tracking \u2014 institutions build custom tables or use EMPL_CLASS."
     },
     {
-      "table": "PS_CMP_SURVEY_DATA",
-      "description": "Compensation survey data. Market benchmarks linked to job codes."
+      "object": "PS_PERSONAL_DATA / PS_JOB",
+      "description": "For IPEDS faculty reporting: cross-reference EMPL_CLASS + JOB_FUNCTION + FTE to derive IPEDS faculty categories."
     }
   ],
   "attribute_mappings": [
@@ -34,79 +34,64 @@
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "title",
+      "helix_attribute": "job_title",
       "source": "PS_JOBCODE_TBL.DESCR",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "job_family",
-      "source": "PS_JOBCODE_TBL.JOB_FAMILY",
-      "transformation": "Direct map. Grouping (e.g., 'Information Technology', 'Faculty', 'Student Services')."
+      "source": "PS_JOBCODE_TBL.JOB_FAMILY \u2192 PS_JOB_FAMILY_TBL.DESCR",
+      "transformation": "Direct map."
     },
     {
-      "helix_attribute": "job_function",
-      "source": "PS_JOBCODE_TBL.JOB_FUNCTION",
-      "transformation": "Direct map. Broader functional area."
+      "helix_attribute": "job_family_group",
+      "source": "PS_JOBCODE_TBL.JOB_FUNCTION or derived from JOB_FAMILY hierarchy",
+      "transformation": "Higher-level grouping (Academic, Administrative, Facilities)."
     },
     {
       "helix_attribute": "eeo_category",
-      "source": "PS_JOBCODE_TBL.EEO_JOB_GROUP",
-      "transformation": "Map to EEOC categories. Critical for IPEDS HR and EEO-1 reporting."
-    },
-    {
-      "helix_attribute": "eeo_job_category",
-      "source": "PS_JOBCODE_TBL.EEO1CODE",
-      "transformation": "EEO-1 job category (Executive/Senior, First/Mid Officials, Professionals, etc.)."
+      "source": "PS_JOBCODE_TBL.EEO_JOB_GROUP \u2192 PS_EEO_JOB_GRP_TBL.DESCR",
+      "transformation": "Map to IPEDS EEO categories."
     },
     {
       "helix_attribute": "soc_code",
       "source": "PS_JOBCODE_TBL.SOC_CD",
-      "transformation": "Standard Occupational Classification code. Used for IPEDS, BLS reporting."
+      "transformation": "Standard Occupational Classification code."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "Derived from department or custom faculty table",
+      "transformation": "CIP code for faculty, linking to academic discipline."
+    },
+    {
+      "helix_attribute": "academic_rank",
+      "source": "PS_FACULTY_TABLE.ACADEMIC_RANK or derived from JOBCODE/EMPL_CLASS",
+      "transformation": "Map: professor, associate, assistant, instructor, lecturer, visiting, emeritus, clinical, research."
+    },
+    {
+      "helix_attribute": "tenure_status",
+      "source": "PS_FACULTY_TABLE.TENURE_STATUS or EMPL_CLASS-based derivation",
+      "transformation": "Map: 'T' \u2192 'tenured', 'TT' \u2192 'tenure_track', 'NTT' \u2192 'ntt', 'NA' \u2192 'n/a'."
+    },
+    {
+      "helix_attribute": "tenure_date",
+      "source": "PS_FACULTY_TABLE.TENURE_DT",
+      "transformation": "Date tenure granted. Null if not tenured."
+    },
+    {
+      "helix_attribute": "faculty_status",
+      "source": "Derived from EMPL_CLASS + FULL_PART_TIME + REG_TEMP",
+      "transformation": "Map: full_time faculty, adjunct, emeritus, on_leave, visiting."
+    },
+    {
+      "helix_attribute": "ipeds_faculty_category",
+      "source": "Derived: tenure_status + time_type + function",
+      "transformation": "For IPEDS HR survey: 'Tenured', 'On Tenure Track', 'NTT Multi-Year', 'NTT Annual', 'NTT Less Than Annual'."
     },
     {
       "helix_attribute": "flsa_status",
       "source": "PS_JOBCODE_TBL.FLSA_STATUS",
-      "transformation": "Map: 'E'\u2192'exempt', 'N'\u2192'nonexempt'."
-    },
-    {
-      "helix_attribute": "salary_plan",
-      "source": "PS_JOBCODE_TBL.SAL_ADMIN_PLAN",
-      "transformation": "Salary administration plan."
-    },
-    {
-      "helix_attribute": "pay_grade",
-      "source": "PS_JOBCODE_TBL.GRADE",
-      "transformation": "Default pay grade for this job code."
-    },
-    {
-      "helix_attribute": "grade_min",
-      "source": "PS_SAL_GRADE_TBL.MIN_RT_ANNUAL",
-      "transformation": "Salary range minimum."
-    },
-    {
-      "helix_attribute": "grade_mid",
-      "source": "PS_SAL_GRADE_TBL.MID_RT_ANNUAL",
-      "transformation": "Salary range midpoint."
-    },
-    {
-      "helix_attribute": "grade_max",
-      "source": "PS_SAL_GRADE_TBL.MAX_RT_ANNUAL",
-      "transformation": "Salary range maximum."
-    },
-    {
-      "helix_attribute": "is_faculty",
-      "source": "PS_JOBCODE_TBL.SETID_JOBCODE or JOB_FAMILY",
-      "transformation": "Derived from job family or institutional flag. true for faculty job codes."
-    },
-    {
-      "helix_attribute": "faculty_rank",
-      "source": "PS_FACULTY_RANK (if available) or derived from JOBCODE",
-      "transformation": "Map: 'PROF'\u2192'professor', 'ASCP'\u2192'associate_professor', 'ASTP'\u2192'assistant_professor', 'INST'\u2192'instructor', 'LECT'\u2192'lecturer', 'ADJ'\u2192'adjunct'. Critical for IPEDS."
-    },
-    {
-      "helix_attribute": "tenure_status",
-      "source": "PS_FACULTY_TENURE.TENURE_STATUS (if available)",
-      "transformation": "Map: 'T'\u2192'tenured', 'TT'\u2192'tenure_track', 'NT'\u2192'non_tenure_track'. Critical for IPEDS Faculty."
+      "transformation": "Map: 'E' \u2192 'exempt', 'N' \u2192 'non_exempt'."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -119,5 +104,5 @@
       "transformation": "'internal'"
     }
   ],
-  "notes": "Job classification is the backbone of IPEDS HR reporting. Every employee's IPEDS category is derived from their job code's EEO classification, faculty rank, and tenure status. SOC codes are required for IPEDS and BLS reporting. Higher ed institutions typically have 200-500+ active job codes. Faculty rank and tenure status may be in PS_FACULTY_RANK/PS_FACULTY_TENURE (PeopleSoft HCM for Higher Education add-on) or tracked as custom fields."
+  "notes": "PS has no native tenure/faculty-rank tracking. Most institutions use EMPL_CLASS to flag faculty (e.g., 'FAC', 'ADJ', 'GA') and build custom tables for tenure status and academic rank. The HELIX mapping documents the common pattern."
 }

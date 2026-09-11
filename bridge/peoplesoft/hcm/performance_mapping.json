@@ -1,0 +1,98 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 PerformanceReview",
+  "source_system": "peoplesoft",
+  "module": "HCM - ePerformance",
+  "target_resource": "PerformanceReview",
+  "version": "0.2",
+  "source_objects": [
+    {
+      "object": "PS_EP_APPRAISAL",
+      "description": "Performance review: EMPLID, EP_REVIEW_ID, PERIOD_BEGIN_DT, PERIOD_END_DT, EP_RATING, EP_REVIEW_STATUS (SC=self-complete, MC=manager-complete, AP=approved, AK=acknowledged)."
+    },
+    {
+      "object": "PS_EP_GOAL",
+      "description": "Goals: EMPLID, EP_REVIEW_ID, EP_GOAL_ID, DESCR, EP_GOAL_STATUS (N=new, IP=in progress, AC=achieved, NA=not achieved)."
+    },
+    {
+      "object": "PS_EP_RATING_TBL",
+      "description": "Rating scale: EP_RATING, DESCR. E.g., 1=Unsatisfactory through 5=Exceptional."
+    },
+    {
+      "object": "PS_TALENT_PROFILE",
+      "description": "Succession planning: EMPLID, PERFORMANCE_RATING, POTENTIAL_RATING, RETENTION_RISK. 9-box data."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_EP_APPRAISAL.EMPLID",
+      "transformation": "Resolve to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "review_period_start",
+      "source": "PS_EP_APPRAISAL.PERIOD_BEGIN_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "review_period_end",
+      "source": "PS_EP_APPRAISAL.PERIOD_END_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "overall_rating",
+      "source": "PS_EP_APPRAISAL.EP_RATING \u2192 PS_EP_RATING_TBL.DESCR",
+      "transformation": "Map to rating text."
+    },
+    {
+      "helix_attribute": "numeric_rating",
+      "source": "PS_EP_APPRAISAL.EP_RATING",
+      "transformation": "Numeric value (1-5 scale)."
+    },
+    {
+      "helix_attribute": "reviewer",
+      "source": "PS_EP_APPRAISAL.MANAGER_ID \u2192 name",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "review_status",
+      "source": "PS_EP_APPRAISAL.EP_REVIEW_STATUS",
+      "transformation": "Map: 'SC' \u2192 'in_progress', 'MC' \u2192 'manager_review', 'AP' \u2192 'completed', 'AK' \u2192 'acknowledged'."
+    },
+    {
+      "helix_attribute": "goals_count",
+      "source": "Count of PS_EP_GOAL for this review",
+      "transformation": "Total goals."
+    },
+    {
+      "helix_attribute": "goals_achieved",
+      "source": "Count of PS_EP_GOAL where EP_GOAL_STATUS='AC'",
+      "transformation": "Goals met."
+    },
+    {
+      "helix_attribute": "nine_box_performance",
+      "source": "PS_TALENT_PROFILE.PERFORMANCE_RATING",
+      "transformation": "Low/Medium/High."
+    },
+    {
+      "helix_attribute": "nine_box_potential",
+      "source": "PS_TALENT_PROFILE.POTENTIAL_RATING",
+      "transformation": "Low/Medium/High."
+    },
+    {
+      "helix_attribute": "flight_risk",
+      "source": "PS_TALENT_PROFILE.RETENTION_RISK",
+      "transformation": "Map: 'H' \u2192 'high', 'M' \u2192 'medium', 'L' \u2192 'low'."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'restricted'"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 TimeEntry",
+  "source_system": "peoplesoft",
+  "module": "HCM - Time & Labor",
+  "target_resource": "TimeEntry",
+  "version": "0.2",
+  "source_objects": [
+    {
+      "object": "PS_TL_RPTD_TIME",
+      "description": "Reported time: EMPLID, DUR (date), TRC (time reporting code), TL_QUANTITY (hours), DEPTID, FUND_CODE, PROJECT_ID, TASKGROUP."
+    },
+    {
+      "object": "PS_TL_PAYABLE_TIME",
+      "description": "Payable time (approved, ready for payroll): EMPLID, DUR, TRC, TL_QUANTITY, PAYABLE_STATUS."
+    },
+    {
+      "object": "PS_TRC_TBL",
+      "description": "Time reporting code decode: TRC, DESCR (Regular, Overtime, Holiday, Sick, etc.)."
+    },
+    {
+      "object": "PS_TL_PUNCH_DATA",
+      "description": "Punch/clock data: EMPLID, PUNCH_DTTM (in/out), PUNCH_TYPE."
+    },
+    {
+      "object": "PS_TL_APPROVAL",
+      "description": "Approval records: EMPLID, APPROVAL_STATUS, APPROVER_OPRID."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "employee_ref",
+      "source": "PS_TL_RPTD_TIME.EMPLID",
+      "transformation": "Resolve to HELIX employee_id."
+    },
+    {
+      "helix_attribute": "date",
+      "source": "PS_TL_RPTD_TIME.DUR",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "hours",
+      "source": "PS_TL_RPTD_TIME.TL_QUANTITY",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "time_type",
+      "source": "PS_TL_RPTD_TIME.TRC \u2192 PS_TRC_TBL",
+      "transformation": "Map: 'REG' \u2192 'regular', 'OTP' \u2192 'overtime', 'HOL' \u2192 'holiday', 'ONC' \u2192 'on_call'."
+    },
+    {
+      "helix_attribute": "in_time",
+      "source": "PS_TL_PUNCH_DATA.PUNCH_DTTM where PUNCH_TYPE='I'",
+      "transformation": "Cast to ISO 8601 datetime. Null if no clock."
+    },
+    {
+      "helix_attribute": "out_time",
+      "source": "PS_TL_PUNCH_DATA.PUNCH_DTTM where PUNCH_TYPE='O'",
+      "transformation": "Cast to ISO 8601 datetime."
+    },
+    {
+      "helix_attribute": "cost_center",
+      "source": "PS_TL_RPTD_TIME.DEPTID",
+      "transformation": "Map to HELIX org code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_TL_RPTD_TIME.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
+    },
+    {
+      "helix_attribute": "grant_ref",
+      "source": "PS_TL_RPTD_TIME.PROJECT_ID",
+      "transformation": "If time charged to a grant."
+    },
+    {
+      "helix_attribute": "approval_status",
+      "source": "PS_TL_PAYABLE_TIME.PAYABLE_STATUS or PS_TL_APPROVAL",
+      "transformation": "Map: 'N' \u2192 'submitted', 'A' \u2192 'approved', 'D' \u2192 'denied', 'E' \u2192 'draft'."
+    },
+    {
+      "helix_attribute": "approver",
+      "source": "PS_TL_APPROVAL.APPROVER_OPRID \u2192 name",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft'"
+    },
+    {
+      "helix_attribute": "meta.classification",
+      "source": "Constant",
+      "transformation": "'confidential'"
+    }
+  ]
+}

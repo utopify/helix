@@ -1,97 +1,83 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft HCM \u2192 LearningManagement",
+  "title": "HELIX Bridge: PeopleSoft HCM \u2192 LearningRecord",
   "source_system": "peoplesoft",
   "module": "HCM - Enterprise Learning Management (ELM)",
-  "target_resource": "TrainingRecord (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "target_resource": "LearningRecord",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_TRAINING",
-      "description": "Training record. Employee training history with course, dates, status, score."
+      "object": "PS_TRAINING",
+      "description": "Training enrollment/completion: EMPLID, COURSE (course code), COURSE_TITLE, SESSION_NBR, ATTENDANCE (C=completed, E=enrolled, N=no-show, W=waived), TRAINING_DT, SCORE."
     },
     {
-      "table": "PS_LM_LEARN_COMPNT",
-      "description": "Learning component (ELM). Course definition, type, delivery method, credit hours."
+      "object": "PS_TRAINING_TBL",
+      "description": "Course catalog: COURSE, DESCR, TRAINING_TYPE (compliance, safety, professional, technical, onboarding), DELIVERY_METHOD (ILT, WBT, BLE)."
     },
     {
-      "table": "PS_LM_ENRLMT",
-      "description": "ELM enrollment. Student enrollment in learning component with status and completion."
+      "object": "PS_TRN_ASSIGN",
+      "description": "Training assignments (required/mandatory): EMPLID, COURSE, REQUIRED_FLAG, DUE_DT."
     },
     {
-      "table": "PS_LM_CI_COMPL",
-      "description": "Compliance tracking. Required training by job code, department, or role. Due dates and completion status."
-    },
-    {
-      "table": "PS_LM_CERT",
-      "description": "Certification tracking. Professional certifications, licenses, CPE credits."
+      "object": "PS_TRN_COMPLETION",
+      "description": "Completion records: EMPLID, COURSE, COMPLETION_DT, EXPIRATION_DT (for certifications)."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "employee_ref",
-      "source": "PS_TRAINING.EMPLID or PS_LM_ENRLMT.PERSON_ID",
-      "transformation": "Resolve to HELIX Employee.helix_id."
+      "source": "PS_TRAINING.EMPLID",
+      "transformation": "Resolve to HELIX employee_id."
     },
     {
-      "helix_attribute": "course_name",
-      "source": "PS_TRAINING.COURSE_TITLE or PS_LM_LEARN_COMPNT.DESCR",
+      "helix_attribute": "course_id",
+      "source": "PS_TRAINING.COURSE",
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "course_code",
-      "source": "PS_TRAINING.COURSE or PS_LM_LEARN_COMPNT.LM_LC_ID",
+      "helix_attribute": "course_title",
+      "source": "PS_TRAINING_TBL.DESCR or PS_TRAINING.COURSE_TITLE",
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "training_type",
-      "source": "Derived from course attributes",
-      "transformation": "Map: 'compliance', 'professional_development', 'onboarding', 'safety', 'technical', 'leadership', 'dei', 'other'."
+      "helix_attribute": "course_type",
+      "source": "PS_TRAINING_TBL.TRAINING_TYPE",
+      "transformation": "Map: compliance, safety, professional_dev, technical, onboarding, leadership."
     },
     {
       "helix_attribute": "delivery_method",
-      "source": "PS_LM_LEARN_COMPNT.LM_DELIVERY_TYPE",
-      "transformation": "Map: 'ILT'\u2192'instructor_led', 'WBT'\u2192'web_based', 'BLEND'\u2192'blended'."
+      "source": "PS_TRAINING_TBL.DELIVERY_METHOD",
+      "transformation": "Map: 'ILT' \u2192 'in_person', 'WBT' \u2192 'online_async', 'VILT' \u2192 'online_sync', 'BLE' \u2192 'blended'."
     },
     {
-      "helix_attribute": "completion_date",
-      "source": "PS_TRAINING.COMPLETION_DT or PS_LM_ENRLMT.COMPL_DT",
+      "helix_attribute": "enrollment_date",
+      "source": "PS_TRAINING.TRAINING_DT (enrollment date)",
       "transformation": "Cast to ISO 8601."
     },
     {
+      "helix_attribute": "completion_date",
+      "source": "PS_TRN_COMPLETION.COMPLETION_DT",
+      "transformation": "Null if not completed."
+    },
+    {
       "helix_attribute": "status",
-      "source": "PS_TRAINING.COURSE_STATUS or PS_LM_ENRLMT.LM_ENRL_STATUS",
-      "transformation": "Map: 'C'\u2192'completed', 'E'\u2192'enrolled', 'W'\u2192'withdrawn', 'N'\u2192'no_show'."
+      "source": "PS_TRAINING.ATTENDANCE",
+      "transformation": "Map: 'C' \u2192 'completed', 'E' \u2192 'enrolled', 'N' \u2192 'not_started', 'W' \u2192 'waived'."
     },
     {
       "helix_attribute": "score",
-      "source": "PS_TRAINING.GRADE or PS_LM_ENRLMT.SCORE",
-      "transformation": "Direct map. Assessment score if applicable."
+      "source": "PS_TRAINING.SCORE",
+      "transformation": "Direct map if applicable."
     },
     {
-      "helix_attribute": "credit_hours",
-      "source": "PS_LM_LEARN_COMPNT.LM_CREDIT_HRS",
-      "transformation": "CPE/CE credit hours earned."
-    },
-    {
-      "helix_attribute": "is_required",
-      "source": "PS_LM_CI_COMPL exists for this employee + course",
-      "transformation": "true if the training is compliance-required."
+      "helix_attribute": "required",
+      "source": "PS_TRN_ASSIGN.REQUIRED_FLAG = 'Y'",
+      "transformation": "Boolean."
     },
     {
       "helix_attribute": "due_date",
-      "source": "PS_LM_CI_COMPL.DUE_DT",
-      "transformation": "Compliance training due date. Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "expiration_date",
-      "source": "PS_TRAINING.EXPIRATN_DT",
-      "transformation": "Date the training/certification expires and must be renewed."
-    },
-    {
-      "helix_attribute": "certifications[]",
-      "source": "PS_LM_CERT",
-      "transformation": "Array: {cert_name, cert_id, issue_date, expiration_date, status}."
+      "source": "PS_TRN_ASSIGN.DUE_DT",
+      "transformation": "For mandatory training: compliance deadline."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -103,6 +89,5 @@
       "source": "Constant",
       "transformation": "'internal'"
     }
-  ],
-  "notes": "PeopleSoft has two training tracking paths: the legacy PS_TRAINING table (simple completion records) and Enterprise Learning Management (ELM) which is a full LMS. Many higher ed institutions use a mix \u2014 ELM for compliance training (Title IX, FERPA, cybersecurity, lab safety) and PS_TRAINING for external professional development. Compliance training completion is frequently audited and reported to HR leadership."
+  ]
 }
