@@ -1,14 +1,14 @@
 # HELIX Bridge
 
-ERP-to-HELIX mapping accelerators. Pre-built transformation templates that map source system tables and columns to HELIX Core resource attributes.
+100 ERP-to-HELIX mapping templates across 4 major systems.
 
-## Supported ERPs (planned)
+| ERP | Mappings | Modules |
+|-----|----------|---------|
+| PeopleSoft | 42 | CS (19), FIN (11), HCM (12) |
+| Banner | 13 | SIS (11), HR (2) |
+| Workday | 42 | SIS (19), FIN (11), HR (12) |
+| Colleague | 3 | SIS (3) |
 
-| ERP | Vendor | Status |
-|-----|--------|--------|
-| Banner | Ellucian | In progress |
-| PeopleSoft Campus Solutions | Oracle | Planned |
-| Workday Student | Workday | Planned |
-| Colleague | Ellucian | Planned |
+Plus machine-readable cross-references in `xref/ps-to-workday-fin/` (4 dimensions × JSON + CSV).
 
-Each ERP directory contains per-resource mapping files (e.g., `student_mapping.json`) that document the source table, source column, transformation logic, and target HELIX attribute.
+PeopleSoft ↔ Workday parity: SIS 100%, FIN 96%, HCM 100%.
