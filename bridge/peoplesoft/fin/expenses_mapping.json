@@ -1,61 +1,56 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Expenses",
+  "title": "HELIX Bridge: PeopleSoft Expenses \u2192 ExpenseReport",
   "source_system": "peoplesoft",
-  "module": "Financials - Expenses / Travel & Expense",
-  "target_resource": "ExpenseReport (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "module": "Financials - Expenses / Travel",
+  "target_resource": "ExpenseReport",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_EX_SHEET_HDR",
-      "description": "Expense report header. Employee, business purpose, dates, status, total."
+      "object": "PS_EX_SHEET_HDR",
+      "description": "Expense report header: EMPLID, SHEET_ID, BUSINESS_PURPOSE, TRIP_BEG_DT, TRIP_END_DT, TOTAL_AMT, SHEET_STATUS (PND=pending, APR=approved, PAD=paid, DEN=denied)."
     },
     {
-      "table": "PS_EX_SHEET_LINE",
-      "description": "Expense report lines. Individual expenses with type, amount, date, receipt."
+      "object": "PS_EX_SHEET_LINE",
+      "description": "Expense lines: SHEET_ID, LINE_SEQ_NBR, EXPENSE_TYPE, EXPENSE_DT, MONETARY_AMOUNT, DESCR254, RECEIPT_STATUS."
     },
     {
-      "table": "PS_EX_SHEET_DIST",
-      "description": "Expense distribution. Chartfield coding for each expense line."
+      "object": "PS_EX_LINE_DIST",
+      "description": "Line distributions (ChartFields): ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, PROJECT_ID, MONETARY_AMOUNT."
     },
     {
-      "table": "PS_EX_SHEET_ACCTG",
-      "description": "Expense accounting. GL entries generated from approved expense reports."
+      "object": "PS_EX_ACCTG_LINE",
+      "description": "Expense accounting lines \u2014 GL distribution for posted expenses."
     },
     {
-      "table": "PS_EX_ADV_HDR",
-      "description": "Cash advance header. Pre-trip advance requests."
+      "object": "PS_EX_ADVANCE",
+      "description": "Travel advances: ADVANCE_ID, ADVANCE_AMT, ADVANCE_STATUS. Must be reconciled against the expense report."
     },
     {
-      "table": "PS_EX_TRANS_TBL",
-      "description": "Expense type definitions. Airfare, hotel, meals, mileage, registration, supplies."
+      "object": "PS_EXPENSE_TYPE_TBL",
+      "description": "Expense type definitions: EXPENSE_TYPE, DESCR, RATE (per diem/mileage rates)."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "report_id",
-      "source": "PS_EX_SHEET_HDR.SHEET_ID",
-      "transformation": "Direct map."
+      "source": "PS_EX_SHEET_HDR.EMPLID + SHEET_ID",
+      "transformation": "Composite key."
     },
     {
       "helix_attribute": "employee_ref",
       "source": "PS_EX_SHEET_HDR.EMPLID",
-      "transformation": "Resolve to HELIX Employee.helix_id."
+      "transformation": "Resolve to HELIX employee_id."
     },
     {
-      "helix_attribute": "business_purpose",
-      "source": "PS_EX_SHEET_HDR.DESCR254",
+      "helix_attribute": "report_date",
+      "source": "PS_EX_SHEET_HDR.CREATION_DT",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "purpose",
+      "source": "PS_EX_SHEET_HDR.BUSINESS_PURPOSE",
       "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "trip_start_date",
-      "source": "PS_EX_SHEET_HDR.DATE_FROM",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "trip_end_date",
-      "source": "PS_EX_SHEET_HDR.DATE_TO",
-      "transformation": "Cast to ISO 8601."
     },
     {
       "helix_attribute": "total_amount",
@@ -65,32 +60,42 @@
     {
       "helix_attribute": "report_status",
       "source": "PS_EX_SHEET_HDR.SHEET_STATUS",
-      "transformation": "Map: 'PND'\u2192'pending', 'APR'\u2192'approved', 'DEN'\u2192'denied', 'PAD'\u2192'paid', 'STG'\u2192'staged'."
+      "transformation": "Map: 'PND' \u2192 'submitted', 'APR' \u2192 'approved', 'PAD' \u2192 'paid', 'DEN' \u2192 'denied', 'SBM' \u2192 'submitted'."
     },
     {
-      "helix_attribute": "approval_date",
-      "source": "PS_EX_SHEET_HDR.APPROVAL_DT",
+      "helix_attribute": "expense_type",
+      "source": "PS_EX_SHEET_LINE.EXPENSE_TYPE \u2192 PS_EXPENSE_TYPE_TBL.DESCR",
+      "transformation": "Map: 'AIR' \u2192 'airfare', 'HOTEL' \u2192 'lodging', 'MEALS' \u2192 'meals', 'MILE' \u2192 'mileage', 'REG' \u2192 'registration', 'TAXI' \u2192 'ground_transport'."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "PS_EX_SHEET_LINE.MONETARY_AMOUNT",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "line_date",
+      "source": "PS_EX_SHEET_LINE.EXPENSE_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "payment_date",
-      "source": "PS_EX_SHEET_HDR.PAID_DT",
-      "transformation": "Cast to ISO 8601."
+      "helix_attribute": "account",
+      "source": "PS_EX_LINE_DIST.ACCOUNT",
+      "transformation": "Map to HELIX account code."
     },
     {
-      "helix_attribute": "lines[]",
-      "source": "PS_EX_SHEET_LINE",
-      "transformation": "Array: {expense_type, description, date, amount, receipt_flag, merchant_name, payment_type ('personal', 'corporate_card', 'prepaid')}."
+      "helix_attribute": "fund_code",
+      "source": "PS_EX_LINE_DIST.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
-      "helix_attribute": "line_chartfields[]",
-      "source": "PS_EX_SHEET_DIST",
-      "transformation": "Chartfield coding per line: {account, fund, department, project_id, amount}."
+      "helix_attribute": "department",
+      "source": "PS_EX_LINE_DIST.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
-      "helix_attribute": "advance_amount",
-      "source": "PS_EX_ADV_HDR.ADVANCE_AMT",
-      "transformation": "Cash advance amount. Net reimbursement = total_amount - advance_amount."
+      "helix_attribute": "grant_ref",
+      "source": "PS_EX_LINE_DIST.PROJECT_ID",
+      "transformation": "If charged to a grant. Federal travel: Fly America Act, GSA per diem limits apply."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -102,6 +107,5 @@
       "source": "Constant",
       "transformation": "'internal'"
     }
-  ],
-  "notes": "Travel and expense is a high-volume, high-visibility module. Higher ed institutions often have complex travel policies (state per diem rates, pre-approval requirements, grant-funded travel restrictions). Expenses charged to federal grants must comply with 2 CFR 200 (reasonable, allowable, allocable). Corporate card reconciliation typically flows through PS_EX_SHEET_LINE."
+  ]
 }

@@ -1,60 +1,68 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 GeneralLedger",
+  "title": "HELIX Bridge: PeopleSoft General Ledger \u2192 GLTransaction",
   "source_system": "peoplesoft",
   "module": "Financials - General Ledger",
-  "target_resource": "GLTransaction (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.2 resource",
-  "source_tables": [
+  "target_resource": "GLTransaction",
+  "version": "0.2",
+  "architecture_notes": "PeopleSoft General Ledger stores financial transactions in journal entries (PS_JRNL_HEADER + PS_JRNL_LN) and period-end balances in the ledger table (PS_LEDGER). The Chart of Accounts is defined in PS_GL_ACCOUNT_TBL. ChartField combinations (Account, Fund, DeptID, Program, Class, Project) on each journal line define the multi-dimensional coding. PeopleSoft uses effective-dated chartfield values and tree structures for roll-up reporting.",
+  "source_objects": [
     {
-      "table": "PS_JRNL_HEADER",
-      "description": "Journal header. Journal ID, date, source, status, business unit, ledger group."
+      "object": "PS_JRNL_HEADER",
+      "description": "Journal entry header: BUSINESS_UNIT, JOURNAL_ID, JOURNAL_DATE, UNPOST_SEQ, FISCAL_YEAR, ACCOUNTING_PERIOD, LEDGER, SOURCE, JRNL_HDR_STATUS (V=valid, P=posted, E=error, N=not edited), DESCR254, OPRID."
     },
     {
-      "table": "PS_JRNL_LN",
-      "description": "Journal lines. Account, department, fund, program, class, amount, debit/credit."
+      "object": "PS_JRNL_LN",
+      "description": "Journal entry lines: BUSINESS_UNIT, JOURNAL_ID, JOURNAL_LINE, ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, CLASS_FLD, PROJECT_ID, MONETARY_AMOUNT, FOREIGN_AMOUNT, FOREIGN_CURRENCY, LINE_DESCR, STATISTICS_CODE. Each line carries a full ChartField combination."
     },
     {
-      "table": "PS_LEDGER",
-      "description": "Posted ledger balances. Summarized actuals by chartfield combination and period."
+      "object": "PS_LEDGER",
+      "description": "Period-end ledger balances: BUSINESS_UNIT, LEDGER, ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, CLASS_FLD, PROJECT_ID, FISCAL_YEAR, ACCOUNTING_PERIOD, POSTED_TOTAL_AMT, POSTED_BASE_AMT. Summarized from posted journals."
     },
     {
-      "table": "PS_GL_ACCOUNT_TBL",
-      "description": "Chart of accounts. Account code definitions with type (asset, liability, revenue, expense)."
+      "object": "PS_GL_ACCOUNT_TBL",
+      "description": "Chart of Accounts: ACCOUNT, DESCR, ACCOUNT_TYPE (A=Asset, L=Liability, Q=Equity, R=Revenue, E=Expense), EFFDT. Effective-dated."
     },
     {
-      "table": "PS_DEPT_TBL",
-      "description": "Department table. Organizational units for financial reporting."
+      "object": "PS_FUND_TBL",
+      "description": "Fund code definitions: FUND_CODE, DESCR, FUND_TYPE. Higher-ed fund categories (unrestricted, restricted, endowment, plant, agency)."
     },
     {
-      "table": "PS_FUND_TBL",
-      "description": "Fund table. Fund codes for fund accounting (critical for public institutions and GASB reporting)."
+      "object": "PS_DEPT_TBL",
+      "description": "Department table: DEPTID, DESCR, MANAGER_ID, BUDGET_DEPTID, EFFDT. Often tree-structured for roll-up."
     },
     {
-      "table": "PS_PROGRAM_TBL",
-      "description": "Program codes. Functional expense classification."
+      "object": "PS_PROGRAM_TBL",
+      "description": "Program code: PROGRAM_CODE, DESCR. Maps to IPEDS functional classifications (Instruction, Research, etc.)."
     },
     {
-      "table": "PS_BUDGET_REF_TBL",
-      "description": "Budget reference. Links budgets to chartfield combinations."
+      "object": "PS_PROJECT",
+      "description": "Project/grant: PROJECT_ID, DESCR, PROJECT_STATUS. Links to Grants module when used for sponsored programs."
+    },
+    {
+      "object": "PS_CLASS_CF_TBL",
+      "description": "Class field: CLASS_FLD, DESCR. Additional classification dimension (some institutions use for campus, program type, or other)."
+    },
+    {
+      "object": "PS_BUS_UNIT_TBL_GL",
+      "description": "GL business unit: BUSINESS_UNIT, DESCR, BASE_CURRENCY, LEDGER_GROUP. Typically one per institution or campus."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "transaction_id",
-      "source": "PS_JRNL_LN.JOURNAL_ID + JOURNAL_LINE",
-      "transformation": "Composite key."
+      "source": "PS_JRNL_LN.BUSINESS_UNIT + JOURNAL_ID + JOURNAL_LINE + UNPOST_SEQ",
+      "transformation": "Composite key. UNPOST_SEQ handles journal reversals (0=original, 1+=reversal)."
     },
     {
       "helix_attribute": "business_unit",
       "source": "PS_JRNL_HEADER.BUSINESS_UNIT",
-      "transformation": "Direct map. PS business unit (e.g., 'UNIV1')."
+      "transformation": "Direct map. Typically maps to institution or campus."
     },
     {
       "helix_attribute": "journal_id",
       "source": "PS_JRNL_HEADER.JOURNAL_ID",
-      "transformation": "Direct map."
+      "transformation": "Direct map. System-generated or user-assigned."
     },
     {
       "helix_attribute": "journal_date",
@@ -63,83 +71,83 @@
     },
     {
       "helix_attribute": "fiscal_year",
-      "source": "PS_JRNL_LN.FISCAL_YEAR",
-      "transformation": "Direct map."
+      "source": "PS_JRNL_HEADER.FISCAL_YEAR",
+      "transformation": "Direct map. Integer."
     },
     {
       "helix_attribute": "accounting_period",
-      "source": "PS_JRNL_LN.ACCOUNTING_PERIOD",
-      "transformation": "Direct map (1-12, plus period 0 for opening and 998/999 for adjustments/closing)."
+      "source": "PS_JRNL_HEADER.ACCOUNTING_PERIOD",
+      "transformation": "Integer (1-12 for monthly, 901-999 for adjustment periods). Period 998 = year-end close, 999 = post-close."
     },
     {
       "helix_attribute": "account",
       "source": "PS_JRNL_LN.ACCOUNT",
-      "transformation": "Direct map. GL account code."
+      "transformation": "Map PS ACCOUNT to HELIX account code via XREF. E.g., PS '50100' \u2192 HELIX 'EXP-SAL-FACULTY'."
     },
     {
       "helix_attribute": "account_description",
-      "source": "PS_GL_ACCOUNT_TBL.DESCR",
-      "transformation": "Lookup via ACCOUNT."
+      "source": "PS_GL_ACCOUNT_TBL.DESCR (joined on ACCOUNT, max EFFDT)",
+      "transformation": "Direct map. Effective-dated \u2014 use latest EFFDT \u2264 journal date."
     },
     {
       "helix_attribute": "account_type",
       "source": "PS_GL_ACCOUNT_TBL.ACCOUNT_TYPE",
-      "transformation": "Map: 'A'\u2192'asset', 'L'\u2192'liability', 'Q'\u2192'equity/fund_balance', 'R'\u2192'revenue', 'E'\u2192'expense'."
+      "transformation": "Map: 'A' \u2192 'asset', 'L' \u2192 'liability', 'Q' \u2192 'equity', 'R' \u2192 'revenue', 'E' \u2192 'expense'."
     },
     {
       "helix_attribute": "fund_code",
       "source": "PS_JRNL_LN.FUND_CODE",
-      "transformation": "Direct map. Critical for fund accounting in public higher ed."
+      "transformation": "Map PS FUND_CODE to HELIX fund category via XREF. E.g., PS '11000' \u2192 HELIX 'unrestricted_general'."
     },
     {
       "helix_attribute": "department",
       "source": "PS_JRNL_LN.DEPTID",
-      "transformation": "Direct map. Organizational unit for financial reporting."
+      "transformation": "Map PS DEPTID to HELIX org code via XREF. E.g., PS '120400' \u2192 HELIX 'CS'."
     },
     {
       "helix_attribute": "program_code",
       "source": "PS_JRNL_LN.PROGRAM_CODE",
-      "transformation": "Direct map. Functional expense classification (instruction, research, public service, etc.)."
+      "transformation": "Map PS PROGRAM_CODE to HELIX functional classification via XREF. E.g., PS 'INSTR' \u2192 HELIX 'instruction'. Aligns to IPEDS functional expense categories."
     },
     {
       "helix_attribute": "class_field",
       "source": "PS_JRNL_LN.CLASS_FLD",
-      "transformation": "Direct map. Additional classification (often used for revenue source or object code)."
+      "transformation": "Optional PS ChartField. Usage varies by institution (campus, program type, source of funds). Map to institution-specific HELIX extension if used."
     },
     {
       "helix_attribute": "project_id",
       "source": "PS_JRNL_LN.PROJECT_ID",
-      "transformation": "Direct map. Links to grants/projects module."
+      "transformation": "Link to grant/project. PS Project \u2192 HELIX Grant when used for sponsored programs."
     },
     {
       "helix_attribute": "amount",
       "source": "PS_JRNL_LN.MONETARY_AMOUNT",
-      "transformation": "Direct map. Positive for debits, negative for credits (or use JRNL_LN_REF for debit/credit indicator)."
+      "transformation": "Signed amount in base currency. Debits positive, credits negative (PS convention). Some institutions reverse sign on credits \u2014 verify with institution."
     },
     {
       "helix_attribute": "currency",
-      "source": "PS_JRNL_HEADER.CURRENCY_CD",
-      "transformation": "ISO 4217 code."
+      "source": "PS_JRNL_LN.FOREIGN_CURRENCY or PS_BUS_UNIT_TBL_GL.BASE_CURRENCY",
+      "transformation": "ISO 4217 code. Use FOREIGN_CURRENCY if multi-currency; otherwise base currency."
     },
     {
       "helix_attribute": "description",
-      "source": "PS_JRNL_LN.DESCR254 or PS_JRNL_HEADER.DESCR254",
-      "transformation": "Line-level description, or journal header description."
+      "source": "PS_JRNL_LN.LINE_DESCR or PS_JRNL_HEADER.DESCR254",
+      "transformation": "Line-level description if populated; fall back to header description."
     },
     {
       "helix_attribute": "journal_source",
       "source": "PS_JRNL_HEADER.SOURCE",
-      "transformation": "Direct map. Identifies originating subsystem (AP, AR, Payroll, etc.)."
+      "transformation": "Source of the journal: 'ONL' (online/manual), 'AP' (accounts payable), 'AR' (accounts receivable), 'PY' (payroll), 'AM' (asset management), 'BI' (billing), 'PC' (project costing), 'GM' (grants). Institution-configurable."
     },
     {
       "helix_attribute": "journal_status",
       "source": "PS_JRNL_HEADER.JRNL_HDR_STATUS",
-      "transformation": "Map: 'P'\u2192'posted', 'V'\u2192'valid', 'E'\u2192'error', 'N'\u2192'not_edited', 'U'\u2192'unposted'."
+      "transformation": "Map: 'N' \u2192 'not_edited', 'V' \u2192 'valid', 'P' \u2192 'posted', 'E' \u2192 'error', 'D' \u2192 'deleted', 'U' \u2192 'unposted'."
     },
     {
       "helix_attribute": "ledger",
-      "source": "PS_JRNL_LN.LEDGER",
-      "transformation": "Direct map. 'ACTUALS', 'BUDGET', 'ENCUMB', 'PROJ_GR', etc."
+      "source": "PS_JRNL_HEADER.LEDGER",
+      "transformation": "Direct map. 'ACTUALS' (operating), 'BUDGET', 'ENCUMBR' (encumbrances), 'PRE_ENCUM' (pre-encumbrances from requisitions), institution-specific custom ledgers."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -152,5 +160,5 @@
       "transformation": "'internal'"
     }
   ],
-  "notes": "PeopleSoft Financials uses 'chartfields' \u2014 a flexible chart of accounts structure. The key chartfields for higher ed are: Business Unit, Account, Fund, Department, Program, Class, and Project. Institutions configure which chartfields are active. Fund accounting is critical for public institutions (GASB). The combination of chartfields on a journal line determines the full financial context of a transaction."
+  "notes": "PeopleSoft GL is the most complex module to extract because of: (1) effective-dated ChartField values (always join on max EFFDT \u2264 transaction date), (2) tree structures for roll-up (PSTREENODE for Account, Fund, DeptID, Program trees), (3) the UNPOST_SEQ field for journal reversals, (4) adjustment periods (901+) that don't map to calendar months, and (5) multi-currency journals where MONETARY_AMOUNT is in base currency and FOREIGN_AMOUNT is in transaction currency. The PS_LEDGER table provides a shortcut for period-end balances without replaying all journals."
 }

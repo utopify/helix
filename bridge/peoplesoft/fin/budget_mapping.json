@@ -1,99 +1,106 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Budget",
+  "title": "HELIX Bridge: PeopleSoft Commitment Control / Budget \u2192 Budget",
   "source_system": "peoplesoft",
-  "module": "Financials - Commitment Control (Budget)",
-  "target_resource": "Budget (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.2 resource",
-  "source_tables": [
+  "module": "Financials - Commitment Control (KK)",
+  "target_resource": "Budget",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_KK_BUDGET_ACTVY",
-      "description": "Commitment Control budget activity. Budget, pre-encumbrance, encumbrance, and expenditure transactions."
+      "object": "PS_LEDGER_KK",
+      "description": "Budget ledger: BUSINESS_UNIT, LEDGER, ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, PROJECT_ID, FISCAL_YEAR, ACCOUNTING_PERIOD, BUDGET_AMT, PRE_ENCUM_AMT, ENCUM_AMT, EXPEND_AMT. The master budget-checking table."
     },
     {
-      "table": "PS_LEDGER_KK",
-      "description": "Commitment Control ledger. Budget vs. actual balances by chartfield."
+      "object": "PS_KK_BUDGET_TYPE",
+      "description": "Budget type definitions: BUDGET_TYPE, DESCR. Controls budget-checking rules (hard check vs. soft check vs. track-only)."
     },
     {
-      "table": "PS_KK_BD_CONTROL",
-      "description": "Budget control definitions. Which chartfields are budget-controlled."
+      "object": "PS_KK_BD_JOURNAL",
+      "description": "Budget journal entries: adjustments, transfers, amendments to the original budget. BUDGET_AMT change records."
     },
     {
-      "table": "PS_KK_BUDGET_TYPE",
-      "description": "Budget type definitions. Original, revised, adjustment."
+      "object": "PS_BUDGET_HDR / PS_BUDGET_LINE",
+      "description": "Budget planning tables (if Planning & Budgeting module used): header/line for budget preparation process."
+    },
+    {
+      "object": "PS_REQ_HDR / PS_REQ_LINE_DIST",
+      "description": "Requisition (source of pre-encumbrances): ChartField distribution on requisition lines creates pre-encumbrances in PS_LEDGER_KK."
+    },
+    {
+      "object": "PS_PO_LINE_DIST",
+      "description": "Purchase order distribution (source of encumbrances): ChartField distribution on PO lines creates encumbrances when the PO is budget-checked."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "budget_id",
-      "source": "PS_KK_BUDGET_ACTVY.LEDGER + chartfield combination",
-      "transformation": "Composite key from ledger and chartfields."
+      "source": "PS_LEDGER_KK.BUSINESS_UNIT + LEDGER + ChartField combination + FISCAL_YEAR",
+      "transformation": "Composite key identifying a budget line."
     },
     {
       "helix_attribute": "business_unit",
-      "source": "PS_KK_BUDGET_ACTVY.BUSINESS_UNIT",
+      "source": "PS_LEDGER_KK.BUSINESS_UNIT",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "fiscal_year",
-      "source": "PS_KK_BUDGET_ACTVY.FISCAL_YEAR",
+      "source": "PS_LEDGER_KK.FISCAL_YEAR",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "account",
-      "source": "PS_KK_BUDGET_ACTVY.ACCOUNT",
-      "transformation": "GL account."
+      "source": "PS_LEDGER_KK.ACCOUNT",
+      "transformation": "Map to HELIX account code."
     },
     {
       "helix_attribute": "fund_code",
-      "source": "PS_KK_BUDGET_ACTVY.FUND_CODE",
-      "transformation": "Fund."
+      "source": "PS_LEDGER_KK.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
       "helix_attribute": "department",
-      "source": "PS_KK_BUDGET_ACTVY.DEPTID",
-      "transformation": "Department."
+      "source": "PS_LEDGER_KK.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
       "helix_attribute": "program_code",
-      "source": "PS_KK_BUDGET_ACTVY.PROGRAM_CODE",
-      "transformation": "Functional classification."
+      "source": "PS_LEDGER_KK.PROGRAM_CODE",
+      "transformation": "Map to HELIX functional classification."
     },
     {
       "helix_attribute": "project_id",
-      "source": "PS_KK_BUDGET_ACTVY.PROJECT_ID",
-      "transformation": "Grant/project."
+      "source": "PS_LEDGER_KK.PROJECT_ID",
+      "transformation": "Link to grant/project if applicable."
     },
     {
       "helix_attribute": "budget_amount",
-      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='BUDGETS')",
-      "transformation": "Total budget for this chartfield combination."
+      "source": "PS_LEDGER_KK.BUDGET_AMT (sum across periods)",
+      "transformation": "Original budget + amendments."
     },
     {
       "helix_attribute": "pre_encumbered",
-      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='PRE_ENC')",
-      "transformation": "Pre-encumbrances (requisitions not yet on PO)."
+      "source": "PS_LEDGER_KK.PRE_ENCUM_AMT",
+      "transformation": "Pre-encumbrances from approved requisitions."
     },
     {
       "helix_attribute": "encumbered",
-      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='ENCUMB')",
-      "transformation": "Encumbrances (POs, contracts)."
+      "source": "PS_LEDGER_KK.ENCUM_AMT",
+      "transformation": "Encumbrances from approved purchase orders."
     },
     {
       "helix_attribute": "expended",
-      "source": "PS_LEDGER_KK.POSTED_TOTAL_AMT (LEDGER='ACTUALS')",
-      "transformation": "Actual expenditures."
+      "source": "PS_LEDGER_KK.EXPEND_AMT",
+      "transformation": "Actual posted expenditures."
     },
     {
       "helix_attribute": "available_balance",
-      "source": "Derived",
-      "transformation": "budget_amount - pre_encumbered - encumbered - expended."
+      "source": "Derived: BUDGET_AMT - PRE_ENCUM_AMT - ENCUM_AMT - EXPEND_AMT",
+      "transformation": "Remaining available budget."
     },
     {
       "helix_attribute": "budget_status",
-      "source": "PS_KK_BD_CONTROL.BUDGET_STATUS",
-      "transformation": "Map: 'O'\u2192'open', 'C'\u2192'closed', 'F'\u2192'frozen'."
+      "source": "Derived from budget type and amounts",
+      "transformation": "Map: available > 0 \u2192 'open', available = 0 \u2192 'exhausted', available < 0 \u2192 'overdrawn'."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -106,5 +113,5 @@
       "transformation": "'internal'"
     }
   ],
-  "notes": "PeopleSoft Commitment Control (KK) is the budget checking engine. Higher ed institutions use it heavily because grant/fund accounting requires tracking pre-encumbrances (requisitions), encumbrances (POs), and expenditures against budgeted amounts. Budget checking can be advisory (warn) or absolute (block) depending on institutional configuration."
+  "notes": "PS Commitment Control (KK) is the budget-checking engine. Every transaction (journal, voucher, PO, requisition) is checked against PS_LEDGER_KK. Budget types control the severity: 'Hard' rejects over-budget, 'Soft' warns, 'Track' records only. Higher ed institutions heavily use pre-encumbrances (from requisitions) and encumbrances (from POs) to project available balances. The LEDGER field in PS_LEDGER_KK is typically 'CC_BUD' (commitment control budget). Budget amendments flow through PS_KK_BD_JOURNAL."
 }

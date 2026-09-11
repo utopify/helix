@@ -1,107 +1,93 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Contracts",
+  "title": "HELIX Bridge: PeopleSoft Contracts \u2192 Contract",
   "source_system": "peoplesoft",
   "module": "Financials - Contracts / Supplier Contracts",
-  "target_resource": "Contract (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "target_resource": "Contract",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_CA_CONTR_HDR",
-      "description": "Contract header. Contract ID, vendor, type, status, dates, total amount."
+      "object": "PS_CNTRCT_HDR",
+      "description": "Contract header: BUSINESS_UNIT, CONTRACT_ID, VENDOR_ID, CONTRACT_TYPE, CONTRACT_STATUS (A=active, E=expired, H=hold, C=canceled), BEGIN_DT, END_DT, MAX_AMT, RENEWAL_FLG."
     },
     {
-      "table": "PS_CA_CONTR_LINE",
-      "description": "Contract lines. Services, deliverables, milestones with amounts."
+      "object": "PS_CNTRCT_LINE",
+      "description": "Contract lines: CONTRACT_ID, LINE_NBR, DESCR, PRICE, QTY, CATEGORY_CD, ACCOUNT, FUND_CODE, DEPTID."
     },
     {
-      "table": "PS_CA_CONTR_DIST",
-      "description": "Contract distribution. Chartfield coding for each contract line."
+      "object": "PS_CNTRCT_RELEASE",
+      "description": "Release orders against the contract: PO_ID linkage, released amounts."
     },
     {
-      "table": "PS_CS_CONTRACT_HDR",
-      "description": "Supplier contract header (if using Supplier Contract Management). Terms, obligations, compliance."
-    },
-    {
-      "table": "PS_CS_LINE_ITEM",
-      "description": "Supplier contract line items."
+      "object": "PS_VENDOR",
+      "description": "Vendor master (shared with AP/Purchasing)."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "contract_id",
-      "source": "PS_CA_CONTR_HDR.CONTRACT_NUM",
-      "transformation": "Direct map."
+      "source": "PS_CNTRCT_HDR.BUSINESS_UNIT + CONTRACT_ID",
+      "transformation": "Composite key."
     },
     {
-      "helix_attribute": "business_unit",
-      "source": "PS_CA_CONTR_HDR.BUSINESS_UNIT",
+      "helix_attribute": "contract_name",
+      "source": "PS_CNTRCT_HDR.DESCR254 or PS_CNTRCT_LINE.DESCR (first line)",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "vendor_id",
-      "source": "PS_CA_CONTR_HDR.VENDOR_ID",
+      "source": "PS_CNTRCT_HDR.VENDOR_ID",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "vendor_name",
-      "source": "PS_VENDOR.NAME1 (via VENDOR_ID)",
-      "transformation": "Lookup."
+      "source": "PS_VENDOR.NAME1",
+      "transformation": "Direct map."
     },
     {
       "helix_attribute": "contract_type",
-      "source": "PS_CA_CONTR_HDR.CONTRACT_TYPE",
-      "transformation": "Map: 'PO'\u2192'purchase', 'SVC'\u2192'service', 'LEAS'\u2192'lease', 'CONS'\u2192'consulting', 'MAINT'\u2192'maintenance'. Institution-defined."
-    },
-    {
-      "helix_attribute": "status",
-      "source": "PS_CA_CONTR_HDR.CONTRACT_STATUS",
-      "transformation": "Map: 'A'\u2192'active', 'E'\u2192'expired', 'C'\u2192'cancelled', 'P'\u2192'pending', 'H'\u2192'on_hold'."
+      "source": "PS_CNTRCT_HDR.CONTRACT_TYPE",
+      "transformation": "Map: 'BLK' \u2192 'blanket', 'RT' \u2192 'rate', 'SVC' \u2192 'service'."
     },
     {
       "helix_attribute": "start_date",
-      "source": "PS_CA_CONTR_HDR.DATE_BEG",
+      "source": "PS_CNTRCT_HDR.BEGIN_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
       "helix_attribute": "end_date",
-      "source": "PS_CA_CONTR_HDR.DATE_END",
+      "source": "PS_CNTRCT_HDR.END_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "total_amount",
-      "source": "PS_CA_CONTR_HDR.AMT_OVERALL_LIMIT",
-      "transformation": "Overall contract ceiling amount."
+      "helix_attribute": "total_value",
+      "source": "PS_CNTRCT_HDR.MAX_AMT",
+      "transformation": "Total contract value / not-to-exceed amount."
     },
     {
-      "helix_attribute": "amount_released",
-      "source": "PS_CA_CONTR_HDR.AMT_RELEASED",
-      "transformation": "Amount released to purchase orders."
+      "helix_attribute": "amount_spent",
+      "source": "Sum of PS_CNTRCT_RELEASE amounts invoiced",
+      "transformation": "Total invoiced against the contract."
     },
     {
-      "helix_attribute": "amount_invoiced",
-      "source": "PS_CA_CONTR_HDR.AMT_INVOICED",
-      "transformation": "Amount invoiced against the contract."
+      "helix_attribute": "contract_status",
+      "source": "PS_CNTRCT_HDR.CONTRACT_STATUS",
+      "transformation": "Map: 'A' \u2192 'active', 'E' \u2192 'expired', 'H' \u2192 'on_hold', 'C' \u2192 'canceled'."
     },
     {
-      "helix_attribute": "remaining_balance",
-      "source": "Derived",
-      "transformation": "total_amount - amount_invoiced."
+      "helix_attribute": "owner",
+      "source": "PS_CNTRCT_HDR.OPRID or BUYER_ID",
+      "transformation": "Resolve to name. Contract administrator."
     },
     {
-      "helix_attribute": "lines[]",
-      "source": "PS_CA_CONTR_LINE",
-      "transformation": "Array: {line_num, description, amount, category, milestone_date}."
+      "helix_attribute": "department",
+      "source": "PS_CNTRCT_LINE.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
-      "helix_attribute": "chartfields",
-      "source": "PS_CA_CONTR_DIST",
-      "transformation": "Chartfield coding: {account, fund, department, project_id}."
-    },
-    {
-      "helix_attribute": "renewal_flag",
-      "source": "PS_CA_CONTR_HDR.RENEW_FLAG",
-      "transformation": "Whether contract auto-renews."
+      "helix_attribute": "fund_code",
+      "source": "PS_CNTRCT_LINE.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
       "helix_attribute": "meta.source_system",

@@ -1,42 +1,45 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 AssetManagement",
+  "title": "HELIX Bridge: PeopleSoft Asset Management \u2192 Asset",
   "source_system": "peoplesoft",
-  "module": "Financials - Asset Management",
-  "target_resource": "FixedAsset (planned)",
-  "version": "0.1",
-  "source_tables": [
+  "module": "Financials - Asset Management (AM)",
+  "target_resource": "Asset",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_ASSET",
-      "description": "Asset master. Asset ID, description, category, status, location, department, custodian."
+      "object": "PS_ASSET",
+      "description": "Asset master: BUSINESS_UNIT, ASSET_ID, DESCR, TAG_NUMBER, SERIAL_ID, ASSET_STATUS (A=active, D=disposed, T=transferred), ACQUISITION_DT, COST, IN_SERVICE_DT."
     },
     {
-      "table": "PS_ASSET_ACQUIS_DT",
-      "description": "Asset acquisition. Purchase date, cost, vendor, PO reference, funding source."
+      "object": "PS_ASSET_ACQ_DET",
+      "description": "Acquisition detail: PO_ID, VENDOR_ID, INVOICE_ID. Links asset to the PO that purchased it."
     },
     {
-      "table": "PS_ASSET_DEPR",
-      "description": "Asset depreciation. Book, method, useful life, accumulated depreciation, net book value."
+      "object": "PS_COST",
+      "description": "Asset cost and book values: COST, ACCUM_DEPR_AMT, NET_BOOK_VAL, DEPR_METHOD (SL=straight-line, DB=declining balance), LIFE."
     },
     {
-      "table": "PS_ASSET_DISPOSAL",
-      "description": "Asset disposal. Sale, transfer, retirement, write-off with dates and proceeds."
+      "object": "PS_ASSET_CAT_TBL",
+      "description": "Asset category: CATEGORY_CD, DESCR, USEFUL_LIFE, DEPR_METHOD. Drives depreciation rules."
     },
     {
-      "table": "PS_ASSET_CAT_TBL",
-      "description": "Asset category definitions. Equipment, buildings, land, vehicles, software, infrastructure."
+      "object": "PS_ASSET_LOCAT",
+      "description": "Asset physical location: BUILDING, ROOM, CUSTODIAN_ID, LOCATION_CD."
+    },
+    {
+      "object": "PS_ASSET_DIST",
+      "description": "Asset ChartField distribution: ACCOUNT, FUND_CODE, DEPTID, PROJECT_ID. Where the asset cost is booked."
+    },
+    {
+      "object": "PS_ASSET_DISP",
+      "description": "Disposal records: DISPOSAL_DT, DISPOSAL_TYPE (S=sold, R=retired, T=traded, D=donated), PROCEEDS."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "asset_id",
-      "source": "PS_ASSET.ASSET_ID",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "business_unit",
-      "source": "PS_ASSET.BUSINESS_UNIT",
-      "transformation": "Direct map."
+      "source": "PS_ASSET.BUSINESS_UNIT + ASSET_ID",
+      "transformation": "Composite key."
     },
     {
       "helix_attribute": "description",
@@ -44,89 +47,79 @@
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "tag_number",
-      "source": "PS_ASSET.TAG_NUMBER",
-      "transformation": "Physical inventory tag."
-    },
-    {
-      "helix_attribute": "serial_number",
-      "source": "PS_ASSET.SERIAL_ID",
-      "transformation": "Manufacturer serial number."
-    },
-    {
-      "helix_attribute": "category",
-      "source": "PS_ASSET.ASSET_CATEGORY",
-      "transformation": "Map: institution-defined categories (equipment, building, land, vehicle, software, infrastructure, library, artwork)."
-    },
-    {
-      "helix_attribute": "status",
-      "source": "PS_ASSET.ASSET_STATUS",
-      "transformation": "Map: 'A'\u2192'active', 'D'\u2192'disposed', 'T'\u2192'transferred', 'S'\u2192'surplus'."
+      "helix_attribute": "asset_category",
+      "source": "PS_ASSET_CAT_TBL.CATEGORY_CD + DESCR",
+      "transformation": "Map: 'LAND' \u2192 'land', 'BLDG' \u2192 'building', 'EQUIP' \u2192 'equipment', 'SOFT' \u2192 'software', 'VEH' \u2192 'vehicle', 'LHI' \u2192 'leasehold', 'LIB' \u2192 'library', 'CIP' \u2192 'cip'."
     },
     {
       "helix_attribute": "acquisition_date",
-      "source": "PS_ASSET_ACQUIS_DT.ACQUISITION_DT",
+      "source": "PS_ASSET.ACQUISITION_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "original_cost",
-      "source": "PS_ASSET_ACQUIS_DT.COST_AMOUNT",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "accumulated_depreciation",
-      "source": "PS_ASSET_DEPR.ACCUM_DEPR_AMT",
-      "transformation": "Current accumulated depreciation."
-    },
-    {
-      "helix_attribute": "net_book_value",
-      "source": "PS_ASSET_DEPR.NET_BOOK_VALUE or derived",
-      "transformation": "original_cost - accumulated_depreciation."
+      "helix_attribute": "acquisition_cost",
+      "source": "PS_COST.COST",
+      "transformation": "Original cost."
     },
     {
       "helix_attribute": "useful_life_months",
-      "source": "PS_ASSET_DEPR.USEFUL_LIFE",
+      "source": "PS_COST.LIFE or PS_ASSET_CAT_TBL.USEFUL_LIFE",
+      "transformation": "Convert to months if stored in years."
+    },
+    {
+      "helix_attribute": "salvage_value",
+      "source": "PS_COST.SALVAGE_VALUE",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "depreciation_method",
-      "source": "PS_ASSET_DEPR.DEPR_METHOD",
-      "transformation": "Map: 'SL'\u2192'straight_line', 'DB'\u2192'declining_balance', 'SYD'\u2192'sum_of_years'."
+      "source": "PS_COST.DEPR_METHOD",
+      "transformation": "Map: 'SL' \u2192 'straight_line', 'DB' \u2192 'declining_balance'."
     },
     {
-      "helix_attribute": "location",
-      "source": "PS_ASSET.LOCATION",
-      "transformation": "Building/room where asset is located."
+      "helix_attribute": "accumulated_depreciation",
+      "source": "PS_COST.ACCUM_DEPR_AMT",
+      "transformation": "Direct map."
     },
     {
-      "helix_attribute": "department",
-      "source": "PS_ASSET.DEPTID",
-      "transformation": "Owning department."
+      "helix_attribute": "net_book_value",
+      "source": "PS_COST.NET_BOOK_VAL",
+      "transformation": "cost - accumulated_depreciation."
+    },
+    {
+      "helix_attribute": "location_building",
+      "source": "PS_ASSET_LOCAT.BUILDING",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "location_room",
+      "source": "PS_ASSET_LOCAT.ROOM",
+      "transformation": "Direct map."
     },
     {
       "helix_attribute": "custodian",
-      "source": "PS_ASSET.CUSTODIAN",
-      "transformation": "Person responsible for the asset."
+      "source": "PS_ASSET_LOCAT.CUSTODIAN_ID \u2192 name",
+      "transformation": "Resolve to name."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_ASSET_DIST.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
       "helix_attribute": "fund_code",
-      "source": "PS_ASSET_ACQUIS_DT.FUND_CODE",
-      "transformation": "Fund that paid for the asset. Critical for GASB capital asset reporting."
+      "source": "PS_ASSET_DIST.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
-      "helix_attribute": "po_reference",
-      "source": "PS_ASSET_ACQUIS_DT.PO_ID",
-      "transformation": "Link to originating purchase order."
+      "helix_attribute": "grant_ref",
+      "source": "PS_ASSET_DIST.PROJECT_ID",
+      "transformation": "If purchased on a grant. Subject to 2 CFR 200.313 federal equipment rules."
     },
     {
-      "helix_attribute": "disposal_date",
-      "source": "PS_ASSET_DISPOSAL.DISPOSAL_DT",
-      "transformation": "Cast to ISO 8601. Null if active."
-    },
-    {
-      "helix_attribute": "disposal_type",
-      "source": "PS_ASSET_DISPOSAL.DISPOSAL_TYPE",
-      "transformation": "Map: 'SALE'\u2192'sold', 'TRANS'\u2192'transferred', 'RETIR'\u2192'retired', 'WRITE'\u2192'written_off'."
+      "helix_attribute": "status",
+      "source": "PS_ASSET.ASSET_STATUS",
+      "transformation": "Map: 'A' \u2192 'in_service', 'D' \u2192 'disposed', 'T' \u2192 'transferred', 'N' \u2192 'not_in_service'."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -138,6 +131,5 @@
       "source": "Constant",
       "transformation": "'internal'"
     }
-  ],
-  "notes": "Capital asset tracking is required for GASB financial statements (public institutions) and FASB (private). Higher ed institutions often have separate capitalization thresholds for equipment ($5K), buildings, and infrastructure. Library collections and artwork may be tracked as asset categories. Federal grants require equipment tracking per 2 CFR 200."
+  ]
 }

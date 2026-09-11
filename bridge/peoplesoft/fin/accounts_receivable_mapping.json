@@ -1,68 +1,84 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 AccountsReceivable (Student Financials)",
+  "title": "HELIX Bridge: PeopleSoft Student Financials / AR \u2192 ARTransaction",
   "source_system": "peoplesoft",
-  "module": "Financials - Student Financials / AR",
-  "target_resource": "StudentAccount (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.2 resource",
-  "source_tables": [
+  "module": "Financials - Accounts Receivable / Student Financials",
+  "target_resource": "ARTransaction",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_ITEM",
-      "description": "AR item (charge/payment/financial aid). One row per transaction on the student account."
+      "object": "PS_ITEM",
+      "description": "AR item (charge/payment): BUSINESS_UNIT, CUST_ID (student), ITEM_ID, ITEM_LINE, ITEM_SEQ_NUM, ITEM_AMT, BAL_AMT, DUE_DT, ACCOUNTING_DT, ITEM_STATUS (O=open, C=closed), SA_ID_TYPE."
     },
     {
-      "table": "PS_ITEM_LINE_DTL",
-      "description": "Item line detail. Chartfield coding for each item (GL distribution)."
+      "object": "PS_ITEM_LINE_DTL",
+      "description": "Item line detail with ChartField coding: ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, MONETARY_AMOUNT."
     },
     {
-      "table": "PS_SF_ACCTG_LN",
-      "description": "Student Financials accounting lines. Detailed GL entries generated from student account activity."
+      "object": "PS_BI_HDR / PS_BI_LINE",
+      "description": "Billing invoice header and lines (for non-student billing): BI_ID, BILL_DT, TOTAL_AMT, CUST_ID, BI_LINE_ID, CHARGE_AMT."
     },
     {
-      "table": "PS_ITEM_TYPE_TBL",
-      "description": "Item type definition. Tuition, fees, room, board, financial aid disbursements, payments."
+      "object": "PS_SF_ACCTG_LN",
+      "description": "Student Financials accounting line: the GL distribution for each student charge/payment. BUSINESS_UNIT, ITEM_NBR, ACCOUNT, FUND_CODE, DEPTID."
     },
     {
-      "table": "PS_ACAD_CAREER_SF",
-      "description": "Student Financials career settings. Tuition calc group, fee assessment."
+      "object": "PS_PAYMENT_TBL (AR)",
+      "description": "AR payment: DEPOSIT_BU, DEPOSIT_ID, PAYMENT_SEQ_NUM, PAYMENT_AMT, PAYMENT_DT, PAY_METHOD."
+    },
+    {
+      "object": "PS_ITEM_TYPE_TBL",
+      "description": "Item type definitions: SA_ID_TYPE, DESCR, ITEM_CATEGORY (T=tuition, F=fee, R=room, B=board, W=waiver, P=payment, A=financial aid). Drives the charge taxonomy."
+    },
+    {
+      "object": "PS_THIRD_PARTY_CONTRACT",
+      "description": "Third-party billing contracts (employer tuition reimbursement, VA, tribal). CONTRACT_NUM, SPONSOR_ID, MAX_AMT."
+    },
+    {
+      "object": "PS_STDNT_CAR_TERM",
+      "description": "Student career term: links charges to academic term (STRM). Used to associate AR items with the right academic period."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "transaction_id",
-      "source": "PS_ITEM.ITEM_NBR + ITEM_LINE",
+      "source": "PS_ITEM.BUSINESS_UNIT + CUST_ID + ITEM_ID + ITEM_LINE + ITEM_SEQ_NUM",
       "transformation": "Composite key."
     },
     {
       "helix_attribute": "student_ref",
-      "source": "PS_ITEM.EMPLID",
-      "transformation": "Resolve to HELIX Student.helix_id."
+      "source": "PS_ITEM.CUST_ID \u2192 EMPLID cross-reference",
+      "transformation": "Resolve to HELIX student_id. In PS Student Financials, CUST_ID often = EMPLID."
     },
     {
-      "helix_attribute": "business_unit",
-      "source": "PS_ITEM.BUSINESS_UNIT",
-      "transformation": "Direct map."
+      "helix_attribute": "transaction_type",
+      "source": "PS_ITEM_TYPE_TBL.ITEM_CATEGORY",
+      "transformation": "Map: 'T' \u2192 'charge_tuition', 'F' \u2192 'charge_fee', 'R' \u2192 'charge_room', 'B' \u2192 'charge_board', 'P' \u2192 'payment', 'A' \u2192 'fin_aid_disbursement', 'W' \u2192 'waiver', 'REF' \u2192 'refund'."
     },
     {
-      "helix_attribute": "item_type",
-      "source": "PS_ITEM.ITEM_TYPE",
-      "transformation": "Direct map. Institution-defined types (e.g., tuition, lab fee, dorm, meal plan, Pell disbursement)."
+      "helix_attribute": "charge_code",
+      "source": "PS_ITEM.SA_ID_TYPE",
+      "transformation": "The specific charge type code. E.g., 'TUITION_UG', 'TECH_FEE', 'PELL_DISB'. Maps to PS_ITEM_TYPE_TBL for description."
     },
     {
-      "helix_attribute": "item_type_category",
-      "source": "PS_ITEM_TYPE_TBL.SF_CATEGORY",
-      "transformation": "Map: 'TUI'\u2192'tuition', 'FEE'\u2192'fee', 'HSG'\u2192'housing', 'MEL'\u2192'meal_plan', 'FIN'\u2192'financial_aid_disbursement', 'PAY'\u2192'payment'."
-    },
-    {
-      "helix_attribute": "term",
-      "source": "PS_ITEM.TERM",
-      "transformation": "Resolve to HELIX AcademicPeriod.helix_id."
+      "helix_attribute": "description",
+      "source": "PS_ITEM_TYPE_TBL.DESCR",
+      "transformation": "Human-readable charge/payment description."
     },
     {
       "helix_attribute": "amount",
       "source": "PS_ITEM.ITEM_AMT",
-      "transformation": "Direct map. Positive = charge, negative = credit/payment."
+      "transformation": "Original transaction amount. Charges positive, payments/waivers negative."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "PS_BUS_UNIT_TBL_SF.BASE_CURRENCY",
+      "transformation": "ISO 4217. Typically USD for US institutions."
+    },
+    {
+      "helix_attribute": "transaction_date",
+      "source": "PS_ITEM.ACCOUNTING_DT",
+      "transformation": "Cast to ISO 8601. The date the charge/payment hits the student account."
     },
     {
       "helix_attribute": "due_date",
@@ -70,34 +86,39 @@
       "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "posting_date",
-      "source": "PS_ITEM.ACCOUNTING_DT",
-      "transformation": "Cast to ISO 8601."
+      "helix_attribute": "term_ref",
+      "source": "PS_ITEM.STRM or PS_STDNT_CAR_TERM.STRM",
+      "transformation": "Resolve PS STRM to HELIX AcademicPeriod."
     },
     {
-      "helix_attribute": "item_status",
+      "helix_attribute": "payment_method",
+      "source": "PS_PAYMENT_TBL.PAY_METHOD",
+      "transformation": "Map: 'CSH' \u2192 'cash', 'CHK' \u2192 'check', 'CC' \u2192 'credit_card', 'ACH' \u2192 'eft', 'FA' \u2192 'fin_aid_disbursement'."
+    },
+    {
+      "helix_attribute": "invoice_status",
       "source": "PS_ITEM.ITEM_STATUS",
-      "transformation": "Map: 'O'\u2192'outstanding', 'C'\u2192'closed/paid', 'X'\u2192'cancelled'."
+      "transformation": "Map: 'O' \u2192 'open', 'C' \u2192 'closed'."
     },
     {
-      "helix_attribute": "balance",
-      "source": "PS_ITEM.ITEM_BALANCE",
-      "transformation": "Remaining balance on the item."
+      "helix_attribute": "balance_due",
+      "source": "PS_ITEM.BAL_AMT",
+      "transformation": "Remaining balance after payments applied."
     },
     {
-      "helix_attribute": "description",
-      "source": "PS_ITEM_TYPE_TBL.DESCR",
-      "transformation": "Human-readable charge description."
+      "helix_attribute": "fund_code",
+      "source": "PS_SF_ACCTG_LN.FUND_CODE or PS_ITEM_LINE_DTL.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
-      "helix_attribute": "gl_account",
-      "source": "PS_ITEM_LINE_DTL.ACCOUNT",
-      "transformation": "GL account for the revenue/receivable."
+      "helix_attribute": "department",
+      "source": "PS_SF_ACCTG_LN.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
-      "helix_attribute": "gl_fund",
-      "source": "PS_ITEM_LINE_DTL.FUND_CODE",
-      "transformation": "Fund code for the revenue."
+      "helix_attribute": "third_party_ref",
+      "source": "PS_THIRD_PARTY_CONTRACT.CONTRACT_NUM",
+      "transformation": "If charge covered by third-party contract."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -110,5 +131,5 @@
       "transformation": "'confidential'"
     }
   ],
-  "notes": "PeopleSoft Student Financials (SF) is a specialized AR module for student billing. It integrates with Tuition Calculation (automatic fee assessment based on enrollment), Financial Aid (disbursement posting), and General Ledger (revenue recognition). The PS_ITEM table is the core transaction table \u2014 every charge, payment, refund, and financial aid disbursement flows through it."
+  "notes": "PS Student Financials is one of the most complex modules. Key tables: PS_ITEM is the master, PS_SF_ACCTG_LN is the GL distribution, PS_ITEM_TYPE_TBL classifies every charge type. The STRM (term) association comes from the item's academic career term link. Refunds flow through PS_REFUND_HDR \u2192 PS_REFUND_DTL. Third-party billing (PS_THIRD_PARTY_CONTRACT) is common for VA benefits, employer reimbursement. FERPA/GLBA overlap: student financial records are FERPA education records AND may contain GLBA-covered financial information when linked to aid disbursements."
 }

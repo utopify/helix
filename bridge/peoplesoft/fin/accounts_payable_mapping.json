@@ -1,42 +1,41 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 AccountsPayable",
+  "title": "HELIX Bridge: PeopleSoft Accounts Payable \u2192 APVoucher",
   "source_system": "peoplesoft",
   "module": "Financials - Accounts Payable",
-  "target_resource": "APVoucher (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.2 resource",
-  "source_tables": [
+  "target_resource": "APVoucher",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_VOUCHER",
-      "description": "Voucher header. Vendor, invoice, business unit, voucher status, payment terms."
+      "object": "PS_VOUCHER",
+      "description": "Voucher header: BUSINESS_UNIT, VOUCHER_ID, INVOICE_ID, INVOICE_DT, VENDOR_ID, GROSS_AMT, DSCNT_AMT, VCHR_APPRVL_FLG, ENTRY_STATUS (P=postable, V=validated), PAY_STATUS, DUE_DT, OPRID, ACCOUNTING_DT."
     },
     {
-      "table": "PS_VOUCHER_LINE",
-      "description": "Voucher distribution lines. Chartfield coding, amount, quantity, merchandise."
+      "object": "PS_VOUCHER_LINE",
+      "description": "Voucher line items: VOUCHER_ID, LINE_NUM, DESCR254, MERCHANDISE_AMT, PO_ID (link to PO)."
     },
     {
-      "table": "PS_DISTRIB_LINE",
-      "description": "Distribution accounting lines. Chartfield split for a single voucher line."
+      "object": "PS_DISTRIB_LINE",
+      "description": "Distribution/coding: VOUCHER_ID, LINE_NUM, DISTRIB_LINE_NUM, ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, PROJECT_ID, MONETARY_AMOUNT. The ChartField coding for each distribution."
     },
     {
-      "table": "PS_VENDOR",
-      "description": "Vendor master. Vendor ID, name, address, TIN, payment method."
+      "object": "PS_VENDOR",
+      "description": "Vendor master: VENDOR_ID, NAME1, VNDR_STATUS, TAX_ID_TYPE, VENDOR_CLASS, REMIT_ADDR_SEQ_NUM, PYMNT_METHOD."
     },
     {
-      "table": "PS_PAYMENT_TBL",
-      "description": "Payment records. Check/EFT details, payment date, amount, void status."
+      "object": "PS_PAYMENT_TBL",
+      "description": "Payment records: PAYMENT_ID, BANK_CD, PAYMENT_DT, PAYMENT_AMT, PAYMENT_STATUS, PYMNT_METHOD (CHK=check, ACH=ACH, EFT=wire)."
     },
     {
-      "table": "PS_PYMNT_VCHR_XREF",
-      "description": "Payment-voucher cross reference. Links payments to vouchers."
+      "object": "PS_PAY_VCHR_XREF",
+      "description": "Payment-to-voucher cross reference: links which vouchers were paid by which payment."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "voucher_id",
-      "source": "PS_VOUCHER.VOUCHER_ID",
-      "transformation": "Direct map."
+      "source": "PS_VOUCHER.BUSINESS_UNIT + VOUCHER_ID",
+      "transformation": "Composite key."
     },
     {
       "helix_attribute": "business_unit",
@@ -50,22 +49,17 @@
     },
     {
       "helix_attribute": "vendor_name",
-      "source": "PS_VENDOR.NAME1",
-      "transformation": "Lookup via VENDOR_ID."
+      "source": "PS_VENDOR.NAME1 (joined on VENDOR_ID)",
+      "transformation": "Direct map."
     },
     {
       "helix_attribute": "invoice_number",
       "source": "PS_VOUCHER.INVOICE_ID",
-      "transformation": "Direct map."
+      "transformation": "The vendor's invoice number."
     },
     {
       "helix_attribute": "invoice_date",
       "source": "PS_VOUCHER.INVOICE_DT",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "voucher_date",
-      "source": "PS_VOUCHER.ACCOUNTING_DT",
       "transformation": "Cast to ISO 8601."
     },
     {
@@ -76,52 +70,57 @@
     {
       "helix_attribute": "discount_amount",
       "source": "PS_VOUCHER.DSCNT_AMT",
-      "transformation": "Direct map."
+      "transformation": "Early-payment discount. Zero if not applicable."
     },
     {
       "helix_attribute": "voucher_status",
-      "source": "PS_VOUCHER.VCHR_APPRVL_STATUS + ENTRY_STATUS",
-      "transformation": "Map: 'A'\u2192'approved', 'P'\u2192'pending', 'D'\u2192'denied', 'V'\u2192'void'. ENTRY_STATUS: 'P'\u2192'posted', 'R'\u2192'recycled'."
+      "source": "PS_VOUCHER.ENTRY_STATUS",
+      "transformation": "Map: 'N' \u2192 'not_edited', 'V' \u2192 'validated', 'P' \u2192 'postable', 'C' \u2192 'closed', 'X' \u2192 'canceled'."
     },
     {
       "helix_attribute": "payment_status",
-      "source": "PS_VOUCHER.PYMNT_STATUS or PS_PAYMENT_TBL.PYMNT_STATUS",
-      "transformation": "Map: 'P'\u2192'paid', 'U'\u2192'unpaid', 'V'\u2192'void'."
+      "source": "PS_VOUCHER.PAY_STATUS",
+      "transformation": "Map: 'U' \u2192 'unpaid', 'P' \u2192 'paid', 'A' \u2192 'partially_paid'."
     },
     {
       "helix_attribute": "payment_date",
-      "source": "PS_PAYMENT_TBL.PYMNT_DT",
+      "source": "PS_PAYMENT_TBL.PAYMENT_DT (via PS_PAY_VCHR_XREF)",
       "transformation": "Cast to ISO 8601."
     },
     {
       "helix_attribute": "payment_method",
-      "source": "PS_PAYMENT_TBL.PYMNT_METHOD",
-      "transformation": "Map: 'CHK'\u2192'check', 'ACH'\u2192'eft', 'WIR'\u2192'wire'."
+      "source": "PS_PAYMENT_TBL.PYMNT_METHOD or PS_VENDOR.PYMNT_METHOD",
+      "transformation": "Map: 'CHK' \u2192 'check', 'ACH' \u2192 'eft', 'EFT' \u2192 'wire', 'SYS' \u2192 'system'."
     },
     {
       "helix_attribute": "line_account",
       "source": "PS_DISTRIB_LINE.ACCOUNT",
-      "transformation": "GL account charged."
+      "transformation": "Map to HELIX account code via XREF."
     },
     {
       "helix_attribute": "line_fund",
       "source": "PS_DISTRIB_LINE.FUND_CODE",
-      "transformation": "Fund charged."
+      "transformation": "Map to HELIX fund code."
     },
     {
       "helix_attribute": "line_department",
       "source": "PS_DISTRIB_LINE.DEPTID",
-      "transformation": "Department charged."
+      "transformation": "Map to HELIX org code."
     },
     {
       "helix_attribute": "line_amount",
       "source": "PS_DISTRIB_LINE.MONETARY_AMOUNT",
-      "transformation": "Direct map."
+      "transformation": "Distribution amount."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "PS_VOUCHER_LINE.DESCR254 or PS_DISTRIB_LINE.ACCOUNT (derived)",
+      "transformation": "PS doesn't have a native spend category like Workday. Derive from Account code or line description."
     },
     {
       "helix_attribute": "po_reference",
       "source": "PS_VOUCHER_LINE.PO_ID",
-      "transformation": "Link to purchase order if voucher originated from PO."
+      "transformation": "Link to originating PO for three-way match. Null if non-PO voucher."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -133,5 +132,6 @@
       "source": "Constant",
       "transformation": "'internal'"
     }
-  ]
+  ],
+  "notes": "PS AP three-way match (PO \u2192 Receipt \u2192 Voucher) is controlled by match rules in PS_MATCH_CNTRL. Voucher approval workflows use PS_VCHR_APPRVL. Recurring vouchers use PS_VCHR_RECURRING_VW. Watch for ACCOUNTING_DT vs INVOICE_DT \u2014 the accounting date drives the period the expense hits the ledger."
 }

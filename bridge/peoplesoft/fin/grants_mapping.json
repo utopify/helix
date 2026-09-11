@@ -1,107 +1,148 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Grants",
+  "title": "HELIX Bridge: PeopleSoft Grants \u2192 Grant",
   "source_system": "peoplesoft",
-  "module": "Financials - Grants",
-  "target_resource": "Grant (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.3 resource (Research Administration domain)",
-  "source_tables": [
+  "module": "Financials - Grants Management",
+  "target_resource": "Grant",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_GM_AWARD",
-      "description": "Award master. Sponsor, PI, award amount, project dates, award type."
+      "object": "PS_GM_AWD_HDR",
+      "description": "Award header: BUSINESS_UNIT, AWARD_ID, AWARD_DESCR, SPONSOR_ID, PI_ID (principal investigator), TOTAL_AWARD_AMT, AWARD_STATUS, CFDA_NBR."
     },
     {
-      "table": "PS_GM_AWD_PRJ_LNK",
-      "description": "Award-project link. Connects awards to one or more projects."
+      "object": "PS_GM_AWD_PRJ",
+      "description": "Award-to-project link: AWARD_ID, PROJECT_ID, PRJ_BEG_DT, PRJ_END_DT. One award may have multiple projects/tasks."
     },
     {
-      "table": "PS_PROJECT",
-      "description": "Project master. Project ID, description, status, start/end dates."
+      "object": "PS_GM_SPONSOR",
+      "description": "Sponsor master: SPONSOR_ID, DESCR, SPONSOR_TYPE (F=federal, S=state, P=private, I=industry)."
     },
     {
-      "table": "PS_GM_SPONSOR",
-      "description": "Sponsor table. Federal agencies (NSF, NIH, DOE), foundations, corporations."
+      "object": "PS_GM_BUDGET_DTL",
+      "description": "Grant budget detail: PROJECT_ID, BUDGET_PERIOD, ACCOUNT, BUDGET_AMT, COST_TYPE (D=direct, I=indirect/F&A)."
     },
     {
-      "table": "PS_PROJ_RESOURCE",
-      "description": "Project resource budget. Budget lines by resource type and category."
+      "object": "PS_GM_AWD_FNDS",
+      "description": "Award funding: total funded amount and funding increments. Tracks when the sponsor releases funds."
     },
     {
-      "table": "PS_GM_AWD_BILLING",
-      "description": "Grant billing. Invoicing sponsors, cost share tracking."
+      "object": "PS_PROJECT",
+      "description": "Project master: PROJECT_ID, DESCR, PROJECT_STATUS, BEGIN_DT, END_DT."
+    },
+    {
+      "object": "PS_GM_IDC_RATE",
+      "description": "Indirect cost (F&A) rate table: RATE_TYPE (on-campus/off-campus, organized research/instruction/other), IDC_RATE, EFFDT."
+    },
+    {
+      "object": "PS_GM_BILLING",
+      "description": "Grant billing: LOC draws (Letter of Credit for federal), cost-reimbursable invoices, fixed-price milestones."
+    },
+    {
+      "object": "PS_GM_EFFORT_CERT",
+      "description": "Effort certification records: EMPLID, EFFORT_PCT, CERTIFICATION_STATUS."
     }
   ],
   "attribute_mappings": [
     {
-      "helix_attribute": "award_id",
-      "source": "PS_GM_AWARD.AWARD_ID",
+      "helix_attribute": "grant_id",
+      "source": "PS_GM_AWD_HDR.AWARD_ID",
       "transformation": "Direct map."
     },
     {
-      "helix_attribute": "business_unit",
-      "source": "PS_GM_AWARD.BUSINESS_UNIT_GL",
-      "transformation": "GL business unit."
+      "helix_attribute": "grant_name",
+      "source": "PS_GM_AWD_HDR.AWARD_DESCR",
+      "transformation": "Direct map."
+    },
+    {
+      "helix_attribute": "sponsor_id",
+      "source": "PS_GM_AWD_HDR.SPONSOR_ID",
+      "transformation": "Direct map."
     },
     {
       "helix_attribute": "sponsor_name",
       "source": "PS_GM_SPONSOR.DESCR",
-      "transformation": "Lookup via SPONSOR_ID."
-    },
-    {
-      "helix_attribute": "sponsor_id",
-      "source": "PS_GM_AWARD.SPONSOR_ID",
       "transformation": "Direct map."
     },
     {
       "helix_attribute": "sponsor_type",
       "source": "PS_GM_SPONSOR.SPONSOR_TYPE",
-      "transformation": "Map: 'FED'\u2192'federal', 'STA'\u2192'state', 'IND'\u2192'industry', 'FDN'\u2192'foundation', 'INT'\u2192'internal'."
+      "transformation": "Map: 'F' \u2192 'federal', 'S' \u2192 'state', 'P' \u2192 'private', 'I' \u2192 'industry', 'INT' \u2192 'internal'."
     },
     {
-      "helix_attribute": "principal_investigator",
-      "source": "PS_GM_AWARD.PI_ID (EMPLID)",
-      "transformation": "Resolve to name via PS_NAMES."
-    },
-    {
-      "helix_attribute": "award_amount",
-      "source": "PS_GM_AWARD.TOTAL_AWARD_AMT",
-      "transformation": "Direct map. Total award including all budget periods."
-    },
-    {
-      "helix_attribute": "award_start_date",
-      "source": "PS_GM_AWARD.AWARD_BEGIN_DT",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "award_end_date",
-      "source": "PS_GM_AWARD.AWARD_END_DT",
-      "transformation": "Cast to ISO 8601."
-    },
-    {
-      "helix_attribute": "award_status",
-      "source": "PS_GM_AWARD.AWARD_STATUS",
-      "transformation": "Map: 'A'\u2192'active', 'C'\u2192'closed', 'P'\u2192'pending', 'S'\u2192'suspended'."
+      "helix_attribute": "sponsor_award_number",
+      "source": "PS_GM_AWD_HDR.SPONSOR_AWD_NBR",
+      "transformation": "The sponsor's own reference number (e.g., NIH grant number)."
     },
     {
       "helix_attribute": "cfda_number",
-      "source": "PS_GM_AWARD.CFDA_NUMBER",
-      "transformation": "Federal assistance listing number (formerly CFDA). Required for Single Audit."
+      "source": "PS_GM_AWD_HDR.CFDA_NBR",
+      "transformation": "CFDA number for federal awards. Direct map."
     },
     {
-      "helix_attribute": "project_ids[]",
-      "source": "PS_GM_AWD_PRJ_LNK.PROJECT_ID",
-      "transformation": "Array of linked project IDs."
+      "helix_attribute": "principal_investigator",
+      "source": "PS_GM_AWD_HDR.PI_ID \u2192 PS_PERSONAL_DATA.NAME",
+      "transformation": "Resolve to name."
     },
     {
-      "helix_attribute": "indirect_cost_rate",
-      "source": "PS_GM_AWARD.IDC_RT or PS_PROJ_RESOURCE.RATE",
-      "transformation": "F&A (indirect cost) rate negotiated for this award."
+      "helix_attribute": "project_start_date",
+      "source": "PS_GM_AWD_PRJ.PRJ_BEG_DT (primary project)",
+      "transformation": "Cast to ISO 8601."
     },
     {
-      "helix_attribute": "total_expended",
-      "source": "Derived from PS_LEDGER_KK or PS_LEDGER (PROJECT_ID)",
-      "transformation": "Sum of actuals against the project chartfield."
+      "helix_attribute": "project_end_date",
+      "source": "PS_GM_AWD_PRJ.PRJ_END_DT (primary project)",
+      "transformation": "Cast to ISO 8601."
+    },
+    {
+      "helix_attribute": "total_award_amount",
+      "source": "PS_GM_AWD_HDR.TOTAL_AWARD_AMT",
+      "transformation": "Total sponsor commitment."
+    },
+    {
+      "helix_attribute": "total_budget",
+      "source": "Sum of PS_GM_BUDGET_DTL.BUDGET_AMT across all periods",
+      "transformation": "Total budgeted (direct + indirect)."
+    },
+    {
+      "helix_attribute": "direct_costs_budget",
+      "source": "Sum of PS_GM_BUDGET_DTL where COST_TYPE = 'D'",
+      "transformation": "Direct costs budget."
+    },
+    {
+      "helix_attribute": "indirect_costs_budget",
+      "source": "Sum of PS_GM_BUDGET_DTL where COST_TYPE = 'I'",
+      "transformation": "F&A/overhead budget."
+    },
+    {
+      "helix_attribute": "idc_rate",
+      "source": "PS_GM_IDC_RATE.IDC_RATE (latest EFFDT for the project's rate type)",
+      "transformation": "Negotiated F&A rate. E.g., 55.5% MTDC for on-campus organized research."
+    },
+    {
+      "helix_attribute": "cost_sharing_amount",
+      "source": "PS_GM_BUDGET_DTL where COST_SHARING_FLG = 'Y'",
+      "transformation": "Total institutional cost sharing commitment."
+    },
+    {
+      "helix_attribute": "grant_status",
+      "source": "PS_GM_AWD_HDR.AWARD_STATUS",
+      "transformation": "Map: 'P' \u2192 'proposed', 'A' \u2192 'active', 'N' \u2192 'nce', 'C' \u2192 'closing', 'CL' \u2192 'closed', 'S' \u2192 'suspended'."
+    },
+    {
+      "helix_attribute": "billing_type",
+      "source": "PS_GM_AWD_HDR.BILLING_TYPE or derived from billing setup",
+      "transformation": "Map: 'LOC' \u2192 'letter_of_credit', 'CR' \u2192 'cost_reimbursable', 'FP' \u2192 'fixed_price'."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "PS_PROJECT.DEPTID or PS_GM_AWD_HDR.DEPTID",
+      "transformation": "Map to HELIX org code. Administering department."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_GM_AWD_PRJ.FUND_CODE or derived from sponsor type",
+      "transformation": "Map to HELIX fund code. Federal \u2192 restricted_federal, state \u2192 restricted_state."
     },
     {
       "helix_attribute": "meta.source_system",
@@ -111,8 +152,8 @@
     {
       "helix_attribute": "meta.classification",
       "source": "Constant",
-      "transformation": "'confidential'"
+      "transformation": "'internal'"
     }
   ],
-  "notes": "PeopleSoft Grants (GM) module manages the post-award lifecycle: budget setup, expenditure tracking, billing, reporting. Pre-award (proposals) may be in a separate system. Key compliance drivers: 2 CFR 200 (Uniform Guidance), Single Audit (A-133), federal sponsor requirements. F&A (facilities & administrative) cost recovery is a major revenue source for research universities."
+  "notes": "PS Grants Management is the most complex FIN module for research universities. Key complexities: (1) Award \u2192 Project \u2192 Activity hierarchy (one award can fund multiple projects/tasks), (2) F&A rate varies by activity type (organized research vs instruction vs other) and location (on-campus vs off-campus), (3) effort certification is semi-annual or per-pay-period depending on institution, (4) LOC draws vs cost-reimbursable billing have different timing, (5) cost sharing must be tracked and documented. The PS_LEDGER table (actuals) + PS_LEDGER_KK (budget/encumbrances) together give the full financial picture of a grant."
 }

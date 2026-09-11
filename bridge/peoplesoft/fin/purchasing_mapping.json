@@ -1,42 +1,45 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: PeopleSoft FSCM \u2192 Purchasing",
+  "title": "HELIX Bridge: PeopleSoft Purchasing \u2192 PurchaseOrder",
   "source_system": "peoplesoft",
   "module": "Financials - Purchasing",
-  "target_resource": "PurchaseOrder (planned)",
-  "version": "0.1",
-  "status": "Maps to planned HELIX Core v0.2 resource",
-  "source_tables": [
+  "target_resource": "PurchaseOrder",
+  "version": "0.2",
+  "source_objects": [
     {
-      "table": "PS_PO_HDR",
-      "description": "Purchase order header. PO ID, vendor, status, dates, buyer."
+      "object": "PS_PO_HDR",
+      "description": "PO header: BUSINESS_UNIT, PO_ID, PO_DT, VENDOR_ID, PO_STATUS (A=approved, O=open, C=complete, X=canceled), BUYER_ID, HOLD_STATUS, PYMNT_TERMS_CD."
     },
     {
-      "table": "PS_PO_LINE",
-      "description": "PO line items. Item description, quantity, unit price, amount."
+      "object": "PS_PO_LINE",
+      "description": "PO line: PO_ID, LINE_NBR, DESCR254, QTY, PRICE, ITM_ID, CATEGORY_CD, REQ_ID (link to requisition)."
     },
     {
-      "table": "PS_PO_LINE_DISTRIB",
-      "description": "PO distribution. Chartfield coding for each line (account, fund, dept, project)."
+      "object": "PS_PO_LINE_DIST",
+      "description": "PO line distribution (ChartFields): ACCOUNT, FUND_CODE, DEPTID, PROGRAM_CODE, PROJECT_ID, MONETARY_AMOUNT."
     },
     {
-      "table": "PS_RECV_LN_SHIP",
-      "description": "Receiving records. Quantity received, receipt date."
+      "object": "PS_REQ_HDR",
+      "description": "Requisition header: REQ_ID, ORIGIN, ENTERED_DT, REQ_STATUS, REQUESTER_ID."
     },
     {
-      "table": "PS_REQ_HDR",
-      "description": "Requisition header. Pre-PO procurement requests."
+      "object": "PS_RECV_LN_SHIP",
+      "description": "Receipt line: PO_ID, LINE_NBR, RECV_LN_NBR, QTY_RECV, RECV_DT, RECV_STATUS."
     },
     {
-      "table": "PS_REQ_LINE",
-      "description": "Requisition lines."
+      "object": "PS_VENDOR",
+      "description": "Vendor master (shared with AP)."
+    },
+    {
+      "object": "PS_CONTRACT_HDR",
+      "description": "Blanket PO / contract: CONTRACT_ID, VENDOR_ID, BEGIN_DT, END_DT, MAX_AMT. Links to PO lines for release orders."
     }
   ],
   "attribute_mappings": [
     {
       "helix_attribute": "po_id",
-      "source": "PS_PO_HDR.PO_ID",
-      "transformation": "Direct map."
+      "source": "PS_PO_HDR.BUSINESS_UNIT + PO_ID",
+      "transformation": "Composite key."
     },
     {
       "helix_attribute": "business_unit",
@@ -49,6 +52,11 @@
       "transformation": "Direct map."
     },
     {
+      "helix_attribute": "vendor_name",
+      "source": "PS_VENDOR.NAME1",
+      "transformation": "Direct map."
+    },
+    {
       "helix_attribute": "po_date",
       "source": "PS_PO_HDR.PO_DT",
       "transformation": "Cast to ISO 8601."
@@ -56,17 +64,12 @@
     {
       "helix_attribute": "po_status",
       "source": "PS_PO_HDR.PO_STATUS",
-      "transformation": "Map: 'A'\u2192'approved', 'O'\u2192'open', 'C'\u2192'complete', 'X'\u2192'cancelled', 'D'\u2192'dispatched'."
+      "transformation": "Map: 'A' \u2192 'approved', 'O' \u2192 'open', 'C' \u2192 'complete', 'X' \u2192 'canceled', 'D' \u2192 'dispatched'."
     },
     {
       "helix_attribute": "total_amount",
-      "source": "PS_PO_HDR.PO_AMT",
-      "transformation": "Direct map."
-    },
-    {
-      "helix_attribute": "buyer",
-      "source": "PS_PO_HDR.BUYER_ID",
-      "transformation": "Resolve to buyer name."
+      "source": "Sum of PS_PO_LINE.QTY \u00d7 PRICE across all lines",
+      "transformation": "Calculated."
     },
     {
       "helix_attribute": "line_description",
@@ -85,38 +88,43 @@
     },
     {
       "helix_attribute": "line_amount",
-      "source": "PS_PO_LINE.MERCHANDISE_AMT",
-      "transformation": "Direct map."
+      "source": "PS_PO_LINE_DIST.MONETARY_AMOUNT",
+      "transformation": "Distribution amount."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "PS_PO_LINE.CATEGORY_CD",
+      "transformation": "PS procurement category. Map to HELIX spend category."
     },
     {
       "helix_attribute": "line_account",
-      "source": "PS_PO_LINE_DISTRIB.ACCOUNT",
-      "transformation": "GL account."
+      "source": "PS_PO_LINE_DIST.ACCOUNT",
+      "transformation": "Map to HELIX account code."
     },
     {
       "helix_attribute": "line_fund",
-      "source": "PS_PO_LINE_DISTRIB.FUND_CODE",
-      "transformation": "Fund code."
+      "source": "PS_PO_LINE_DIST.FUND_CODE",
+      "transformation": "Map to HELIX fund code."
     },
     {
       "helix_attribute": "line_department",
-      "source": "PS_PO_LINE_DISTRIB.DEPTID",
-      "transformation": "Department."
+      "source": "PS_PO_LINE_DIST.DEPTID",
+      "transformation": "Map to HELIX org code."
     },
     {
-      "helix_attribute": "line_project",
-      "source": "PS_PO_LINE_DISTRIB.PROJECT_ID",
-      "transformation": "Project/grant ID."
-    },
-    {
-      "helix_attribute": "requisition_id",
+      "helix_attribute": "requisition_ref",
       "source": "PS_PO_LINE.REQ_ID",
       "transformation": "Link to originating requisition."
     },
     {
-      "helix_attribute": "receipt_status",
-      "source": "Derived from PS_RECV_LN_SHIP",
-      "transformation": "'received' if receiving records exist matching PO line, 'pending' otherwise."
+      "helix_attribute": "contract_ref",
+      "source": "PS_PO_LINE.CONTRACT_ID or PS_CONTRACT_HDR.CONTRACT_ID",
+      "transformation": "Link to blanket PO/contract if this is a release order."
+    },
+    {
+      "helix_attribute": "buyer",
+      "source": "PS_PO_HDR.BUYER_ID",
+      "transformation": "Resolve to name."
     },
     {
       "helix_attribute": "meta.source_system",
