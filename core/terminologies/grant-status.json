@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/grant-status.json",
+  "title": "HELIX Terminology: Grant/Sponsored Program Status",
+  "description": "Lifecycle status of externally funded grants and sponsored program awards in higher education.",
+  "code_system": "helix/grant-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "pre_award",
+      "display": "Pre-Award",
+      "definition": "Proposal submitted to the sponsor; award not yet received. Institutional pre-award office has reviewed budget, compliance, and authorized submission. May include pre-award spending authorization if sponsor allows."
+    },
+    {
+      "code": "pending",
+      "display": "Pending/Under Review",
+      "definition": "Proposal is being reviewed by the funding agency. May involve peer review, panel review, or program officer evaluation. Timeline varies: NSF 6 months, NIH 9-12 months, foundations 2-4 months."
+    },
+    {
+      "code": "negotiation",
+      "display": "Award Negotiation",
+      "definition": "Sponsor intends to fund but terms are being negotiated. Common negotiation points: F&A rate, cost sharing, publication rights, IP ownership, subaward terms, human subjects protocol approval."
+    },
+    {
+      "code": "active",
+      "display": "Active",
+      "definition": "Award received, account established, spending authorized. PI can charge allowable costs to the grant account. Subject to periodic reporting (technical and financial) per the award terms."
+    },
+    {
+      "code": "no_cost_extension",
+      "display": "No-Cost Extension (NCE)",
+      "definition": "Award period extended without additional funding. Allows the PI to complete the scope of work with remaining funds. First NCE may be grantee-approved (NIH, NSF); subsequent NCEs require sponsor approval."
+    },
+    {
+      "code": "suspended",
+      "display": "Suspended",
+      "definition": "Spending temporarily halted by the institution or sponsor. Common reasons: compliance violation, audit finding, IRB/IACUC protocol expiration, PI departure, effort certification delinquency."
+    },
+    {
+      "code": "closed",
+      "display": "Closed",
+      "definition": "Award period ended and all spending completed. Final financial report (FFR/SF-425) and technical report submitted to sponsor. Any unspent funds returned or applied per sponsor policy. Account closed to new charges."
+    },
+    {
+      "code": "final_reporting",
+      "display": "Final Reporting Period",
+      "definition": "Award has ended but the institution is within the final reporting window (typically 90-120 days). Final invoices, cost transfers, and adjustments being processed. Account open for adjustments only, not new spending."
+    },
+    {
+      "code": "audit",
+      "display": "Under Audit",
+      "definition": "Award selected for audit by the sponsor, OIG, or as part of the institution's Single Audit (2 CFR 200 Subpart F). Records must be retained and available. May delay account closure."
+    },
+    {
+      "code": "subaward_pending",
+      "display": "Subaward Pending",
+      "definition": "Primary award is active but a subaward to a partner institution has not yet been fully executed. Monitoring status of the sub-recipient's compliance documentation and budget negotiation."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/pay-frequency.json",
+  "title": "HELIX Terminology: Pay Frequency",
+  "description": "How often compensation is disbursed to employees.",
+  "code_system": "helix/pay-frequency",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "biweekly",
+      "display": "Biweekly",
+      "definition": "Paid every two weeks (26 pay periods per year). Most common for hourly/non-exempt staff in higher education. Creates occasional three-paycheck months."
+    },
+    {
+      "code": "semimonthly",
+      "display": "Semi-Monthly",
+      "definition": "Paid twice per month, typically on the 1st and 15th or 15th and last day (24 pay periods per year). Common for exempt staff at some institutions."
+    },
+    {
+      "code": "monthly",
+      "display": "Monthly",
+      "definition": "Paid once per month (12 pay periods per year). Most common for faculty and senior administrators. 9-month faculty may receive pay over 9 or 12 months depending on election."
+    },
+    {
+      "code": "weekly",
+      "display": "Weekly",
+      "definition": "Paid every week (52 pay periods per year). Less common in higher ed; used at some institutions for temporary and student workers."
+    },
+    {
+      "code": "annual",
+      "display": "Annual (Lump Sum)",
+      "definition": "Single payment for the full appointment period. Used for some fellowship stipends, one-time consulting arrangements, or athletic bonuses."
+    },
+    {
+      "code": "per_course",
+      "display": "Per Course",
+      "definition": "Compensation calculated and paid per course taught. Standard for adjunct faculty. Payment schedule varies: lump sum at term start, split across term pay periods, or paid at term end."
+    }
+  ]
+}

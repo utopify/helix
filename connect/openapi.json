@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "HELIX Connect API",
-    "description": "OpenAPI specification for a HELIX-conformant server. Defines the REST endpoints that any institution can implement to expose their data in HELIX Core resource format, regardless of the underlying ERP system.\n\nA conformant server exposes read endpoints for HELIX Core resources and a bulk export endpoint for data lake ingestion. Write endpoints are optional and intended for institutions that want to accept inbound data (e.g., from transfer partners or cross-institutional data sharing).",
-    "version": "0.1.0",
+    "description": "OpenAPI specification for a HELIX-conformant server. Defines REST endpoints for HELIX Core resources across all 9 domains: Student Identity, Academic Structure, Enrollment, Financial Aid, Outcomes, Student Services, Advancement, Financial Operations, and Human Resources.\n\nA conformant server exposes read endpoints for HELIX Core resources, write endpoints for data submission, and bulk export for data lake ingestion. OAuth 2.0 scopes enforce data classification and FERPA/GLBA access controls.",
+    "version": "0.2.0",
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
@@ -65,6 +65,18 @@
     {
       "name": "Validation",
       "description": "Resource validation endpoints"
+    },
+    {
+      "name": "Financial Operations",
+      "description": "General ledger, AP, AR, budgets, purchasing, grants, assets, expenses, contracts, and fund resources"
+    },
+    {
+      "name": "Human Resources",
+      "description": "Employee, position, requisition, time tracking, absence, and job classification resources"
+    },
+    {
+      "name": "Advancement",
+      "description": "Constituent, gift, campaign, and engagement resources"
     }
   ],
   "paths": {
@@ -859,6 +871,1831 @@
           }
         }
       }
+    },
+    "/gl-transactions": {
+      "get": {
+        "operationId": "listGLTransactions",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search gltransaction records",
+        "description": "General ledger journal entries and transactions",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of gltransaction records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GLTransaction"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createGLTransaction",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Create a general ledger transaction",
+        "description": "Submit a journal entry to the HELIX ledger. Requires balanced debits and credits.",
+        "security": [
+          {
+            "oauth2": [
+              "helix:write:financial"
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GLTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GLTransaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error (e.g., unbalanced debits/credits)"
+          }
+        }
+      }
+    },
+    "/gl-transactions/{id}": {
+      "get": {
+        "operationId": "getGLTransaction",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single gltransaction by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GLTransaction record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GLTransaction"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/ap-vouchers": {
+      "get": {
+        "operationId": "listAPVouchers",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search apvoucher records",
+        "description": "Accounts payable vouchers and invoices",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of apvoucher records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/APVoucher"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/ap-vouchers/{id}": {
+      "get": {
+        "operationId": "getAPVoucher",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single apvoucher by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "APVoucher record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APVoucher"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/ar-transactions": {
+      "get": {
+        "operationId": "listARTransactions",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search artransaction records",
+        "description": "Accounts receivable transactions including student billing",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of artransaction records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ARTransaction"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/ar-transactions/{id}": {
+      "get": {
+        "operationId": "getARTransaction",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single artransaction by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ARTransaction record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ARTransaction"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/budgets": {
+      "get": {
+        "operationId": "listBudgets",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search budget records",
+        "description": "Operating and project budgets",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of budget records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Budget"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/budgets/{id}": {
+      "get": {
+        "operationId": "getBudget",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single budget by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Budget record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Budget"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/purchase-orders": {
+      "get": {
+        "operationId": "listPurchaseOrders",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search purchaseorder records",
+        "description": "Procurement purchase orders",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of purchaseorder records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PurchaseOrder"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/purchase-orders/{id}": {
+      "get": {
+        "operationId": "getPurchaseOrder",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single purchaseorder by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PurchaseOrder record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrder"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/grants": {
+      "get": {
+        "operationId": "listGrants",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search grant records",
+        "description": "Sponsored programs and grant awards",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of grant records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Grant"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/grants/{id}": {
+      "get": {
+        "operationId": "getGrant",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single grant by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Grant record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Grant"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/assets": {
+      "get": {
+        "operationId": "listAssets",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search asset records",
+        "description": "Capital assets and fixed assets",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of asset records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Asset"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/assets/{id}": {
+      "get": {
+        "operationId": "getAsset",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single asset by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Asset"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/expense-reports": {
+      "get": {
+        "operationId": "listExpenseReports",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search expensereport records",
+        "description": "Employee expense and travel reimbursement reports",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of expensereport records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExpenseReport"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/expense-reports/{id}": {
+      "get": {
+        "operationId": "getExpenseReport",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single expensereport by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ExpenseReport record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/contracts": {
+      "get": {
+        "operationId": "listContracts",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search contract records",
+        "description": "Procurement and service contracts",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of contract records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contract"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/contracts/{id}": {
+      "get": {
+        "operationId": "getContract",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single contract by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contract"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/funds": {
+      "get": {
+        "operationId": "listFunds",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search fund records",
+        "description": "Institutional fund definitions (unrestricted, restricted, endowment, etc.)",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of fund records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Fund"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/funds/{id}": {
+      "get": {
+        "operationId": "getFund",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single fund by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fund record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fund"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/financial-orgs": {
+      "get": {
+        "operationId": "listFinancialOrgs",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "List or search financialorg records",
+        "description": "Financial organizational units (cost centers, departments)",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of financialorg records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FinancialOrg"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/financial-orgs/{id}": {
+      "get": {
+        "operationId": "getFinancialOrg",
+        "tags": [
+          "Financial Operations"
+        ],
+        "summary": "Get a single financialorg by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:financial"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "FinancialOrg record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialOrg"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "operationId": "listEmployees",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search employee records",
+        "description": "Employee/worker records. Restricted fields (compensation, benefits) require helix:read:hr:restricted scope.",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of employee records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Employee"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "operationId": "getEmployee",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single employee by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employee"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/positions": {
+      "get": {
+        "operationId": "listPositions",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search position records",
+        "description": "Position definitions and status",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of position records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Position"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/positions/{id}": {
+      "get": {
+        "operationId": "getPosition",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single position by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Position record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Position"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/requisitions": {
+      "get": {
+        "operationId": "listRequisitions",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search requisition records",
+        "description": "Job requisitions and hiring requests",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of requisition records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Requisition"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/requisitions/{id}": {
+      "get": {
+        "operationId": "getRequisition",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single requisition by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisition record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Requisition"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/time-entries": {
+      "get": {
+        "operationId": "listTimeEntrys",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search timeentry records",
+        "description": "Employee time tracking entries",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of timeentry records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TimeEntry"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/time-entries/{id}": {
+      "get": {
+        "operationId": "getTimeEntry",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single timeentry by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TimeEntry record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeEntry"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/absence-records": {
+      "get": {
+        "operationId": "listAbsenceRecords",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search absencerecord records",
+        "description": "Employee absence and leave records",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of absencerecord records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AbsenceRecord"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/absence-records/{id}": {
+      "get": {
+        "operationId": "getAbsenceRecord",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single absencerecord by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AbsenceRecord record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbsenceRecord"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/job-classifications": {
+      "get": {
+        "operationId": "listJobClassifications",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "List or search jobclassification records",
+        "description": "Job classification, EEO category, and faculty rank definitions",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageToken"
+          },
+          {
+            "name": "institution_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by institution"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of jobclassification records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JobClassification"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/job-classifications/{id}": {
+      "get": {
+        "operationId": "getJobClassification",
+        "tags": [
+          "Human Resources"
+        ],
+        "summary": "Get a single jobclassification by HELIX ID",
+        "security": [
+          {
+            "oauth2": [
+              "helix:read:hr"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HELIX resource ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JobClassification record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobClassification"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1233,7 +3070,10 @@
               "helix:write": "Write access to HELIX resources (optional)",
               "helix:validate": "Resource validation access",
               "helix:read:confidential": "Read access to confidential-classified resources",
-              "helix:read:restricted": "Read access to restricted-classified resources"
+              "helix:read:restricted": "Read access to restricted-classified resources",
+              "helix:read:financial": "Read internal-classified financial operations data",
+              "helix:read:hr": "Read confidential HR data (employee, position, time)",
+              "helix:read:hr:restricted": "Read restricted HR data (compensation, benefits, payroll, performance)"
             }
           }
         }

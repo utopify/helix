@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/asset-status.json",
+  "title": "HELIX Terminology: Fixed Asset Status",
+  "description": "Status of capital assets tracked in the institutional fixed asset system.",
+  "code_system": "helix/asset-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "active",
+      "display": "Active/In Service",
+      "definition": "Asset is in use and being depreciated according to institutional capitalization and depreciation policy. Tagged with a barcode or RFID for inventory tracking."
+    },
+    {
+      "code": "idle",
+      "display": "Idle/In Storage",
+      "definition": "Asset is not currently in use but remains in institutional inventory. May be available for redeployment to another department. Depreciation continues."
+    },
+    {
+      "code": "under_repair",
+      "display": "Under Repair/Maintenance",
+      "definition": "Asset temporarily removed from service for repair or refurbishment. Depreciation continues. If repair cost exceeds a threshold (often 50% of replacement value), may be candidate for disposal."
+    },
+    {
+      "code": "disposed",
+      "display": "Disposed",
+      "definition": "Asset removed from service and disposed of through approved methods: auction, trade-in, donation, recycling, or destruction. Requires disposal authorization (surplus property process). Net book value written off. Federal grants require sponsor notification for assets over $5,000."
+    },
+    {
+      "code": "retired",
+      "display": "Retired",
+      "definition": "Asset has reached end of useful life and is fully depreciated. Removed from active inventory but record retained for audit trail. Physical asset may still be in use but has no book value."
+    },
+    {
+      "code": "lost",
+      "display": "Lost/Stolen",
+      "definition": "Asset cannot be located during physical inventory. Triggers investigation and insurance claim if applicable. If government-funded, may require disclosure to the sponsor. Removed from active inventory after investigation."
+    },
+    {
+      "code": "transferred",
+      "display": "Transferred",
+      "definition": "Asset transferred to another department, campus, or entity. Original department's asset account credited; receiving department debited. If transferred to a different legal entity, may constitute a disposal."
+    },
+    {
+      "code": "construction_in_progress",
+      "display": "Construction in Progress (CIP)",
+      "definition": "Asset under construction or development that has not yet been placed in service. Costs accumulated in CIP account. Not depreciated until substantially complete and placed in service. Common for building projects and major renovations."
+    }
+  ]
+}

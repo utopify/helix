@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/benefit-plan-type.json",
+  "title": "HELIX Terminology: Benefit Plan Type",
+  "description": "Types of employee benefit plans offered by higher education institutions.",
+  "code_system": "helix/benefit-plan-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "medical",
+      "display": "Medical Insurance",
+      "definition": "Health insurance coverage for eligible employees and dependents. Institutions typically offer multiple plan options (PPO, HMO, HDHP). State employees may be on a state health plan."
+    },
+    {
+      "code": "dental",
+      "display": "Dental Insurance",
+      "definition": "Dental care coverage, often offered as a separate plan from medical. May include preventive, basic, and major services with annual maximums."
+    },
+    {
+      "code": "vision",
+      "display": "Vision Insurance",
+      "definition": "Vision care coverage for exams, lenses, and frames. Typically a voluntary, employee-paid benefit."
+    },
+    {
+      "code": "life_insurance",
+      "display": "Life Insurance",
+      "definition": "Employer-provided or voluntary life insurance. Employer-paid basic life is common (1x or 2x salary). Supplemental life available at employee cost. Amounts above $50,000 create imputed income (IRS Section 79)."
+    },
+    {
+      "code": "disability_short_term",
+      "display": "Short-Term Disability",
+      "definition": "Income replacement for temporary medical disability, typically covering 60-70% of salary for up to 26 weeks. May be employer-paid or voluntary. Coordinates with sick leave and FMLA."
+    },
+    {
+      "code": "disability_long_term",
+      "display": "Long-Term Disability",
+      "definition": "Income replacement for extended medical disability after short-term benefits exhaust. Typically covers 60% of salary until age 65 or recovery. Often employer-paid for faculty."
+    },
+    {
+      "code": "retirement_403b",
+      "display": "403(b) Retirement Plan",
+      "definition": "Tax-deferred retirement savings plan authorized under IRC Section 403(b) for employees of educational institutions and nonprofits. The higher ed equivalent of a 401(k). Common providers: TIAA, Fidelity, Vanguard."
+    },
+    {
+      "code": "retirement_pension",
+      "display": "Defined Benefit Pension",
+      "definition": "State or institutional pension plan providing retirement income based on a formula (typically years of service \u00d7 final average salary \u00d7 multiplier). Common at public institutions. Mandatory participation in many states."
+    },
+    {
+      "code": "retirement_457b",
+      "display": "457(b) Deferred Compensation",
+      "definition": "Supplemental retirement savings plan under IRC Section 457(b), available to governmental and certain nonprofit employees. Allows additional tax-deferred savings beyond 403(b) limits."
+    },
+    {
+      "code": "tuition_waiver",
+      "display": "Tuition Waiver/Remission",
+      "definition": "Benefit allowing employees (and often spouses/dependents) to take courses at reduced or no cost. Graduate tuition waivers above $5,250 per year are taxable income (IRC Section 127). One of higher ed's most valued benefits."
+    },
+    {
+      "code": "hsa",
+      "display": "Health Savings Account (HSA)",
+      "definition": "Tax-advantaged savings account paired with a High Deductible Health Plan (HDHP). Employee and/or employer contributions. Triple tax advantage: deductible contributions, tax-free growth, tax-free qualified withdrawals."
+    },
+    {
+      "code": "fsa",
+      "display": "Flexible Spending Account (FSA)",
+      "definition": "Pre-tax account for healthcare or dependent care expenses. Use-it-or-lose-it rule applies (with limited rollover or grace period). Includes healthcare FSA and dependent care FSA."
+    },
+    {
+      "code": "cobra",
+      "display": "COBRA Continuation Coverage",
+      "definition": "Continuation of group health benefits after a qualifying event (termination, reduction in hours). Employer must offer; employee pays full premium plus 2% admin fee. 18-36 month coverage period."
+    },
+    {
+      "code": "eap",
+      "display": "Employee Assistance Program (EAP)",
+      "definition": "Confidential counseling and referral service for personal and work-related issues. Typically covers mental health, substance abuse, financial counseling, legal assistance. Usually employer-paid, no-cost to employee."
+    },
+    {
+      "code": "supplemental_retirement",
+      "display": "Supplemental Retirement",
+      "definition": "Additional retirement contribution by the institution beyond the base retirement plan, often provided to senior faculty and administrators as a recruitment/retention tool. May vest over a period of years."
+    }
+  ]
+}

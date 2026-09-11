@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/worker-type.json",
+  "title": "HELIX Terminology: Worker Type",
+  "description": "Classification of institutional workers by employment relationship.",
+  "code_system": "helix/worker-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "regular",
+      "display": "Regular",
+      "definition": "Permanent employee on the institutional payroll with benefits eligibility. Includes both full-time and part-time regular appointments."
+    },
+    {
+      "code": "temporary",
+      "display": "Temporary",
+      "definition": "Employee hired for a defined period, typically not to exceed 12 months. May or may not be benefits-eligible depending on FTE and institutional policy."
+    },
+    {
+      "code": "contingent",
+      "display": "Contingent Worker",
+      "definition": "Individual engaged through a staffing agency or third-party arrangement. Not on the institutional payroll; paid through accounts payable."
+    },
+    {
+      "code": "contractor",
+      "display": "Independent Contractor",
+      "definition": "Individual providing services under a contract (1099). Must meet IRS independent contractor tests. Not an employee for benefits, tax withholding, or FLSA purposes."
+    },
+    {
+      "code": "student_worker",
+      "display": "Student Worker",
+      "definition": "Currently enrolled student employed by the institution. Includes Federal Work-Study (FWS), institutional employment, and hourly student positions. Typically exempt from FICA if enrolled half-time or more."
+    },
+    {
+      "code": "graduate_assistant",
+      "display": "Graduate Assistant",
+      "definition": "Graduate student holding a funded assistantship (GA, TA, RA). Typically receives tuition remission plus stipend. May be classified as student or employee depending on state law and collective bargaining status."
+    },
+    {
+      "code": "intern",
+      "display": "Intern",
+      "definition": "Individual in a structured learning experience, paid or unpaid. Unpaid internships at for-profit entities must meet DOL primary beneficiary test; universities have more flexibility under educational exception."
+    },
+    {
+      "code": "fellow",
+      "display": "Fellow",
+      "definition": "Individual receiving a fellowship (external or institutional) for research or scholarly activity. May not have an employment relationship; fellowship stipends are often non-compensatory and reported on 1099-MISC or 1042-S."
+    },
+    {
+      "code": "volunteer",
+      "display": "Volunteer",
+      "definition": "Individual providing services without expectation of compensation. Must meet FLSA volunteer criteria. Cannot volunteer in roles identical to their paid position at the same institution."
+    },
+    {
+      "code": "emeritus",
+      "display": "Emeritus",
+      "definition": "Retired faculty or staff member granted emeritus status by the governing board. May retain certain privileges (email, library, office) but is not actively employed or compensated unless rehired."
+    },
+    {
+      "code": "postdoc",
+      "display": "Postdoctoral Researcher",
+      "definition": "Individual holding a doctoral degree engaged in supervised research training. Classified as employee or trainee depending on funding source (NIH NRSA = trainee, institutional funds = employee)."
+    },
+    {
+      "code": "adjunct",
+      "display": "Adjunct Faculty",
+      "definition": "Part-time faculty hired on a per-course or per-term basis without tenure eligibility. Typically compensated per credit hour or per course. May be subject to ACA hour tracking for benefits eligibility."
+    }
+  ]
+}

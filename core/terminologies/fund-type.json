@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/fund-type.json",
+  "title": "HELIX Terminology: Fund Type",
+  "description": "Classification of funds in the higher education fund accounting model, aligned with NACUBO (National Association of College and University Business Officers) and GASB/FASB standards.",
+  "code_system": "helix/fund-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "unrestricted",
+      "display": "Unrestricted Operating",
+      "definition": "General operating funds with no externally imposed restrictions on use. Funded primarily by tuition, state appropriations (public), and unrestricted gifts. The institution's primary discretionary resource pool."
+    },
+    {
+      "code": "temporarily_restricted",
+      "display": "Temporarily Restricted",
+      "definition": "Funds restricted by the donor or grantor for a specific purpose or time period. Restriction is satisfied when the purpose is fulfilled or the time period elapses. FASB ASC 958 (private institutions) terminology; GASB uses 'restricted \u2014 expendable.'"
+    },
+    {
+      "code": "permanently_restricted",
+      "display": "Permanently Restricted (Endowment)",
+      "definition": "Funds where the donor has stipulated that the principal must be maintained in perpetuity. Only the investment return (subject to spending policy) may be used, and typically only for the donor's designated purpose. FASB ASC 958 terminology; GASB uses 'restricted \u2014 nonexpendable.'"
+    },
+    {
+      "code": "endowment",
+      "display": "True Endowment",
+      "definition": "Donor-restricted fund where the corpus is permanently invested and cannot be spent. Income distributed per the institution's spending policy (typically 4-5% of trailing average market value). Subject to UPMIFA (Uniform Prudent Management of Institutional Funds Act)."
+    },
+    {
+      "code": "quasi_endowment",
+      "display": "Quasi-Endowment (Board-Designated)",
+      "definition": "Funds functioning as endowment at the discretion of the governing board, but without a donor restriction requiring permanent investment. The board may choose to invade the principal. Reported as unrestricted in financial statements."
+    },
+    {
+      "code": "agency",
+      "display": "Agency Fund",
+      "definition": "Funds held by the institution as custodian or fiscal agent for others (student organizations, external groups). The institution has no equity; assets equal liabilities. Common for student activity fees collected and disbursed."
+    },
+    {
+      "code": "loan",
+      "display": "Loan Fund",
+      "definition": "Funds available for student or employee loans. Includes federal revolving loan programs (Perkins \u2014 now winding down) and institutional loan programs. Repayments recirculate into the fund."
+    },
+    {
+      "code": "plant",
+      "display": "Plant Fund",
+      "definition": "Funds used for acquisition, renewal, replacement, and retirement of institutional physical plant (buildings, equipment, infrastructure). Includes unexpended plant, renewals and replacements, retirement of indebtedness, and investment in plant sub-funds."
+    },
+    {
+      "code": "auxiliary",
+      "display": "Auxiliary Enterprise Fund",
+      "definition": "Self-supporting operations that provide goods/services primarily to students, faculty, or staff: housing, dining, bookstore, parking, athletics (at some institutions), student health, recreation. Revenue should cover costs including debt service."
+    },
+    {
+      "code": "grant_sponsored",
+      "display": "Grant/Sponsored Program Fund",
+      "definition": "Funds from external sponsors (federal, state, foundation, corporate) for specific research, training, or service activities. Subject to the terms of the award and OMB Uniform Guidance (2 CFR 200). Each award typically has its own fund or project code."
+    },
+    {
+      "code": "designated",
+      "display": "Designated/Board-Restricted",
+      "definition": "Unrestricted funds that the institution's leadership has internally designated for a specific purpose (e.g., strategic initiative fund, deferred maintenance fund, rainy day reserve). Can be undesignated by the same authority that designated them."
+    },
+    {
+      "code": "current_restricted",
+      "display": "Current Restricted (Non-Endowment)",
+      "definition": "Restricted funds that are expendable for a specific purpose in the current or near-term period. Examples: scholarships restricted by the donor to a specific major, gifts restricted to a specific building project. Distinguished from endowment income which is also restricted but perpetual."
+    }
+  ]
+}

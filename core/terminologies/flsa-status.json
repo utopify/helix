@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/flsa-status.json",
+  "title": "HELIX Terminology: FLSA Status",
+  "description": "Fair Labor Standards Act classification determining overtime eligibility.",
+  "code_system": "helix/flsa-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "exempt",
+      "display": "Exempt",
+      "definition": "Employee exempt from FLSA overtime provisions. Must meet both salary threshold ($35,568/year as of 2024 DOL rule, subject to judicial review) and duties test (executive, administrative, professional, computer, or outside sales exemption). Most faculty, administrators, and professional staff are exempt."
+    },
+    {
+      "code": "non_exempt",
+      "display": "Non-Exempt",
+      "definition": "Employee entitled to FLSA overtime (1.5x regular rate for hours over 40 per workweek). Must track hours worked. Includes most clerical, technical, skilled trades, and service/maintenance workers. Student workers are typically non-exempt but may be FICA-exempt."
+    },
+    {
+      "code": "exempt_teaching",
+      "display": "Exempt \u2014 Teaching Professional",
+      "definition": "Faculty and instructors meeting the learned professional exemption for teaching. No salary threshold required for bona fide teachers. Primary duty must be teaching, tutoring, instructing, or lecturing."
+    }
+  ]
+}

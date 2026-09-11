@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/budget-status.json",
+  "title": "HELIX Terminology: Budget Status",
+  "description": "Status of operating and project budgets in the institutional financial planning cycle.",
+  "code_system": "helix/budget-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "proposed",
+      "display": "Proposed/Draft",
+      "definition": "Budget is being developed. Units have submitted requests, and the budget office is compiling and reviewing. Not yet authorized for spending."
+    },
+    {
+      "code": "submitted",
+      "display": "Submitted for Approval",
+      "definition": "Budget submitted to the next level of approval (dean, VP, budget committee, board of trustees). Under review and may be revised before final approval."
+    },
+    {
+      "code": "approved",
+      "display": "Approved",
+      "definition": "Budget formally approved by the governing board or authorized body. Establishes legal spending authority for the fiscal year. Published to the ledger as original budget entries."
+    },
+    {
+      "code": "active",
+      "display": "Active",
+      "definition": "Budget is in the current fiscal year and available for spending. Transactions are being posted and checked against available budget (in commitment control systems)."
+    },
+    {
+      "code": "frozen",
+      "display": "Frozen",
+      "definition": "Budget temporarily locked \u2014 no new spending authorized except for contractual obligations and payroll. Typically imposed during mid-year budget shortfalls or pending reorganization."
+    },
+    {
+      "code": "closed",
+      "display": "Closed",
+      "definition": "Budget period ended. All transactions posted, accruals recorded, fiscal year closed. Budget is now historical. Remaining budget does not carry forward (except for designated carry-forward funds)."
+    },
+    {
+      "code": "revised",
+      "display": "Revised",
+      "definition": "Budget has been officially amended after initial approval. A budget revision may increase, decrease, or reallocate authorized spending. Requires documented justification and appropriate approval level."
+    },
+    {
+      "code": "permanent_budget",
+      "display": "Permanent/Base Budget",
+      "definition": "Ongoing budget allocation that carries forward year-to-year (e.g., salary lines, operating base). Distinguished from one-time or temporary budget allocations."
+    },
+    {
+      "code": "temporary_budget",
+      "display": "Temporary/One-Time Budget",
+      "definition": "Budget allocation for a single fiscal year that does not recur. Must be re-requested annually. Examples: equipment purchases, one-time program startup costs, bridge funding."
+    }
+  ]
+}

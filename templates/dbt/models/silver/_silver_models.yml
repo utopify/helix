@@ -1,0 +1,83 @@
+version: 2
+
+models:
+  - name: helix_person
+    description: >
+      HELIX Person resource at the Silver layer. Deduplicated, identity-resolved,
+      and conformed to HELIX Core schema. One row per unique person.
+      Classification: Confidential. FERPA: Yes.
+    columns:
+      - name: helix_id
+        description: "HELIX-assigned UUID for this person"
+        tests:
+          - unique
+          - not_null
+      - name: last_name
+        description: "Person's legal last/family name"
+        tests:
+          - not_null
+      - name: institutional_email
+        description: "Primary institutional email address"
+        tests:
+          - unique
+
+  - name: helix_student
+    description: >
+      HELIX Student resource at the Silver layer. Linked to Person via person_ref.
+      Classification: Confidential. FERPA: Yes.
+    columns:
+      - name: helix_id
+        description: "HELIX-assigned UUID for this student record"
+        tests:
+          - unique
+          - not_null
+      - name: person_ref
+        description: "Reference to HELIX Person helix_id"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('helix_person')
+              field: helix_id
+      - name: student_status
+        description: "Current student status"
+        tests:
+          - accepted_values:
+              values: ['active', 'inactive', 'graduated', 'withdrawn', 'dismissed', 'leave_of_absence', 'deceased']
+      - name: cumulative_gpa
+        description: "Cumulative grade point average"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0.0
+              max_value: 4.0
+
+  - name: helix_enrollment
+    description: >
+      HELIX Enrollment resource at the Silver layer. One row per student-section-term.
+      Classification: Confidential. FERPA: Yes.
+    columns:
+      - name: helix_id
+        tests:
+          - unique
+          - not_null
+      - name: student_ref
+        tests:
+          - not_null
+      - name: enrollment_status
+        tests:
+          - accepted_values:
+              values: ['enrolled', 'dropped', 'withdrawn', 'completed', 'waitlisted', 'audit', 'incomplete']
+
+  - name: helix_fin_aid_award
+    description: >
+      HELIX Financial Aid Award at the Silver layer. FERPA + GLBA covered.
+      Classification: Confidential.
+    columns:
+      - name: helix_id
+        tests:
+          - unique
+          - not_null
+      - name: disbursed_amount
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100000

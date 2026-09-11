@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/contract-status.json",
+  "title": "HELIX Terminology: Contract Status",
+  "description": "Status of institutional contracts and agreements tracked in the contract management system.",
+  "code_system": "helix/contract-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "draft",
+      "display": "Draft",
+      "definition": "Contract is being drafted or assembled from templates. Terms, scope, pricing, and legal provisions under development by the requesting department and/or procurement/legal office."
+    },
+    {
+      "code": "negotiation",
+      "display": "In Negotiation",
+      "definition": "Draft contract sent to the counterparty (vendor, consultant, partner institution). Terms being negotiated. Multiple redline cycles may occur. Legal counsel reviewing risk provisions."
+    },
+    {
+      "code": "pending_approval",
+      "display": "Pending Internal Approval",
+      "definition": "Negotiation complete; contract routed for internal signature authority. Approval levels determined by contract value and type (procurement, real estate, sponsored program, affiliation agreement)."
+    },
+    {
+      "code": "pending_execution",
+      "display": "Pending Execution",
+      "definition": "Approved internally; awaiting counterparty signature to fully execute. Both parties must sign for the contract to be binding."
+    },
+    {
+      "code": "active",
+      "display": "Active/Executed",
+      "definition": "Fully executed contract in its performance period. Both parties performing obligations. Deliverables and payments being tracked. May include milestones, performance metrics, and reporting requirements."
+    },
+    {
+      "code": "suspended",
+      "display": "Suspended",
+      "definition": "Contract performance temporarily halted due to dispute, non-performance, force majeure, or administrative hold. Terms of suspension governed by the contract's suspension/termination clause."
+    },
+    {
+      "code": "expired",
+      "display": "Expired",
+      "definition": "Contract has reached its end date without renewal. No further obligations except surviving provisions (indemnification, confidentiality, audit rights). Some contracts auto-renew unless notice given within a specified window."
+    },
+    {
+      "code": "terminated",
+      "display": "Terminated",
+      "definition": "Contract ended before the natural expiration date, either by mutual agreement (convenience) or due to breach (cause). Termination provisions in the contract govern notice period, final payments, and transition obligations."
+    },
+    {
+      "code": "renewed",
+      "display": "Renewed",
+      "definition": "Contract extended for an additional period under the same or modified terms. May be an automatic renewal or require affirmative action. Renewal terms should be documented as an amendment or new contract."
+    }
+  ]
+}

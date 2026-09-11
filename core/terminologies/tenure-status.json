@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/tenure-status.json",
+  "title": "HELIX Terminology: Tenure Status",
+  "description": "Status of a faculty member within the academic tenure system.",
+  "code_system": "helix/tenure-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "pre_tenure",
+      "display": "Pre-Tenure (Probationary)",
+      "definition": "Faculty member on the tenure track who has not yet undergone tenure review. Typically in a 6-year probationary period with annual reviews and a mid-probationary (third-year) review. Clock extensions may be granted for qualifying life events."
+    },
+    {
+      "code": "tenured",
+      "display": "Tenured",
+      "definition": "Faculty member who has been granted tenure following successful review. Provides protection against termination without cause (financial exigency, program discontinuance, or adequate cause with due process). The cornerstone of academic freedom."
+    },
+    {
+      "code": "non_tenure_track",
+      "display": "Non-Tenure-Track (NTT)",
+      "definition": "Faculty member in a position not eligible for tenure. Includes lecturers, clinical faculty, research faculty, professors of practice, and adjuncts. Appointments may be single-year, multi-year, or rolling. Increasingly the majority of faculty in US higher education."
+    },
+    {
+      "code": "tenure_denied",
+      "display": "Tenure Denied",
+      "definition": "Faculty member whose tenure application was not approved. Typically results in a terminal-year appointment (one additional year). Denial decisions may be appealed through faculty grievance processes."
+    },
+    {
+      "code": "tenure_revoked",
+      "display": "Tenure Revoked",
+      "definition": "Tenure removed through formal proceedings for adequate cause (e.g., professional misconduct, research fraud, dereliction of duty). Requires due process consistent with AAUP guidelines and institutional policy. Extremely rare."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/absence-type.json",
+  "title": "HELIX Terminology: Absence Type",
+  "description": "Categories of employee absence from work with associated leave policies.",
+  "code_system": "helix/absence-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "vacation",
+      "display": "Vacation/Annual Leave",
+      "definition": "Paid time off accrued based on length of service and appointment type. Accrual rates and maximum balances vary by employee class. Faculty on academic-year appointments typically do not accrue vacation."
+    },
+    {
+      "code": "sick",
+      "display": "Sick Leave",
+      "definition": "Paid leave for personal illness, medical appointments, or care of an immediate family member. Many states mandate sick leave accrual. Some institutions have sick leave donation/sharing programs."
+    },
+    {
+      "code": "personal",
+      "display": "Personal Leave",
+      "definition": "Paid leave for personal business not covered by other leave categories. Typically limited to 2-3 days per year. May or may not require advance approval."
+    },
+    {
+      "code": "fmla",
+      "display": "FMLA Leave",
+      "definition": "Leave protected under the Family and Medical Leave Act. Up to 12 weeks of job-protected, unpaid leave per year for qualifying reasons (serious health condition, new child, military family). Runs concurrent with paid leave if available."
+    },
+    {
+      "code": "military",
+      "display": "Military Leave",
+      "definition": "Leave for military service under USERRA (Uniformed Services Employment and Reemployment Rights Act). Job-protected with reemployment rights. Many institutions provide differential pay (difference between military and civilian pay)."
+    },
+    {
+      "code": "bereavement",
+      "display": "Bereavement Leave",
+      "definition": "Paid leave following the death of a family member. Duration typically varies by relationship (3-5 days for immediate family, 1 day for extended family). Definition of 'family' varies by policy."
+    },
+    {
+      "code": "jury_duty",
+      "display": "Jury Duty",
+      "definition": "Leave for serving on a jury or responding to a subpoena. Most institutions provide paid leave for the duration of service. Employee may be required to submit jury fee to the institution."
+    },
+    {
+      "code": "sabbatical",
+      "display": "Sabbatical Leave",
+      "definition": "Extended leave (typically one semester at full pay or one year at half pay) granted to tenured or senior faculty for research, writing, or professional development. Usually available after 6-7 years of service. Requires application and approval."
+    },
+    {
+      "code": "parental",
+      "display": "Parental Leave",
+      "definition": "Leave for birth, adoption, or foster placement of a child. May be paid or unpaid depending on institutional policy. Increasingly offered as a standalone benefit beyond FMLA. Typically 6-12 weeks."
+    },
+    {
+      "code": "administrative",
+      "display": "Administrative Leave",
+      "definition": "Paid leave directed by the institution, typically during an investigation, restructuring, or emergency. Not initiated by the employee. May be with or without restrictions on campus access."
+    },
+    {
+      "code": "workers_compensation",
+      "display": "Workers' Compensation Leave",
+      "definition": "Leave due to a work-related injury or illness covered under state workers' compensation law. Benefits include medical treatment and wage replacement (typically 2/3 of average weekly wage, subject to state maximums)."
+    },
+    {
+      "code": "unpaid",
+      "display": "Unpaid Leave of Absence",
+      "definition": "Approved leave without pay when paid leave is exhausted or not applicable. Employment relationship maintained but benefits eligibility may be affected. Often requires VP/provost approval beyond a certain duration."
+    },
+    {
+      "code": "professional_development",
+      "display": "Professional Development Leave",
+      "definition": "Leave for attending conferences, workshops, certifications, or training. Usually paid with expenses covered by the department or professional development fund."
+    }
+  ]
+}

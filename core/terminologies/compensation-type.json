@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/compensation-type.json",
+  "title": "HELIX Terminology: Compensation Type",
+  "description": "Types of compensation components in higher education institutions.",
+  "code_system": "helix/compensation-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "base_salary",
+      "display": "Base Salary",
+      "definition": "Primary annual or academic-year salary for the position. For 9-month faculty, this is the academic year (AY) base; for 12-month staff, this is the fiscal year (FY) base."
+    },
+    {
+      "code": "hourly",
+      "display": "Hourly Wage",
+      "definition": "Compensation calculated per hour worked. Used for non-exempt staff, student workers, temporary employees. Subject to FLSA minimum wage and overtime rules."
+    },
+    {
+      "code": "stipend",
+      "display": "Stipend",
+      "definition": "Fixed payment for a specific role or responsibility, not tied to hours worked. Examples: department chair stipend, graduate assistant stipend, coaching stipend, program director stipend."
+    },
+    {
+      "code": "overload",
+      "display": "Overload Pay",
+      "definition": "Additional compensation for teaching or duties beyond the standard workload. Faculty teaching above their contractual load (e.g., 4/4 teaching 5/4) receive overload pay, typically calculated per credit hour."
+    },
+    {
+      "code": "summer_pay",
+      "display": "Summer Compensation",
+      "definition": "Compensation for 9-month faculty working during summer term. Typically capped at a fraction of base salary (often 2/9 or 3/9 of AY salary). May be funded from grants, instruction, or administrative budgets."
+    },
+    {
+      "code": "administrative_supplement",
+      "display": "Administrative Supplement",
+      "definition": "Temporary salary increase for faculty or staff taking on additional administrative duties. Examples: interim dean, accreditation coordinator, assessment director. Removed when duties end."
+    },
+    {
+      "code": "acting_pay",
+      "display": "Acting Pay",
+      "definition": "Temporary pay increase for an individual formally appointed to act in a higher-level position during a vacancy or leave. Governed by institutional acting appointment policy."
+    },
+    {
+      "code": "shift_differential",
+      "display": "Shift Differential",
+      "definition": "Additional compensation for working non-standard shifts (evening, night, weekend). Common for facilities, public safety, dining, and healthcare workers. Typically a percentage of base or flat hourly premium."
+    },
+    {
+      "code": "on_call",
+      "display": "On-Call Pay",
+      "definition": "Compensation for being available to respond outside normal working hours. Common for IT, facilities, public safety, and residential life staff."
+    },
+    {
+      "code": "longevity",
+      "display": "Longevity Pay",
+      "definition": "Additional compensation based on years of service. More common at public institutions, especially those under state pay plans. May be a flat amount or percentage per milestone (5, 10, 15 years)."
+    },
+    {
+      "code": "bonus",
+      "display": "Bonus/Incentive",
+      "definition": "One-time or periodic payment for performance, retention, or market adjustment. Less common in higher ed than private sector but used for hard-to-fill positions, athletic coaches, and senior administrators."
+    },
+    {
+      "code": "housing_allowance",
+      "display": "Housing Allowance",
+      "definition": "Compensation provided for housing, particularly for university presidents, coaches, or employees required to live on campus (e.g., residence hall directors). May be taxable income."
+    }
+  ]
+}

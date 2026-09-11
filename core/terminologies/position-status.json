@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/position-status.json",
+  "title": "HELIX Terminology: Position Status",
+  "description": "Status of a funded position in the institutional position management system.",
+  "code_system": "helix/position-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "open",
+      "display": "Open",
+      "definition": "Position is authorized and funded but currently vacant. Available for recruitment or internal transfer."
+    },
+    {
+      "code": "filled",
+      "display": "Filled",
+      "definition": "Position is occupied by an active worker. One position may map to multiple workers if job-shared."
+    },
+    {
+      "code": "frozen",
+      "display": "Frozen",
+      "definition": "Position exists in the system but hiring is suspended, typically due to budget constraints or hiring freeze. The position's budget may be temporarily redirected."
+    },
+    {
+      "code": "abolished",
+      "display": "Abolished",
+      "definition": "Position has been permanently eliminated. Budget line removed. Cannot be filled without re-creation through position management approval process."
+    },
+    {
+      "code": "proposed",
+      "display": "Proposed",
+      "definition": "New position request submitted but not yet approved through governance process. Awaiting budget approval, classification review, and/or provost/VP authorization."
+    },
+    {
+      "code": "pooled",
+      "display": "Pooled",
+      "definition": "Position used for temporary or student worker appointments where multiple individuals can be appointed against the same position number. Common for adjunct pools, student worker pools."
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/eeo-category.json",
+  "title": "HELIX Terminology: EEO/IPEDS Occupational Category",
+  "description": "Employee occupational categories used for Equal Employment Opportunity (EEO) reporting and IPEDS Human Resources survey submissions.",
+  "code_system": "helix/eeo-category",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "executive_admin",
+      "display": "Executive/Administrative/Managerial",
+      "definition": "Senior institutional officers with significant management responsibilities: president, provost, vice presidents, deans, directors. IPEDS new categories map this to: Management Occupations (SOC 11-0000)."
+    },
+    {
+      "code": "faculty",
+      "display": "Faculty",
+      "definition": "Persons with academic rank (professor, associate professor, assistant professor, instructor, lecturer) whose primary assignment is instruction, research, or public service. Includes tenure-track, tenured, and non-tenure-track faculty reported in IPEDS."
+    },
+    {
+      "code": "professional_nonfaculty",
+      "display": "Professional Non-Faculty",
+      "definition": "Non-faculty employees in positions requiring a bachelor's degree or higher. Includes advisors, counselors, librarians, IT professionals, accountants, HR specialists, student affairs professionals, coaches, and research staff without faculty rank."
+    },
+    {
+      "code": "clerical_secretarial",
+      "display": "Clerical/Secretarial",
+      "definition": "Support staff in office and administrative roles: administrative assistants, office managers, data entry, receptionists, records clerks. Aligns with IPEDS Office and Administrative Support Occupations (SOC 43-0000)."
+    },
+    {
+      "code": "technical_paraprofessional",
+      "display": "Technical/Paraprofessional",
+      "definition": "Workers in technical roles typically requiring specialized training or an associate degree: lab technicians, IT support, library paraprofessionals, medical technicians, engineering technicians. Aligns with IPEDS Healthcare Practitioners, Computer/Engineering/Science Technicians."
+    },
+    {
+      "code": "skilled_crafts",
+      "display": "Skilled Crafts",
+      "definition": "Workers in trades requiring apprenticeship or vocational training: electricians, plumbers, HVAC technicians, carpenters, painters, groundskeepers. Aligns with IPEDS Construction, Installation/Maintenance/Repair Occupations."
+    },
+    {
+      "code": "service_maintenance",
+      "display": "Service/Maintenance",
+      "definition": "Workers in building maintenance, custodial, food service, public safety, transportation, and similar operational roles. Aligns with IPEDS Service Occupations (SOC 31-0000, 33-0000, 35-0000, 37-0000, 39-0000, 53-0000)."
+    }
+  ]
+}

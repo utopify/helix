@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: dim_student
+    description: >
+      Student dimension table combining Person + Student + StudentProgram.
+      Ready for BI consumption. Slowly changing dimension (Type 2 if needed).
+    columns:
+      - name: helix_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_enrollment
+    description: >
+      Enrollment fact table. One row per enrollment event.
+      Grain: student × section × term.
+    columns:
+      - name: helix_id
+        tests:
+          - unique
+          - not_null
+      - name: student_ref
+        tests:
+          - not_null
+
+  - name: rpt_retention
+    description: >
+      Fall-to-fall retention cohort report.
+      Groups first-time freshmen by entry term and tracks return in the next fall.
+      Key metric for IPEDS reporting and institutional effectiveness.

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/asset-category.json",
+  "title": "HELIX Terminology: Asset Category",
+  "description": "Categories of capital assets for financial reporting, aligned with GASB 34 requirements for public institutions and FASB ASC 360 for private institutions.",
+  "code_system": "helix/asset-category",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "land",
+      "display": "Land",
+      "definition": "Real property owned by the institution, including land improvements that are not depreciable (grading, fill). Land is not depreciated. Includes donated land recorded at fair market value at date of gift."
+    },
+    {
+      "code": "buildings",
+      "display": "Buildings",
+      "definition": "Structures owned or capital-leased by the institution. Includes academic buildings, residence halls, athletic facilities, hospitals, parking structures. Capitalization threshold varies ($50K-$100K typical). Depreciated over 20-50 years."
+    },
+    {
+      "code": "building_improvements",
+      "display": "Building Improvements",
+      "definition": "Capital improvements that extend the useful life of an existing building (not routine maintenance). Examples: roof replacement, HVAC system, ADA renovations, laboratory renovations. Depreciated over 10-20 years."
+    },
+    {
+      "code": "equipment",
+      "display": "Equipment",
+      "definition": "Movable assets meeting the capitalization threshold ($5,000 is the most common threshold in higher ed). Includes scientific instruments, computing equipment, vehicles, copiers, specialized machinery. Depreciated over 3-15 years depending on type."
+    },
+    {
+      "code": "vehicles",
+      "display": "Vehicles",
+      "definition": "Institutional fleet vehicles: cars, vans, buses, utility vehicles, golf carts. May be owned or leased. Depreciated over 5-10 years. Subject to motor pool or fleet management policies."
+    },
+    {
+      "code": "furniture",
+      "display": "Furniture & Fixtures",
+      "definition": "Desks, chairs, tables, filing cabinets, shelving, lab benches. Often capitalized only as a group purchase (e.g., furnishing a new building) due to per-item cost below the threshold."
+    },
+    {
+      "code": "software",
+      "display": "Software",
+      "definition": "Internally developed or purchased software meeting capitalization criteria. Per GASB 51 (public) or ASC 350-40 (private), includes costs in the application development stage. Cloud computing arrangements may not qualify as capital assets post-ASU 2018-15."
+    },
+    {
+      "code": "leasehold_improvements",
+      "display": "Leasehold Improvements",
+      "definition": "Improvements to leased space made by the institution as tenant. Depreciated over the shorter of the improvement's useful life or the remaining lease term. New lease accounting (GASB 87) affects recognition."
+    },
+    {
+      "code": "construction_in_progress",
+      "display": "Construction in Progress (CIP)",
+      "definition": "Costs accumulated for assets under construction that have not yet been placed in service. Transferred to the appropriate asset category upon completion. Not depreciated while in CIP. Reported separately on the balance sheet."
+    },
+    {
+      "code": "library_collections",
+      "display": "Library Collections",
+      "definition": "Books, periodicals, digital resources, archives, and special collections. Institutions may capitalize (GASB allows either capitalizing or expensing). If capitalized, may be depreciated as a group using a composite method or treated as inexhaustible."
+    },
+    {
+      "code": "artwork_collections",
+      "display": "Artwork & Historical Collections",
+      "definition": "Museum objects, artwork, and historical treasures meeting the definition of a collection under GASB 34 (held for public exhibition, protected, kept unencumbered, proceeds from sale used to acquire other items). May be exempt from capitalization and depreciation if meeting all criteria."
+    },
+    {
+      "code": "infrastructure",
+      "display": "Infrastructure",
+      "definition": "Long-lived capital assets that are normally stationary: roads, bridges, tunnels, drainage systems, water and sewer systems, dams, lighting. Institutions may use the modified approach (maintain/preserve condition level) instead of depreciation per GASB 34."
+    }
+  ]
+}

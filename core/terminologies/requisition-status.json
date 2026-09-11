@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/requisition-status.json",
+  "title": "HELIX Terminology: Requisition Status",
+  "description": "Status codes for position requisitions in the hiring process.",
+  "code_system": "helix/requisition-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "draft",
+      "display": "Draft",
+      "definition": "Requisition created but not yet submitted for approval. Hiring manager is still completing position details, justification, and funding information."
+    },
+    {
+      "code": "pending_approval",
+      "display": "Pending Approval",
+      "definition": "Requisition submitted and awaiting approval through the institutional chain (department head, dean/VP, budget office, HR classification, provost, president \u2014 varies by position level)."
+    },
+    {
+      "code": "approved",
+      "display": "Approved",
+      "definition": "Requisition approved through all required levels. Ready for posting. HR may need to finalize the job posting language and determine advertising venues."
+    },
+    {
+      "code": "posted",
+      "display": "Posted",
+      "definition": "Position actively advertised and accepting applications. May be posted internally only, externally, or both. Posting duration governed by policy (minimum 5-14 days typical for staff; 30+ days for faculty)."
+    },
+    {
+      "code": "interviewing",
+      "display": "Interviewing/Screening",
+      "definition": "Application review period closed (or ongoing for rolling review). Search committee or hiring manager is conducting phone screens, interviews, reference checks, and campus visits (for faculty and senior positions)."
+    },
+    {
+      "code": "offer_extended",
+      "display": "Offer Extended",
+      "definition": "Preferred candidate identified and formal offer letter sent. Awaiting candidate response. May be contingent on background check, degree verification, and/or board approval."
+    },
+    {
+      "code": "filled",
+      "display": "Filled",
+      "definition": "Candidate accepted offer and start date confirmed. Requisition closed. Triggers onboarding workflow (I-9, benefits enrollment, system access provisioning, orientation scheduling)."
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Requisition withdrawn. Search terminated without a hire. May be due to budget cuts, reorganization, failed search (no suitable candidates), or decision to redefine the position."
+    },
+    {
+      "code": "on_hold",
+      "display": "On Hold",
+      "definition": "Requisition temporarily suspended. Common during budget uncertainty, hiring freezes, or when the search is paused for administrative reasons. Can be reactivated without re-approval at some institutions."
+    },
+    {
+      "code": "waiver_requested",
+      "display": "Search Waiver Requested",
+      "definition": "Request submitted to bypass standard search process for a direct appointment (e.g., internal promotion, spousal/partner hire, emergency appointment). Requires EEO/AA office and senior leadership approval."
+    }
+  ]
+}

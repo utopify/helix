@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/payment-status.json",
+  "title": "HELIX Terminology: Payment Status",
+  "description": "Status of vendor payments, refunds, and disbursements in the accounts payable process.",
+  "code_system": "helix/payment-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "pending",
+      "display": "Pending",
+      "definition": "Payment request received but not yet approved or scheduled. Awaiting department approval, budget check, or documentation review."
+    },
+    {
+      "code": "approved",
+      "display": "Approved",
+      "definition": "Payment approved through all required authorization levels. Queued for the next payment cycle."
+    },
+    {
+      "code": "scheduled",
+      "display": "Scheduled",
+      "definition": "Payment approved and included in an upcoming payment batch. Payment date and method (check, ACH, wire) assigned."
+    },
+    {
+      "code": "paid",
+      "display": "Paid",
+      "definition": "Payment issued to the payee. For checks: printed and mailed/distributed. For ACH/wire: transmitted to the bank. Payment number and date recorded."
+    },
+    {
+      "code": "voided",
+      "display": "Voided",
+      "definition": "Payment cancelled after issuance but before clearing. For checks: stop payment issued. Creates a reversing entry against the original payment. Requires re-issuance if the underlying obligation remains."
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Payment request cancelled before issuance. The voucher or payment request is closed. Budget and encumbrance may be released."
+    },
+    {
+      "code": "returned",
+      "display": "Returned",
+      "definition": "Payment returned by the bank (ACH return, uncashed check). Common reasons: incorrect account number, closed account, deceased payee. Triggers re-investigation and re-issuance."
+    },
+    {
+      "code": "partially_paid",
+      "display": "Partially Paid",
+      "definition": "Only a portion of the invoiced amount has been paid. Remaining balance is open. Common for progress payments on contracts, partial shipments on POs, or payment disputes."
+    },
+    {
+      "code": "held",
+      "display": "Held/On Hold",
+      "definition": "Payment approved but intentionally held from disbursement. Reasons: vendor dispute, W-9 not on file, missing tax ID, debarred vendor flag, or 1099 compliance issue."
+    }
+  ]
+}

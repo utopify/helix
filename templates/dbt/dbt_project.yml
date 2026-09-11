@@ -1,0 +1,56 @@
+# HELIX Silver Layer — dbt Starter Project
+# https://github.com/utopify/helix
+#
+# This project implements the Bronze → Silver → Gold medallion architecture
+# with HELIX Core as the foundational model at the Silver layer.
+
+name: 'helix_silver'
+version: '0.3.1'
+config-version: 2
+
+profile: 'helix'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  # Set your source schema names here
+  bronze_schema: 'bronze'
+  silver_schema: 'silver'
+  gold_schema: 'gold'
+  # Source system identifier (used in metadata columns)
+  source_system: 'peoplesoft_cs'  # Change to: banner, workday, colleague
+
+models:
+  helix_silver:
+    staging:
+      +schema: staging
+      +materialized: view
+      +tags: ['staging', 'helix']
+    silver:
+      +schema: "{{ var('silver_schema') }}"
+      +materialized: table
+      +tags: ['silver', 'helix']
+    gold:
+      +schema: "{{ var('gold_schema') }}"
+      +materialized: table
+      +tags: ['gold', 'helix', 'consumption']
+
+seeds:
+  helix_silver:
+    +schema: reference
+    helix_terminologies:
+      +column_types:
+        code: varchar(50)
+        display: varchar(200)
+        definition: varchar(2000)
+        code_system: varchar(100)

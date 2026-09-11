@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/account-type.json",
+  "title": "HELIX Terminology: Chart of Accounts \u2014 Account Type",
+  "description": "Top-level account classifications in the higher education chart of accounts, aligned with NACUBO financial reporting standards and GASB/FASB account structure.",
+  "code_system": "helix/account-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "asset",
+      "display": "Asset",
+      "definition": "Resources owned or controlled by the institution with future economic benefit. Includes cash, investments, receivables (student, grants, pledges), prepaid expenses, capital assets (land, buildings, equipment), inventories, and deferred outflows of resources."
+    },
+    {
+      "code": "liability",
+      "display": "Liability",
+      "definition": "Obligations of the institution. Includes accounts payable, accrued payroll, unearned revenue (deferred tuition), bonds payable, capital leases, compensated absences liability, pension liability (GASB 68/75), and deferred inflows of resources."
+    },
+    {
+      "code": "fund_balance",
+      "display": "Fund Balance / Net Position",
+      "definition": "The residual of assets minus liabilities. GASB uses 'net position' with categories: net investment in capital assets, restricted (expendable and nonexpendable), and unrestricted. FASB uses 'net assets' with categories: without donor restrictions and with donor restrictions."
+    },
+    {
+      "code": "revenue",
+      "display": "Revenue",
+      "definition": "Inflows of resources. Major categories in higher ed: tuition and fees, state appropriations, federal grants and contracts, auxiliary enterprise revenue, gifts and pledges, investment income, hospital/clinical revenue, and other operating revenue."
+    },
+    {
+      "code": "expenditure",
+      "display": "Expenditure / Expense",
+      "definition": "Outflows of resources for operations. Classified by function (instruction, research, public service, academic support, student services, institutional support, operation of plant, scholarships/fellowships, auxiliary enterprises, hospital) and by natural classification (salaries, benefits, supplies, travel, equipment, utilities, depreciation)."
+    },
+    {
+      "code": "transfer",
+      "display": "Transfer",
+      "definition": "Movement of funds between fund groups that is not a revenue or expenditure. Includes mandatory transfers (debt service, matching requirements) and non-mandatory transfers (internal allocations, overhead recovery distributions). Must balance \u2014 every transfer-out has a corresponding transfer-in."
+    }
+  ]
+}

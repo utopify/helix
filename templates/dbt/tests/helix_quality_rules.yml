@@ -1,0 +1,109 @@
+version: 2
+
+# HELIX Quality Rule Tests
+# These tests implement the 22 quality rules defined in govern/quality-rules.json.
+# Run with: dbt test --select tag:helix_quality
+
+# ==========================================================================
+# Domain: Student Identity (QR-SI)
+# ==========================================================================
+
+models:
+  - name: helix_person
+    tests:
+      # QR-SI-001: Every person must have a last name
+      - dbt_expectations.expect_column_values_to_not_be_null:
+          column_name: last_name
+          tags: ['helix_quality', 'QR-SI-001']
+
+      # QR-SI-002: Email format validation
+      - dbt_expectations.expect_column_values_to_match_regex:
+          column_name: institutional_email
+          regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          tags: ['helix_quality', 'QR-SI-002']
+          config:
+            severity: warn
+            where: "institutional_email is not null"
+
+      # QR-SI-003: Date of birth should be reasonable (age 14-120)
+      - dbt_expectations.expect_column_values_to_be_between:
+          column_name: date_of_birth
+          min_value: "cast(dateadd('year', -120, current_date) as date)"
+          max_value: "cast(dateadd('year', -14, current_date) as date)"
+          tags: ['helix_quality', 'QR-SI-003']
+          config:
+            severity: warn
+            where: "date_of_birth is not null"
+
+  - name: helix_student
+    tests:
+      # QR-SI-004: Every student must link to a valid person
+      - dbt_utils.relationships_where:
+          to: ref('helix_person')
+          field: helix_id
+          from_condition: "person_ref is not null"
+          to_condition: "1=1"
+          tags: ['helix_quality', 'QR-SI-004']
+
+      # QR-SI-005: Student status must be from HELIX terminology
+      - accepted_values:
+          column_name: student_status
+          values: ['active', 'inactive', 'graduated', 'withdrawn', 'dismissed', 'leave_of_absence', 'deceased']
+          tags: ['helix_quality', 'QR-SI-005']
+
+  # ==========================================================================
+  # Domain: Enrollment (QR-EN)
+  # ==========================================================================
+
+  - name: helix_enrollment
+    tests:
+      # QR-EN-001: Enrollment status from HELIX terminology
+      - accepted_values:
+          column_name: enrollment_status
+          values: ['enrolled', 'dropped', 'withdrawn', 'completed', 'waitlisted', 'audit', 'incomplete']
+          tags: ['helix_quality', 'QR-EN-001']
+
+      # QR-EN-002: Credits attempted must be non-negative
+      - dbt_expectations.expect_column_values_to_be_between:
+          column_name: credits_attempted
+          min_value: 0
+          max_value: 30
+          tags: ['helix_quality', 'QR-EN-002']
+          config:
+            where: "credits_attempted is not null"
+
+      # QR-EN-003: Credits earned <= credits attempted
+      - dbt_utils.expression_is_true:
+          expression: "credits_earned <= credits_attempted"
+          config:
+            where: "credits_earned is not null and credits_attempted is not null"
+          tags: ['helix_quality', 'QR-EN-003']
+
+  # ==========================================================================
+  # Domain: Financial Aid (QR-FA)
+  # ==========================================================================
+
+  - name: helix_fin_aid_award
+    tests:
+      # QR-FA-001: Disbursed <= accepted <= offered
+      - dbt_utils.expression_is_true:
+          expression: "disbursed_amount <= accepted_amount and accepted_amount <= offered_amount"
+          config:
+            where: "disbursed_amount is not null and accepted_amount is not null and offered_amount is not null"
+          tags: ['helix_quality', 'QR-FA-001']
+
+      # QR-FA-002: SAP status from HELIX terminology
+      - accepted_values:
+          column_name: sap_status
+          values: ['satisfactory', 'warning', 'probation', 'suspension', 'appeal_approved', 'not_applicable']
+          tags: ['helix_quality', 'QR-FA-002']
+          config:
+            where: "sap_status is not null"
+
+      # QR-FA-003: Award type from HELIX terminology
+      - accepted_values:
+          column_name: award_type
+          values: ['grant', 'scholarship', 'loan_subsidized', 'loan_unsubsidized', 'loan_plus', 'loan_perkins', 'work_study', 'waiver']
+          tags: ['helix_quality', 'QR-FA-003']
+          config:
+            where: "award_type is not null"

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/performance-rating.json",
+  "title": "HELIX Terminology: Performance Rating",
+  "description": "Standard performance evaluation ratings used in higher education staff appraisals.",
+  "code_system": "helix/performance-rating",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "exceptional",
+      "display": "Exceptional",
+      "definition": "Performance consistently and significantly exceeds expectations. Demonstrates outstanding contributions, innovation, and impact well beyond the scope of the position. Reserved for truly extraordinary performance (typically no more than 5-10% of workforce)."
+    },
+    {
+      "code": "exceeds_expectations",
+      "display": "Exceeds Expectations",
+      "definition": "Performance regularly exceeds the requirements of the position. Delivers high-quality work ahead of schedule, takes on additional responsibilities, and contributes beyond assigned duties."
+    },
+    {
+      "code": "meets_expectations",
+      "display": "Meets Expectations",
+      "definition": "Performance fully meets the requirements and standards of the position. Consistently delivers quality work, meets deadlines, and fulfills all position responsibilities. This is the expected performance level for a competent employee."
+    },
+    {
+      "code": "partially_meets",
+      "display": "Partially Meets Expectations",
+      "definition": "Performance meets some but not all position requirements. Some areas need improvement. Typically triggers a performance improvement plan (PIP) with specific goals, timeline (30-90 days), and support resources."
+    },
+    {
+      "code": "does_not_meet",
+      "display": "Does Not Meet Expectations",
+      "definition": "Performance fails to meet minimum requirements of the position despite prior feedback and support. May trigger formal corrective action, reassignment, or termination process. Must be well-documented."
+    },
+    {
+      "code": "not_rated",
+      "display": "Not Rated",
+      "definition": "Performance not formally evaluated for this period. Used for new employees in probationary period, employees on extended leave, or positions where evaluation was deferred."
+    },
+    {
+      "code": "improvement_demonstrated",
+      "display": "Improvement Demonstrated",
+      "definition": "Used following a performance improvement plan (PIP). Employee has shown measurable progress toward meeting expectations but monitoring continues. PIP may be extended or concluded."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/expense-status.json",
+  "title": "HELIX Terminology: Expense Report Status",
+  "description": "Status of employee expense reimbursement requests in the travel and expense system.",
+  "code_system": "helix/expense-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "draft",
+      "display": "Draft",
+      "definition": "Expense report started but not yet submitted. Employee is adding receipts, coding expenses to chartfields, and calculating mileage or per diem amounts."
+    },
+    {
+      "code": "submitted",
+      "display": "Submitted",
+      "definition": "Expense report submitted for approval. Routing to the appropriate approver(s) based on institutional travel policy and delegation of authority."
+    },
+    {
+      "code": "pending_approval",
+      "display": "Pending Approval",
+      "definition": "Under review by one or more approvers. May require department head, PI (for grant-funded travel), and/or dean approval depending on dollar amount and funding source."
+    },
+    {
+      "code": "approved",
+      "display": "Approved",
+      "definition": "All required approvals obtained. Routed to accounts payable/travel office for audit and payment processing."
+    },
+    {
+      "code": "paid",
+      "display": "Paid/Reimbursed",
+      "definition": "Reimbursement issued to the employee via direct deposit or check. Typically processed within 5-10 business days of final approval. Grant-funded travel may take longer due to additional compliance review."
+    },
+    {
+      "code": "returned",
+      "display": "Returned for Correction",
+      "definition": "Report sent back to the submitter due to issues: missing receipts, incorrect account coding, policy violations (exceeded per diem, unauthorized expenses), or missing pre-trip authorization."
+    },
+    {
+      "code": "denied",
+      "display": "Denied",
+      "definition": "Expense report rejected. Common reasons: expense not allowable per policy, insufficient documentation, travel not pre-approved, exceeds budget authority, or retroactive request beyond the submission deadline (typically 30-60 days)."
+    },
+    {
+      "code": "under_audit",
+      "display": "Under Audit",
+      "definition": "Report flagged for detailed review by the travel office or internal audit. May be random selection, high-dollar threshold, or triggered by anomaly detection. Employee may need to provide additional documentation."
+    }
+  ]
+}

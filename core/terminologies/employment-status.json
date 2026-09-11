@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/employment-status.json",
+  "title": "HELIX Terminology: Employment Status",
+  "description": "Current status of a worker's employment relationship with the institution.",
+  "code_system": "helix/employment-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "active",
+      "display": "Active",
+      "definition": "Currently employed and in active pay status. Includes workers on regular schedule, reduced schedule, or modified duties."
+    },
+    {
+      "code": "inactive",
+      "display": "Inactive",
+      "definition": "Employment record exists but individual is not currently in active pay status. Used for seasonal workers between terms or workers awaiting administrative processing."
+    },
+    {
+      "code": "leave_of_absence",
+      "display": "Leave of Absence",
+      "definition": "Approved absence from duties with employment relationship maintained. Includes FMLA, personal leave, medical leave, military leave, sabbatical. Benefits continuation varies by leave type and institutional policy."
+    },
+    {
+      "code": "terminated",
+      "display": "Terminated",
+      "definition": "Employment relationship ended, either voluntarily (resignation) or involuntarily (dismissal, layoff, reduction in force). Triggers COBRA notification, final pay requirements, and exit processing."
+    },
+    {
+      "code": "retired",
+      "display": "Retired",
+      "definition": "Employment ended through formal retirement. May trigger retiree benefits (if offered), emeritus consideration (for faculty), and pension/403(b) distribution eligibility."
+    },
+    {
+      "code": "suspended",
+      "display": "Suspended",
+      "definition": "Employment relationship maintained but worker is temporarily removed from duties, with or without pay. Typically pending investigation or disciplinary action."
+    },
+    {
+      "code": "deceased",
+      "display": "Deceased",
+      "definition": "Worker is deceased. Triggers survivor benefit processing, final pay to estate, life insurance claim, and tax document generation (W-2 to estate/beneficiary)."
+    },
+    {
+      "code": "furloughed",
+      "display": "Furloughed",
+      "definition": "Temporary unpaid leave initiated by the institution, typically due to budget constraints. Employment relationship maintained; worker retains benefits eligibility in most cases."
+    }
+  ]
+}

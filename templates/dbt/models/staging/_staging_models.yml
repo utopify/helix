@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: "Raw data landed from source ERP systems. No transformations applied."
+    schema: "{{ var('bronze_schema') }}"
+    tables:
+      - name: src_person
+        description: "Raw person/biographical data from source system"
+        columns:
+          - name: source_id
+            description: "Native key from source system (EMPLID, PIDM, etc.)"
+            tests:
+              - not_null
+      - name: src_student
+        description: "Raw student records from source system"
+      - name: src_enrollment
+        description: "Raw course registration/enrollment records"
+      - name: src_fin_aid_award
+        description: "Raw financial aid award records"
+      - name: src_student_program
+        description: "Raw student-program association records"
+      - name: src_academic_period
+        description: "Raw term/period definitions"

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/learning-type.json",
+  "title": "HELIX Terminology: Learning/Training Type",
+  "description": "Categories of professional development and training activities for institutional employees.",
+  "code_system": "helix/learning-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "course",
+      "display": "Formal Course",
+      "definition": "Credit or non-credit course taken at the institution or elsewhere, often under the tuition waiver benefit. May count toward a degree, certificate, or professional credential."
+    },
+    {
+      "code": "workshop",
+      "display": "Workshop",
+      "definition": "Structured, interactive training session, typically 2-8 hours. May be offered by HR, the teaching center, IT, or an external provider. Common topics: Banner navigation, budget management, inclusive teaching practices."
+    },
+    {
+      "code": "certification",
+      "display": "Certification Program",
+      "definition": "Program leading to a professional credential (e.g., PMP, SHRM-CP, CPA continuing education, CITI research ethics). Institution may fund exam fees and preparation materials."
+    },
+    {
+      "code": "conference",
+      "display": "Conference/Symposium",
+      "definition": "Professional conference attendance, including presentation or attendance. Funded through professional development budgets. Requires travel authorization and post-travel reporting at most institutions."
+    },
+    {
+      "code": "webinar",
+      "display": "Webinar/Virtual Training",
+      "definition": "Online synchronous training session. May be recorded for asynchronous viewing. Increasingly common for compliance training (Title IX, FERPA, cybersecurity awareness)."
+    },
+    {
+      "code": "self_paced",
+      "display": "Self-Paced / E-Learning",
+      "definition": "Asynchronous online learning modules accessed through the LMS or external platform (LinkedIn Learning, Coursera, etc.). Often used for compliance training with completion tracking and certificate generation."
+    },
+    {
+      "code": "on_the_job",
+      "display": "On-the-Job Training",
+      "definition": "Structured learning occurring during normal work through observation, shadowing, job rotation, or stretch assignments. Typically documented in the performance management system."
+    },
+    {
+      "code": "mentoring",
+      "display": "Mentoring Program",
+      "definition": "Formal or informal pairing of experienced and less-experienced employees for professional growth. May be part of new employee onboarding, leadership development, or faculty development programs."
+    },
+    {
+      "code": "compliance_training",
+      "display": "Mandatory Compliance Training",
+      "definition": "Required training for regulatory compliance: Title IX, FERPA, GLBA information security, Clery Act, hazardous materials, conflict of interest, responsible conduct of research, driver safety. Non-completion may trigger hold on system access or pay."
+    }
+  ]
+}

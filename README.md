@@ -9,7 +9,7 @@ HELIX is an open framework of foundational data models, governance standards, an
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.3.0 (September 2026)
+**Version:** 0.3.1 (September 2026)
 **License:** Apache 2.0
 
 --- 
@@ -99,15 +99,19 @@ See the [Resource Catalog](docs/resource-catalog.md) for full attribute details.
 
 ## HELIX Core: Glossary
 
-A 34,000-word comprehensive taxonomy covering the complete student lifecycle (web visitor through alumni/donor), all student types (workers, athletes, international, first-gen, veteran), the administrative infrastructure (registrar, student financial services, FERPA, GLBA), and the full faculty taxonomy (10 employment types, 9 academic ranks, tenure system, IPEDS faculty categories).
+A 113,000-character comprehensive taxonomy covering the complete student lifecycle (web visitor through alumni/donor), all student types, the full administrative infrastructure (Business Affairs/Bursar, Grants Management, HR, Registrar, Academic Structure & Governance), auxiliary services, a deep dive on athletics (NCAA structure, compliance, NIL, APR, Title IX, financial structure), a deep dive on advancement and alumni relations (gift types, campaigns, stewardship, endowment, prospect research, moves management, annual fund), and information technology and institutional research.
 
 See the [Glossary](core/glossary.md) for the full reference.
 
-## HELIX Core: Terminologies (v0.1)
+## HELIX Core: Terminologies (v0.2)
 
-23 standardized code sets that eliminate "what does this code mean?" across institutions:
+48 standardized code sets across student lifecycle, human resources, and financial operations:
 
-`student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status` · `constituent-type` · `gift-type` · `donor-segment` · `prospect-stage` · `enrollment-funnel-stage`
+**Student Lifecycle (23):** `student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status` · `constituent-type` · `gift-type` · `donor-segment` · `prospect-stage` · `enrollment-funnel-stage`
+
+**Human Resources (14):** `worker-type` · `employment-status` · `position-status` · `compensation-type` · `benefit-plan-type` · `pay-frequency` · `absence-type` · `requisition-status` · `performance-rating` · `faculty-rank` · `tenure-status` · `eeo-category` · `flsa-status` · `learning-type`
+
+**Financial Operations (11):** `transaction-type` · `payment-status` · `budget-status` · `purchase-order-status` · `grant-status` · `asset-status` · `asset-category` · `expense-status` · `contract-status` · `fund-type` · `account-type`
 
 See the [Terminology Catalog](docs/terminology-catalog.md) for every valid code and definition.
 
@@ -142,13 +146,19 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 | **Committee Charter** | Fillable charter template for Data Governance Council with membership roles, cadence, responsibilities, and success metrics |
 | **Data Sharing Agreement** | Template with FERPA/GLBA provisions, security requirements, breach notification, and audit rights |
 | **Schema Evolution Policy** | Versioning rules (MAJOR.MINOR.PATCH), backward compatibility guarantees, deprecation process, and institutional extension patterns |
-| **Data Dictionary** | 537-entry structured dictionary (JSON + CSV) — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
+| **Data Dictionary** | 1,258-entry structured dictionary (JSON + CSV) covering all 47 resources — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
 
 See the [Govern Overview](docs/govern-overview.md) for details.
 
-## HELIX Connect
+## HELIX Connect (v0.2)
 
-OpenAPI 3.1 spec with 16 endpoints covering all core resources, bulk export (NDJSON + Parquet), resource validation, and OAuth 2.0 security with classification-aware scopes.
+OpenAPI 3.1 spec with 51 endpoints across student, financial, and HR resources:
+
+| Category | Endpoints | OAuth Scope |
+|----------|-----------|-------------|
+| **Student & Academic** | 16 endpoints (resources, enrollment, financial aid, bulk export, validation) | `helix:read`, `helix:read:confidential`, `helix:read:restricted` |
+| **Financial Operations** | 23 endpoints (GL, AP, AR, budgets, POs, grants, assets, expenses, contracts, funds) | `helix:read:financial` |
+| **Human Resources** | 12 endpoints (employees, positions, requisitions, time, absence, job classification) | `helix:read:hr`, `helix:read:hr:restricted` |
 
 See the [Connect Overview](docs/connect-overview.md) for the full API reference.
 
@@ -209,7 +219,7 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (231 files)
+## Repository Structure (294 files)
 
 ```
 helix/
@@ -217,13 +227,13 @@ helix/
 +-- CONTRIBUTING.md                    <-- How to participate
 +-- core/
 |   +-- resources/                     <-- 47 JSON Schema resource definitions
-|   +-- terminologies/                 <-- 23 standardized code sets
-|   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (34K words)
-|   +-- data-dictionary.json           <-- 537-entry structured data dictionary
+|   +-- terminologies/                 <-- 48 standardized code sets (student, HR, FIN)
+|   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (113K chars, 125 terms)
+|   +-- data-dictionary.json           <-- 1,258-entry structured data dictionary
 |   +-- data-dictionary.csv            <-- Same dictionary in spreadsheet format
 |   +-- examples/                      <-- 3 post-migration use case examples
 +-- connect/
-|   +-- openapi.json                   <-- OpenAPI 3.1 API specification
+|   +-- openapi.json                   <-- OpenAPI 3.1 spec (51 endpoints, v0.2)
 +-- govern/
 |   +-- roles.json                     <-- Governance role definitions
 |   +-- quality-rules.json             <-- Data quality rule library (22 rules)
@@ -238,7 +248,7 @@ helix/
 |   +-- glba-safeguards-framework.json <-- FTC Safeguards Rule (16 CFR 314)
 |   +-- ferpa-disclosure-framework.json <-- 99.31(a)(1)/(6)/(11) enforcement
 +-- bridge/
-|   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (40)
+|   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (42)
 |   |   +-- cs/                        <-- Campus Solutions / SIS (19)
 |   |   +-- fin/                       <-- Financials / FSCM (11)
 |   |   +-- hcm/                       <-- Human Capital Management (12)
@@ -256,6 +266,27 @@ helix/
 |           +-- fund-xref.*            <-- 14 fund mappings
 |           +-- department-xref.*      <-- 15 dept/cost center mappings
 |           +-- program-xref.*         <-- 12 functional classifications
++-- templates/
+|   +-- dbt/                           <-- dbt starter project (27 files)
+|   |   +-- dbt_project.yml            <-- Project configuration
+|   |   +-- profiles.yml.example       <-- Snowflake/Redshift/Databricks/BigQuery
+|   |   +-- packages.yml              <-- dbt-utils, dbt-expectations
+|   |   +-- models/staging/            <-- Bronze -> Staging (5 models)
+|   |   +-- models/silver/             <-- Staging -> HELIX Core (5 models)
+|   |   +-- models/gold/               <-- Silver -> Consumption (4 models)
+|   |   +-- macros/                    <-- HELIX UUID, classification, FERPA-safe views
+|   |   +-- tests/                     <-- Quality rules from govern/quality-rules.json
+|   |   +-- seeds/                     <-- All 48 terminology code sets as CSV
+|   +-- reconciliation/                <-- Post-migration validation queries (10)
+|       +-- row_count_reconciliation.sql
+|       +-- financial_balance_reconciliation.sql
+|       +-- enrollment_headcount_reconciliation.sql
+|       +-- student_record_completeness.sql
+|       +-- cross_system_identity_match.sql
+|       +-- financial_aid_disbursement_reconciliation.sql
+|       +-- grade_distribution_reconciliation.sql
+|       +-- duplicate_detection.sql
+|       +-- data_freshness_check.sql
 +-- agents/                            <-- Downloadable AI assistant templates
 |   +-- helix-migration-companion.json <-- START HERE: unified guide
 |   +-- ps-to-workday-fin-agent.json
@@ -302,6 +333,10 @@ helix/
 
 **Validating your data?** Use the [validation script](tools/validate.py) to check JSON, NDJSON, or CSV files against HELIX schemas.
 
+**Building a dbt project?** Clone the [dbt starter](templates/dbt/) — pre-built staging, silver, and gold models with HELIX quality rules as tests and a FERPA-safe view macro.
+
+**Reconciling after migration?** Use the [reconciliation queries](templates/reconciliation/) — 10 SQL templates covering row counts, financial balances, enrollment headcounts, identity matching, and data freshness.
+
 **Contribute:** Read [CONTRIBUTING.md](CONTRIBUTING.md) and open an issue or pull request
 
 ---
@@ -320,5 +355,5 @@ The double helix is a fitting metaphor. Two strands — data and governance — 
 
 ---
 
-*HELIX v0.3.0 — September 2026*
+*HELIX v0.3.1 — September 2026*
 *Licensed under Apache 2.0*

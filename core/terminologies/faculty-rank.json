@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/faculty-rank.json",
+  "title": "HELIX Terminology: Faculty Rank",
+  "description": "Academic ranks within the higher education faculty hierarchy. Aligned with IPEDS faculty classification categories.",
+  "code_system": "helix/faculty-rank",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "instructor",
+      "display": "Instructor",
+      "definition": "Entry-level teaching appointment, typically requiring a master's degree. Usually non-tenure-track. May be full-time or part-time. Some institutions use this rank for ABD (all but dissertation) candidates."
+    },
+    {
+      "code": "lecturer",
+      "display": "Lecturer",
+      "definition": "Teaching-focused appointment, typically non-tenure-track. May be full-time with renewable multi-year contracts. Some institutions have a lecturer promotion track (Lecturer \u2192 Senior Lecturer \u2192 Principal Lecturer/Teaching Professor)."
+    },
+    {
+      "code": "senior_lecturer",
+      "display": "Senior Lecturer",
+      "definition": "Promoted teaching-focused rank above Lecturer. Recognizes sustained excellence in teaching and service. May carry additional responsibilities such as curriculum coordination or mentoring."
+    },
+    {
+      "code": "assistant_professor",
+      "display": "Assistant Professor",
+      "definition": "First rank on the tenure track at most institutions. Typically a 6-year probationary period before tenure review. Expected to develop a research/scholarly agenda, establish a teaching record, and demonstrate service."
+    },
+    {
+      "code": "associate_professor",
+      "display": "Associate Professor",
+      "definition": "Awarded upon successful tenure review (at most institutions, tenure and promotion to Associate are simultaneous). Demonstrates sustained scholarly productivity, teaching effectiveness, and institutional service."
+    },
+    {
+      "code": "full_professor",
+      "display": "Professor",
+      "definition": "Highest standard rank, awarded upon promotion from Associate Professor. Demonstrates national/international distinction in scholarship, excellence in teaching, and significant service/leadership. No fixed timeline; many remain Associate for career."
+    },
+    {
+      "code": "distinguished_professor",
+      "display": "Distinguished Professor",
+      "definition": "Honorary or endowed rank above Professor, recognizing exceptional career achievement. Often carries a named title (e.g., 'University Distinguished Professor,' 'Regents Professor'). May include an endowed salary supplement."
+    },
+    {
+      "code": "university_professor",
+      "display": "University Professor",
+      "definition": "Institutional-level appointment transcending departmental boundaries. Recognizes scholars whose work spans disciplines. Reports to provost rather than a department chair. Rare and prestigious."
+    },
+    {
+      "code": "emeritus_professor",
+      "display": "Emeritus Professor",
+      "definition": "Honorary title granted to retired faculty in recognition of distinguished service. Conferred by the governing board on recommendation of the department and provost. Retains certain privileges but is not actively employed."
+    },
+    {
+      "code": "clinical_professor",
+      "display": "Clinical Professor",
+      "definition": "Non-tenure-track rank for faculty primarily engaged in clinical teaching, supervision, or professional practice. Common in health sciences, law, education, and business. May have its own promotion track (Clinical Assistant \u2192 Clinical Associate \u2192 Clinical Full)."
+    },
+    {
+      "code": "research_professor",
+      "display": "Research Professor",
+      "definition": "Non-tenure-track rank for faculty primarily funded by external grants/contracts. Expected to be substantially (often 80-100%) externally funded. May have its own promotion track. Teaching is typically minimal or by choice."
+    },
+    {
+      "code": "professor_of_practice",
+      "display": "Professor of Practice",
+      "definition": "Non-tenure-track rank for individuals with significant professional experience outside academia who bring practitioner expertise to teaching. Common in business, engineering, law, and public policy. Terminal degree not always required."
+    },
+    {
+      "code": "visiting_professor",
+      "display": "Visiting Professor",
+      "definition": "Temporary appointment (typically 1-2 years) for a faculty member from another institution or a scholar-in-residence. Rank mirrors the visitor's home rank or the level of the appointment."
+    }
+  ]
+}

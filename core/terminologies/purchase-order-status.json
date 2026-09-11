@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/purchase-order-status.json",
+  "title": "HELIX Terminology: Purchase Order Status",
+  "description": "Status of purchase orders in the institutional procurement process.",
+  "code_system": "helix/purchase-order-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "draft",
+      "display": "Draft",
+      "definition": "PO created but not yet submitted for approval. Requester is finalizing specifications, quantities, vendor selection, and budget coding."
+    },
+    {
+      "code": "pending_approval",
+      "display": "Pending Approval",
+      "definition": "PO submitted and routing through institutional approval workflow. Approval levels determined by dollar amount (e.g., department head up to $5K, dean up to $25K, VP up to $100K, president/board above)."
+    },
+    {
+      "code": "approved",
+      "display": "Approved",
+      "definition": "PO approved at all required levels. Budget checked and encumbered. Ready to dispatch to vendor."
+    },
+    {
+      "code": "dispatched",
+      "display": "Dispatched",
+      "definition": "PO sent to the vendor. Serves as the institution's contractual commitment to purchase. Includes delivery terms, payment terms, and any special conditions."
+    },
+    {
+      "code": "partially_received",
+      "display": "Partially Received",
+      "definition": "Some items on the PO have been received and receipted; others are outstanding. Partial payment may be processed via 3-way match (PO, receipt, invoice)."
+    },
+    {
+      "code": "received",
+      "display": "Fully Received",
+      "definition": "All items/services on the PO have been received and receipted. Ready for final invoice matching and payment processing."
+    },
+    {
+      "code": "closed",
+      "display": "Closed",
+      "definition": "PO fully received and all invoices paid. Any remaining encumbrance is liquidated (released back to available budget). PO is archived."
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "PO cancelled before completion. Encumbrance reversed. If any payments were made (partial receipt), the cancellation applies only to the unreceived portion. May require vendor notification."
+    },
+    {
+      "code": "change_order",
+      "display": "Change Order/Amendment",
+      "definition": "PO modified after dispatch. Changes may include quantity, price, delivery date, or specifications. Requires approval and may re-trigger budget checking if the total increases."
+    }
+  ]
+}
