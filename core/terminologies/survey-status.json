@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/survey-status.json",
+  "title": "HELIX Terminology: Survey Status",
+  "description": "Lifecycle status of a survey instrument such as the NACE First-Destination Survey. Used by FirstDestinationSurvey.",
+  "code_system": "helix/survey-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "not_sent",
+      "display": "Not Sent",
+      "definition": "Survey has not yet been sent"
+    },
+    {
+      "code": "sent",
+      "display": "Sent",
+      "definition": "Survey has been sent to the graduate"
+    },
+    {
+      "code": "in_progress",
+      "display": "In Progress",
+      "definition": "Survey response is in progress"
+    },
+    {
+      "code": "completed",
+      "display": "Completed",
+      "definition": "Survey fully completed"
+    },
+    {
+      "code": "partial",
+      "display": "Partial",
+      "definition": "Survey partially completed"
+    },
+    {
+      "code": "no_response",
+      "display": "No Response",
+      "definition": "No response received"
+    },
+    {
+      "code": "opted_out",
+      "display": "Opted Out",
+      "definition": "Graduate opted out of the survey"
+    }
+  ]
+}

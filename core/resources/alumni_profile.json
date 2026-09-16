@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/alumni_profile.json",
+  "title": "HELIX AlumniProfile Resource",
+  "description": "An outcomes- and career-focused profile of an alumnus. This resource is DISTINCT from the Advancement Constituent resource: Constituent is giving/advancement-focused (donor segment, giving capacity, prospect stage), while AlumniProfile is career/engagement-focused (employer, career progression, mentoring, career services). The two are cross-linked via constituent_ref for the same person and MUST NOT duplicate giving data \u2014 refer to the Constituent record for all philanthropy/solicitation attributes. Post-graduation alumni career data is generally NOT a FERPA education record once the person is an alumnus and the data is independently collected.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "person_ref"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "person_ref": {
+      "type": "string",
+      "description": "HELIX ID of the underlying Person"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student record from their time enrolled"
+    },
+    "constituent_ref": {
+      "type": "string",
+      "description": "Cross-link to the Advancement Constituent record for the same person (the giving/advancement-side profile). Giving, donor segment, and solicitation data live on Constituent, NOT here."
+    },
+    "primary_degree_ref": {
+      "type": "string",
+      "description": "HELIX ID of the primary Degree earned"
+    },
+    "graduation_year": {
+      "type": "string"
+    },
+    "current_employer": {
+      "type": "string"
+    },
+    "current_job_title": {
+      "type": "string"
+    },
+    "current_industry": {
+      "type": "string"
+    },
+    "current_location_city": {
+      "type": "string"
+    },
+    "current_location_state": {
+      "type": "string"
+    },
+    "current_location_country": {
+      "type": "string"
+    },
+    "career_level": {
+      "type": "string",
+      "enum": [
+        "entry",
+        "mid",
+        "senior",
+        "executive",
+        "retired",
+        "unknown"
+      ]
+    },
+    "industry_sector": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "professional_certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "career_progression_notes": {
+      "type": "string"
+    },
+    "mentor_flag": {
+      "type": "boolean",
+      "description": "Willing to mentor current students"
+    },
+    "volunteer_flag": {
+      "type": "boolean"
+    },
+    "event_attendance_count": {
+      "type": "integer"
+    },
+    "last_engagement_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "alumni_association_member_flag": {
+      "type": "boolean"
+    },
+    "geographic_chapter": {
+      "type": "string"
+    },
+    "career_services_opt_in_flag": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json. For AlumniProfile, is_education_record defaults to false: post-graduation career data collected independently of the education record is generally not a FERPA record. If any field is sourced from the student education record, treat that lineage accordingly.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": false,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": false,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

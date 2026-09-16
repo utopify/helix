@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/experiential_learning.json",
+  "title": "HELIX ExperientialLearning Resource",
+  "description": "An experiential learning activity: internship, co-op, practicum, clinical rotation, student teaching, undergraduate research, service learning, field experience, or capstone. These are recognized High-Impact Practices (HIPs) per NSSE (National Survey of Student Engagement) and are increasingly tracked as part of student success and career-readiness outcomes.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "experiential_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod during which the experience occurred"
+    },
+    "experiential_type": {
+      "type": "string",
+      "description": "Type of experiential learning. Bound to HELIX terminology: helix/experiential-type",
+      "enum": [
+        "internship",
+        "co_op",
+        "practicum",
+        "clinical_rotation",
+        "student_teaching",
+        "undergraduate_research",
+        "service_learning",
+        "field_experience",
+        "externship",
+        "apprenticeship",
+        "capstone_project",
+        "study_abroad"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the experience or position"
+    },
+    "organization_name": {
+      "type": "string"
+    },
+    "organization_industry": {
+      "type": "string"
+    },
+    "supervisor_name": {
+      "type": "string"
+    },
+    "supervisor_contact": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "hours_completed": {
+      "type": "number"
+    },
+    "credit_bearing_flag": {
+      "type": "boolean"
+    },
+    "credit_hours": {
+      "type": "number"
+    },
+    "course_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Course if credit-bearing"
+    },
+    "paid_flag": {
+      "type": "boolean"
+    },
+    "compensation_amount": {
+      "type": "number"
+    },
+    "location_city": {
+      "type": "string"
+    },
+    "location_state": {
+      "type": "string"
+    },
+    "location_country": {
+      "type": "string"
+    },
+    "learning_objectives": {
+      "type": "string"
+    },
+    "evaluation_completed_flag": {
+      "type": "boolean"
+    },
+    "evaluation_rating": {
+      "type": "string",
+      "description": "Supervisor or faculty evaluation rating"
+    },
+    "reflection_completed_flag": {
+      "type": "boolean"
+    },
+    "high_impact_practice_flag": {
+      "type": "boolean",
+      "description": "True if this qualifies as a NSSE High-Impact Practice"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

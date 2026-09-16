@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/fund-source.json",
+  "title": "HELIX Terminology: Aid Fund Source",
+  "description": "Source of financial aid funds. Used by FinAidAward and Disbursement (fund_source/fund classification).",
+  "code_system": "helix/fund-source",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "federal",
+      "display": "Federal",
+      "definition": "Federal Title IV or other federal source"
+    },
+    {
+      "code": "state",
+      "display": "State",
+      "definition": "State grant/scholarship agency"
+    },
+    {
+      "code": "institutional",
+      "display": "Institutional",
+      "definition": "Institution's own funds"
+    },
+    {
+      "code": "private",
+      "display": "Private",
+      "definition": "Private/external scholarship or donor"
+    },
+    {
+      "code": "employer",
+      "display": "Employer",
+      "definition": "Employer tuition benefit or sponsorship"
+    },
+    {
+      "code": "tribal",
+      "display": "Tribal",
+      "definition": "Tribal nation education funding"
+    },
+    {
+      "code": "foreign_government",
+      "display": "Foreign Government",
+      "definition": "Foreign government sponsorship"
+    }
+  ]
+}

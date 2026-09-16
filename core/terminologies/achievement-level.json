@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/achievement-level.json",
+  "title": "HELIX Terminology: Achievement Level",
+  "description": "Levels of attainment for a learning-outcome assessment. Used by LearningOutcome. Institutions may use the four-point (exceeds/meets/approaching/below) or developmental (exemplary/proficient/developing/beginning) scale.",
+  "code_system": "helix/achievement-level",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "exceeds",
+      "display": "Exceeds Expectations",
+      "definition": "Performance exceeds the expected standard"
+    },
+    {
+      "code": "meets",
+      "display": "Meets Expectations",
+      "definition": "Performance meets the expected standard"
+    },
+    {
+      "code": "approaching",
+      "display": "Approaching Expectations",
+      "definition": "Performance is approaching the expected standard"
+    },
+    {
+      "code": "below",
+      "display": "Below Expectations",
+      "definition": "Performance is below the expected standard"
+    },
+    {
+      "code": "not_demonstrated",
+      "display": "Not Demonstrated",
+      "definition": "The competency was not demonstrated"
+    },
+    {
+      "code": "exemplary",
+      "display": "Exemplary",
+      "definition": "Developmental scale: exemplary attainment"
+    },
+    {
+      "code": "proficient",
+      "display": "Proficient",
+      "definition": "Developmental scale: proficient attainment"
+    },
+    {
+      "code": "developing",
+      "display": "Developing",
+      "definition": "Developmental scale: developing attainment"
+    },
+    {
+      "code": "beginning",
+      "display": "Beginning",
+      "definition": "Developmental scale: beginning attainment"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/employment-type-aid.json",
+  "title": "HELIX Terminology: Student Employment Type (Aid)",
+  "description": "Types of student employment tied to financial aid. Used by the StudentEmployment resource.",
+  "code_system": "helix/employment-type-aid",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "federal_work_study",
+      "display": "Federal Work-Study",
+      "definition": "FWS-funded employment"
+    },
+    {
+      "code": "institutional_work_study",
+      "display": "Institutional Work-Study",
+      "definition": "Institution-funded work-study"
+    },
+    {
+      "code": "graduate_assistantship",
+      "display": "Graduate Assistantship",
+      "definition": "Graduate assistantship (GA)"
+    },
+    {
+      "code": "teaching_assistantship",
+      "display": "Teaching Assistantship",
+      "definition": "Teaching assistantship (TA)"
+    },
+    {
+      "code": "research_assistantship",
+      "display": "Research Assistantship",
+      "definition": "Research assistantship (RA)"
+    },
+    {
+      "code": "fellowship",
+      "display": "Fellowship",
+      "definition": "Fellowship-supported position"
+    },
+    {
+      "code": "off_campus_community_service",
+      "display": "Off-Campus Community Service",
+      "definition": "FWS community-service placement off campus"
+    }
+  ]
+}

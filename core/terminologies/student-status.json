@@ -3,21 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/student-status.json",
   "title": "HELIX Terminology: Student Status",
   "description": "Standard lifecycle statuses for a student at an institution. Used by the Student resource 'status' attribute.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/student-status"
-    },
-    "version": {
-      "const": "0.1"
-    },
-    "codes": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
-    }
-  },
+  "code_system": "helix/student-status",
+  "version": "0.1",
   "codes": [
     {
       "code": "prospective",

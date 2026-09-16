@@ -5,7 +5,8 @@
   "description": "An accounts payable voucher \u2014 a supplier invoice approved for payment. Carries vendor, invoice, amount, payment, and worktag/chartfield distribution.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "voucher_id"
   ],
   "properties": {
     "helix_id": {

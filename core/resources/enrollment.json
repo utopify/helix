@@ -39,7 +39,8 @@
         "completed",
         "incomplete",
         "auditing"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/enrollment-status."
     },
     "enrollment_date": {
       "type": "string",
@@ -107,7 +108,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
         },
         "ferpa_flags": {
           "type": "object",

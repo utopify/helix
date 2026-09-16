@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/licensure-result.json",
+  "title": "HELIX Terminology: Licensure Result",
+  "description": "Outcome of a professional licensure or certification examination. Used by Licensure.",
+  "code_system": "helix/licensure-result",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "pass",
+      "display": "Pass",
+      "definition": "Passed the examination"
+    },
+    {
+      "code": "fail",
+      "display": "Fail",
+      "definition": "Did not pass the examination"
+    },
+    {
+      "code": "pass_first_attempt",
+      "display": "Pass - First Attempt",
+      "definition": "Passed on the first attempt (key accreditation metric)"
+    },
+    {
+      "code": "pass_subsequent_attempt",
+      "display": "Pass - Subsequent Attempt",
+      "definition": "Passed on a subsequent attempt"
+    },
+    {
+      "code": "pending",
+      "display": "Pending",
+      "definition": "Result pending"
+    },
+    {
+      "code": "scheduled",
+      "display": "Scheduled",
+      "definition": "Exam scheduled but not yet taken"
+    },
+    {
+      "code": "no_show",
+      "display": "No Show",
+      "definition": "Registered but did not sit for the exam"
+    },
+    {
+      "code": "conditional",
+      "display": "Conditional",
+      "definition": "Conditional pass pending additional requirements"
+    }
+  ]
+}

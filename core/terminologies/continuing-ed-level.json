@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/continuing-ed-level.json",
+  "title": "HELIX Terminology: Continuing Education Level",
+  "description": "Level of continuing/further education pursued by a graduate. Used by ContinuingEducation.",
+  "code_system": "helix/continuing-ed-level",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "masters",
+      "display": "Master's Degree",
+      "definition": "Pursuing a master's degree"
+    },
+    {
+      "code": "doctoral",
+      "display": "Doctoral Degree",
+      "definition": "Pursuing a research doctoral degree (PhD, EdD, etc.)"
+    },
+    {
+      "code": "professional_jd",
+      "display": "Professional - JD",
+      "definition": "Pursuing a Juris Doctor (law)"
+    },
+    {
+      "code": "professional_md",
+      "display": "Professional - MD",
+      "definition": "Pursuing a Doctor of Medicine or equivalent health professional degree"
+    },
+    {
+      "code": "professional_other",
+      "display": "Professional - Other",
+      "definition": "Pursuing another first-professional degree (DDS, PharmD, DVM, etc.)"
+    },
+    {
+      "code": "second_bachelors",
+      "display": "Second Bachelor's",
+      "definition": "Pursuing a second bachelor's degree"
+    },
+    {
+      "code": "certificate",
+      "display": "Certificate",
+      "definition": "Pursuing a post-baccalaureate certificate"
+    },
+    {
+      "code": "postbaccalaureate",
+      "display": "Post-Baccalaureate",
+      "definition": "Pursuing post-baccalaureate coursework (e.g., pre-med post-bacc)"
+    },
+    {
+      "code": "postdoctoral",
+      "display": "Postdoctoral",
+      "definition": "Pursuing postdoctoral study or research"
+    }
+  ]
+}

@@ -48,7 +48,8 @@
         "hybrid",
         "hyflex",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/delivery-mode."
     },
     "campus": {
       "type": "string"
@@ -154,7 +155,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "internal"
         }
       }
     },

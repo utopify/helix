@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/aid_package.json",
+  "title": "HELIX AidPackage Resource",
+  "description": "Need analysis and packaging for a student for an aid year/period: full Cost of Attendance (COA) components, computed need, offered aid totals, unmet need, and professional judgment adjustments. GLBA-covered; classified restricted.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_year",
+    "packaging_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "aid_application_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AidApplication"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod (if term-specific packaging)"
+    },
+    "cost_of_attendance_total": {
+      "type": "number",
+      "description": "Total COA budget."
+    },
+    "coa_tuition_fees": {
+      "type": "number"
+    },
+    "coa_room_board": {
+      "type": "number"
+    },
+    "coa_books_supplies": {
+      "type": "number"
+    },
+    "coa_transportation": {
+      "type": "number"
+    },
+    "coa_personal": {
+      "type": "number"
+    },
+    "coa_loan_fees": {
+      "type": "number"
+    },
+    "coa_other": {
+      "type": "number"
+    },
+    "sai": {
+      "type": "integer",
+      "description": "Student Aid Index used for this packaging."
+    },
+    "need": {
+      "type": "number",
+      "description": "Financial need = COA minus SAI."
+    },
+    "total_aid_offered": {
+      "type": "number"
+    },
+    "total_grant_aid": {
+      "type": "number"
+    },
+    "total_self_help": {
+      "type": "number",
+      "description": "Self-help aid (loans + work-study)."
+    },
+    "unmet_need": {
+      "type": "number",
+      "description": "Remaining need after all aid."
+    },
+    "packaging_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "packaged",
+        "revised",
+        "finalized",
+        "cancelled"
+      ],
+      "description": "Packaging lifecycle status"
+    },
+    "packaging_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "professional_judgment_applied_flag": {
+      "type": "boolean"
+    },
+    "pj_reason": {
+      "type": "string",
+      "description": "Professional judgment reason/justification."
+    },
+    "pj_adjustment_amount": {
+      "type": "number"
+    },
+    "cost_of_attendance_adjusted_flag": {
+      "type": "boolean"
+    },
+    "enrollment_intensity_assumed": {
+      "type": "string",
+      "description": "Enrollment intensity assumed for packaging (e.g., full_time)."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "restricted"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

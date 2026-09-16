@@ -3,15 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/period-type.json",
   "title": "HELIX Terminology: Academic Period Type",
   "description": "Standard types of academic periods. Used by the AcademicPeriod resource 'period_type' attribute.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/period-type"
-    },
-    "version": {
-      "const": "0.1"
-    }
-  },
+  "code_system": "helix/period-type",
+  "version": "0.1",
   "codes": [
     {
       "code": "semester",

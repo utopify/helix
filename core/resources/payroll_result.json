@@ -5,7 +5,8 @@
   "description": "A payroll result \u2014 a processed pay statement for one pay period: gross, taxes, deductions, net, and labor distribution across funds/grants. Restricted; contains tax-linked data.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

@@ -5,7 +5,8 @@
   "description": "A budget line \u2014 planned, encumbered, expended, and available amounts by account/fund/department for a fiscal year.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "budget_id"
   ],
   "properties": {
     "helix_id": {

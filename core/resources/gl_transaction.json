@@ -5,7 +5,8 @@
   "description": "A general ledger journal transaction \u2014 the atomic unit of financial accounting. Carries account, fund, department, program, amount, and ledger coding. Maps from PeopleSoft chartfields and Workday worktags.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "transaction_id"
   ],
   "properties": {
     "helix_id": {

@@ -46,7 +46,7 @@
         "foundation_grant",
         "other"
       ],
-      "description": "Type of philanthropic transaction"
+      "description": "Type of philanthropic transaction Bound to HELIX terminology: helix/gift-type."
     },
     "amount": {
       "type": "number",
@@ -240,7 +240,8 @@
             "internal",
             "confidential",
             "restricted"
-          ]
+          ],
+          "default": "confidential"
         }
       }
     }

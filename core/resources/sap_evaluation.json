@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/sap_evaluation.json",
+  "title": "HELIX SAPEvaluation Resource",
+  "description": "A Satisfactory Academic Progress evaluation for a student for a term/aid year per 34 CFR 668.34: qualitative (GPA) and quantitative (pace) measures, max-timeframe (150% rule) usage, and the appeal/academic-plan lifecycle. Classified confidential (FERPA education record).",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "evaluation_date",
+    "sap_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod evaluated"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "evaluation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "sap_status": {
+      "type": "string",
+      "description": "Bound to helix/sap-status."
+    },
+    "quantitative_measure_pace": {
+      "type": "number",
+      "description": "Pace = cumulative completed / attempted credits (percentage)."
+    },
+    "qualitative_measure_gpa": {
+      "type": "number",
+      "description": "Cumulative GPA measure."
+    },
+    "max_timeframe_pct": {
+      "type": "number",
+      "description": "Percentage of the 150% maximum timeframe consumed."
+    },
+    "credits_attempted_cumulative": {
+      "type": "number"
+    },
+    "credits_completed_cumulative": {
+      "type": "number"
+    },
+    "appeal_filed_flag": {
+      "type": "boolean"
+    },
+    "appeal_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "appeal_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "submitted",
+        "approved",
+        "denied",
+        "withdrawn"
+      ],
+      "description": "Appeal status"
+    },
+    "appeal_reason": {
+      "type": "string"
+    },
+    "academic_plan_flag": {
+      "type": "boolean",
+      "description": "True if the student is on an academic plan."
+    },
+    "academic_plan_terms": {
+      "type": "integer",
+      "description": "Number of terms covered by the academic plan."
+    },
+    "financial_aid_warning_flag": {
+      "type": "boolean"
+    },
+    "financial_aid_suspension_flag": {
+      "type": "boolean"
+    },
+    "probation_flag": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

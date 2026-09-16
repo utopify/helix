@@ -39,7 +39,8 @@
         "fellowship",
         "assistantship",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/award-type."
     },
     "fund_source": {
       "type": "string",
@@ -50,7 +51,8 @@
         "private",
         "employer",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/fund-source."
     },
     "fund_name": {
       "type": "string",
@@ -79,7 +81,8 @@
       "type": "number"
     },
     "amount_disbursed": {
-      "type": "number"
+      "type": "number",
+      "description": "NOTE: Actual disbursements are now modeled in the Disbursement resource; retained here for backward compatibility."
     },
     "currency": {
       "type": "string",
@@ -102,7 +105,7 @@
     },
     "efc": {
       "type": "number",
-      "description": "Expected Family Contribution / Student Aid Index at time of award"
+      "description": "Expected Family Contribution / Student Aid Index at time of award NOTE: For 2024-25+ records, model the Student Aid Index on AidApplication (sai/efc_legacy); retained here for backward compatibility."
     },
     "meta": {
       "type": "object",
@@ -136,7 +139,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "restricted"
         },
         "ferpa_flags": {
           "type": "object",
@@ -210,11 +214,11 @@
     },
     "cost_of_attendance": {
       "type": "number",
-      "description": "Institutional COA budget used for this award calculation"
+      "description": "Institutional COA budget used for this award calculation NOTE: Full COA components are modeled on AidPackage; retained here for backward compatibility."
     },
     "unmet_need": {
       "type": "number",
-      "description": "Remaining financial need after all awards"
+      "description": "Remaining financial need after all awards NOTE: Unmet need is now computed on AidPackage; retained here for backward compatibility."
     },
     "satisfactory_academic_progress": {
       "type": "string",
@@ -226,7 +230,7 @@
         "appeal_approved",
         "not_evaluated"
       ],
-      "description": "SAP status at time of award. Federal aid requires SAP compliance."
+      "description": "SAP status at time of award. Federal aid requires SAP compliance. NOTE: SAP is now modeled as its own lifecycle in the SAPEvaluation resource; retained here for backward compatibility."
     }
   },
   "definitions": {

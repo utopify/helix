@@ -5,7 +5,8 @@
   "description": "An employee / worker \u2014 the core HR identity. Links to a HELIX Person (a single human may be both Employee and Student). Carries hire/termination, worker type, FTE, FLSA, citizenship/visa, and contact info. SSN/national ID tokenized at silver.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "person_ref"
   ],
   "properties": {
     "helix_id": {

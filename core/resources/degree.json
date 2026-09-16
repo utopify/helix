@@ -41,7 +41,8 @@
         "professional",
         "certificate",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/degree-level."
     },
     "major": {
       "type": "string"
@@ -113,7 +114,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
         },
         "ferpa_flags": {
           "type": "object",
@@ -184,7 +186,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Embedded certifications earned alongside the degree"
+      "description": "Embedded certifications earned alongside the degree NOTE: Professional licensure/certification exams are now modeled in the Licensure resource; this embedded list is retained for backward compatibility."
     },
     "time_to_degree_terms": {
       "type": "integer",

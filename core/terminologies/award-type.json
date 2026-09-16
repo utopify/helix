@@ -3,15 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/award-type.json",
   "title": "HELIX Terminology: Financial Aid Award Type",
   "description": "Standard types of financial aid awards. Used by the FinAidAward resource 'award_type' attribute.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/award-type"
-    },
-    "version": {
-      "const": "0.1"
-    }
-  },
+  "code_system": "helix/award-type",
+  "version": "0.1",
   "codes": [
     {
       "code": "grant",

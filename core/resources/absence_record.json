@@ -5,7 +5,8 @@
   "description": "An absence / leave record \u2014 vacation, sick, FMLA, sabbatical, etc., with balances and FMLA tracking. FMLA medical certification stored separately with restricted access.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

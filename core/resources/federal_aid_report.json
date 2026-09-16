@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/federal_aid_report.json",
+  "title": "HELIX FederalAidReport Resource",
+  "description": "An institution-level Title IV reporting artifact (COD, NSLDS enrollment reporting, FISAP, Pell/Direct Loan reconciliation): submission status, record counts, disbursement totals, and reconciliation variance. Aggregate institutional reporting \u2014 not a student education record.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "institution_id",
+    "academic_year",
+    "report_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "institution_id": {
+      "type": "string",
+      "description": "HELIX ID of the Institution"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "cod",
+        "nslds",
+        "fisap",
+        "pell_reconciliation",
+        "dl_reconciliation"
+      ],
+      "description": "Type of federal report"
+    },
+    "reporting_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "reporting_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "submission_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "submission_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "accepted",
+        "rejected",
+        "partially_accepted",
+        "resubmitted"
+      ]
+    },
+    "records_submitted_count": {
+      "type": "integer"
+    },
+    "records_accepted_count": {
+      "type": "integer"
+    },
+    "records_rejected_count": {
+      "type": "integer"
+    },
+    "error_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "total_pell_disbursed": {
+      "type": "number"
+    },
+    "total_dl_disbursed": {
+      "type": "number"
+    },
+    "total_fseog_disbursed": {
+      "type": "number"
+    },
+    "total_fws_disbursed": {
+      "type": "number"
+    },
+    "reconciliation_variance": {
+      "type": "number"
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "balanced",
+        "variance_identified",
+        "resolved",
+        "pending"
+      ]
+    },
+    "cod_batch_id": {
+      "type": "string"
+    },
+    "submitted_by": {
+      "type": "string"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags. This resource is institution-level aggregate Title IV reporting, not a student education record; is_education_record defaults to false. Individual student detail lives in the referenced student-level resources.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": false,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

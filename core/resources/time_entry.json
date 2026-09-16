@@ -5,7 +5,8 @@
   "description": "A time entry \u2014 reported hours for a non-exempt employee or student worker, with worktag/chartfield distribution and approval status.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

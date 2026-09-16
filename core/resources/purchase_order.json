@@ -5,7 +5,8 @@
   "description": "A purchase order \u2014 a commitment to a supplier for goods or services. Carries lines, spend category, and worktag/chartfield distribution.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "po_id"
   ],
   "properties": {
     "helix_id": {

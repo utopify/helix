@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/verification-status.json",
+  "title": "HELIX Terminology: Verification Status",
+  "description": "Status of FAFSA verification per 34 CFR 668.51-.61. Used by the Verification resource.",
+  "code_system": "helix/verification-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "selected",
+      "display": "Selected",
+      "definition": "ISIR selected for verification"
+    },
+    {
+      "code": "documents_requested",
+      "display": "Documents Requested",
+      "definition": "Required documents requested from the student"
+    },
+    {
+      "code": "documents_partial",
+      "display": "Documents Partial",
+      "definition": "Some but not all documents received"
+    },
+    {
+      "code": "documents_complete",
+      "display": "Documents Complete",
+      "definition": "All required documents received"
+    },
+    {
+      "code": "in_review",
+      "display": "In Review",
+      "definition": "Documents under review"
+    },
+    {
+      "code": "conflicting_information",
+      "display": "Conflicting Information",
+      "definition": "Conflicting information identified; must be resolved"
+    },
+    {
+      "code": "completed",
+      "display": "Completed",
+      "definition": "Verification completed"
+    },
+    {
+      "code": "incomplete",
+      "display": "Incomplete",
+      "definition": "Verification not completed; aid may be forfeited"
+    },
+    {
+      "code": "waived",
+      "display": "Waived",
+      "definition": "Verification requirement waived per allowable exclusion"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/learning_outcome.json",
+  "title": "HELIX LearningOutcome Resource",
+  "description": "A program-, course-, or institution-level learning outcome assessment result for a student. Supports institutional effectiveness and accreditation (regional and programmatic) assessment reporting: measuring attainment of Program Learning Outcomes (PLOs), general-education competencies, and professional competencies via direct and indirect assessment methods.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "outcome_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "program_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Program"
+    },
+    "course_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Course (if course-level outcome)"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod"
+    },
+    "outcome_type": {
+      "type": "string",
+      "description": "Type/level of the learning outcome. Bound to HELIX terminology: helix/outcome-type",
+      "enum": [
+        "program_learning_outcome",
+        "course_learning_outcome",
+        "institutional_learning_outcome",
+        "general_education_competency",
+        "professional_competency",
+        "accreditation_standard"
+      ]
+    },
+    "outcome_statement": {
+      "type": "string",
+      "description": "The learning outcome statement being assessed"
+    },
+    "competency_name": {
+      "type": "string"
+    },
+    "competency_framework": {
+      "type": "string",
+      "description": "Framework the competency belongs to (e.g., AAC&U VALUE, institutional gen-ed)"
+    },
+    "assessment_method": {
+      "type": "string",
+      "enum": [
+        "exam",
+        "portfolio",
+        "capstone",
+        "rubric",
+        "observation",
+        "presentation",
+        "survey",
+        "other"
+      ]
+    },
+    "assessment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "achievement_level": {
+      "type": "string",
+      "description": "Level of attainment demonstrated. Bound to HELIX terminology: helix/achievement-level",
+      "enum": [
+        "exceeds",
+        "meets",
+        "approaching",
+        "below",
+        "not_demonstrated",
+        "exemplary",
+        "proficient",
+        "developing",
+        "beginning"
+      ]
+    },
+    "score": {
+      "type": "number"
+    },
+    "max_score": {
+      "type": "number"
+    },
+    "met_expectations_flag": {
+      "type": "boolean"
+    },
+    "assessment_instrument": {
+      "type": "string"
+    },
+    "assessor_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Employee/faculty who assessed"
+    },
+    "plo_reference": {
+      "type": "string",
+      "description": "Program Learning Outcome identifier"
+    },
+    "institutional_outcome_reference": {
+      "type": "string",
+      "description": "Institutional learning outcome identifier"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

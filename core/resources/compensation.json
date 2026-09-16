@@ -5,7 +5,8 @@
   "description": "An employee compensation record \u2014 base pay, rate, grade/step, and compa-ratio. Restricted: individual pay data accessible only to HR and leadership.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/honor-type.json",
+  "title": "HELIX Terminology: Honor/Award Type",
+  "description": "Categories of honors, awards, and distinctions received by students. Used by AwardHonor. Many of these are directory information under 34 CFR 99.3.",
+  "code_system": "helix/honor-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "latin_honors",
+      "display": "Latin Honors",
+      "definition": "Cum laude, magna cum laude, or summa cum laude designation"
+    },
+    {
+      "code": "deans_list",
+      "display": "Dean's List",
+      "definition": "Term-based academic recognition by a college/school"
+    },
+    {
+      "code": "presidents_list",
+      "display": "President's List",
+      "definition": "Term-based academic recognition at the institutional level (typically highest GPA tier)"
+    },
+    {
+      "code": "departmental_award",
+      "display": "Departmental Award",
+      "definition": "Award granted by an academic department"
+    },
+    {
+      "code": "institutional_award",
+      "display": "Institutional Award",
+      "definition": "Award granted at the institutional level"
+    },
+    {
+      "code": "national_award",
+      "display": "National Award",
+      "definition": "Nationally recognized award or honor (e.g., Fulbright, Goldwater)"
+    },
+    {
+      "code": "scholarship",
+      "display": "Scholarship",
+      "definition": "A scholarship awarded to the student"
+    },
+    {
+      "code": "fellowship",
+      "display": "Fellowship",
+      "definition": "A fellowship awarded to the student"
+    },
+    {
+      "code": "academic_distinction",
+      "display": "Academic Distinction",
+      "definition": "General academic distinction or recognition"
+    },
+    {
+      "code": "graduation_honor",
+      "display": "Graduation Honor",
+      "definition": "Honor conferred at graduation (e.g., honors program completion)"
+    },
+    {
+      "code": "honor_society",
+      "display": "Honor Society",
+      "definition": "Induction into an honor society (e.g., Phi Beta Kappa)"
+    }
+  ]
+}

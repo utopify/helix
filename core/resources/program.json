@@ -42,7 +42,8 @@
         "certificate",
         "non_degree",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/degree-level."
     },
     "program_type": {
       "type": "string",
@@ -105,7 +106,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "internal"
         }
       }
     },
@@ -119,7 +121,7 @@
         "correspondence",
         "other"
       ],
-      "description": "Primary delivery mode for the program"
+      "description": "Primary delivery mode for the program Bound to HELIX terminology: helix/delivery-mode."
     },
     "program_length_terms": {
       "type": "integer",

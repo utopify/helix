@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/employment-relation.json",
+  "title": "HELIX Terminology: Employment Relation to Major",
+  "description": "The degree to which a graduate's employment is related to their field of study. Used by EmploymentOutcome.",
+  "code_system": "helix/employment-relation",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "directly_related",
+      "display": "Directly Related",
+      "definition": "The position is directly in the graduate's field of study"
+    },
+    {
+      "code": "somewhat_related",
+      "display": "Somewhat Related",
+      "definition": "The position is partially or tangentially related to the field of study"
+    },
+    {
+      "code": "not_related",
+      "display": "Not Related",
+      "definition": "The position is unrelated to the field of study"
+    },
+    {
+      "code": "not_applicable",
+      "display": "Not Applicable",
+      "definition": "Relation to major is not applicable or not reported"
+    }
+  ]
+}

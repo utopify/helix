@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/experiential-type.json",
+  "title": "HELIX Terminology: Experiential Learning Type",
+  "description": "Types of experiential learning and High-Impact Practices (HIPs). Used by ExperientialLearning. Aligned with NSSE High-Impact Practices.",
+  "code_system": "helix/experiential-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "internship",
+      "display": "Internship",
+      "definition": "Supervised professional work experience, often for academic credit"
+    },
+    {
+      "code": "co_op",
+      "display": "Cooperative Education (Co-op)",
+      "definition": "Structured alternation of academic study and full-time paid employment"
+    },
+    {
+      "code": "practicum",
+      "display": "Practicum",
+      "definition": "Supervised practical application of coursework in a professional setting"
+    },
+    {
+      "code": "clinical_rotation",
+      "display": "Clinical Rotation",
+      "definition": "Supervised clinical experience in health-professions programs"
+    },
+    {
+      "code": "student_teaching",
+      "display": "Student Teaching",
+      "definition": "Supervised classroom teaching experience for education majors"
+    },
+    {
+      "code": "undergraduate_research",
+      "display": "Undergraduate Research",
+      "definition": "Mentored scholarly or creative research"
+    },
+    {
+      "code": "service_learning",
+      "display": "Service Learning",
+      "definition": "Community service integrated with academic instruction and reflection"
+    },
+    {
+      "code": "field_experience",
+      "display": "Field Experience",
+      "definition": "Learning in a real-world field setting"
+    },
+    {
+      "code": "externship",
+      "display": "Externship",
+      "definition": "Short-term job shadowing or observational experience"
+    },
+    {
+      "code": "apprenticeship",
+      "display": "Apprenticeship",
+      "definition": "Structured earn-and-learn program combining work and instruction"
+    },
+    {
+      "code": "capstone_project",
+      "display": "Capstone Project",
+      "definition": "Culminating integrative project or experience"
+    },
+    {
+      "code": "study_abroad",
+      "display": "Study Abroad",
+      "definition": "Academic study in another country"
+    }
+  ],
+  "notes": "Internships, undergraduate research, service learning, study abroad, and capstones are recognized NSSE High-Impact Practices (HIPs)."
+}

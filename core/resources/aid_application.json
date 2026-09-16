@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/aid_application.json",
+  "title": "HELIX AidApplication Resource",
+  "description": "The FAFSA/ISIR (or institutional aid) application record for a student for a given aid year. Carries the Student Aid Index (SAI) that replaced EFC under FAFSA Simplification (2024-25), dependency status, Pell eligibility, verification selection, and NSLDS match flags. GLBA-covered customer information; classified restricted.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_year",
+    "application_type",
+    "aid_application_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "application_type": {
+      "type": "string",
+      "enum": [
+        "fafsa",
+        "institutional",
+        "idoc",
+        "state_application"
+      ],
+      "description": "Bound to application source"
+    },
+    "aid_application_status": {
+      "type": "string",
+      "description": "Bound to helix/aid-application-status."
+    },
+    "submission_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "sai": {
+      "type": "integer",
+      "description": "Student Aid Index (replaces EFC under FAFSA Simplification). May be negative to -1500."
+    },
+    "efc_legacy": {
+      "type": "integer",
+      "description": "Expected Family Contribution for pre-2024-25 records (legacy)."
+    },
+    "dependency_status": {
+      "type": "string",
+      "description": "Bound to helix/dependency-status."
+    },
+    "dependency_override_flag": {
+      "type": "boolean",
+      "description": "True if a dependency override was applied by the FAA."
+    },
+    "pell_eligible_flag": {
+      "type": "boolean"
+    },
+    "pell_lifetime_eligibility_used": {
+      "type": "number",
+      "description": "Percentage of Pell Lifetime Eligibility Used (LEU)."
+    },
+    "verification_selected_flag": {
+      "type": "boolean",
+      "description": "True if the ISIR was selected for verification."
+    },
+    "verification_tracking_group": {
+      "type": "string",
+      "enum": [
+        "V1",
+        "V4",
+        "V5"
+      ],
+      "description": "ED verification tracking group"
+    },
+    "isir_transaction_number": {
+      "type": "string",
+      "description": "ISIR transaction number for this record."
+    },
+    "isir_received_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "comment_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISIR comment codes."
+    },
+    "c_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "C-flag / reject codes on the ISIR."
+    },
+    "nslds_match_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "NSLDS post-screening match flags (e.g., default, overpayment, aggregate limits)."
+    },
+    "professional_judgment_flag": {
+      "type": "boolean"
+    },
+    "expected_enrollment_status": {
+      "type": "string",
+      "description": "Expected enrollment intensity for the aid year."
+    },
+    "citizenship_status": {
+      "type": "string",
+      "description": "Eligibility citizenship category (citizen, eligible_noncitizen, ineligible)."
+    },
+    "sar_received_flag": {
+      "type": "boolean",
+      "description": "Student Aid Report received."
+    },
+    "fafsa_signature_flag": {
+      "type": "boolean"
+    },
+    "homeless_youth_flag": {
+      "type": "boolean"
+    },
+    "foster_care_flag": {
+      "type": "boolean"
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "restricted"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

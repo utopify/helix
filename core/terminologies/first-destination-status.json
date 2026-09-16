@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/first-destination-status.json",
+  "title": "HELIX Terminology: First-Destination Status",
+  "description": "NACE-aligned first-destination career outcome categories for graduates. Used by EmploymentOutcome and FirstDestinationSurvey resources. Aligned with the NACE First-Destination Survey Standards and Protocols.",
+  "code_system": "helix/first-destination-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "employed_full_time",
+      "display": "Employed Full-Time",
+      "definition": "Working in a full-time paid position (typically 30+ hours/week)"
+    },
+    {
+      "code": "employed_part_time",
+      "display": "Employed Part-Time",
+      "definition": "Working in a part-time paid position"
+    },
+    {
+      "code": "continuing_education",
+      "display": "Continuing Education",
+      "definition": "Enrolled in a program of continuing/further education"
+    },
+    {
+      "code": "military_service",
+      "display": "Military Service",
+      "definition": "Serving in the armed forces"
+    },
+    {
+      "code": "volunteer_service",
+      "display": "Volunteer/Service Program",
+      "definition": "Participating in a volunteer or service program (e.g., Peace Corps, AmeriCorps)"
+    },
+    {
+      "code": "seeking_employment",
+      "display": "Seeking Employment",
+      "definition": "Actively seeking employment, not yet employed"
+    },
+    {
+      "code": "seeking_continuing_education",
+      "display": "Seeking Continuing Education",
+      "definition": "Actively seeking to enroll in further education"
+    },
+    {
+      "code": "not_seeking",
+      "display": "Not Seeking",
+      "definition": "Not seeking employment or continuing education (by choice)"
+    },
+    {
+      "code": "self_employed",
+      "display": "Self-Employed",
+      "definition": "Working in a self-owned business or practice"
+    },
+    {
+      "code": "freelance_contract",
+      "display": "Freelance/Contract",
+      "definition": "Engaged in freelance or contract work"
+    },
+    {
+      "code": "postgrad_fellowship",
+      "display": "Postgraduate Fellowship",
+      "definition": "Participating in a postgraduate fellowship or internship"
+    },
+    {
+      "code": "unknown",
+      "display": "Unknown",
+      "definition": "Outcome unknown; no reasonable and verifiable information available (excluded from knowledge rate)"
+    }
+  ],
+  "notes": "Aligned with NACE First-Destination Survey Standards. The 'knowledge rate' is the percentage of graduates for whom the institution has reasonable and verifiable outcome information (all statuses except 'unknown')."
+}

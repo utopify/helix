@@ -3,15 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/enrollment-status.json",
   "title": "HELIX Terminology: Enrollment Status",
   "description": "Standard statuses for a student's registration in a course section. Used by the Enrollment resource 'enrollment_status' attribute.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/enrollment-status"
-    },
-    "version": {
-      "const": "0.1"
-    }
-  },
+  "code_system": "helix/enrollment-status",
+  "version": "0.1",
   "codes": [
     {
       "code": "registered",

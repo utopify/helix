@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/loan-type.json",
+  "title": "HELIX Terminology: Loan Type",
+  "description": "Types of education loans. Used by the LoanRecord resource.",
+  "code_system": "helix/loan-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "direct_subsidized",
+      "display": "Direct Subsidized Loan",
+      "definition": "Need-based federal Direct Subsidized Loan"
+    },
+    {
+      "code": "direct_unsubsidized",
+      "display": "Direct Unsubsidized Loan",
+      "definition": "Non-need federal Direct Unsubsidized Loan"
+    },
+    {
+      "code": "direct_plus_parent",
+      "display": "Direct PLUS (Parent)",
+      "definition": "Federal Direct PLUS loan to a parent (Parent PLUS)"
+    },
+    {
+      "code": "direct_plus_grad",
+      "display": "Direct PLUS (Graduate)",
+      "definition": "Federal Direct PLUS loan to a graduate/professional student (Grad PLUS)"
+    },
+    {
+      "code": "perkins",
+      "display": "Federal Perkins Loan",
+      "definition": "Legacy Federal Perkins Loan (program ended 2017)"
+    },
+    {
+      "code": "direct_consolidation",
+      "display": "Direct Consolidation Loan",
+      "definition": "Federal Direct Consolidation Loan"
+    },
+    {
+      "code": "private_alternative",
+      "display": "Private/Alternative Loan",
+      "definition": "Private education loan from a non-federal lender"
+    },
+    {
+      "code": "institutional_loan",
+      "display": "Institutional Loan",
+      "definition": "Loan funded by the institution"
+    },
+    {
+      "code": "heal",
+      "display": "HEAL",
+      "definition": "Health Education Assistance Loan (legacy)"
+    }
+  ]
+}

@@ -5,7 +5,8 @@
   "description": "A job classification \u2014 the job profile/code with EEO/SOC classification and, for faculty, academic rank, tenure status, and IPEDS faculty category. Documents the recommended approach for faculty data Workday lacks natively.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "job_code"
   ],
   "properties": {
     "helix_id": {

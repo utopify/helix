@@ -5,7 +5,8 @@
   "description": "A position budget \u2014 funded amount, actuals, variance, and split funding across funds/grants for a position and fiscal year. Captures higher-ed split-funding and backfill patterns.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "position_ref"
   ],
   "properties": {
     "helix_id": {

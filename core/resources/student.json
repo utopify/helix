@@ -148,7 +148,8 @@
             "confidential",
             "restricted"
           ],
-          "description": "Data classification tier per HELIX Govern"
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
         },
         "ferpa_flags": {
           "type": "object",
@@ -222,7 +223,7 @@
         "post_baccalaureate",
         "other"
       ],
-      "description": "Classification of the student's entry pathway"
+      "description": "Classification of the student's entry pathway Bound to HELIX terminology: helix/student-type."
     },
     "academic_level": {
       "type": "string",
@@ -303,7 +304,7 @@
         "dependent_spouse",
         "other"
       ],
-      "description": "Military/veteran classification for benefits and reporting"
+      "description": "Military/veteran classification for benefits and reporting Bound to HELIX terminology: helix/veteran-status."
     },
     "international_student": {
       "type": "object",

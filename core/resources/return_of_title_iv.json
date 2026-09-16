@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/return_of_title_iv.json",
+  "title": "HELIX ReturnOfTitleIV Resource",
+  "description": "A Return of Title IV (R2T4) calculation when a student withdraws, per 34 CFR 668.22: percent enrolled/earned, earned vs unearned aid, amounts returned by school and student, and any post-withdrawal disbursement. GLBA-covered; classified restricted.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_period_ref",
+    "withdrawal_date",
+    "r2t4_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "academic_period_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AcademicPeriod"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "withdrawal_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "withdrawal_type": {
+      "type": "string",
+      "enum": [
+        "official",
+        "unofficial"
+      ]
+    },
+    "determination_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the institution determined the student withdrew."
+    },
+    "percent_enrolled": {
+      "type": "number",
+      "description": "Days completed / total days in period (percentage)."
+    },
+    "percent_title_iv_earned": {
+      "type": "number"
+    },
+    "title_iv_disbursed_amount": {
+      "type": "number"
+    },
+    "title_iv_could_have_disbursed": {
+      "type": "number"
+    },
+    "title_iv_earned_amount": {
+      "type": "number"
+    },
+    "title_iv_unearned_amount": {
+      "type": "number"
+    },
+    "amount_returned_by_school": {
+      "type": "number"
+    },
+    "amount_returned_by_student": {
+      "type": "number"
+    },
+    "post_withdrawal_disbursement_flag": {
+      "type": "boolean"
+    },
+    "pwd_amount": {
+      "type": "number"
+    },
+    "pwd_offered_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pwd_accepted_flag": {
+      "type": "boolean"
+    },
+    "return_calculation_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "return_deadline_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Return deadline (typically 45 days from determination)."
+    },
+    "institutional_charges": {
+      "type": "number"
+    },
+    "r2t4_status": {
+      "type": "string",
+      "description": "Bound to helix/r2t4-status."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "restricted"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

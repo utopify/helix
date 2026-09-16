@@ -5,7 +5,8 @@
   "description": "An accounts receivable / student financials transaction \u2014 a charge, payment, or refund on a student account. FERPA/GLBA-relevant when linked to a student and financial aid.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "transaction_id"
   ],
   "properties": {
     "helix_id": {

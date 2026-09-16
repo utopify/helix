@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/student_employment.json",
+  "title": "HELIX StudentEmployment Resource",
+  "description": "Federal Work-Study (FWS) or other student employment for an aid year: award, earnings tracking, community-service participation, job placement, and federal/institutional cost share. FWS/FISAP context. Classified confidential (FERPA education record).",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_year",
+    "employment_type"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "employment_type": {
+      "type": "string",
+      "description": "Bound to helix/employment-type-aid."
+    },
+    "fws_award_amount": {
+      "type": "number",
+      "description": "Federal Work-Study award amount."
+    },
+    "fws_earnings_to_date": {
+      "type": "number"
+    },
+    "fws_remaining": {
+      "type": "number"
+    },
+    "community_service_flag": {
+      "type": "boolean"
+    },
+    "community_service_percent": {
+      "type": "number"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "employer_department": {
+      "type": "string"
+    },
+    "supervisor_ref": {
+      "type": "string",
+      "description": "HELIX ID of the supervising Employee"
+    },
+    "hourly_rate": {
+      "type": "number"
+    },
+    "hours_per_week_max": {
+      "type": "number"
+    },
+    "position_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "position_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "earnings_ytd": {
+      "type": "number"
+    },
+    "federal_share_percent": {
+      "type": "number"
+    },
+    "institutional_share_percent": {
+      "type": "number"
+    },
+    "off_campus_flag": {
+      "type": "boolean"
+    },
+    "job_placement_status": {
+      "type": "string",
+      "enum": [
+        "placed",
+        "seeking",
+        "not_placed",
+        "completed"
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "confidential"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

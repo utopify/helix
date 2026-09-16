@@ -1,6 +1,6 @@
 # HELIX Core Terminologies
 
-**48 standardized code sets** providing machine-readable, interoperable value lists for every HELIX Core resource.
+**67 standardized code sets** providing machine-readable, interoperable value lists for every HELIX Core resource.
 
 Each terminology file follows JSON Schema draft 2020-12 and includes:
 - `code_system` — unique identifier (e.g., `helix/worker-type`)
@@ -26,6 +26,35 @@ Each terminology file follows JSON Schema draft 2020-12 and includes:
 | `sap-status.json` | Satisfactory Academic Progress (SAP) Status | 6 | Federal financial aid eligibility status based on academic performance and pace ... |
 | `student-status.json` | Student Status | 8 | Standard lifecycle statuses for a student at an institution. Used by the Student... |
 | `student-type.json` | Student Type | 10 | Classification of a student's entry pathway to the institution. |
+
+## Financial Aid (9 code sets) — *New in v0.4.0*
+
+| File | Title | Codes | Description |
+|------|-------|------:|-------------|
+| `aid-application-status.json` | Aid Application Status | 8 | Lifecycle status of a financial aid application (FAFSA/ISIR or institutional). U |
+| `verification-status.json` | Verification Status | 9 | Status of FAFSA verification per 34 CFR 668.51-.61. Used by the Verification res |
+| `dependency-status.json` | Dependency Status | 4 | FAFSA dependency status determining whose financial information is required. Use |
+| `loan-type.json` | Loan Type | 9 | Types of education loans. Used by the LoanRecord resource. |
+| `loan-status.json` | Loan Status | 10 | Status of an education loan through origination and repayment. Used by LoanRecor |
+| `disbursement-status.json` | Disbursement Status | 8 | Status of an aid disbursement to a student account. Used by the Disbursement res |
+| `r2t4-status.json` | Return of Title IV (R2T4) Status | 7 | Status of a Return of Title IV calculation for a withdrawn student per 34 CFR 66 |
+| `fund-source.json` | Aid Fund Source | 7 | Source of financial aid funds. Used by FinAidAward and Disbursement (fund_source |
+| `employment-type-aid.json` | Student Employment Type (Aid) | 7 | Types of student employment tied to financial aid. Used by the StudentEmployment |
+
+## Outcomes & Alumni (10 code sets) — *New in v0.4.0*
+
+| File | Title | Codes | Description |
+|------|-------|------:|-------------|
+| `first-destination-status.json` | First-Destination Status | 12 | NACE-aligned first-destination career outcome categories for graduates. Used by  |
+| `employment-relation.json` | Employment Relation to Major | 4 | The degree to which a graduate's employment is related to their field of study.  |
+| `continuing-ed-level.json` | Continuing Education Level | 9 | Level of continuing/further education pursued by a graduate. Used by ContinuingE |
+| `experiential-type.json` | Experiential Learning Type | 12 | Types of experiential learning and High-Impact Practices (HIPs). Used by Experie |
+| `licensure-type.json` | Licensure/Certification Type | 13 | Categories of professional licensure and certification examinations. Used by Lic |
+| `licensure-result.json` | Licensure Result | 8 | Outcome of a professional licensure or certification examination. Used by Licens |
+| `outcome-type.json` | Learning Outcome Type | 6 | Types/levels of learning outcomes assessed for institutional effectiveness and a |
+| `achievement-level.json` | Achievement Level | 9 | Levels of attainment for a learning-outcome assessment. Used by LearningOutcome. |
+| `honor-type.json` | Honor/Award Type | 11 | Categories of honors, awards, and distinctions received by students. Used by Awa |
+| `survey-status.json` | Survey Status | 7 | Lifecycle status of a survey instrument such as the NACE First-Destination Surve |
 
 ## Identity & Demographics (5 code sets)
 
@@ -89,7 +118,7 @@ Each terminology file follows JSON Schema draft 2020-12 and includes:
 
 ---
 
-**Total: 48 terminologies, 435 codes**
+**Total: 67 terminologies, 595 codes**
 
 ## Usage
 

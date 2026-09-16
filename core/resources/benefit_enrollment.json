@@ -5,7 +5,8 @@
   "description": "A benefit enrollment \u2014 an employee's election in a benefit plan (medical, dental, retirement, tuition waiver, etc.) with coverage level and contributions. Restricted; dependent PII tokenized.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

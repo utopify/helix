@@ -90,7 +90,8 @@
             "internal",
             "confidential",
             "restricted"
-          ]
+          ],
+          "default": "internal"
         }
       }
     }

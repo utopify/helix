@@ -130,7 +130,8 @@
             "internal",
             "confidential",
             "restricted"
-          ]
+          ],
+          "default": "confidential"
         },
         "ferpa_flags": {
           "type": "object",

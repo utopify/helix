@@ -3,15 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/grade-mode.json",
   "title": "HELIX Terminology: Grade Mode",
   "description": "Standard grading modes for course enrollments. Used by the Enrollment resource 'grade_mode' attribute.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/grade-mode"
-    },
-    "version": {
-      "const": "0.1"
-    }
-  },
+  "code_system": "helix/grade-mode",
+  "version": "0.1",
   "codes": [
     {
       "code": "standard",

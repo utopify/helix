@@ -5,7 +5,8 @@
   "description": "A position \u2014 the organizational 'seat' defined independently of who fills it. Carries job profile, supervisory org, compensation grade, EEO category, and funding source. Workday position-management model.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "position_id"
   ],
   "properties": {
     "helix_id": {

@@ -2,7 +2,7 @@ term,resource,domain,definition,data_type,format,required,terminology_binding,cl
 absence_type,AbsenceRecord,Human Resources,"Map: 'Vacation' → 'vacation', 'Sick' → 'sick', 'Personal' → 'personal', 'FMLA' → 'fmla', 'Sabbatical' → 'sabbatical', 'Bereavement' → 'bereavement', 'Jury Duty' → 'jury_duty', 'Military' → 'military', 'Parental' → 'parental', 'Workers Comp'",string,,False,,confidential,False,False,core/resources/absence_record.json
 balance_sick,AbsenceRecord,Human Resources,Current available sick hours.,number,,False,,confidential,False,False,core/resources/absence_record.json
 balance_vacation,AbsenceRecord,Human Resources,Current available vacation hours.,number,,False,,confidential,False,False,core/resources/absence_record.json
-employee_ref,AbsenceRecord,Human Resources,Link to HELIX employee_id.,string,,False,,confidential,False,False,core/resources/absence_record.json
+employee_ref,AbsenceRecord,Human Resources,Link to HELIX employee_id.,string,,True,,confidential,False,False,core/resources/absence_record.json
 end_date,AbsenceRecord,Human Resources,Cast to ISO 8601.,string,date,False,,confidential,False,False,core/resources/absence_record.json
 fmla_hours_used,AbsenceRecord,Human Resources,Running total of FMLA hours used in the 12-month measurement period.,number,,False,,confidential,False,False,core/resources/absence_record.json
 fmla_qualifying,AbsenceRecord,Human Resources,Boolean. Whether this leave counts against FMLA entitlement (12 weeks/year for eligible employees).,boolean,,False,,confidential,False,False,core/resources/absence_record.json
@@ -117,6 +117,124 @@ test_scores[].sub_scores,AdmissionApplication,Enrollment & Registration,"Compone
 test_scores[].test_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
 test_scores[].test_type,AdmissionApplication,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/admission_application.json
 transfer_gpa,AdmissionApplication,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/admission_application.json
+academic_year,AidApplication,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,restricted,True,True,core/resources/aid_application.json
+aid_application_status,AidApplication,Financial Aid,Bound to helix/aid-application-status.,string,,True,,restricted,True,True,core/resources/aid_application.json
+application_type,AidApplication,Financial Aid,Bound to application source,string,,True,,restricted,True,True,core/resources/aid_application.json
+c_flags,AidApplication,Financial Aid,C-flag / reject codes on the ISIR.,array,,False,,restricted,True,True,core/resources/aid_application.json
+citizenship_status,AidApplication,Financial Aid,"Eligibility citizenship category (citizen, eligible_noncitizen, ineligible).",string,,False,,restricted,True,True,core/resources/aid_application.json
+comment_codes,AidApplication,Financial Aid,ISIR comment codes.,array,,False,,restricted,True,True,core/resources/aid_application.json
+dependency_override_flag,AidApplication,Financial Aid,True if a dependency override was applied by the FAA.,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+dependency_status,AidApplication,Financial Aid,Bound to helix/dependency-status.,string,,False,,restricted,True,True,core/resources/aid_application.json
+efc_legacy,AidApplication,Financial Aid,Expected Family Contribution for pre-2024-25 records (legacy).,integer,,False,,restricted,True,True,core/resources/aid_application.json
+expected_enrollment_status,AidApplication,Financial Aid,Expected enrollment intensity for the aid year.,string,,False,,restricted,True,True,core/resources/aid_application.json
+fafsa_signature_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+foster_care_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+helix_id,AidApplication,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/aid_application.json
+homeless_youth_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+isir_received_date,AidApplication,Financial Aid,,string,date,False,,restricted,True,True,core/resources/aid_application.json
+isir_transaction_number,AidApplication,Financial Aid,ISIR transaction number for this record.,string,,False,,restricted,True,True,core/resources/aid_application.json
+meta,AidApplication,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/aid_application.json
+meta.classification,AidApplication,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/aid_application.json
+meta.created_at,AidApplication,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/aid_application.json
+meta.data_owner,AidApplication,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags,AidApplication,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.directory_restricted,AidApplication,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.disclosure_basis_required,AidApplication,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.is_education_record,AidApplication,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.legitimate_interest_scope,AidApplication,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.restricted_categories,AidApplication,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/aid_application.json
+meta.ferpa_flags.study_disclosure_allowed,AidApplication,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+meta.source_system,AidApplication,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/aid_application.json
+meta.updated_at,AidApplication,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/aid_application.json
+meta.version,AidApplication,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/aid_application.json
+nslds_match_flags,AidApplication,Financial Aid,"NSLDS post-screening match flags (e.g., default, overpayment, aggregate limits).",array,,False,,restricted,True,True,core/resources/aid_application.json
+pell_eligible_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+pell_lifetime_eligibility_used,AidApplication,Financial Aid,Percentage of Pell Lifetime Eligibility Used (LEU).,number,,False,,restricted,True,True,core/resources/aid_application.json
+professional_judgment_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+sai,AidApplication,Financial Aid,Student Aid Index (replaces EFC under FAFSA Simplification). May be negative to -1500.,integer,,False,,restricted,True,True,core/resources/aid_application.json
+sar_received_flag,AidApplication,Financial Aid,Student Aid Report received.,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+student_ref,AidApplication,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/aid_application.json
+submission_date,AidApplication,Financial Aid,,string,date,False,,restricted,True,True,core/resources/aid_application.json
+verification_selected_flag,AidApplication,Financial Aid,True if the ISIR was selected for verification.,boolean,,False,,restricted,True,True,core/resources/aid_application.json
+verification_tracking_group,AidApplication,Financial Aid,ED verification tracking group,string,,False,,restricted,True,True,core/resources/aid_application.json
+academic_period_ref,AidPackage,Financial Aid,HELIX ID of the AcademicPeriod (if term-specific packaging),string,,False,,restricted,True,True,core/resources/aid_package.json
+academic_year,AidPackage,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,restricted,True,True,core/resources/aid_package.json
+aid_application_ref,AidPackage,Financial Aid,HELIX ID of the AidApplication,string,,False,,restricted,True,True,core/resources/aid_package.json
+coa_books_supplies,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_loan_fees,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_other,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_personal,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_room_board,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_transportation,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+coa_tuition_fees,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+cost_of_attendance_adjusted_flag,AidPackage,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_package.json
+cost_of_attendance_total,AidPackage,Financial Aid,Total COA budget.,number,,False,,restricted,True,True,core/resources/aid_package.json
+enrollment_intensity_assumed,AidPackage,Financial Aid,"Enrollment intensity assumed for packaging (e.g., full_time).",string,,False,,restricted,True,True,core/resources/aid_package.json
+helix_id,AidPackage,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/aid_package.json
+meta,AidPackage,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/aid_package.json
+meta.classification,AidPackage,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/aid_package.json
+meta.created_at,AidPackage,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/aid_package.json
+meta.data_owner,AidPackage,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags,AidPackage,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.directory_restricted,AidPackage,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.disclosure_basis_required,AidPackage,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.is_education_record,AidPackage,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.legitimate_interest_scope,AidPackage,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.restricted_categories,AidPackage,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/aid_package.json
+meta.ferpa_flags.study_disclosure_allowed,AidPackage,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/aid_package.json
+meta.source_system,AidPackage,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/aid_package.json
+meta.updated_at,AidPackage,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/aid_package.json
+meta.version,AidPackage,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/aid_package.json
+need,AidPackage,Financial Aid,Financial need = COA minus SAI.,number,,False,,restricted,True,True,core/resources/aid_package.json
+packaging_date,AidPackage,Financial Aid,,string,date,False,,restricted,True,True,core/resources/aid_package.json
+packaging_status,AidPackage,Financial Aid,Packaging lifecycle status,string,,True,,restricted,True,True,core/resources/aid_package.json
+pj_adjustment_amount,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+pj_reason,AidPackage,Financial Aid,Professional judgment reason/justification.,string,,False,,restricted,True,True,core/resources/aid_package.json
+professional_judgment_applied_flag,AidPackage,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_package.json
+sai,AidPackage,Financial Aid,Student Aid Index used for this packaging.,integer,,False,,restricted,True,True,core/resources/aid_package.json
+student_ref,AidPackage,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/aid_package.json
+total_aid_offered,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+total_grant_aid,AidPackage,Financial Aid,,number,,False,,restricted,True,True,core/resources/aid_package.json
+total_self_help,AidPackage,Financial Aid,Self-help aid (loans + work-study).,number,,False,,restricted,True,True,core/resources/aid_package.json
+unmet_need,AidPackage,Financial Aid,Remaining need after all aid.,number,,False,,restricted,True,True,core/resources/aid_package.json
+alumni_association_member_flag,AlumniProfile,Outcomes,,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+career_level,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+career_progression_notes,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+career_services_opt_in_flag,AlumniProfile,Outcomes,,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+constituent_ref,AlumniProfile,Outcomes,"Cross-link to the Advancement Constituent record for the same person (the giving/advancement-side profile). Giving, donor segment, and solicitation data live on Constituent, NOT here.",string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_employer,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_industry,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_job_title,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_location_city,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_location_country,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+current_location_state,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+event_attendance_count,AlumniProfile,Outcomes,,integer,,False,,confidential,True,False,core/resources/alumni_profile.json
+geographic_chapter,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+graduation_year,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+helix_id,AlumniProfile,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/alumni_profile.json
+industry_sector,AlumniProfile,Outcomes,,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+last_engagement_date,AlumniProfile,Outcomes,,string,date,False,,confidential,True,False,core/resources/alumni_profile.json
+linkedin_url,AlumniProfile,Outcomes,,string,uri,False,,confidential,True,False,core/resources/alumni_profile.json
+mentor_flag,AlumniProfile,Outcomes,Willing to mentor current students,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta,AlumniProfile,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.classification,AlumniProfile,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.created_at,AlumniProfile,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.data_owner,AlumniProfile,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags,AlumniProfile,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json. For AlumniProfile, is_education_record defaults to false: post-graduation career data collected independently of the education record is generally not a FERPA record. If any field is sourced from the student education record, treat that lineage accordingly.",object,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.directory_restricted,AlumniProfile,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.disclosure_basis_required,AlumniProfile,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.is_education_record,AlumniProfile,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.legitimate_interest_scope,AlumniProfile,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.restricted_categories,AlumniProfile,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.ferpa_flags.study_disclosure_allowed,AlumniProfile,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.source_system,AlumniProfile,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.updated_at,AlumniProfile,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/alumni_profile.json
+meta.version,AlumniProfile,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/alumni_profile.json
+person_ref,AlumniProfile,Outcomes,HELIX ID of the underlying Person,string,,True,,confidential,True,False,core/resources/alumni_profile.json
+primary_degree_ref,AlumniProfile,Outcomes,HELIX ID of the primary Degree earned,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+professional_certifications,AlumniProfile,Outcomes,,array,,False,,confidential,True,False,core/resources/alumni_profile.json
+student_ref,AlumniProfile,Outcomes,HELIX ID of the Student record from their time enrolled,string,,False,,confidential,True,False,core/resources/alumni_profile.json
+volunteer_flag,AlumniProfile,Outcomes,,boolean,,False,,confidential,True,False,core/resources/alumni_profile.json
 business_unit,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
 gross_amount,ApVoucher,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/ap_voucher.json
 helix_id,ApVoucher,Financial Operations,HELIX-assigned unique identifier for this APVoucher record.,string,,True,,internal,False,False,core/resources/ap_voucher.json
@@ -139,37 +257,37 @@ po_reference,ApVoucher,Financial Operations,Link to originating PO if three-way 
 spend_category,ApVoucher,Financial Operations,Direct map. Workday-specific classification.,string,,False,,internal,False,False,core/resources/ap_voucher.json
 vendor_id,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
 vendor_name,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
-voucher_id,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
+voucher_id,ApVoucher,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/ap_voucher.json
 voucher_status,ApVoucher,Financial Operations,"Map: 'Draft'→'pending', 'Awaiting Approval'→'pending', 'Approved'→'approved', 'Paid'→'paid', 'Canceled'→'void'.",string,,False,,internal,False,False,core/resources/ap_voucher.json
-amount,ArTransaction,Financial Operations,"Charges positive, payments/refunds negative.",number,,False,,internal,False,True,core/resources/ar_transaction.json
-balance_due,ArTransaction,Financial Operations,Direct map. Remaining balance after payments applied.,number,,False,,internal,False,True,core/resources/ar_transaction.json
-charge_code,ArTransaction,Financial Operations,"Map Workday Revenue Category to HELIX charge code. E.g., 'Tuition - Undergraduate' → 'tuition_ug'.",string,,False,,internal,False,True,core/resources/ar_transaction.json
-currency,ArTransaction,Financial Operations,ISO 4217. Direct map.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-department,ArTransaction,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-description,ArTransaction,Financial Operations,Direct map.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-due_date,ArTransaction,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,True,core/resources/ar_transaction.json
-fund_code,ArTransaction,Financial Operations,Map to HELIX fund code.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-helix_id,ArTransaction,Financial Operations,HELIX-assigned unique identifier for this ARTransaction record.,string,,True,,internal,False,True,core/resources/ar_transaction.json
-invoice_status,ArTransaction,Financial Operations,"Map: 'Draft' → 'draft', 'Approved' → 'open', 'Paid' → 'paid', 'Partially Paid' → 'partial', 'Canceled' → 'void'.",string,,False,,internal,False,True,core/resources/ar_transaction.json
-meta,ArTransaction,Financial Operations,HELIX metadata block — present on every resource.,object,,False,,internal,False,True,core/resources/ar_transaction.json
-meta.classification,ArTransaction,Financial Operations,,string,,False,,internal,False,True,core/resources/ar_transaction.json
-meta.created_at,ArTransaction,Financial Operations,,string,date-time,False,,internal,False,True,core/resources/ar_transaction.json
-meta.data_owner,ArTransaction,Financial Operations,,string,,False,,internal,False,True,core/resources/ar_transaction.json
-meta.source_system,ArTransaction,Financial Operations,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,internal,False,True,core/resources/ar_transaction.json
-meta.updated_at,ArTransaction,Financial Operations,,string,date-time,False,,internal,False,True,core/resources/ar_transaction.json
-meta.version,ArTransaction,Financial Operations,,integer,,False,,internal,False,True,core/resources/ar_transaction.json
-payment_method,ArTransaction,Financial Operations,"Map: 'Check' → 'check', 'ACH' → 'eft', 'Credit Card' → 'credit_card', 'Wire' → 'wire', 'Financial Aid' → 'fin_aid_disbursement'.",string,,False,,internal,False,True,core/resources/ar_transaction.json
-student_ref,ArTransaction,Financial Operations,"Resolve customer to HELIX student_id. In Workday Student, Customer = Student record.",string,,False,,internal,False,True,core/resources/ar_transaction.json
-term_ref,ArTransaction,Financial Operations,Link to HELIX AcademicPeriod. Institutions typically code tuition charges to an academic period.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-third_party_ref,ArTransaction,Financial Operations,"If charge is covered by a third-party contract, reference the contract.",string,,False,,internal,False,True,core/resources/ar_transaction.json
-transaction_date,ArTransaction,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,True,core/resources/ar_transaction.json
-transaction_id,ArTransaction,Financial Operations,Direct map.,string,,False,,internal,False,True,core/resources/ar_transaction.json
-transaction_type,ArTransaction,Financial Operations,"Map: Customer Invoice → 'charge', Customer Payment → 'payment', Customer Refund → 'refund', Credit Memo → 'adjustment'.",string,,False,,internal,False,True,core/resources/ar_transaction.json
+amount,ArTransaction,Financial Operations,"Charges positive, payments/refunds negative.",number,,False,,confidential,False,True,core/resources/ar_transaction.json
+balance_due,ArTransaction,Financial Operations,Direct map. Remaining balance after payments applied.,number,,False,,confidential,False,True,core/resources/ar_transaction.json
+charge_code,ArTransaction,Financial Operations,"Map Workday Revenue Category to HELIX charge code. E.g., 'Tuition - Undergraduate' → 'tuition_ug'.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+currency,ArTransaction,Financial Operations,ISO 4217. Direct map.,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+department,ArTransaction,Financial Operations,Map to HELIX org code.,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+description,ArTransaction,Financial Operations,Direct map.,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+due_date,ArTransaction,Financial Operations,Cast to ISO 8601.,string,date,False,,confidential,False,True,core/resources/ar_transaction.json
+fund_code,ArTransaction,Financial Operations,Map to HELIX fund code.,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+helix_id,ArTransaction,Financial Operations,HELIX-assigned unique identifier for this ARTransaction record.,string,,True,,confidential,False,True,core/resources/ar_transaction.json
+invoice_status,ArTransaction,Financial Operations,"Map: 'Draft' → 'draft', 'Approved' → 'open', 'Paid' → 'paid', 'Partially Paid' → 'partial', 'Canceled' → 'void'.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+meta,ArTransaction,Financial Operations,HELIX metadata block — present on every resource.,object,,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.classification,ArTransaction,Financial Operations,,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.created_at,ArTransaction,Financial Operations,,string,date-time,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.data_owner,ArTransaction,Financial Operations,,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.source_system,ArTransaction,Financial Operations,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.updated_at,ArTransaction,Financial Operations,,string,date-time,False,,confidential,False,True,core/resources/ar_transaction.json
+meta.version,ArTransaction,Financial Operations,,integer,,False,,confidential,False,True,core/resources/ar_transaction.json
+payment_method,ArTransaction,Financial Operations,"Map: 'Check' → 'check', 'ACH' → 'eft', 'Credit Card' → 'credit_card', 'Wire' → 'wire', 'Financial Aid' → 'fin_aid_disbursement'.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+student_ref,ArTransaction,Financial Operations,"Resolve customer to HELIX student_id. In Workday Student, Customer = Student record.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+term_ref,ArTransaction,Financial Operations,Link to HELIX AcademicPeriod. Institutions typically code tuition charges to an academic period.,string,,False,,confidential,False,True,core/resources/ar_transaction.json
+third_party_ref,ArTransaction,Financial Operations,"If charge is covered by a third-party contract, reference the contract.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
+transaction_date,ArTransaction,Financial Operations,Cast to ISO 8601.,string,date,False,,confidential,False,True,core/resources/ar_transaction.json
+transaction_id,ArTransaction,Financial Operations,Direct map.,string,,True,,confidential,False,True,core/resources/ar_transaction.json
+transaction_type,ArTransaction,Financial Operations,"Map: Customer Invoice → 'charge', Customer Payment → 'payment', Customer Refund → 'refund', Credit Memo → 'adjustment'.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
 accumulated_depreciation,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
 acquisition_cost,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
 acquisition_date,Asset,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/asset.json
 asset_category,Asset,Financial Operations,"Map: 'Land' → 'land', 'Buildings' → 'building', 'Equipment' → 'equipment', 'Software' → 'software', 'Vehicles' → 'vehicle', 'Leasehold Improvements' → 'leasehold', 'Library Collections' → 'library', 'Construction in Progress' → 'cip'.",string,,False,,internal,False,False,core/resources/asset.json
-asset_id,Asset,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/asset.json
+asset_id,Asset,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/asset.json
 custodian,Asset,Financial Operations,Resolve to name. Person responsible.,string,,False,,internal,False,False,core/resources/asset.json
 department,Asset,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/asset.json
 depreciation_method,Asset,Financial Operations,"Map: 'Straight Line' → 'straight_line', 'Declining Balance' → 'declining_balance'.",string,,False,,internal,False,False,core/resources/asset.json
@@ -190,10 +308,43 @@ net_book_value,Asset,Financial Operations,acquisition_cost - accumulated_depreci
 salvage_value,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
 status,Asset,Financial Operations,"Map: 'Active' → 'in_service', 'Disposed' → 'disposed', 'Under Construction' → 'cip', 'Fully Depreciated' → 'fully_depreciated'.",string,,False,,internal,False,False,core/resources/asset.json
 useful_life_months,Asset,Financial Operations,Convert to months if in years.,number,,False,,internal,False,False,core/resources/asset.json
+academic_period_ref,AwardHonor,Outcomes,HELIX ID of the AcademicPeriod,string,,False,,confidential,True,False,core/resources/award_honor.json
+academic_year,AwardHonor,Outcomes,Academic year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/award_honor.json
+award_date,AwardHonor,Outcomes,,string,date,False,,confidential,True,False,core/resources/award_honor.json
+awarding_body,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
+deans_list_flag,AwardHonor,Outcomes,,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+degree_ref,AwardHonor,Outcomes,HELIX ID of the associated Degree (if conferral honor),string,,False,,confidential,True,False,core/resources/award_honor.json
+departmental_flag,AwardHonor,Outcomes,,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+description,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
+gpa_at_award,AwardHonor,Outcomes,,number,,False,,confidential,True,False,core/resources/award_honor.json
+helix_id,AwardHonor,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/award_honor.json
+honor_name,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
+honor_type,AwardHonor,Outcomes,Category of honor/award. Bound to HELIX terminology: helix/honor-type,string,,True,,confidential,True,False,core/resources/award_honor.json
+latin_honors_designation,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
+meta,AwardHonor,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/award_honor.json
+meta.classification,AwardHonor,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/award_honor.json
+meta.created_at,AwardHonor,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/award_honor.json
+meta.data_owner,AwardHonor,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags,AwardHonor,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json. Honors and awards are commonly designated directory information under 34 CFR 99.3; they may be disclosed without consent UNLESS directory_restricted is true or 'honors' appears in restricted_categories.",object,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.directory_restricted,AwardHonor,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.disclosure_basis_required,AwardHonor,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.is_education_record,AwardHonor,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.legitimate_interest_scope,AwardHonor,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.restricted_categories,AwardHonor,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/award_honor.json
+meta.ferpa_flags.study_disclosure_allowed,AwardHonor,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+meta.source_system,AwardHonor,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/award_honor.json
+meta.updated_at,AwardHonor,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/award_honor.json
+meta.version,AwardHonor,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/award_honor.json
+monetary_value,AwardHonor,Outcomes,Monetary value if the award/scholarship carries one,number,,False,,confidential,True,False,core/resources/award_honor.json
+national_recognition_flag,AwardHonor,Outcomes,,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+person_ref,AwardHonor,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/award_honor.json
+presidents_list_flag,AwardHonor,Outcomes,,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+scholarship_flag,AwardHonor,Outcomes,,boolean,,False,,confidential,True,False,core/resources/award_honor.json
+student_ref,AwardHonor,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/award_honor.json
 coverage_level,BenefitEnrollment,Human Resources,"Map: 'Employee Only' → 'employee', 'Employee + Spouse' → 'employee_spouse', 'Employee + Children' → 'employee_children', 'Family' → 'family'.",string,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 dependent_count,BenefitEnrollment,Human Resources,Number of covered dependents.,integer,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 employee_contribution,BenefitEnrollment,Human Resources,Per-pay-period employee contribution.,number,,False,,restricted,False,False,core/resources/benefit_enrollment.json
-employee_ref,BenefitEnrollment,Human Resources,Link to HELIX employee_id.,string,,False,,restricted,False,False,core/resources/benefit_enrollment.json
+employee_ref,BenefitEnrollment,Human Resources,Link to HELIX employee_id.,string,,True,,restricted,False,False,core/resources/benefit_enrollment.json
 employer_contribution,BenefitEnrollment,Human Resources,Per-pay-period employer contribution.,number,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 employer_match_pct,BenefitEnrollment,Human Resources,Employer matching percentage.,number,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 enrollment_date,BenefitEnrollment,Human Resources,Cast to ISO 8601.,string,date,False,,restricted,False,False,core/resources/benefit_enrollment.json
@@ -212,7 +363,7 @@ termination_date,BenefitEnrollment,Human Resources,Null if active. Cast to ISO 8
 account,Budget,Financial Operations,Map to HELIX account code.,string,,False,,internal,False,False,core/resources/budget.json
 available_balance,Budget,Financial Operations,budget_amount - encumbered - expended.,number,,False,,internal,False,False,core/resources/budget.json
 budget_amount,Budget,Financial Operations,Original budget + amendments.,number,,False,,internal,False,False,core/resources/budget.json
-budget_id,Budget,Financial Operations,Composite key.,string,,False,,internal,False,False,core/resources/budget.json
+budget_id,Budget,Financial Operations,Composite key.,string,,True,,internal,False,False,core/resources/budget.json
 budget_status,Budget,Financial Operations,"Map: 'Draft'→'draft', 'Approved'→'open', 'Closed'→'closed', 'Frozen'→'frozen'.",string,,False,,internal,False,False,core/resources/budget.json
 business_unit,Budget,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/budget.json
 department,Budget,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/budget.json
@@ -258,7 +409,7 @@ compensation_grade,Compensation,Human Resources,Direct map.,string,,False,,restr
 compensation_step,Compensation,Human Resources,Direct map if applicable. Null for non-step plans.,string,,False,,restricted,False,False,core/resources/compensation.json
 currency,Compensation,Human Resources,ISO 4217. Direct map.,string,,False,,restricted,False,False,core/resources/compensation.json
 effective_date,Compensation,Human Resources,Cast to ISO 8601. The date this compensation became effective.,string,date,False,,restricted,False,False,core/resources/compensation.json
-employee_ref,Compensation,Human Resources,Link to HELIX employee_id.,string,,False,,restricted,False,False,core/resources/compensation.json
+employee_ref,Compensation,Human Resources,Link to HELIX employee_id.,string,,True,,restricted,False,False,core/resources/compensation.json
 grade_maximum,Compensation,Human Resources,Direct map. Top of the pay range.,number,,False,,restricted,False,False,core/resources/compensation.json
 grade_midpoint,Compensation,Human Resources,Direct map. Market reference point.,number,,False,,restricted,False,False,core/resources/compensation.json
 grade_minimum,Compensation,Human Resources,Direct map. Bottom of the pay range.,number,,False,,restricted,False,False,core/resources/compensation.json
@@ -281,13 +432,13 @@ communication_preferences.mail_opt_in,Constituent,Advancement,,boolean,,False,,c
 communication_preferences.phone_opt_in,Constituent,Advancement,,boolean,,False,,confidential,False,False,core/resources/constituent.json
 communication_preferences.preferred_channel,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 consecutive_giving_years,Constituent,Advancement,,integer,,False,,confidential,False,False,core/resources/constituent.json
-constituent_type,Constituent,Advancement,,string,,True,,confidential,False,False,core/resources/constituent.json
+constituent_type,Constituent,Advancement,Bound to HELIX terminology: helix/constituent-type.,string,,True,,confidential,False,False,core/resources/constituent.json
 degrees,Constituent,Advancement,,array,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].degree_ref,Constituent,Advancement,HELIX ID of the Degree resource,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].degree_type,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].major,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].year,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
-donor_segment,Constituent,Advancement,Current donor lifecycle segment for targeting,string,,False,,confidential,False,False,core/resources/constituent.json
+donor_segment,Constituent,Advancement,Current donor lifecycle segment for targeting Bound to HELIX terminology: helix/donor-segment.,string,,False,,confidential,False,False,core/resources/constituent.json
 employer,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 engagement_score,Constituent,Advancement,"Composite engagement score (events, emails, volunteering, social, etc.)",number,,False,,confidential,False,False,core/resources/constituent.json
 giving_capacity,Constituent,Advancement,,object,,False,,confidential,False,False,core/resources/constituent.json
@@ -311,12 +462,43 @@ meta.source_system,Constituent,Advancement,,string,,False,,confidential,False,Fa
 meta.updated_at,Constituent,Advancement,,string,date-time,False,,confidential,False,False,core/resources/constituent.json
 meta.version,Constituent,Advancement,,integer,,False,,confidential,False,False,core/resources/constituent.json
 person_ref,Constituent,Advancement,HELIX ID of the underlying Person resource (if individual),string,,False,,confidential,False,False,core/resources/constituent.json
-prospect_stage,Constituent,Advancement,Moves management pipeline stage,string,,False,,confidential,False,False,core/resources/constituent.json
+prospect_stage,Constituent,Advancement,Moves management pipeline stage Bound to HELIX terminology: helix/prospect-stage.,string,,False,,confidential,False,False,core/resources/constituent.json
 solicitation_codes,Constituent,Advancement,Active solicitation restrictions or preferences,array,,False,,confidential,False,False,core/resources/constituent.json
 status,Constituent,Advancement,,string,,True,,confidential,False,False,core/resources/constituent.json
 student_ref,Constituent,Advancement,HELIX ID of the Student resource (if alumnus),string,,False,,confidential,False,False,core/resources/constituent.json
+academic_year_graduated,ContinuingEducation,Outcomes,Graduation year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/continuing_education.json
+cip_code,ContinuingEducation,Outcomes,Classification of Instructional Programs (CIP) code of the new program,string,,False,,confidential,True,False,core/resources/continuing_education.json
+continuing_ed_level,ContinuingEducation,Outcomes,Level of continuing education pursued. Bound to HELIX terminology: helix/continuing-ed-level,string,,True,,confidential,True,False,core/resources/continuing_education.json
+data_collection_method,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
+degree_ref,ContinuingEducation,Outcomes,HELIX ID of the Degree completed prior to continuing education,string,,False,,confidential,True,False,core/resources/continuing_education.json
+enrollment_status,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
+expected_completion_date,ContinuingEducation,Outcomes,,string,date,False,,confidential,True,False,core/resources/continuing_education.json
+field_of_study,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
+funding_type,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
+helix_id,ContinuingEducation,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/continuing_education.json
+institution_ipeds_id,ContinuingEducation,Outcomes,"IPEDS UnitID of the receiving institution, if known",string,,False,,confidential,True,False,core/resources/continuing_education.json
+institution_name,ContinuingEducation,Outcomes,Name of the institution where continuing education is pursued,string,,False,,confidential,True,False,core/resources/continuing_education.json
+meta,ContinuingEducation,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.classification,ContinuingEducation,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.created_at,ContinuingEducation,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/continuing_education.json
+meta.data_owner,ContinuingEducation,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags,ContinuingEducation,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.directory_restricted,ContinuingEducation,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.disclosure_basis_required,ContinuingEducation,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.is_education_record,ContinuingEducation,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.legitimate_interest_scope,ContinuingEducation,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.restricted_categories,ContinuingEducation,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.ferpa_flags.study_disclosure_allowed,ContinuingEducation,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.source_system,ContinuingEducation,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/continuing_education.json
+meta.updated_at,ContinuingEducation,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/continuing_education.json
+meta.version,ContinuingEducation,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/continuing_education.json
+outcome_date,ContinuingEducation,Outcomes,,string,date,False,,confidential,True,False,core/resources/continuing_education.json
+person_ref,ContinuingEducation,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/continuing_education.json
+program_name,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
+start_date,ContinuingEducation,Outcomes,,string,date,False,,confidential,True,False,core/resources/continuing_education.json
+student_ref,ContinuingEducation,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/continuing_education.json
 amount_spent,Contract,Financial Operations,Sum of invoiced amounts linked to this contract.,number,,False,,internal,False,False,core/resources/contract.json
-contract_id,Contract,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/contract.json
+contract_id,Contract,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/contract.json
 contract_name,Contract,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/contract.json
 contract_status,Contract,Financial Operations,"Map: 'Draft' → 'draft', 'Active' → 'active', 'Expired' → 'expired', 'Terminated' → 'terminated', 'On Hold' → 'on_hold'.",string,,False,,internal,False,False,core/resources/contract.json
 contract_type,Contract,Financial Operations,"Map: 'Blanket PO' → 'blanket', 'Rate Contract' → 'rate', 'Service Agreement' → 'service', 'Construction' → 'construction', 'Consulting' → 'consulting'.",string,,False,,internal,False,False,core/resources/contract.json
@@ -346,7 +528,7 @@ end_date,Course,Academic Structure,,string,date,False,,internal,False,False,core
 helix_id,Course,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/course.json
 institution_id,Course,Academic Structure,,string,,True,,internal,False,False,core/resources/course.json
 is_active,Course,Academic Structure,,boolean,,False,,internal,False,False,core/resources/course.json
-level,Course,Academic Structure,,string,,False,,internal,False,False,core/resources/course.json
+level,Course,Academic Structure,Bound to HELIX terminology: helix/course-level.,string,,False,,internal,False,False,core/resources/course.json
 meta,Course,Academic Structure,HELIX metadata block — present on every resource,object,,False,,internal,False,False,core/resources/course.json
 meta.classification,Course,Academic Structure,Data classification tier per HELIX Govern,string,,False,,internal,False,False,core/resources/course.json
 meta.created_at,Course,Academic Structure,,string,date-time,False,,internal,False,False,core/resources/course.json
@@ -365,7 +547,7 @@ course_ref,CourseSection,Academic Structure,HELIX ID of the parent Course resour
 credit_hours,CourseSection,Academic Structure,,number,,False,,internal,False,False,core/resources/course_section.json
 crn,CourseSection,Academic Structure,Course Reference Number or equivalent registration code,string,,False,,internal,False,False,core/resources/course_section.json
 cross_listed_sections,CourseSection,Academic Structure,"HELIX IDs of cross-listed sections (same meeting, different subject/number)",array,,False,,internal,False,False,core/resources/course_section.json
-delivery_mode,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
+delivery_mode,CourseSection,Academic Structure,Bound to HELIX terminology: helix/delivery-mode.,string,,False,,internal,False,False,core/resources/course_section.json
 fees,CourseSection,Academic Structure,,array,,False,,internal,False,False,core/resources/course_section.json
 fees[].amount,CourseSection,Academic Structure,,number,,False,,internal,False,False,core/resources/course_section.json
 fees[].currency,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
@@ -396,13 +578,13 @@ syllabus_url,CourseSection,Academic Structure,,string,uri,False,,internal,False,
 title_override,CourseSection,Academic Structure,Section-specific title if different from catalog course,string,,False,,internal,False,False,core/resources/course_section.json
 waitlist_capacity,CourseSection,Academic Structure,,integer,,False,,internal,False,False,core/resources/course_section.json
 additional_minors,Degree,Outcomes,,array,,False,,confidential,True,False,core/resources/degree.json
-certifications,Degree,Outcomes,Embedded certifications earned alongside the degree,array,,False,,confidential,True,False,core/resources/degree.json
+certifications,Degree,Outcomes,Embedded certifications earned alongside the degree NOTE: Professional licensure/certification exams are now modeled in the Licensure resource; this embedded list is retained for backward compatibility.,array,,False,,confidential,True,False,core/resources/degree.json
 commencement_participation,Degree,Outcomes,,boolean,,False,,confidential,True,False,core/resources/degree.json
 concentration,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
 conferral_date,Degree,Outcomes,,string,date,True,,confidential,True,False,core/resources/degree.json
 conferral_period_ref,Degree,Outcomes,HELIX ID of the AcademicPeriod of conferral,string,,False,,confidential,True,False,core/resources/degree.json
 cumulative_gpa,Degree,Outcomes,,number,,False,,confidential,True,False,core/resources/degree.json
-degree_level,Degree,Outcomes,,string,,False,,confidential,True,False,core/resources/degree.json
+degree_level,Degree,Outcomes,Bound to HELIX terminology: helix/degree-level.,string,,False,,confidential,True,False,core/resources/degree.json
 degree_status,Degree,Outcomes,Tracks degree from near-completion through official conferral,string,,False,,confidential,True,False,core/resources/degree.json
 degree_type,Degree,Outcomes,"Degree designation (e.g., 'BS', 'MA', 'PhD')",string,,False,,confidential,True,False,core/resources/degree.json
 helix_id,Degree,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/degree.json
@@ -466,6 +648,43 @@ units_in_progress,DegreeAudit,Enrollment & Registration,Credits currently enroll
 units_remaining,DegreeAudit,Enrollment & Registration,Credits still needed.,number,,False,,confidential,True,False,core/resources/degree_audit.json
 units_required,DegreeAudit,Enrollment & Registration,Total credits required by the program.,number,,False,,confidential,True,False,core/resources/degree_audit.json
 unsatisfied_count,DegreeAudit,Enrollment & Registration,Requirements not yet met.,integer,,False,,confidential,True,False,core/resources/degree_audit.json
+academic_period_ref,Disbursement,Financial Aid,HELIX ID of the AcademicPeriod,string,,False,,restricted,True,True,core/resources/disbursement.json
+academic_year,Disbursement,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,restricted,True,True,core/resources/disbursement.json
+actual_disbursement_date,Disbursement,Financial Aid,,string,date,False,,restricted,True,True,core/resources/disbursement.json
+cod_reported_flag,Disbursement,Financial Aid,Reported to Common Origination and Disbursement (COD).,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+cod_response_date,Disbursement,Financial Aid,,string,date,False,,restricted,True,True,core/resources/disbursement.json
+disbursement_number,Disbursement,Financial Aid,"Disbursement number (1st, 2nd, ...).",integer,,False,,restricted,True,True,core/resources/disbursement.json
+disbursement_sequence,Disbursement,Financial Aid,,integer,,False,,restricted,True,True,core/resources/disbursement.json
+disbursement_status,Disbursement,Financial Aid,Bound to helix/disbursement-status.,string,,True,,restricted,True,True,core/resources/disbursement.json
+fees_deducted,Disbursement,Financial Aid,,number,,False,,restricted,True,True,core/resources/disbursement.json
+fin_aid_award_ref,Disbursement,Financial Aid,HELIX ID of the FinAidAward being disbursed,string,,True,,restricted,True,True,core/resources/disbursement.json
+fund_code,Disbursement,Financial Aid,Institution's internal fund code.,string,,False,,restricted,True,True,core/resources/disbursement.json
+fund_name,Disbursement,Financial Aid,"Specific fund/program name (e.g., 'Federal Pell Grant').",string,,False,,restricted,True,True,core/resources/disbursement.json
+gross_amount,Disbursement,Financial Aid,,number,,False,,restricted,True,True,core/resources/disbursement.json
+helix_id,Disbursement,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/disbursement.json
+hold_flag,Disbursement,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+hold_reason,Disbursement,Financial Aid,,string,,False,,restricted,True,True,core/resources/disbursement.json
+ledger_posted_flag,Disbursement,Financial Aid,Posted to the student AR ledger.,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+meta,Disbursement,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/disbursement.json
+meta.classification,Disbursement,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/disbursement.json
+meta.created_at,Disbursement,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/disbursement.json
+meta.data_owner,Disbursement,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags,Disbursement,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.directory_restricted,Disbursement,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.disclosure_basis_required,Disbursement,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.is_education_record,Disbursement,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.legitimate_interest_scope,Disbursement,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.restricted_categories,Disbursement,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/disbursement.json
+meta.ferpa_flags.study_disclosure_allowed,Disbursement,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+meta.source_system,Disbursement,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/disbursement.json
+meta.updated_at,Disbursement,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/disbursement.json
+meta.version,Disbursement,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/disbursement.json
+net_amount,Disbursement,Financial Aid,,number,,False,,restricted,True,True,core/resources/disbursement.json
+refund_amount,Disbursement,Financial Aid,,number,,False,,restricted,True,True,core/resources/disbursement.json
+refund_date,Disbursement,Financial Aid,,string,date,False,,restricted,True,True,core/resources/disbursement.json
+refund_generated_flag,Disbursement,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/disbursement.json
+scheduled_date,Disbursement,Financial Aid,,string,date,False,,restricted,True,True,core/resources/disbursement.json
+student_ref,Disbursement,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/disbursement.json
 citizenship_status,Employee,Human Resources,"Map: 'Citizen' → 'citizen', 'Permanent Resident' → 'permanent_resident', 'Visa' → 'visa_holder'.",string,,False,,confidential,False,False,core/resources/employee.json
 continuous_service_date,Employee,Human Resources,"Date for service-based calculations (vacation accrual, retirement vesting).",string,date,False,,confidential,False,False,core/resources/employee.json
 date_of_birth,Employee,Human Resources,Cast to ISO 8601.,string,,False,,confidential,False,False,core/resources/employee.json
@@ -489,7 +708,7 @@ meta.updated_at,Employee,Human Resources,,string,date-time,False,,confidential,F
 meta.version,Employee,Human Resources,,integer,,False,,confidential,False,False,core/resources/employee.json
 national_id,Employee,Human Resources,Tokenize at silver layer. Display last 4 only.,string,,False,,confidential,False,False,core/resources/employee.json
 original_hire_date,Employee,Human Resources,"If rehire, the first-ever hire date. Important for benefits eligibility and seniority.",string,date,False,,confidential,False,False,core/resources/employee.json
-person_ref,Employee,Human Resources,"Link to HELIX Person resource. May be the same person as a Student (student employees, GAs).",string,,False,,confidential,False,False,core/resources/employee.json
+person_ref,Employee,Human Resources,"Link to HELIX Person resource. May be the same person as a Student (student employees, GAs).",string,,True,,confidential,False,False,core/resources/employee.json
 preferred_name,Employee,Human Resources,Preferred Name (structured sub-object).,object,,False,,confidential,False,False,core/resources/employee.json
 primary_work_email,Employee,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/employee.json
 primary_work_phone,Employee,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/employee.json
@@ -497,6 +716,45 @@ termination_date,Employee,Human Resources,Null if active. Cast to ISO 8601 if te
 termination_reason,Employee,Human Resources,"Map: 'Voluntary - Resignation' → 'resignation', 'Voluntary - Retirement' → 'retirement', 'Involuntary - Termination' → 'involuntary', 'End of Contract' → 'contract_end', 'Deceased' → 'deceased'.",string,,False,,confidential,False,False,core/resources/employee.json
 visa_type,Employee,Human Resources,"If non-citizen: H-1B, J-1, F-1/OPT, TN, etc.",string,,False,,confidential,False,False,core/resources/employee.json
 worker_type,Employee,Human Resources,"Map: 'Employee' → 'employee', 'Contingent Worker' → 'contingent'.",string,,False,,confidential,False,False,core/resources/employee.json
+academic_year_graduated,EmploymentOutcome,Outcomes,Graduation aid/academic year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+continuing_education_flag,EmploymentOutcome,Outcomes,True if the graduate is simultaneously pursuing continuing education,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+data_collection_date,EmploymentOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/employment_outcome.json
+data_collection_method,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+degree_ref,EmploymentOutcome,Outcomes,HELIX ID of the Degree this outcome is associated with,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employer_industry,EmploymentOutcome,Outcomes,Industry sector of the employer,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employer_name,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_location_city,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_location_country,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_location_state,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_relation_to_major,EmploymentOutcome,Outcomes,How related the position is to the field of study. Bound to HELIX terminology: helix/employment-relation,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_type,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+helix_id,EmploymentOutcome,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/employment_outcome.json
+hired_before_graduation_flag,EmploymentOutcome,Outcomes,,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+job_title,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+knowledge_source,EmploymentOutcome,Outcomes,Source of the outcome knowledge for NACE knowledge-rate purposes,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta,EmploymentOutcome,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.classification,EmploymentOutcome,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.created_at,EmploymentOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.data_owner,EmploymentOutcome,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags,EmploymentOutcome,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json. First-destination employment data is often collected post-graduation; while tied to the student's education record at graduation, institutions should confirm education-record status for data collected independently after separation.",object,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.directory_restricted,EmploymentOutcome,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.disclosure_basis_required,EmploymentOutcome,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.is_education_record,EmploymentOutcome,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.legitimate_interest_scope,EmploymentOutcome,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.restricted_categories,EmploymentOutcome,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.ferpa_flags.study_disclosure_allowed,EmploymentOutcome,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.source_system,EmploymentOutcome,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.updated_at,EmploymentOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/employment_outcome.json
+meta.version,EmploymentOutcome,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/employment_outcome.json
+outcome_date,EmploymentOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/employment_outcome.json
+outcome_type,EmploymentOutcome,Outcomes,First-destination outcome category. Bound to HELIX terminology: helix/first-destination-status,string,,True,,confidential,True,False,core/resources/employment_outcome.json
+person_ref,EmploymentOutcome,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+salary_amount,EmploymentOutcome,Outcomes,Annual salary in local currency,number,,False,,confidential,True,False,core/resources/employment_outcome.json
+salary_currency,EmploymentOutcome,Outcomes,ISO 4217 currency code,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+salary_source,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+signing_bonus,EmploymentOutcome,Outcomes,,number,,False,,confidential,True,False,core/resources/employment_outcome.json
+student_ref,EmploymentOutcome,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/employment_outcome.json
+time_to_hire_days,EmploymentOutcome,Outcomes,Days from graduation (or job search start) to hire,integer,,False,,confidential,True,False,core/resources/employment_outcome.json
 activity_date,EngagementActivity,Advancement,,string,date-time,True,,internal,False,False,core/resources/engagement_activity.json
 activity_type,EngagementActivity,Advancement,,string,,True,,internal,False,False,core/resources/engagement_activity.json
 channel,EngagementActivity,Advancement,,string,,False,,internal,False,False,core/resources/engagement_activity.json
@@ -524,7 +782,7 @@ credit_hours_attempted,Enrollment,Enrollment & Registration,,number,,False,,conf
 credit_hours_earned,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
 drop_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
 enrollment_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
-enrollment_status,Enrollment,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/enrollment.json
+enrollment_status,Enrollment,Enrollment & Registration,Bound to HELIX terminology: helix/enrollment-status.,string,,True,,confidential,True,False,core/resources/enrollment.json
 final_exam_grade,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
 grade,Enrollment,Enrollment & Registration,Final grade. Bound to institution's HELIX grade terminology profile.,string,,False,,confidential,True,False,core/resources/enrollment.json
 grade_mode,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
@@ -551,7 +809,7 @@ repeat_flag,Enrollment,Enrollment & Registration,,boolean,,False,,confidential,T
 student_ref,Enrollment,Enrollment & Registration,HELIX ID of the Student resource,string,,True,,confidential,True,False,core/resources/enrollment.json
 account,ExpenseReport,Financial Operations,Map to HELIX account code.,string,,False,,internal,False,False,core/resources/expense_report.json
 department,ExpenseReport,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/expense_report.json
-employee_ref,ExpenseReport,Financial Operations,Resolve to HELIX employee_id.,string,,False,,internal,False,False,core/resources/expense_report.json
+employee_ref,ExpenseReport,Financial Operations,Resolve to HELIX employee_id.,string,,True,,internal,False,False,core/resources/expense_report.json
 expense_type,ExpenseReport,Financial Operations,"Map: 'Airfare' → 'airfare', 'Hotel' → 'lodging', 'Meals' → 'meals', 'Mileage' → 'mileage', 'Registration' → 'registration', 'Ground Transportation' → 'ground_transport', 'Other' → 'other'.",string,,False,,internal,False,False,core/resources/expense_report.json
 fund_code,ExpenseReport,Financial Operations,Map to HELIX fund code.,string,,False,,internal,False,False,core/resources/expense_report.json
 grant_ref,ExpenseReport,Financial Operations,If charged to a grant. Travel on federal grants subject to Fly America Act and per diem limits.,string,,False,,internal,False,False,core/resources/expense_report.json
@@ -570,65 +828,138 @@ report_date,ExpenseReport,Financial Operations,Cast to ISO 8601.,string,date,Fal
 report_id,ExpenseReport,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/expense_report.json
 report_status,ExpenseReport,Financial Operations,"Map: 'Draft' → 'draft', 'Submitted' → 'submitted', 'Approved' → 'approved', 'Paid' → 'paid', 'Returned' → 'returned'.",string,,False,,internal,False,False,core/resources/expense_report.json
 total_amount,ExpenseReport,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/expense_report.json
-effective_date,FerpaRestriction,Enrollment & Registration,Date the restriction took effect.,string,date,False,,restricted,True,False,core/resources/ferpa_restriction.json
-end_date,FerpaRestriction,Enrollment & Registration,Null if indefinite (most FERPA blocks persist until removed by the student).,string,date,False,,restricted,True,False,core/resources/ferpa_restriction.json
-helix_id,FerpaRestriction,Enrollment & Registration,HELIX-assigned unique identifier.,string,,True,,restricted,True,False,core/resources/ferpa_restriction.json
-is_active,FerpaRestriction,Enrollment & Registration,Whether the restriction is currently in effect.,boolean,,True,,restricted,True,False,core/resources/ferpa_restriction.json
-meta,FerpaRestriction,Enrollment & Registration,,object,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.classification,FerpaRestriction,Enrollment & Registration,,string,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags,FerpaRestriction,Enrollment & Registration,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.directory_restricted,FerpaRestriction,Enrollment & Registration,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.disclosure_basis_required,FerpaRestriction,Enrollment & Registration,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.is_education_record,FerpaRestriction,Enrollment & Registration,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.legitimate_interest_scope,FerpaRestriction,Enrollment & Registration,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.restricted_categories,FerpaRestriction,Enrollment & Registration,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.ferpa_flags.study_disclosure_allowed,FerpaRestriction,Enrollment & Registration,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.source_id,FerpaRestriction,Enrollment & Registration,,string,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.source_system,FerpaRestriction,Enrollment & Registration,,string,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-meta.version,FerpaRestriction,Enrollment & Registration,,string,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-requested_date,FerpaRestriction,Enrollment & Registration,Date the student submitted the restriction request.,string,date,False,,restricted,True,False,core/resources/ferpa_restriction.json
-restrict_directory,FerpaRestriction,Enrollment & Registration,"Master flag: if true, withhold ALL directory information.",boolean,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-restricted_categories,FerpaRestriction,Enrollment & Registration,Specific directory information categories restricted by the student.,array,,False,,restricted,True,False,core/resources/ferpa_restriction.json
-restriction_type,FerpaRestriction,Enrollment & Registration,Full = withhold everything. Directory = withhold directory info only. Partial = specific categories.,string,,True,,restricted,True,False,core/resources/ferpa_restriction.json
-student_ref,FerpaRestriction,Enrollment & Registration,Reference to the HELIX Student resource.,string,,True,,restricted,True,False,core/resources/ferpa_restriction.json
-academic_period_ref,FinAidAward,Financial Aid,HELIX ID of the AcademicPeriod,string,,True,,confidential,True,True,core/resources/fin_aid_award.json
-academic_year,FinAidAward,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-amount_accepted,FinAidAward,Financial Aid,,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-amount_disbursed,FinAidAward,Financial Aid,,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-amount_offered,FinAidAward,Financial Aid,Amount offered in local currency,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-award_status,FinAidAward,Financial Aid,,string,,True,,confidential,True,True,core/resources/fin_aid_award.json
-award_type,FinAidAward,Financial Aid,,string,,True,,confidential,True,True,core/resources/fin_aid_award.json
-award_year_total,FinAidAward,Financial Aid,Total award amount across all terms in the academic year,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-cost_of_attendance,FinAidAward,Financial Aid,Institutional COA budget used for this award calculation,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-currency,FinAidAward,Financial Aid,ISO 4217 currency code,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-disbursement_date,FinAidAward,Financial Aid,,string,date,False,,confidential,True,True,core/resources/fin_aid_award.json
-efc,FinAidAward,Financial Aid,Expected Family Contribution / Student Aid Index at time of award,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
-fund_code,FinAidAward,Financial Aid,Institution's internal fund code,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-fund_name,FinAidAward,Financial Aid,"Specific fund or program name (e.g., 'Federal Pell Grant', 'Dean's Scholarship')",string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-fund_source,FinAidAward,Financial Aid,,string,,True,,confidential,True,True,core/resources/fin_aid_award.json
-helix_id,FinAidAward,Financial Aid,,string,uuid,True,,confidential,True,True,core/resources/fin_aid_award.json
-is_renewable,FinAidAward,Financial Aid,,boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-merit_based_flag,FinAidAward,Financial Aid,,boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta,FinAidAward,Financial Aid,HELIX metadata block — present on every resource,object,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.classification,FinAidAward,Financial Aid,Data classification tier per HELIX Govern,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.created_at,FinAidAward,Financial Aid,,string,date-time,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.data_owner,FinAidAward,Financial Aid,Role or person responsible for data quality,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags,FinAidAward,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.directory_restricted,FinAidAward,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.disclosure_basis_required,FinAidAward,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.is_education_record,FinAidAward,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.legitimate_interest_scope,FinAidAward,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.restricted_categories,FinAidAward,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.ferpa_flags.study_disclosure_allowed,FinAidAward,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.source_system,FinAidAward,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.updated_at,FinAidAward,Financial Aid,,string,date-time,False,,confidential,True,True,core/resources/fin_aid_award.json
-meta.version,FinAidAward,Financial Aid,Resource version number,integer,,False,,confidential,True,True,core/resources/fin_aid_award.json
-need_based_flag,FinAidAward,Financial Aid,,boolean,,False,,confidential,True,True,core/resources/fin_aid_award.json
-program_ref,FinAidAward,Financial Aid,HELIX ID of the Program this award is associated with (if program-specific),string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-renewal_criteria,FinAidAward,Financial Aid,"Conditions for award renewal (e.g., 'Maintain 3.0 GPA')",string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-satisfactory_academic_progress,FinAidAward,Financial Aid,SAP status at time of award. Federal aid requires SAP compliance.,string,,False,,confidential,True,True,core/resources/fin_aid_award.json
-student_ref,FinAidAward,Financial Aid,HELIX ID of the Student resource,string,,True,,confidential,True,True,core/resources/fin_aid_award.json
-unmet_need,FinAidAward,Financial Aid,Remaining financial need after all awards,number,,False,,confidential,True,True,core/resources/fin_aid_award.json
+academic_period_ref,ExperientialLearning,Outcomes,HELIX ID of the AcademicPeriod during which the experience occurred,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+compensation_amount,ExperientialLearning,Outcomes,,number,,False,,confidential,True,False,core/resources/experiential_learning.json
+course_ref,ExperientialLearning,Outcomes,HELIX ID of the Course if credit-bearing,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+credit_bearing_flag,ExperientialLearning,Outcomes,,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+credit_hours,ExperientialLearning,Outcomes,,number,,False,,confidential,True,False,core/resources/experiential_learning.json
+end_date,ExperientialLearning,Outcomes,,string,date,False,,confidential,True,False,core/resources/experiential_learning.json
+evaluation_completed_flag,ExperientialLearning,Outcomes,,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+evaluation_rating,ExperientialLearning,Outcomes,Supervisor or faculty evaluation rating,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+experiential_type,ExperientialLearning,Outcomes,Type of experiential learning. Bound to HELIX terminology: helix/experiential-type,string,,True,,confidential,True,False,core/resources/experiential_learning.json
+helix_id,ExperientialLearning,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/experiential_learning.json
+high_impact_practice_flag,ExperientialLearning,Outcomes,True if this qualifies as a NSSE High-Impact Practice,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+hours_completed,ExperientialLearning,Outcomes,,number,,False,,confidential,True,False,core/resources/experiential_learning.json
+learning_objectives,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+location_city,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+location_country,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+location_state,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta,ExperientialLearning,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.classification,ExperientialLearning,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.created_at,ExperientialLearning,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.data_owner,ExperientialLearning,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags,ExperientialLearning,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.directory_restricted,ExperientialLearning,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.disclosure_basis_required,ExperientialLearning,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.is_education_record,ExperientialLearning,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.legitimate_interest_scope,ExperientialLearning,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.restricted_categories,ExperientialLearning,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.ferpa_flags.study_disclosure_allowed,ExperientialLearning,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.source_system,ExperientialLearning,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.updated_at,ExperientialLearning,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/experiential_learning.json
+meta.version,ExperientialLearning,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/experiential_learning.json
+organization_industry,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+organization_name,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+paid_flag,ExperientialLearning,Outcomes,,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+reflection_completed_flag,ExperientialLearning,Outcomes,,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
+start_date,ExperientialLearning,Outcomes,,string,date,False,,confidential,True,False,core/resources/experiential_learning.json
+student_ref,ExperientialLearning,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/experiential_learning.json
+supervisor_contact,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+supervisor_name,ExperientialLearning,Outcomes,,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+title,ExperientialLearning,Outcomes,Title of the experience or position,string,,False,,confidential,True,False,core/resources/experiential_learning.json
+academic_year,FederalAidReport,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,confidential,True,False,core/resources/federal_aid_report.json
+cod_batch_id,FederalAidReport,Financial Aid,,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+error_codes,FederalAidReport,Financial Aid,,array,,False,,confidential,True,False,core/resources/federal_aid_report.json
+helix_id,FederalAidReport,Financial Aid,HELIX unique identifier,string,uuid,True,,confidential,True,False,core/resources/federal_aid_report.json
+institution_id,FederalAidReport,Financial Aid,HELIX ID of the Institution,string,,True,,confidential,True,False,core/resources/federal_aid_report.json
+meta,FederalAidReport,Financial Aid,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.classification,FederalAidReport,Financial Aid,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.created_at,FederalAidReport,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.data_owner,FederalAidReport,Financial Aid,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags,FederalAidReport,Financial Aid,"FERPA enforcement flags. This resource is institution-level aggregate Title IV reporting, not a student education record; is_education_record defaults to false. Individual student detail lives in the referenced student-level resources.",object,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.directory_restricted,FederalAidReport,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.disclosure_basis_required,FederalAidReport,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.is_education_record,FederalAidReport,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.legitimate_interest_scope,FederalAidReport,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.restricted_categories,FederalAidReport,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.ferpa_flags.study_disclosure_allowed,FederalAidReport,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.source_system,FederalAidReport,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.updated_at,FederalAidReport,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/federal_aid_report.json
+meta.version,FederalAidReport,Financial Aid,Resource version number,integer,,False,,confidential,True,False,core/resources/federal_aid_report.json
+reconciliation_status,FederalAidReport,Financial Aid,,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+reconciliation_variance,FederalAidReport,Financial Aid,,number,,False,,confidential,True,False,core/resources/federal_aid_report.json
+records_accepted_count,FederalAidReport,Financial Aid,,integer,,False,,confidential,True,False,core/resources/federal_aid_report.json
+records_rejected_count,FederalAidReport,Financial Aid,,integer,,False,,confidential,True,False,core/resources/federal_aid_report.json
+records_submitted_count,FederalAidReport,Financial Aid,,integer,,False,,confidential,True,False,core/resources/federal_aid_report.json
+report_type,FederalAidReport,Financial Aid,Type of federal report,string,,True,,confidential,True,False,core/resources/federal_aid_report.json
+reporting_period_end,FederalAidReport,Financial Aid,,string,date,False,,confidential,True,False,core/resources/federal_aid_report.json
+reporting_period_start,FederalAidReport,Financial Aid,,string,date,False,,confidential,True,False,core/resources/federal_aid_report.json
+submission_date,FederalAidReport,Financial Aid,,string,date,False,,confidential,True,False,core/resources/federal_aid_report.json
+submission_status,FederalAidReport,Financial Aid,,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+submitted_by,FederalAidReport,Financial Aid,,string,,False,,confidential,True,False,core/resources/federal_aid_report.json
+total_dl_disbursed,FederalAidReport,Financial Aid,,number,,False,,confidential,True,False,core/resources/federal_aid_report.json
+total_fseog_disbursed,FederalAidReport,Financial Aid,,number,,False,,confidential,True,False,core/resources/federal_aid_report.json
+total_fws_disbursed,FederalAidReport,Financial Aid,,number,,False,,confidential,True,False,core/resources/federal_aid_report.json
+total_pell_disbursed,FederalAidReport,Financial Aid,,number,,False,,confidential,True,False,core/resources/federal_aid_report.json
+effective_date,FerpaRestriction,Enrollment & Registration,Date the restriction took effect.,string,date,False,,confidential,True,False,core/resources/ferpa_restriction.json
+end_date,FerpaRestriction,Enrollment & Registration,Null if indefinite (most FERPA blocks persist until removed by the student).,string,date,False,,confidential,True,False,core/resources/ferpa_restriction.json
+helix_id,FerpaRestriction,Enrollment & Registration,HELIX-assigned unique identifier.,string,,True,,confidential,True,False,core/resources/ferpa_restriction.json
+is_active,FerpaRestriction,Enrollment & Registration,Whether the restriction is currently in effect.,boolean,,True,,confidential,True,False,core/resources/ferpa_restriction.json
+meta,FerpaRestriction,Enrollment & Registration,,object,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.classification,FerpaRestriction,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags,FerpaRestriction,Enrollment & Registration,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.directory_restricted,FerpaRestriction,Enrollment & Registration,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.disclosure_basis_required,FerpaRestriction,Enrollment & Registration,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.is_education_record,FerpaRestriction,Enrollment & Registration,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.legitimate_interest_scope,FerpaRestriction,Enrollment & Registration,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.restricted_categories,FerpaRestriction,Enrollment & Registration,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.ferpa_flags.study_disclosure_allowed,FerpaRestriction,Enrollment & Registration,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.source_id,FerpaRestriction,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.source_system,FerpaRestriction,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+meta.version,FerpaRestriction,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+requested_date,FerpaRestriction,Enrollment & Registration,Date the student submitted the restriction request.,string,date,False,,confidential,True,False,core/resources/ferpa_restriction.json
+restrict_directory,FerpaRestriction,Enrollment & Registration,"Master flag: if true, withhold ALL directory information.",boolean,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+restricted_categories,FerpaRestriction,Enrollment & Registration,Specific directory information categories restricted by the student.,array,,False,,confidential,True,False,core/resources/ferpa_restriction.json
+restriction_type,FerpaRestriction,Enrollment & Registration,Full = withhold everything. Directory = withhold directory info only. Partial = specific categories.,string,,True,,confidential,True,False,core/resources/ferpa_restriction.json
+student_ref,FerpaRestriction,Enrollment & Registration,Reference to the HELIX Student resource.,string,,True,,confidential,True,False,core/resources/ferpa_restriction.json
+academic_period_ref,FinAidAward,Financial Aid,HELIX ID of the AcademicPeriod,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+academic_year,FinAidAward,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+amount_accepted,FinAidAward,Financial Aid,,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+amount_disbursed,FinAidAward,Financial Aid,NOTE: Actual disbursements are now modeled in the Disbursement resource; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+amount_offered,FinAidAward,Financial Aid,Amount offered in local currency,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+award_status,FinAidAward,Financial Aid,,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+award_type,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/award-type.,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+award_year_total,FinAidAward,Financial Aid,Total award amount across all terms in the academic year,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+cost_of_attendance,FinAidAward,Financial Aid,Institutional COA budget used for this award calculation NOTE: Full COA components are modeled on AidPackage; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+currency,FinAidAward,Financial Aid,ISO 4217 currency code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+disbursement_date,FinAidAward,Financial Aid,,string,date,False,,restricted,True,True,core/resources/fin_aid_award.json
+efc,FinAidAward,Financial Aid,"Expected Family Contribution / Student Aid Index at time of award NOTE: For 2024-25+ records, model the Student Aid Index on AidApplication (sai/efc_legacy); retained here for backward compatibility.",number,,False,,restricted,True,True,core/resources/fin_aid_award.json
+fund_code,FinAidAward,Financial Aid,Institution's internal fund code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+fund_name,FinAidAward,Financial Aid,"Specific fund or program name (e.g., 'Federal Pell Grant', 'Dean's Scholarship')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+fund_source,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/fund-source.,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+helix_id,FinAidAward,Financial Aid,,string,uuid,True,,restricted,True,True,core/resources/fin_aid_award.json
+is_renewable,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+merit_based_flag,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta,FinAidAward,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.classification,FinAidAward,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.created_at,FinAidAward,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.data_owner,FinAidAward,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags,FinAidAward,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.directory_restricted,FinAidAward,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.disclosure_basis_required,FinAidAward,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.is_education_record,FinAidAward,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.legitimate_interest_scope,FinAidAward,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.restricted_categories,FinAidAward,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.ferpa_flags.study_disclosure_allowed,FinAidAward,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.source_system,FinAidAward,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.updated_at,FinAidAward,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/fin_aid_award.json
+meta.version,FinAidAward,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/fin_aid_award.json
+need_based_flag,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
+program_ref,FinAidAward,Financial Aid,HELIX ID of the Program this award is associated with (if program-specific),string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+renewal_criteria,FinAidAward,Financial Aid,"Conditions for award renewal (e.g., 'Maintain 3.0 GPA')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+satisfactory_academic_progress,FinAidAward,Financial Aid,SAP status at time of award. Federal aid requires SAP compliance. NOTE: SAP is now modeled as its own lifecycle in the SAPEvaluation resource; retained here for backward compatibility.,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
+student_ref,FinAidAward,Financial Aid,HELIX ID of the Student resource,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+unmet_need,FinAidAward,Financial Aid,Remaining financial need after all awards NOTE: Unmet need is now computed on AidPackage; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 company,FinancialOrg,Financial Operations,The legal entity / campus this cost center belongs to.,string,,False,,internal,False,False,core/resources/financial_org.json
 fund_type,FinancialOrg,Financial Operations,Some institutions configure cost centers with a default fund type for budgeting.,string,,False,,internal,False,False,core/resources/financial_org.json
 helix_id,FinancialOrg,Financial Operations,HELIX-assigned unique identifier for this FinancialOrg record.,string,,True,,internal,False,False,core/resources/financial_org.json
@@ -641,12 +972,46 @@ meta.data_owner,FinancialOrg,Financial Operations,,string,,False,,internal,False
 meta.source_system,FinancialOrg,Financial Operations,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,internal,False,False,core/resources/financial_org.json
 meta.updated_at,FinancialOrg,Financial Operations,,string,date-time,False,,internal,False,False,core/resources/financial_org.json
 meta.version,FinancialOrg,Financial Operations,,integer,,False,,internal,False,False,core/resources/financial_org.json
-org_code,FinancialOrg,Financial Operations,"Direct map. E.g., 'CC-CS'.",string,,False,,internal,False,False,core/resources/financial_org.json
+org_code,FinancialOrg,Financial Operations,"Direct map. E.g., 'CC-CS'.",string,,True,,internal,False,False,core/resources/financial_org.json
 org_name,FinancialOrg,Financial Operations,"Direct map. E.g., 'Computer Science'.",string,,False,,internal,False,False,core/resources/financial_org.json
 org_type,FinancialOrg,Financial Operations,"Top-level cost centers → 'college'/'division', mid-level → 'school', leaf → 'department'.",string,,False,,internal,False,False,core/resources/financial_org.json
 parent_org,FinancialOrg,Financial Operations,Resolve parent cost center ID.,string,,False,,internal,False,False,core/resources/financial_org.json
+academic_year_graduated,FirstDestinationSurvey,Outcomes,Graduation year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+data_source_verified_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+degree_ref,FirstDestinationSurvey,Outcomes,HELIX ID of the Degree,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+helix_id,FirstDestinationSurvey,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/first_destination_survey.json
+knowledge_rate_included_flag,FirstDestinationSurvey,Outcomes,True if this record counts toward the NACE knowledge rate,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta,FirstDestinationSurvey,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.classification,FirstDestinationSurvey,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.created_at,FirstDestinationSurvey,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.data_owner,FirstDestinationSurvey,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags,FirstDestinationSurvey,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.directory_restricted,FirstDestinationSurvey,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.disclosure_basis_required,FirstDestinationSurvey,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.is_education_record,FirstDestinationSurvey,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.legitimate_interest_scope,FirstDestinationSurvey,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.restricted_categories,FirstDestinationSurvey,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.ferpa_flags.study_disclosure_allowed,FirstDestinationSurvey,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.source_system,FirstDestinationSurvey,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.updated_at,FirstDestinationSurvey,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/first_destination_survey.json
+meta.version,FirstDestinationSurvey,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/first_destination_survey.json
+military_service_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+months_since_graduation,FirstDestinationSurvey,Outcomes,Months elapsed since graduation at time of measurement (6 = NACE standard),integer,,False,,confidential,True,False,core/resources/first_destination_survey.json
+not_seeking_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+outcome_status,FirstDestinationSurvey,Outcomes,Resulting first-destination outcome. Bound to HELIX terminology: helix/first-destination-status,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+person_ref,FirstDestinationSurvey,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+primary_outcome,FirstDestinationSurvey,Outcomes,,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+response_method,FirstDestinationSurvey,Outcomes,,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+seeking_continuing_ed_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+seeking_employment_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
+student_ref,FirstDestinationSurvey,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/first_destination_survey.json
+survey_cohort,FirstDestinationSurvey,Outcomes,Graduating cohort identifier for the survey,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+survey_completed_date,FirstDestinationSurvey,Outcomes,,string,date,False,,confidential,True,False,core/resources/first_destination_survey.json
+survey_sent_date,FirstDestinationSurvey,Outcomes,,string,date,False,,confidential,True,False,core/resources/first_destination_survey.json
+survey_status,FirstDestinationSurvey,Outcomes,Status of the survey instrument. Bound to HELIX terminology: helix/survey-status,string,,True,,confidential,True,False,core/resources/first_destination_survey.json
+volunteer_service_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
 fund_category,Fund,Financial Operations,"Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d",string,,False,,internal,False,False,core/resources/fund.json
-fund_code,Fund,Financial Operations,"Direct map. E.g., 'FD100'.",string,,False,,internal,False,False,core/resources/fund.json
+fund_code,Fund,Financial Operations,"Direct map. E.g., 'FD100'.",string,,True,,internal,False,False,core/resources/fund.json
 fund_name,Fund,Financial Operations,"Direct map. E.g., 'General Operating'.",string,,False,,internal,False,False,core/resources/fund.json
 gasb_fund_type,Fund,Financial Operations,"For public (GASB) institutions: 'current_unrestricted', 'current_restricted', 'loan', 'endowment', 'plant', 'agency'. Maps to GASB fund types for statement of net position.",string,,False,,internal,False,False,core/resources/fund.json
 helix_id,Fund,Financial Operations,HELIX-assigned unique identifier for this Fund record.,string,,True,,internal,False,False,core/resources/fund.json
@@ -677,7 +1042,7 @@ designation.fund_type,Gift,Advancement,,string,,False,,confidential,False,False,
 gift_date,Gift,Advancement,Date the gift was received or pledged,string,date,True,,confidential,False,False,core/resources/gift.json
 gift_number,Gift,Advancement,Institution-assigned gift/receipt number,string,,False,,confidential,False,False,core/resources/gift.json
 gift_source,Gift,Advancement,,string,,False,,confidential,False,False,core/resources/gift.json
-gift_type,Gift,Advancement,Type of philanthropic transaction,string,,True,,confidential,False,False,core/resources/gift.json
+gift_type,Gift,Advancement,Type of philanthropic transaction Bound to HELIX terminology: helix/gift-type.,string,,True,,confidential,False,False,core/resources/gift.json
 helix_id,Gift,Advancement,,string,uuid,True,,confidential,False,False,core/resources/gift.json
 institution_id,Gift,Advancement,,string,,True,,confidential,False,False,core/resources/gift.json
 matching_company,Gift,Advancement,Employer name for corporate matching gifts,string,,False,,confidential,False,False,core/resources/gift.json
@@ -726,14 +1091,14 @@ meta.updated_at,GlTransaction,Financial Operations,,string,date-time,False,,inte
 meta.version,GlTransaction,Financial Operations,,integer,,False,,internal,False,False,core/resources/gl_transaction.json
 program_code,GlTransaction,Financial Operations,"Map Workday Revenue/Spend Category to HELIX functional classification. E.g., WD 'Instruction' → HELIX 'instruction'.",string,,False,,internal,False,False,core/resources/gl_transaction.json
 project_id,GlTransaction,Financial Operations,Map Workday Grant/Project worktag to HELIX project ID.,string,,False,,internal,False,False,core/resources/gl_transaction.json
-transaction_id,GlTransaction,Financial Operations,Composite key.,string,,False,,internal,False,False,core/resources/gl_transaction.json
+transaction_id,GlTransaction,Financial Operations,Composite key.,string,,True,,internal,False,False,core/resources/gl_transaction.json
 billing_type,Grant,Financial Operations,"Map: 'Cost Reimbursable' → 'cost_reimbursable', 'Fixed Price' → 'fixed_price', 'LOC' → 'letter_of_credit'.",string,,False,,internal,False,False,core/resources/grant.json
 cfda_number,Grant,Financial Operations,Catalog of Federal Domestic Assistance number. Required for federal awards. Direct map.,string,,False,,internal,False,False,core/resources/grant.json
 cost_sharing_amount,Grant,Financial Operations,Institutional commitment (mandatory or voluntary cost sharing).,number,,False,,internal,False,False,core/resources/grant.json
 department,Grant,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/grant.json
 direct_costs_budget,Grant,Financial Operations,Sum of direct cost budget lines.,number,,False,,internal,False,False,core/resources/grant.json
 fund_code,Grant,Financial Operations,"Map to HELIX fund code. Federal grants → restricted_federal, state → restricted_state, etc.",string,,False,,internal,False,False,core/resources/grant.json
-grant_id,Grant,Financial Operations,Direct map. Institution's internal grant number.,string,,False,,internal,False,False,core/resources/grant.json
+grant_id,Grant,Financial Operations,Direct map. Institution's internal grant number.,string,,True,,internal,False,False,core/resources/grant.json
 grant_name,Grant,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/grant.json
 grant_status,Grant,Financial Operations,"Map: 'Proposed' → 'proposed', 'Awarded' → 'active', 'Active' → 'active', 'No-Cost Extension' → 'nce', 'Closeout' → 'closing', 'Closed' → 'closed'.",string,,False,,internal,False,False,core/resources/grant.json
 helix_id,Grant,Financial Operations,HELIX-assigned unique identifier for this Grant record.,string,,True,,internal,False,False,core/resources/grant.json
@@ -761,7 +1126,7 @@ expiration_date,Hold,Student Services,Date the hold auto-expires if not released
 helix_id,Hold,Student Services,,string,uuid,True,,confidential,True,False,core/resources/hold.json
 hold_code,Hold,Student Services,Institution's internal hold code,string,,False,,confidential,True,False,core/resources/hold.json
 hold_status,Hold,Student Services,,string,,True,,confidential,True,False,core/resources/hold.json
-hold_type,Hold,Student Services,,string,,True,,confidential,True,False,core/resources/hold.json
+hold_type,Hold,Student Services,Bound to HELIX terminology: helix/hold-type.,string,,True,,confidential,True,False,core/resources/hold.json
 meta,Hold,Student Services,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/hold.json
 meta.classification,Hold,Student Services,,string,,False,,confidential,True,False,core/resources/hold.json
 meta.created_at,Hold,Student Services,,string,date-time,False,,confidential,True,False,core/resources/hold.json
@@ -839,7 +1204,7 @@ faculty_status,JobClassification,Human Resources,"Map: 'Full-Time' → 'full_tim
 flsa_status,JobClassification,Human Resources,"Map: true → 'exempt', false → 'non_exempt'. Faculty are typically exempt.",string,,False,,internal,False,False,core/resources/job_classification.json
 helix_id,JobClassification,Human Resources,HELIX-assigned unique identifier for this JobClassification record.,string,,True,,internal,False,False,core/resources/job_classification.json
 ipeds_faculty_category,JobClassification,Human Resources,"For IPEDS HR survey: 'Tenured', 'On Tenure Track', 'Not on Tenure Track/Multi-Year Contract', 'Not on Tenure Track/Annual Contract', 'Not on Tenure Track/Less Than Annual'. Cross-reference with FTE and function.",string,,False,,internal,False,False,core/resources/job_classification.json
-job_code,JobClassification,Human Resources,Direct map. The institution's job code.,string,,False,,internal,False,False,core/resources/job_classification.json
+job_code,JobClassification,Human Resources,Direct map. The institution's job code.,string,,True,,internal,False,False,core/resources/job_classification.json
 job_family,JobClassification,Human Resources,"Direct map. E.g., 'Faculty - Engineering'.",string,,False,,internal,False,False,core/resources/job_classification.json
 job_family_group,JobClassification,Human Resources,"Higher-level grouping. E.g., 'Academic', 'Administrative', 'Facilities'.",string,,False,,internal,False,False,core/resources/job_classification.json
 job_title,JobClassification,Human Resources,"Direct map. E.g., 'Professor of Computer Science'.",string,,False,,internal,False,False,core/resources/job_classification.json
@@ -853,28 +1218,136 @@ meta.version,JobClassification,Human Resources,,integer,,False,,internal,False,F
 soc_code,JobClassification,Human Resources,"Standard Occupational Classification code. E.g., '25-1021' for CS professors.",string,,False,,internal,False,False,core/resources/job_classification.json
 tenure_date,JobClassification,Human Resources,Date tenure was granted. Null if not tenured. Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/job_classification.json
 tenure_status,JobClassification,Human Resources,"Map: 'Tenured' → 'tenured', 'Tenure Track' → 'tenure_track', 'Non-Tenure Track' → 'ntt', 'Not Applicable' → 'n/a'.",string,,False,,internal,False,False,core/resources/job_classification.json
-completion_date,LearningRecord,Human Resources,Cast to ISO 8601. Null if not completed.,string,date,False,,confidential,False,False,core/resources/learning_record.json
-course_id,LearningRecord,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/learning_record.json
-course_title,LearningRecord,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/learning_record.json
-course_type,LearningRecord,Human Resources,"Map: 'Compliance' → 'compliance', 'Professional Development' → 'professional_dev', 'Safety' → 'safety', 'Onboarding' → 'onboarding', 'Technical' → 'technical', 'Leadership' → 'leadership'.",string,,False,,confidential,False,False,core/resources/learning_record.json
-delivery_method,LearningRecord,Human Resources,"Map: 'Online Self-Paced' → 'online_async', 'Virtual Instructor-Led' → 'online_sync', 'In Person' → 'in_person', 'Blended' → 'blended'.",string,,False,,confidential,False,False,core/resources/learning_record.json
-due_date,LearningRecord,Human Resources,For mandatory training: compliance deadline.,string,date,False,,confidential,False,False,core/resources/learning_record.json
-employee_ref,LearningRecord,Human Resources,Link to HELIX employee_id.,string,,False,,confidential,False,False,core/resources/learning_record.json
-enrollment_date,LearningRecord,Human Resources,Cast to ISO 8601.,string,date,False,,confidential,False,False,core/resources/learning_record.json
-helix_id,LearningRecord,Human Resources,HELIX-assigned unique identifier for this LearningRecord record.,string,,True,,confidential,False,False,core/resources/learning_record.json
-meta,LearningRecord,Human Resources,HELIX metadata block — present on every resource.,object,,False,,confidential,False,False,core/resources/learning_record.json
-meta.classification,LearningRecord,Human Resources,,string,,False,,confidential,False,False,core/resources/learning_record.json
-meta.created_at,LearningRecord,Human Resources,,string,date-time,False,,confidential,False,False,core/resources/learning_record.json
-meta.data_owner,LearningRecord,Human Resources,,string,,False,,confidential,False,False,core/resources/learning_record.json
-meta.source_system,LearningRecord,Human Resources,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,confidential,False,False,core/resources/learning_record.json
-meta.updated_at,LearningRecord,Human Resources,,string,date-time,False,,confidential,False,False,core/resources/learning_record.json
-meta.version,LearningRecord,Human Resources,,integer,,False,,confidential,False,False,core/resources/learning_record.json
-required,LearningRecord,Human Resources,Boolean. Whether this is a mandatory assignment.,boolean,,False,,confidential,False,False,core/resources/learning_record.json
-score,LearningRecord,Human Resources,Direct map. Assessment score if applicable.,number,,False,,confidential,False,False,core/resources/learning_record.json
-status,LearningRecord,Human Resources,"Map: 'Enrolled' → 'enrolled', 'In Progress' → 'in_progress', 'Completed' → 'completed', 'Waived' → 'waived', 'Not Started' → 'not_started'.",string,,False,,confidential,False,False,core/resources/learning_record.json
+academic_period_ref,LearningOutcome,Outcomes,HELIX ID of the AcademicPeriod,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+achievement_level,LearningOutcome,Outcomes,Level of attainment demonstrated. Bound to HELIX terminology: helix/achievement-level,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+assessment_date,LearningOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/learning_outcome.json
+assessment_instrument,LearningOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+assessment_method,LearningOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+assessor_ref,LearningOutcome,Outcomes,HELIX ID of the Employee/faculty who assessed,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+competency_framework,LearningOutcome,Outcomes,"Framework the competency belongs to (e.g., AAC&U VALUE, institutional gen-ed)",string,,False,,confidential,True,False,core/resources/learning_outcome.json
+competency_name,LearningOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+course_ref,LearningOutcome,Outcomes,HELIX ID of the Course (if course-level outcome),string,,False,,confidential,True,False,core/resources/learning_outcome.json
+helix_id,LearningOutcome,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/learning_outcome.json
+institutional_outcome_reference,LearningOutcome,Outcomes,Institutional learning outcome identifier,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+max_score,LearningOutcome,Outcomes,,number,,False,,confidential,True,False,core/resources/learning_outcome.json
+met_expectations_flag,LearningOutcome,Outcomes,,boolean,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta,LearningOutcome,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.classification,LearningOutcome,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.created_at,LearningOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.data_owner,LearningOutcome,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags,LearningOutcome,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.directory_restricted,LearningOutcome,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.disclosure_basis_required,LearningOutcome,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.is_education_record,LearningOutcome,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.legitimate_interest_scope,LearningOutcome,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.restricted_categories,LearningOutcome,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.ferpa_flags.study_disclosure_allowed,LearningOutcome,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.source_system,LearningOutcome,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.updated_at,LearningOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/learning_outcome.json
+meta.version,LearningOutcome,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/learning_outcome.json
+outcome_statement,LearningOutcome,Outcomes,The learning outcome statement being assessed,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+outcome_type,LearningOutcome,Outcomes,Type/level of the learning outcome. Bound to HELIX terminology: helix/outcome-type,string,,True,,confidential,True,False,core/resources/learning_outcome.json
+plo_reference,LearningOutcome,Outcomes,Program Learning Outcome identifier,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+program_ref,LearningOutcome,Outcomes,HELIX ID of the Program,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+score,LearningOutcome,Outcomes,,number,,False,,confidential,True,False,core/resources/learning_outcome.json
+student_ref,LearningOutcome,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/learning_outcome.json
+completion_date,LearningRecord,Human Resources,Cast to ISO 8601. Null if not completed.,string,date,False,,internal,False,False,core/resources/learning_record.json
+course_id,LearningRecord,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/learning_record.json
+course_title,LearningRecord,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/learning_record.json
+course_type,LearningRecord,Human Resources,"Map: 'Compliance' → 'compliance', 'Professional Development' → 'professional_dev', 'Safety' → 'safety', 'Onboarding' → 'onboarding', 'Technical' → 'technical', 'Leadership' → 'leadership'.",string,,False,,internal,False,False,core/resources/learning_record.json
+delivery_method,LearningRecord,Human Resources,"Map: 'Online Self-Paced' → 'online_async', 'Virtual Instructor-Led' → 'online_sync', 'In Person' → 'in_person', 'Blended' → 'blended'.",string,,False,,internal,False,False,core/resources/learning_record.json
+due_date,LearningRecord,Human Resources,For mandatory training: compliance deadline.,string,date,False,,internal,False,False,core/resources/learning_record.json
+employee_ref,LearningRecord,Human Resources,Link to HELIX employee_id.,string,,True,,internal,False,False,core/resources/learning_record.json
+enrollment_date,LearningRecord,Human Resources,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/learning_record.json
+helix_id,LearningRecord,Human Resources,HELIX-assigned unique identifier for this LearningRecord record.,string,,True,,internal,False,False,core/resources/learning_record.json
+meta,LearningRecord,Human Resources,HELIX metadata block — present on every resource.,object,,False,,internal,False,False,core/resources/learning_record.json
+meta.classification,LearningRecord,Human Resources,,string,,False,,internal,False,False,core/resources/learning_record.json
+meta.created_at,LearningRecord,Human Resources,,string,date-time,False,,internal,False,False,core/resources/learning_record.json
+meta.data_owner,LearningRecord,Human Resources,,string,,False,,internal,False,False,core/resources/learning_record.json
+meta.source_system,LearningRecord,Human Resources,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,internal,False,False,core/resources/learning_record.json
+meta.updated_at,LearningRecord,Human Resources,,string,date-time,False,,internal,False,False,core/resources/learning_record.json
+meta.version,LearningRecord,Human Resources,,integer,,False,,internal,False,False,core/resources/learning_record.json
+required,LearningRecord,Human Resources,Boolean. Whether this is a mandatory assignment.,boolean,,False,,internal,False,False,core/resources/learning_record.json
+score,LearningRecord,Human Resources,Direct map. Assessment score if applicable.,number,,False,,internal,False,False,core/resources/learning_record.json
+status,LearningRecord,Human Resources,"Map: 'Enrolled' → 'enrolled', 'In Progress' → 'in_progress', 'Completed' → 'completed', 'Waived' → 'waived', 'Not Started' → 'not_started'.",string,,False,,internal,False,False,core/resources/learning_record.json
+attempt_number,Licensure,Outcomes,,integer,,False,,confidential,True,False,core/resources/licensure.json
+credential_name,Licensure,Outcomes,The credential or license granted upon passing,string,,False,,confidential,True,False,core/resources/licensure.json
+degree_ref,Licensure,Outcomes,HELIX ID of the associated Degree,string,,False,,confidential,True,False,core/resources/licensure.json
+exam_date,Licensure,Outcomes,,string,date,False,,confidential,True,False,core/resources/licensure.json
+exam_name,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
+first_time_pass_flag,Licensure,Outcomes,True if passed on first attempt (key accreditation metric),boolean,,False,,confidential,True,False,core/resources/licensure.json
+helix_id,Licensure,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/licensure.json
+license_expiration_date,Licensure,Outcomes,,string,date,False,,confidential,True,False,core/resources/licensure.json
+license_issue_date,Licensure,Outcomes,,string,date,False,,confidential,True,False,core/resources/licensure.json
+license_number,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
+license_state,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
+licensing_body,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
+licensure_result,Licensure,Outcomes,Exam result. Bound to HELIX terminology: helix/licensure-result,string,,True,,confidential,True,False,core/resources/licensure.json
+licensure_type,Licensure,Outcomes,Category of licensure/certification exam. Bound to HELIX terminology: helix/licensure-type,string,,True,,confidential,True,False,core/resources/licensure.json
+meta,Licensure,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/licensure.json
+meta.classification,Licensure,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/licensure.json
+meta.created_at,Licensure,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/licensure.json
+meta.data_owner,Licensure,Outcomes,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags,Licensure,Outcomes,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.directory_restricted,Licensure,Outcomes,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.disclosure_basis_required,Licensure,Outcomes,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.is_education_record,Licensure,Outcomes,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.legitimate_interest_scope,Licensure,Outcomes,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.restricted_categories,Licensure,Outcomes,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/licensure.json
+meta.ferpa_flags.study_disclosure_allowed,Licensure,Outcomes,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/licensure.json
+meta.source_system,Licensure,Outcomes,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/licensure.json
+meta.updated_at,Licensure,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/licensure.json
+meta.version,Licensure,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/licensure.json
+passing_score,Licensure,Outcomes,,number,,False,,confidential,True,False,core/resources/licensure.json
+person_ref,Licensure,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/licensure.json
+program_pass_rate_cohort,Licensure,Outcomes,Cohort/year for program pass-rate aggregation,string,,False,,confidential,True,False,core/resources/licensure.json
+program_ref,Licensure,Outcomes,HELIX ID of the Program preparing the student for licensure,string,,False,,confidential,True,False,core/resources/licensure.json
+scaled_score,Licensure,Outcomes,,number,,False,,confidential,True,False,core/resources/licensure.json
+score,Licensure,Outcomes,,number,,False,,confidential,True,False,core/resources/licensure.json
+student_ref,Licensure,Outcomes,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/licensure.json
+academic_year,LoanRecord,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,restricted,True,True,core/resources/loan_record.json
+aggregate_loan_limit_check_flag,LoanRecord,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+annual_loan_limit_check_flag,LoanRecord,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+cod_loan_id,LoanRecord,Financial Aid,COD award/loan ID.,string,,False,,restricted,True,True,core/resources/loan_record.json
+dependency_at_origination,LoanRecord,Financial Aid,,string,,False,,restricted,True,True,core/resources/loan_record.json
+entrance_counseling_date,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+entrance_counseling_flag,LoanRecord,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+exit_counseling_date,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+exit_counseling_flag,LoanRecord,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+grade_level,LoanRecord,Financial Aid,Grade level for annual loan limit determination.,string,,False,,restricted,True,True,core/resources/loan_record.json
+gross_loan_amount,LoanRecord,Financial Aid,,number,,False,,restricted,True,True,core/resources/loan_record.json
+helix_id,LoanRecord,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/loan_record.json
+interest_rate,LoanRecord,Financial Aid,Fixed interest rate (percentage).,number,,False,,restricted,True,True,core/resources/loan_record.json
+loan_disbursement_count,LoanRecord,Financial Aid,,integer,,False,,restricted,True,True,core/resources/loan_record.json
+loan_period_end,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+loan_period_start,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+loan_status,LoanRecord,Financial Aid,Bound to helix/loan-status.,string,,True,,restricted,True,True,core/resources/loan_record.json
+loan_type,LoanRecord,Financial Aid,Bound to helix/loan-type.,string,,True,,restricted,True,True,core/resources/loan_record.json
+meta,LoanRecord,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/loan_record.json
+meta.classification,LoanRecord,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/loan_record.json
+meta.created_at,LoanRecord,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/loan_record.json
+meta.data_owner,LoanRecord,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags,LoanRecord,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.directory_restricted,LoanRecord,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.disclosure_basis_required,LoanRecord,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.is_education_record,LoanRecord,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.legitimate_interest_scope,LoanRecord,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.restricted_categories,LoanRecord,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/loan_record.json
+meta.ferpa_flags.study_disclosure_allowed,LoanRecord,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+meta.source_system,LoanRecord,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/loan_record.json
+meta.updated_at,LoanRecord,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/loan_record.json
+meta.version,LoanRecord,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/loan_record.json
+mpn_date,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+mpn_expiration_date,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
+mpn_flag,LoanRecord,Financial Aid,Master Promissory Note signed.,boolean,,False,,restricted,True,True,core/resources/loan_record.json
+net_loan_amount,LoanRecord,Financial Aid,,number,,False,,restricted,True,True,core/resources/loan_record.json
+origination_fee,LoanRecord,Financial Aid,,number,,False,,restricted,True,True,core/resources/loan_record.json
+servicer_name,LoanRecord,Financial Aid,,string,,False,,restricted,True,True,core/resources/loan_record.json
+student_ref,LoanRecord,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/loan_record.json
+subsidized_flag,LoanRecord,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/loan_record.json
 benefit_deductions,PayrollResult,Human Resources,Employee benefit premium contributions.,number,,False,,restricted,False,False,core/resources/payroll_result.json
 cost_center,PayrollResult,Human Resources,Map to HELIX org code. Where the labor cost is charged.,string,,False,,restricted,False,False,core/resources/payroll_result.json
-employee_ref,PayrollResult,Human Resources,Link to HELIX employee_id.,string,,False,,restricted,False,False,core/resources/payroll_result.json
+employee_ref,PayrollResult,Human Resources,Link to HELIX employee_id.,string,,True,,restricted,False,False,core/resources/payroll_result.json
 fund_code,PayrollResult,Human Resources,Map to HELIX fund code. Grant-funded positions → restricted fund.,string,,False,,restricted,False,False,core/resources/payroll_result.json
 grant_ref,PayrollResult,Human Resources,If labor is charged to a grant.,string,,False,,restricted,False,False,core/resources/payroll_result.json
 gross_pay,PayrollResult,Human Resources,Direct map. Sum of all earnings.,number,,False,,restricted,False,False,core/resources/payroll_result.json
@@ -896,7 +1369,7 @@ retirement_deduction,PayrollResult,Human Resources,"403(b), 457(b), state pensio
 supplemental_earnings,PayrollResult,Human Resources,Additional earnings beyond regular pay.,number,,False,,restricted,False,False,core/resources/payroll_result.json
 total_deductions,PayrollResult,Human Resources,Benefits + retirement + garnishments + other pre/post-tax deductions.,number,,False,,restricted,False,False,core/resources/payroll_result.json
 total_taxes,PayrollResult,Human Resources,Federal + state + local + FICA.,number,,False,,restricted,False,False,core/resources/payroll_result.json
-employee_ref,PerformanceReview,Human Resources,Link to HELIX employee_id.,string,,False,,restricted,False,False,core/resources/performance_review.json
+employee_ref,PerformanceReview,Human Resources,Link to HELIX employee_id.,string,,True,,restricted,False,False,core/resources/performance_review.json
 flight_risk,PerformanceReview,Human Resources,"Map: 'High' → 'high', 'Medium' → 'medium', 'Low' → 'low'.",string,,False,,restricted,False,False,core/resources/performance_review.json
 goals_achieved,PerformanceReview,Human Resources,Number of goals met.,integer,,False,,restricted,False,False,core/resources/performance_review.json
 goals_count,PerformanceReview,Human Resources,Number of goals.,integer,,False,,restricted,False,False,core/resources/performance_review.json
@@ -999,7 +1472,7 @@ meta.data_owner,Position,Human Resources,,string,,False,,internal,False,False,co
 meta.source_system,Position,Human Resources,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,internal,False,False,core/resources/position.json
 meta.updated_at,Position,Human Resources,,string,date-time,False,,internal,False,False,core/resources/position.json
 meta.version,Position,Human Resources,,integer,,False,,internal,False,False,core/resources/position.json
-position_id,Position,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/position.json
+position_id,Position,Human Resources,Direct map.,string,,True,,internal,False,False,core/resources/position.json
 position_status,Position,Human Resources,"Map: 'Open' → 'open', 'Filled' → 'filled', 'Frozen' → 'frozen', 'Closed' → 'closed'.",string,,False,,internal,False,False,core/resources/position.json
 position_title,Position,Human Resources,"Position-specific title if overridden, otherwise from job profile.",string,,False,,internal,False,False,core/resources/position.json
 supervisory_org,Position,Human Resources,The org unit this position reports into.,string,,False,,internal,False,False,core/resources/position.json
@@ -1021,7 +1494,7 @@ meta.version,PositionBudget,Human Resources,,integer,,False,,internal,False,Fals
 org_headcount_actual,PositionBudget,Human Resources,Current filled headcount.,integer,,False,,internal,False,False,core/resources/position_budget.json
 org_headcount_budget,PositionBudget,Human Resources,Planned headcount for the org.,integer,,False,,internal,False,False,core/resources/position_budget.json
 org_headcount_open,PositionBudget,Human Resources,Unfilled positions.,integer,,False,,internal,False,False,core/resources/position_budget.json
-position_ref,PositionBudget,Human Resources,Link to HELIX position_id.,string,,False,,internal,False,False,core/resources/position_budget.json
+position_ref,PositionBudget,Human Resources,Link to HELIX position_id.,string,,True,,internal,False,False,core/resources/position_budget.json
 primary_cost_center,PositionBudget,Human Resources,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/position_budget.json
 primary_fund,PositionBudget,Human Resources,Map to HELIX fund code.,string,,False,,internal,False,False,core/resources/position_budget.json
 variance,PositionBudget,Human Resources,"Positive = underspent, negative = overspent.",number,,False,,internal,False,False,core/resources/position_budget.json
@@ -1030,9 +1503,9 @@ accreditation_body,Program,Academic Structure,External accreditor if program-lev
 admission_selectivity,Program,Academic Structure,Program-level admission selectivity,string,,False,,internal,False,False,core/resources/program.json
 cip_code,Program,Academic Structure,"NCES Classification of Instructional Programs code (e.g., '11.0701')",string,,False,,internal,False,False,core/resources/program.json
 code,Program,Academic Structure,Institution's program code,string,,False,,internal,False,False,core/resources/program.json
-degree_level,Program,Academic Structure,,string,,True,,internal,False,False,core/resources/program.json
+degree_level,Program,Academic Structure,Bound to HELIX terminology: helix/degree-level.,string,,True,,internal,False,False,core/resources/program.json
 degree_type,Program,Academic Structure,"Degree designation (e.g., 'BS', 'BA', 'MS', 'PhD', 'AAS')",string,,False,,internal,False,False,core/resources/program.json
-delivery_mode,Program,Academic Structure,Primary delivery mode for the program,string,,False,,internal,False,False,core/resources/program.json
+delivery_mode,Program,Academic Structure,Primary delivery mode for the program Bound to HELIX terminology: helix/delivery-mode.,string,,False,,internal,False,False,core/resources/program.json
 gainful_employment_flag,Program,Academic Structure,Whether the program is subject to Gainful Employment reporting (US),boolean,,False,,internal,False,False,core/resources/program.json
 helix_id,Program,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/program.json
 institution_id,Program,Academic Structure,,string,,True,,internal,False,False,core/resources/program.json
@@ -1068,35 +1541,106 @@ meta.source_system,PurchaseOrder,Financial Operations,"Originating system (e.g.,
 meta.updated_at,PurchaseOrder,Financial Operations,,string,date-time,False,,internal,False,False,core/resources/purchase_order.json
 meta.version,PurchaseOrder,Financial Operations,,integer,,False,,internal,False,False,core/resources/purchase_order.json
 po_date,PurchaseOrder,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/purchase_order.json
-po_id,PurchaseOrder,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/purchase_order.json
+po_id,PurchaseOrder,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/purchase_order.json
 po_status,PurchaseOrder,Financial Operations,"Map: 'Draft' → 'draft', 'In Progress' → 'open', 'Fully Received' → 'received', 'Closed' → 'closed', 'Canceled' → 'canceled'.",string,,False,,internal,False,False,core/resources/purchase_order.json
 requisition_ref,PurchaseOrder,Financial Operations,Link back to originating requisition.,string,,False,,internal,False,False,core/resources/purchase_order.json
 spend_category,PurchaseOrder,Financial Operations,Workday's commodity classification. Map to HELIX procurement category if defined.,string,,False,,internal,False,False,core/resources/purchase_order.json
 total_amount,PurchaseOrder,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/purchase_order.json
 vendor_id,PurchaseOrder,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/purchase_order.json
 vendor_name,PurchaseOrder,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/purchase_order.json
-applicant_count,Requisition,Human Resources,Total applicants.,integer,,False,,internal,False,False,core/resources/requisition.json
-application_disposition,Requisition,Human Resources,"Map: 'Hired' → 'hired', 'Declined' → 'declined', 'Withdrew' → 'withdrew', 'Not Selected' → 'rejected'.",string,,False,,internal,False,False,core/resources/requisition.json
-application_stage,Requisition,Human Resources,Map to institution's recruiting pipeline stages.,string,,False,,internal,False,False,core/resources/requisition.json
-candidate_name,Requisition,Human Resources,Direct map. Sensitive — pre-hire data.,string,,False,,internal,False,False,core/resources/requisition.json
-candidate_source,Requisition,Human Resources,"Map: 'Job Board' → 'job_board', 'Employee Referral' → 'referral', 'Internal' → 'internal', 'Agency' → 'agency', 'Career Site' → 'career_site'.",string,,False,,internal,False,False,core/resources/requisition.json
-department,Requisition,Human Resources,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/requisition.json
-eeo_category,Requisition,Human Resources,For affirmative action reporting.,string,,False,,internal,False,False,core/resources/requisition.json
-helix_id,Requisition,Human Resources,HELIX-assigned unique identifier for this Requisition record.,string,,True,,internal,False,False,core/resources/requisition.json
-hiring_manager,Requisition,Human Resources,Resolve to name.,string,,False,,internal,False,False,core/resources/requisition.json
-job_profile,Requisition,Human Resources,Direct map. The classification being recruited.,string,,False,,internal,False,False,core/resources/requisition.json
-meta,Requisition,Human Resources,HELIX metadata block — present on every resource.,object,,False,,internal,False,False,core/resources/requisition.json
-meta.classification,Requisition,Human Resources,,string,,False,,internal,False,False,core/resources/requisition.json
-meta.created_at,Requisition,Human Resources,,string,date-time,False,,internal,False,False,core/resources/requisition.json
-meta.data_owner,Requisition,Human Resources,,string,,False,,internal,False,False,core/resources/requisition.json
-meta.source_system,Requisition,Human Resources,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,internal,False,False,core/resources/requisition.json
-meta.updated_at,Requisition,Human Resources,,string,date-time,False,,internal,False,False,core/resources/requisition.json
-meta.version,Requisition,Human Resources,,integer,,False,,internal,False,False,core/resources/requisition.json
-recruiter,Requisition,Human Resources,Resolve to name.,string,,False,,internal,False,False,core/resources/requisition.json
-requisition_id,Requisition,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/requisition.json
-requisition_status,Requisition,Human Resources,"Map: 'Draft' → 'draft', 'Open' → 'open', 'Filled' → 'filled', 'Closed Not Filled' → 'closed_unfilled', 'On Hold' → 'on_hold', 'Canceled' → 'canceled'.",string,,False,,internal,False,False,core/resources/requisition.json
-requisition_title,Requisition,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/requisition.json
-target_start_date,Requisition,Human Resources,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/requisition.json
+applicant_count,Requisition,Human Resources,Total applicants.,integer,,False,,confidential,False,False,core/resources/requisition.json
+application_disposition,Requisition,Human Resources,"Map: 'Hired' → 'hired', 'Declined' → 'declined', 'Withdrew' → 'withdrew', 'Not Selected' → 'rejected'.",string,,False,,confidential,False,False,core/resources/requisition.json
+application_stage,Requisition,Human Resources,Map to institution's recruiting pipeline stages.,string,,False,,confidential,False,False,core/resources/requisition.json
+candidate_name,Requisition,Human Resources,Direct map. Sensitive — pre-hire data.,string,,False,,confidential,False,False,core/resources/requisition.json
+candidate_source,Requisition,Human Resources,"Map: 'Job Board' → 'job_board', 'Employee Referral' → 'referral', 'Internal' → 'internal', 'Agency' → 'agency', 'Career Site' → 'career_site'.",string,,False,,confidential,False,False,core/resources/requisition.json
+department,Requisition,Human Resources,Map to HELIX org code.,string,,False,,confidential,False,False,core/resources/requisition.json
+eeo_category,Requisition,Human Resources,For affirmative action reporting.,string,,False,,confidential,False,False,core/resources/requisition.json
+helix_id,Requisition,Human Resources,HELIX-assigned unique identifier for this Requisition record.,string,,True,,confidential,False,False,core/resources/requisition.json
+hiring_manager,Requisition,Human Resources,Resolve to name.,string,,False,,confidential,False,False,core/resources/requisition.json
+job_profile,Requisition,Human Resources,Direct map. The classification being recruited.,string,,False,,confidential,False,False,core/resources/requisition.json
+meta,Requisition,Human Resources,HELIX metadata block — present on every resource.,object,,False,,confidential,False,False,core/resources/requisition.json
+meta.classification,Requisition,Human Resources,,string,,False,,confidential,False,False,core/resources/requisition.json
+meta.created_at,Requisition,Human Resources,,string,date-time,False,,confidential,False,False,core/resources/requisition.json
+meta.data_owner,Requisition,Human Resources,,string,,False,,confidential,False,False,core/resources/requisition.json
+meta.source_system,Requisition,Human Resources,"Originating system (e.g., 'peoplesoft', 'workday', 'banner').",string,,False,,confidential,False,False,core/resources/requisition.json
+meta.updated_at,Requisition,Human Resources,,string,date-time,False,,confidential,False,False,core/resources/requisition.json
+meta.version,Requisition,Human Resources,,integer,,False,,confidential,False,False,core/resources/requisition.json
+recruiter,Requisition,Human Resources,Resolve to name.,string,,False,,confidential,False,False,core/resources/requisition.json
+requisition_id,Requisition,Human Resources,Direct map.,string,,True,,confidential,False,False,core/resources/requisition.json
+requisition_status,Requisition,Human Resources,"Map: 'Draft' → 'draft', 'Open' → 'open', 'Filled' → 'filled', 'Closed Not Filled' → 'closed_unfilled', 'On Hold' → 'on_hold', 'Canceled' → 'canceled'.",string,,False,,confidential,False,False,core/resources/requisition.json
+requisition_title,Requisition,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/requisition.json
+target_start_date,Requisition,Human Resources,Cast to ISO 8601.,string,date,False,,confidential,False,False,core/resources/requisition.json
+academic_period_ref,ReturnOfTitleIv,Financial Aid,HELIX ID of the AcademicPeriod,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
+academic_year,ReturnOfTitleIv,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+amount_returned_by_school,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+amount_returned_by_student,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+determination_date,ReturnOfTitleIv,Financial Aid,Date the institution determined the student withdrew.,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
+helix_id,ReturnOfTitleIv,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/return_of_title_iv.json
+institutional_charges,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta,ReturnOfTitleIv,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.classification,ReturnOfTitleIv,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.created_at,ReturnOfTitleIv,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.data_owner,ReturnOfTitleIv,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags,ReturnOfTitleIv,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.directory_restricted,ReturnOfTitleIv,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.disclosure_basis_required,ReturnOfTitleIv,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.is_education_record,ReturnOfTitleIv,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.legitimate_interest_scope,ReturnOfTitleIv,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.restricted_categories,ReturnOfTitleIv,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.ferpa_flags.study_disclosure_allowed,ReturnOfTitleIv,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.source_system,ReturnOfTitleIv,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.updated_at,ReturnOfTitleIv,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/return_of_title_iv.json
+meta.version,ReturnOfTitleIv,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+percent_enrolled,ReturnOfTitleIv,Financial Aid,Days completed / total days in period (percentage).,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+percent_title_iv_earned,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+post_withdrawal_disbursement_flag,ReturnOfTitleIv,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+pwd_accepted_flag,ReturnOfTitleIv,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+pwd_amount,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+pwd_offered_date,ReturnOfTitleIv,Financial Aid,,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
+r2t4_status,ReturnOfTitleIv,Financial Aid,Bound to helix/r2t4-status.,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
+return_calculation_date,ReturnOfTitleIv,Financial Aid,,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
+return_deadline_date,ReturnOfTitleIv,Financial Aid,Return deadline (typically 45 days from determination).,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
+student_ref,ReturnOfTitleIv,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
+title_iv_could_have_disbursed,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+title_iv_disbursed_amount,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+title_iv_earned_amount,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+title_iv_unearned_amount,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+withdrawal_date,ReturnOfTitleIv,Financial Aid,,string,date,True,,restricted,True,True,core/resources/return_of_title_iv.json
+withdrawal_type,ReturnOfTitleIv,Financial Aid,,string,,False,,restricted,True,True,core/resources/return_of_title_iv.json
+academic_period_ref,SapEvaluation,Financial Aid,HELIX ID of the AcademicPeriod evaluated,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+academic_plan_flag,SapEvaluation,Financial Aid,True if the student is on an academic plan.,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+academic_plan_terms,SapEvaluation,Financial Aid,Number of terms covered by the academic plan.,integer,,False,,confidential,True,False,core/resources/sap_evaluation.json
+academic_year,SapEvaluation,Financial Aid,Aid year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+appeal_date,SapEvaluation,Financial Aid,,string,date,False,,confidential,True,False,core/resources/sap_evaluation.json
+appeal_filed_flag,SapEvaluation,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+appeal_reason,SapEvaluation,Financial Aid,,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+appeal_status,SapEvaluation,Financial Aid,Appeal status,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+credits_attempted_cumulative,SapEvaluation,Financial Aid,,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
+credits_completed_cumulative,SapEvaluation,Financial Aid,,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
+evaluation_date,SapEvaluation,Financial Aid,,string,date,True,,confidential,True,False,core/resources/sap_evaluation.json
+financial_aid_suspension_flag,SapEvaluation,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+financial_aid_warning_flag,SapEvaluation,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+helix_id,SapEvaluation,Financial Aid,HELIX unique identifier,string,uuid,True,,confidential,True,False,core/resources/sap_evaluation.json
+max_timeframe_pct,SapEvaluation,Financial Aid,Percentage of the 150% maximum timeframe consumed.,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta,SapEvaluation,Financial Aid,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.classification,SapEvaluation,Financial Aid,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.created_at,SapEvaluation,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.data_owner,SapEvaluation,Financial Aid,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags,SapEvaluation,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.directory_restricted,SapEvaluation,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.disclosure_basis_required,SapEvaluation,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.is_education_record,SapEvaluation,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.legitimate_interest_scope,SapEvaluation,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.restricted_categories,SapEvaluation,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.ferpa_flags.study_disclosure_allowed,SapEvaluation,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.source_system,SapEvaluation,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.updated_at,SapEvaluation,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/sap_evaluation.json
+meta.version,SapEvaluation,Financial Aid,Resource version number,integer,,False,,confidential,True,False,core/resources/sap_evaluation.json
+probation_flag,SapEvaluation,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
+qualitative_measure_gpa,SapEvaluation,Financial Aid,Cumulative GPA measure.,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
+quantitative_measure_pace,SapEvaluation,Financial Aid,Pace = cumulative completed / attempted credits (percentage).,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
+sap_status,SapEvaluation,Financial Aid,Bound to helix/sap-status.,string,,True,,confidential,True,False,core/resources/sap_evaluation.json
+student_ref,SapEvaluation,Financial Aid,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/sap_evaluation.json
 academic_level,Student,Identity,Current academic career/level,string,,False,,confidential,True,False,core/resources/student.json
 admit_period_ref,Student,Identity,HELIX ID of the AcademicPeriod when the student was first admitted,string,,False,,confidential,True,False,core/resources/student.json
 birth_date,Student,Identity,,string,date,False,,confidential,True,False,core/resources/student.json
@@ -1147,10 +1691,45 @@ person_ref,Student,Identity,HELIX ID of the underlying Person resource. A Studen
 primary_program_ref,Student,Identity,HELIX ID of the student's primary StudentProgram,string,,False,,confidential,True,False,core/resources/student.json
 residency,Student,Identity,,string,,False,,confidential,True,False,core/resources/student.json
 status,Student,Identity,Current lifecycle status. Bound to HELIX terminology: helix/student-status,string,,True,,confidential,True,False,core/resources/student.json
-student_type,Student,Identity,Classification of the student's entry pathway,string,,False,,confidential,True,False,core/resources/student.json
+student_type,Student,Identity,Classification of the student's entry pathway Bound to HELIX terminology: helix/student-type.,string,,False,,confidential,True,False,core/resources/student.json
 total_credits_attempted,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
 total_credits_earned,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
-veteran_status,Student,Identity,Military/veteran classification for benefits and reporting,string,,False,,confidential,True,False,core/resources/student.json
+veteran_status,Student,Identity,Military/veteran classification for benefits and reporting Bound to HELIX terminology: helix/veteran-status.,string,,False,,confidential,True,False,core/resources/student.json
+academic_year,StudentEmployment,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,confidential,True,False,core/resources/student_employment.json
+community_service_flag,StudentEmployment,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/student_employment.json
+community_service_percent,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+earnings_ytd,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+employer_department,StudentEmployment,Financial Aid,,string,,False,,confidential,True,False,core/resources/student_employment.json
+employment_type,StudentEmployment,Financial Aid,Bound to helix/employment-type-aid.,string,,True,,confidential,True,False,core/resources/student_employment.json
+federal_share_percent,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+fws_award_amount,StudentEmployment,Financial Aid,Federal Work-Study award amount.,number,,False,,confidential,True,False,core/resources/student_employment.json
+fws_earnings_to_date,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+fws_remaining,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+helix_id,StudentEmployment,Financial Aid,HELIX unique identifier,string,uuid,True,,confidential,True,False,core/resources/student_employment.json
+hourly_rate,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+hours_per_week_max,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+institutional_share_percent,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
+job_placement_status,StudentEmployment,Financial Aid,,string,,False,,confidential,True,False,core/resources/student_employment.json
+job_title,StudentEmployment,Financial Aid,,string,,False,,confidential,True,False,core/resources/student_employment.json
+meta,StudentEmployment,Financial Aid,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/student_employment.json
+meta.classification,StudentEmployment,Financial Aid,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/student_employment.json
+meta.created_at,StudentEmployment,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/student_employment.json
+meta.data_owner,StudentEmployment,Financial Aid,Role or person responsible for data quality,string,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags,StudentEmployment,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.directory_restricted,StudentEmployment,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.disclosure_basis_required,StudentEmployment,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.is_education_record,StudentEmployment,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.legitimate_interest_scope,StudentEmployment,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.restricted_categories,StudentEmployment,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,confidential,True,False,core/resources/student_employment.json
+meta.ferpa_flags.study_disclosure_allowed,StudentEmployment,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,confidential,True,False,core/resources/student_employment.json
+meta.source_system,StudentEmployment,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,confidential,True,False,core/resources/student_employment.json
+meta.updated_at,StudentEmployment,Financial Aid,,string,date-time,False,,confidential,True,False,core/resources/student_employment.json
+meta.version,StudentEmployment,Financial Aid,Resource version number,integer,,False,,confidential,True,False,core/resources/student_employment.json
+off_campus_flag,StudentEmployment,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/student_employment.json
+position_end_date,StudentEmployment,Financial Aid,,string,date,False,,confidential,True,False,core/resources/student_employment.json
+position_start_date,StudentEmployment,Financial Aid,,string,date,False,,confidential,True,False,core/resources/student_employment.json
+student_ref,StudentEmployment,Financial Aid,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/student_employment.json
+supervisor_ref,StudentEmployment,Financial Aid,HELIX ID of the supervising Employee,string,,False,,confidential,True,False,core/resources/student_employment.json
 end_date,StudentGroup,Enrollment & Registration,Null if active membership.,string,date,False,,confidential,True,False,core/resources/student_group.json
 group_category,StudentGroup,Enrollment & Registration,Classification of the group type.,string,,False,,confidential,True,False,core/resources/student_group.json
 group_code,StudentGroup,Enrollment & Registration,"Institutional group identifier (e.g., 'ATHL', 'HONORS', 'FIRSTGEN', 'VET', 'TRIO').",string,,True,,confidential,True,False,core/resources/student_group.json
@@ -1208,7 +1787,7 @@ approval_status,TimeEntry,Human Resources,"Map: 'Draft' → 'draft', 'Submitted'
 approver,TimeEntry,Human Resources,Resolve to name. Typically the supervisory org manager.,string,,False,,confidential,False,False,core/resources/time_entry.json
 cost_center,TimeEntry,Human Resources,Map to HELIX org code. Where the labor cost is charged.,string,,False,,confidential,False,False,core/resources/time_entry.json
 date,TimeEntry,Human Resources,Cast to ISO 8601.,string,date,False,,confidential,False,False,core/resources/time_entry.json
-employee_ref,TimeEntry,Human Resources,Link to HELIX employee_id.,string,,False,,confidential,False,False,core/resources/time_entry.json
+employee_ref,TimeEntry,Human Resources,Link to HELIX employee_id.,string,,True,,confidential,False,False,core/resources/time_entry.json
 fund_code,TimeEntry,Human Resources,Map to HELIX fund code.,string,,False,,confidential,False,False,core/resources/time_entry.json
 grant_ref,TimeEntry,Human Resources,If time is charged to a grant (common for student research assistants).,string,,False,,confidential,False,False,core/resources/time_entry.json
 helix_id,TimeEntry,Human Resources,HELIX-assigned unique identifier for this TimeEntry record.,string,,True,,confidential,False,False,core/resources/time_entry.json
@@ -1257,3 +1836,36 @@ source_institution_name,TransferCredit,Enrollment & Registration,Name of the ins
 source_term,TransferCredit,Enrollment & Registration,Term/period at the source institution when the course was taken,string,,False,,confidential,True,False,core/resources/transfer_credit.json
 student_ref,TransferCredit,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/transfer_credit.json
 transfer_status,TransferCredit,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/transfer_credit.json
+academic_year,Verification,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,restricted,True,True,core/resources/verification.json
+aid_application_ref,Verification,Financial Aid,HELIX ID of the AidApplication,string,,False,,restricted,True,True,core/resources/verification.json
+completion_date,Verification,Financial Aid,,string,date,False,,restricted,True,True,core/resources/verification.json
+conflicting_info_resolution,Verification,Financial Aid,,string,,False,,restricted,True,True,core/resources/verification.json
+conflicting_information_flag,Verification,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/verification.json
+correction_transaction_number,Verification,Financial Aid,,string,,False,,restricted,True,True,core/resources/verification.json
+documents_outstanding,Verification,Financial Aid,,array,,False,,restricted,True,True,core/resources/verification.json
+documents_received,Verification,Financial Aid,,array,,False,,restricted,True,True,core/resources/verification.json
+documents_required,Verification,Financial Aid,,array,,False,,restricted,True,True,core/resources/verification.json
+helix_id,Verification,Financial Aid,HELIX unique identifier,string,uuid,True,,restricted,True,True,core/resources/verification.json
+isir_correction_required_flag,Verification,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/verification.json
+meta,Verification,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/verification.json
+meta.classification,Verification,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/verification.json
+meta.created_at,Verification,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/verification.json
+meta.data_owner,Verification,Financial Aid,Role or person responsible for data quality,string,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags,Verification,Financial Aid,"FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",object,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.directory_restricted,Verification,Financial Aid,"True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception.",boolean,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.disclosure_basis_required,Verification,Financial Aid,"If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned.",boolean,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.is_education_record,Verification,Financial Aid,True if this record is a FERPA education record (34 CFR 99.3).,boolean,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.legitimate_interest_scope,Verification,Financial Aid,Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check).,array,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.restricted_categories,Verification,Financial Aid,Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false.,array,,False,,restricted,True,True,core/resources/verification.json
+meta.ferpa_flags.study_disclosure_allowed,Verification,Financial Aid,Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement).,boolean,,False,,restricted,True,True,core/resources/verification.json
+meta.source_system,Verification,Financial Aid,"Originating system (e.g., 'banner', 'peoplesoft', 'workday')",string,,False,,restricted,True,True,core/resources/verification.json
+meta.updated_at,Verification,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/verification.json
+meta.version,Verification,Financial Aid,Resource version number,integer,,False,,restricted,True,True,core/resources/verification.json
+sai_after_verification,Verification,Financial Aid,,integer,,False,,restricted,True,True,core/resources/verification.json
+sai_before_verification,Verification,Financial Aid,,integer,,False,,restricted,True,True,core/resources/verification.json
+sai_change_amount,Verification,Financial Aid,,integer,,False,,restricted,True,True,core/resources/verification.json
+selected_date,Verification,Financial Aid,,string,date,False,,restricted,True,True,core/resources/verification.json
+student_ref,Verification,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/verification.json
+verification_outcome,Verification,Financial Aid,"Outcome of verification (no_change, corrected, referred_oig, incomplete).",string,,False,,restricted,True,True,core/resources/verification.json
+verification_status,Verification,Financial Aid,Bound to helix/verification-status.,string,,True,,restricted,True,True,core/resources/verification.json
+verification_tracking_group,Verification,Financial Aid,ED verification tracking group,string,,False,,restricted,True,True,core/resources/verification.json

@@ -5,7 +5,8 @@
   "description": "A financial organization unit \u2014 the cost center / department in the financial dimension (Workday Cost Center, PeopleSoft DeptID). Distinct from AcademicOrg, though the two often align. Used for financial reporting and budget ownership.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "org_code"
   ],
   "properties": {
     "helix_id": {

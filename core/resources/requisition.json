@@ -5,7 +5,8 @@
   "description": "A job requisition \u2014 a position opening in recruiting, with applicant pipeline, disposition, and EEO data. Candidate PII is confidential; EEO data kept separate from hiring decisions.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "requisition_id"
   ],
   "properties": {
     "helix_id": {

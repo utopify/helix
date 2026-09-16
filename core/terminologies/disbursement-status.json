@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/disbursement-status.json",
+  "title": "HELIX Terminology: Disbursement Status",
+  "description": "Status of an aid disbursement to a student account. Used by the Disbursement resource.",
+  "code_system": "helix/disbursement-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "scheduled",
+      "display": "Scheduled",
+      "definition": "Disbursement scheduled for a future date"
+    },
+    {
+      "code": "pending",
+      "display": "Pending",
+      "definition": "Pending prerequisites (enrollment, MPN, etc.)"
+    },
+    {
+      "code": "held",
+      "display": "Held",
+      "definition": "Held due to an outstanding requirement or hold"
+    },
+    {
+      "code": "disbursed",
+      "display": "Disbursed",
+      "definition": "Fully disbursed to the student account"
+    },
+    {
+      "code": "partially_disbursed",
+      "display": "Partially Disbursed",
+      "definition": "Partially disbursed"
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Disbursement cancelled"
+    },
+    {
+      "code": "returned",
+      "display": "Returned",
+      "definition": "Disbursed funds returned"
+    },
+    {
+      "code": "refunded",
+      "display": "Refunded",
+      "definition": "Credit balance refunded to the student"
+    }
+  ]
+}

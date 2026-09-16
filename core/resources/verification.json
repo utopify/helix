@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/resources/verification.json",
+  "title": "HELIX Verification Resource",
+  "description": "Tracks the FAFSA verification lifecycle for a student/aid year per 34 CFR 668.51-.61: tracking group, required/received documents, conflicting-information resolution, and the SAI change resulting from verification. GLBA-covered; classified restricted.",
+  "type": "object",
+  "required": [
+    "helix_id",
+    "student_ref",
+    "academic_year",
+    "verification_status"
+  ],
+  "properties": {
+    "helix_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "HELIX unique identifier"
+    },
+    "student_ref": {
+      "type": "string",
+      "description": "HELIX ID of the Student"
+    },
+    "aid_application_ref": {
+      "type": "string",
+      "description": "HELIX ID of the AidApplication"
+    },
+    "academic_year": {
+      "type": "string",
+      "description": "Aid year in YYYY-YYYY format"
+    },
+    "verification_tracking_group": {
+      "type": "string",
+      "enum": [
+        "V1",
+        "V4",
+        "V5"
+      ],
+      "description": "ED verification tracking group"
+    },
+    "verification_status": {
+      "type": "string",
+      "description": "Bound to helix/verification-status."
+    },
+    "selected_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "documents_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "documents_received": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "documents_outstanding": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "conflicting_information_flag": {
+      "type": "boolean"
+    },
+    "conflicting_info_resolution": {
+      "type": "string"
+    },
+    "sai_before_verification": {
+      "type": "integer"
+    },
+    "sai_after_verification": {
+      "type": "integer"
+    },
+    "sai_change_amount": {
+      "type": "integer"
+    },
+    "isir_correction_required_flag": {
+      "type": "boolean"
+    },
+    "correction_transaction_number": {
+      "type": "string"
+    },
+    "verification_outcome": {
+      "type": "string",
+      "description": "Outcome of verification (no_change, corrected, referred_oig, incomplete)."
+    },
+    "meta": {
+      "type": "object",
+      "description": "HELIX metadata block \u2014 present on every resource",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "description": "Resource version number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_system": {
+          "type": "string",
+          "description": "Originating system (e.g., 'banner', 'peoplesoft', 'workday')"
+        },
+        "data_owner": {
+          "type": "string",
+          "description": "Role or person responsible for data quality"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "public",
+            "internal",
+            "confidential",
+            "restricted"
+          ],
+          "description": "Data classification tier per HELIX Govern",
+          "default": "restricted"
+        },
+        "ferpa_flags": {
+          "type": "object",
+          "description": "FERPA enforcement flags, applied at Bronze->Silver identity resolution and checked by every consumer before disclosure. See govern/ferpa-disclosure-framework.json.",
+          "properties": {
+            "is_education_record": {
+              "type": "boolean",
+              "default": true,
+              "description": "True if this record is a FERPA education record (34 CFR 99.3)."
+            },
+            "disclosure_basis_required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, a consumer must assert a valid 34 CFR 99.31 disclosure basis (or hold 99.30 consent) before data is returned."
+            },
+            "directory_restricted": {
+              "type": "boolean",
+              "default": false,
+              "description": "True when the student has an active directory-information opt-out (from FERPARestriction.restrict_directory). When true, NO directory information may be disclosed under the 99.31(a)(11) directory exception."
+            },
+            "restricted_categories": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "address",
+                  "phone",
+                  "email",
+                  "enrollment_status",
+                  "dates_of_attendance",
+                  "degrees_awarded",
+                  "honors",
+                  "major_field",
+                  "photo",
+                  "participation_activities"
+                ]
+              },
+              "description": "Specific directory-information categories the student restricted (99.37). A field in this list must be withheld even if directory_restricted is false."
+            },
+            "legitimate_interest_scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Roles/purposes pre-authorized as school officials with legitimate educational interest for this record (drives the 99.31(a)(1) check)."
+            },
+            "study_disclosure_allowed": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether this record may be released under a 99.31(a)(6) studies agreement (typically de-identified or under a written agreement)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

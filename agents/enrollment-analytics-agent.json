@@ -1,7 +1,7 @@
 {
   "$schema": "https://helixedu.org/agents/agent-template-schema.json",
   "template_version": "1.0",
-  "helix_version": "0.1.5",
+  "helix_version": "0.4.0",
   "metadata": {
     "id": "helix-agent-enrollment-analytics",
     "name": "HELIX Enrollment Analytics & Melt Prevention Agent",

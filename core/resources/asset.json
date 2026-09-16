@@ -5,7 +5,8 @@
   "description": "A capital asset \u2014 land, buildings, equipment, software. Carries acquisition cost, depreciation, location, custodian, and grant funding source.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "asset_id"
   ],
   "properties": {
     "helix_id": {

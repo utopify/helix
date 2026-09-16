@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/r2t4-status.json",
+  "title": "HELIX Terminology: Return of Title IV (R2T4) Status",
+  "description": "Status of a Return of Title IV calculation for a withdrawn student per 34 CFR 668.22. Used by the ReturnOfTitleIV resource.",
+  "code_system": "helix/r2t4-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "withdrawal_reported",
+      "display": "Withdrawal Reported",
+      "definition": "A withdrawal has been reported"
+    },
+    {
+      "code": "calculation_pending",
+      "display": "Calculation Pending",
+      "definition": "R2T4 calculation not yet completed"
+    },
+    {
+      "code": "calculation_complete",
+      "display": "Calculation Complete",
+      "definition": "R2T4 calculation completed"
+    },
+    {
+      "code": "funds_returned",
+      "display": "Funds Returned",
+      "definition": "Required funds returned by school and/or student"
+    },
+    {
+      "code": "post_withdrawal_offered",
+      "display": "Post-Withdrawal Disbursement Offered",
+      "definition": "A post-withdrawal disbursement was offered"
+    },
+    {
+      "code": "pwd_disbursed",
+      "display": "Post-Withdrawal Disbursement Made",
+      "definition": "A post-withdrawal disbursement was made"
+    },
+    {
+      "code": "closed",
+      "display": "Closed",
+      "definition": "R2T4 process closed"
+    }
+  ]
+}

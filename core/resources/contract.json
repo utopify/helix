@@ -5,7 +5,8 @@
   "description": "A supplier contract \u2014 blanket POs, rate contracts, service agreements. Carries term, value, spend-to-date, and owner.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "contract_id"
   ],
   "properties": {
     "helix_id": {

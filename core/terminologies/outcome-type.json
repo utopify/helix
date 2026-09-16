@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/outcome-type.json",
+  "title": "HELIX Terminology: Learning Outcome Type",
+  "description": "Types/levels of learning outcomes assessed for institutional effectiveness and accreditation. Used by LearningOutcome.",
+  "code_system": "helix/outcome-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "program_learning_outcome",
+      "display": "Program Learning Outcome (PLO)",
+      "definition": "A learning outcome defined at the program/major level"
+    },
+    {
+      "code": "course_learning_outcome",
+      "display": "Course Learning Outcome (CLO)",
+      "definition": "A learning outcome defined at the course level"
+    },
+    {
+      "code": "institutional_learning_outcome",
+      "display": "Institutional Learning Outcome (ILO)",
+      "definition": "An institution-wide learning outcome"
+    },
+    {
+      "code": "general_education_competency",
+      "display": "General Education Competency",
+      "definition": "A general-education/core-curriculum competency"
+    },
+    {
+      "code": "professional_competency",
+      "display": "Professional Competency",
+      "definition": "A profession-specific competency, often accreditation-defined"
+    },
+    {
+      "code": "accreditation_standard",
+      "display": "Accreditation Standard",
+      "definition": "An outcome mapped directly to an accreditation standard"
+    }
+  ]
+}

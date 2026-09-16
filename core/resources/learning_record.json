@@ -5,7 +5,8 @@
   "description": "A learning record \u2014 an employee's enrollment/completion of a training course (compliance, safety, professional development). Completion tracking is audit-sensitive for compliance training.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "employee_ref"
   ],
   "properties": {
     "helix_id": {

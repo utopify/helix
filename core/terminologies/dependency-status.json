@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/dependency-status.json",
+  "title": "HELIX Terminology: Dependency Status",
+  "description": "FAFSA dependency status determining whose financial information is required. Used by AidApplication.",
+  "code_system": "helix/dependency-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "dependent",
+      "display": "Dependent",
+      "definition": "Student must report parent information"
+    },
+    {
+      "code": "independent",
+      "display": "Independent",
+      "definition": "Student meets an independence criterion; parent info not required"
+    },
+    {
+      "code": "dependency_override_approved",
+      "display": "Dependency Override Approved",
+      "definition": "FAA approved an override to independent"
+    },
+    {
+      "code": "provisional_independent",
+      "display": "Provisional Independent",
+      "definition": "Provisionally independent pending documentation (e.g., homeless/unaccompanied youth)"
+    }
+  ]
+}

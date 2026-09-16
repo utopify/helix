@@ -39,7 +39,8 @@
         "organization",
         "prospect",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/constituent-type."
     },
     "status": {
       "type": "string",
@@ -142,7 +143,7 @@
         "planned_giving",
         "non_donor"
       ],
-      "description": "Current donor lifecycle segment for targeting"
+      "description": "Current donor lifecycle segment for targeting Bound to HELIX terminology: helix/donor-segment."
     },
     "engagement_score": {
       "type": "number",
@@ -169,7 +170,7 @@
         "stewardship",
         "none"
       ],
-      "description": "Moves management pipeline stage"
+      "description": "Moves management pipeline stage Bound to HELIX terminology: helix/prospect-stage."
     },
     "employer": {
       "type": "string"
@@ -232,7 +233,8 @@
             "internal",
             "confidential",
             "restricted"
-          ]
+          ],
+          "default": "confidential"
         }
       }
     }

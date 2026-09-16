@@ -5,7 +5,8 @@
   "description": "A sponsored program / grant award \u2014 the full lifecycle record for research and other externally funded awards. Carries sponsor, PI, CFDA, budget (direct/indirect), F&A rate, and cost sharing. Subject to 2 CFR 200 (Uniform Guidance) for federal awards.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "grant_id"
   ],
   "properties": {
     "helix_id": {

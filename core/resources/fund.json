@@ -5,7 +5,8 @@
   "description": "A fund \u2014 the fund-accounting dimension (GASB for public institutions, FASB ASU 2016-14 restriction classes for private). Normalizes GASB and FASB conventions into one taxonomy.",
   "type": "object",
   "required": [
-    "helix_id"
+    "helix_id",
+    "fund_code"
   ],
   "properties": {
     "helix_id": {

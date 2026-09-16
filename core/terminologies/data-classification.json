@@ -3,15 +3,8 @@
   "$id": "https://helixedu.org/core/terminologies/data-classification.json",
   "title": "HELIX Terminology: Data Classification",
   "description": "Standard data classification tiers used in the HELIX meta block. Part of HELIX Govern.",
-  "type": "object",
-  "properties": {
-    "code_system": {
-      "const": "helix/data-classification"
-    },
-    "version": {
-      "const": "0.1"
-    }
-  },
+  "code_system": "helix/data-classification",
+  "version": "0.1",
   "codes": [
     {
       "code": "public",

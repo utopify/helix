@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/loan-status.json",
+  "title": "HELIX Terminology: Loan Status",
+  "description": "Status of an education loan through origination and repayment. Used by LoanRecord.",
+  "code_system": "helix/loan-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "originated",
+      "display": "Originated",
+      "definition": "Loan originated"
+    },
+    {
+      "code": "pending_mpn",
+      "display": "Pending MPN",
+      "definition": "Awaiting a signed Master Promissory Note"
+    },
+    {
+      "code": "pending_counseling",
+      "display": "Pending Counseling",
+      "definition": "Awaiting required entrance counseling"
+    },
+    {
+      "code": "certified",
+      "display": "Certified",
+      "definition": "Loan certified by the school"
+    },
+    {
+      "code": "disbursed",
+      "display": "Disbursed",
+      "definition": "Loan funds disbursed"
+    },
+    {
+      "code": "in_school_deferment",
+      "display": "In-School Deferment",
+      "definition": "In deferment while enrolled"
+    },
+    {
+      "code": "grace_period",
+      "display": "Grace Period",
+      "definition": "In post-enrollment grace period"
+    },
+    {
+      "code": "repayment",
+      "display": "Repayment",
+      "definition": "In active repayment"
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Loan cancelled/inactivated"
+    },
+    {
+      "code": "returned",
+      "display": "Returned",
+      "definition": "Loan funds returned to the servicer/COD"
+    }
+  ]
+}

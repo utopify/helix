@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/licensure-type.json",
+  "title": "HELIX Terminology: Licensure/Certification Type",
+  "description": "Categories of professional licensure and certification examinations. Used by Licensure. Pass rates are core programmatic accreditation metrics.",
+  "code_system": "helix/licensure-type",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "nursing_nclex",
+      "display": "Nursing - NCLEX",
+      "definition": "National Council Licensure Examination for nurses (NCLEX-RN, NCLEX-PN)"
+    },
+    {
+      "code": "cpa",
+      "display": "CPA Exam",
+      "definition": "Uniform Certified Public Accountant Examination"
+    },
+    {
+      "code": "bar_exam",
+      "display": "Bar Exam",
+      "definition": "State bar examination for attorneys"
+    },
+    {
+      "code": "teaching_praxis",
+      "display": "Teaching - Praxis",
+      "definition": "Praxis series exams for teacher licensure"
+    },
+    {
+      "code": "medical_usmle",
+      "display": "Medical - USMLE",
+      "definition": "United States Medical Licensing Examination"
+    },
+    {
+      "code": "pharmacy_naplex",
+      "display": "Pharmacy - NAPLEX",
+      "definition": "North American Pharmacist Licensure Examination"
+    },
+    {
+      "code": "engineering_pe",
+      "display": "Engineering - PE/FE",
+      "definition": "Fundamentals of Engineering and Principles and Practice of Engineering exams"
+    },
+    {
+      "code": "social_work",
+      "display": "Social Work",
+      "definition": "ASWB social work licensure examination"
+    },
+    {
+      "code": "counseling",
+      "display": "Counseling",
+      "definition": "Counseling licensure examination (e.g., NCE)"
+    },
+    {
+      "code": "dental",
+      "display": "Dental",
+      "definition": "Dental licensure examination (e.g., INBDE)"
+    },
+    {
+      "code": "veterinary",
+      "display": "Veterinary",
+      "definition": "North American Veterinary Licensing Examination (NAVLE)"
+    },
+    {
+      "code": "physical_therapy",
+      "display": "Physical Therapy",
+      "definition": "National Physical Therapy Examination (NPTE)"
+    },
+    {
+      "code": "other",
+      "display": "Other",
+      "definition": "Another professional licensure or certification exam"
+    }
+  ]
+}

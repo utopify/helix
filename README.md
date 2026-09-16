@@ -9,7 +9,7 @@ HELIX is an open framework of foundational data models, governance standards, an
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.3.2 (September 2026)
+**Version:** 0.4.0 (September 2026)
 **License:** Apache 2.0
 
 --- 
@@ -70,24 +70,24 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 
 | Layer | What It Is | Who It's For |
 |-------|-----------|-------------|
-| **HELIX Core** | 47 foundational resource definitions (JSON Schema), 23 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
+| **HELIX Core** | 64 foundational resource definitions (JSON Schema), 67 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 16 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
 | **HELIX Govern** | Governance roles, quality rule library (22 rules), maturity model, domain taxonomy | CDOs, data stewards, compliance officers |
 | **HELIX Bridge** | ERP-specific mapping templates: PeopleSoft (42), Banner (13), Workday (42), Colleague (3) — 100 total | Implementation teams, system integrators |
 
 ---
 
-## HELIX Core: Resources (v0.2)
+## HELIX Core: Resources (v0.4)
 
-47 foundational resources across 9 domains:
+64 foundational resources across 9 domains:
 
 | Domain | Resources |
 |--------|-----------|
 | **Identity** | `Person`, `Student`, `Institution` |
 | **Academic Structure** | `AcademicOrg`, `Course`, `CourseSection`, `Program`, `AcademicPeriod` |
 | **Enrollment & Registration** | `Enrollment`, `StudentProgram`, `AdmissionApplication`, `TransferCredit`, `AcademicTermRecord` |
-| **Financial Aid** | `FinAidAward` |
-| **Outcomes** | `Degree`, `DegreeAudit` |
+| **Financial Aid** | `FinAidAward`, `AidApplication`, `AidPackage`, `Verification`, `SAPEvaluation`, `Disbursement`, `LoanRecord`, `ReturnOfTitleIV`, `StudentEmployment`, `FederalAidReport` |
+| **Outcomes** | `Degree`, `EmploymentOutcome`, `ContinuingEducation`, `ExperientialLearning`, `Licensure`, `AlumniProfile`, `FirstDestinationSurvey`, `LearningOutcome`, `AwardHonor` |
 | **Student Services** | `Hold`, `FERPARestriction`, `InternationalStudent`, `StudentGroup` |
 | **Advancement** | `Constituent`, `Gift`, `Campaign`, `EngagementActivity` |
 | **Human Resources** | `Employee`, `Position`, `Compensation`, `BenefitEnrollment`, `PayrollResult`, `TimeEntry`, `Requisition`, `AbsenceRecord`, `PerformanceReview`, `JobClassification`, `LearningRecord`, `PositionBudget` |
@@ -105,7 +105,7 @@ See the [Glossary](core/glossary.md) for the full reference.
 
 ## HELIX Core: Terminologies (v0.2)
 
-48 standardized code sets across student lifecycle, human resources, and financial operations:
+67 standardized code sets across student lifecycle, financial aid, outcomes, human resources, and financial operations:
 
 **Student Lifecycle (23):** `student-status` · `enrollment-status` · `period-type` · `grade-mode` · `award-type` · `data-classification` · `gender` · `gender-identity` · `ethnicity` · `identifier-type` · `degree-level` · `delivery-mode` · `course-level` · `admission-status` · `hold-type` · `student-type` · `veteran-status` · `sap-status` · `constituent-type` · `gift-type` · `donor-segment` · `prospect-stage` · `enrollment-funnel-stage`
 
@@ -146,7 +146,7 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 | **Committee Charter** | Fillable charter template for Data Governance Council with membership roles, cadence, responsibilities, and success metrics |
 | **Data Sharing Agreement** | Template with FERPA/GLBA provisions, security requirements, breach notification, and audit rights |
 | **Schema Evolution Policy** | Versioning rules (MAJOR.MINOR.PATCH), backward compatibility guarantees, deprecation process, and institutional extension patterns |
-| **Data Dictionary** | 1,258-entry structured dictionary (JSON + CSV) covering all 47 resources — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
+| **Data Dictionary** | 1,870-entry structured dictionary (JSON + CSV) covering all 64 resources — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
 | **GLBA Compliance Scanner** | 21 executable audit rules across 7 categories (encryption at rest/in transit, access control, data inventory, monitoring, disposal, service-provider oversight) with platform-specific SQL and a 10-section annual board report template per 16 CFR 314.4(i) |
 | **FERPA Suppression Policy** | 8 small-cell suppression rules (primary N<5, complementary, rate, dominance, cross-tab depth, longitudinal, rounding, derived-metric) with a `helix_suppress()` SQL function, complementary-suppression CTE, dbt macro, and 6 IPEDS survey guides |
 | **Lakehouse RBAC Model** | 9 database roles mapped to governance roles across Bronze/Silver/Gold, 3 column-masking policies, 5 row-level-security patterns, grant lifecycle, and 5 platform guides (Snowflake, Databricks Unity Catalog, AWS Lake Formation, Redshift, BigQuery) |
@@ -224,17 +224,17 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (299 files)
+## Repository Structure (335 files)
 
 ```
 helix/
 +-- README.md                          <-- You are here
 +-- CONTRIBUTING.md                    <-- How to participate
 +-- core/
-|   +-- resources/                     <-- 47 JSON Schema resource definitions
-|   +-- terminologies/                 <-- 48 standardized code sets (student, HR, FIN)
+|   +-- resources/                     <-- 64 JSON Schema resource definitions
+|   +-- terminologies/                 <-- 67 standardized code sets (student, aid, outcomes, HR, FIN)
 |   +-- glossary.md                    <-- Comprehensive higher ed taxonomy (113K chars, 125 terms)
-|   +-- data-dictionary.json           <-- 1,258-entry structured data dictionary
+|   +-- data-dictionary.json           <-- 1,870-entry structured data dictionary
 |   +-- data-dictionary.csv            <-- Same dictionary in spreadsheet format
 |   +-- examples/                      <-- 3 post-migration use case examples
 +-- connect/
@@ -365,5 +365,5 @@ The double helix is a fitting metaphor. Two strands — data and governance — 
 
 ---
 
-*HELIX v0.3.2 — September 2026*
+*HELIX v0.4.0 — September 2026*
 *Licensed under Apache 2.0*

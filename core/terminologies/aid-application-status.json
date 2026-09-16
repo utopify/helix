@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/core/terminologies/aid-application-status.json",
+  "title": "HELIX Terminology: Aid Application Status",
+  "description": "Lifecycle status of a financial aid application (FAFSA/ISIR or institutional). Used by the AidApplication resource.",
+  "code_system": "helix/aid-application-status",
+  "version": "0.1",
+  "codes": [
+    {
+      "code": "received",
+      "display": "Received",
+      "definition": "Application/ISIR received by the institution"
+    },
+    {
+      "code": "in_review",
+      "display": "In Review",
+      "definition": "Being reviewed by the financial aid office"
+    },
+    {
+      "code": "verification_required",
+      "display": "Verification Required",
+      "definition": "Selected for verification; documentation needed"
+    },
+    {
+      "code": "verification_complete",
+      "display": "Verification Complete",
+      "definition": "Verification finished"
+    },
+    {
+      "code": "isir_correction_pending",
+      "display": "ISIR Correction Pending",
+      "definition": "A correction has been submitted to the CPS/FPS and is pending"
+    },
+    {
+      "code": "complete",
+      "display": "Complete",
+      "definition": "Application complete and ready for packaging"
+    },
+    {
+      "code": "rejected",
+      "display": "Rejected",
+      "definition": "Application rejected (e.g., reject codes unresolved)"
+    },
+    {
+      "code": "cancelled",
+      "display": "Cancelled",
+      "definition": "Application cancelled by student or institution"
+    }
+  ]
+}
