@@ -1,0 +1,625 @@
+{
+  "$schema": "https://helixedu.org/govern/lakehouse-rbac-model-schema.json",
+  "title": "HELIX Govern: Lakehouse RBAC Model",
+  "description": "Maps HELIX governance roles to database roles, table/column grants, and row-level security policies across Bronze, Silver, and Gold layers. Implements the principle of least privilege with deny-by-default semantics. Includes platform-specific implementation guides for Snowflake, Databricks Unity Catalog, AWS Lake Formation, Redshift, and BigQuery.",
+  "version": "0.1",
+  "principles": [
+    {
+      "id": "P1",
+      "name": "Deny by default",
+      "description": "No access unless explicitly granted. Every new user, role, and service account starts with zero permissions. Access is additive only."
+    },
+    {
+      "id": "P2",
+      "name": "Least privilege",
+      "description": "Grant only what is needed for the role's function. A data engineer who builds silver models does not need gold read access. An analyst who reads gold aggregates does not need silver access."
+    },
+    {
+      "id": "P3",
+      "name": "Classification-driven grants",
+      "description": "Access grants derive from the data classification tier (public, internal, confidential, restricted), not from ad-hoc requests. A role's maximum classification tier determines what it can access."
+    },
+    {
+      "id": "P4",
+      "name": "Separation of duties",
+      "description": "Data engineers can transform but not read restricted PII in cleartext. Analysts can read aggregates but not modify silver models. Admins manage grants but do not hold data read access. No single role has end-to-end unrestricted access."
+    },
+    {
+      "id": "P5",
+      "name": "Audit everything",
+      "description": "Every grant, revocation, role change, and data access is logged. Restricted-tier access logs include full query text. Logs retained for 7+ years (GLBA alignment)."
+    },
+    {
+      "id": "P6",
+      "name": "Identity propagation",
+      "description": "Database connections carry the end user's identity, not a shared service account. Agents, APIs, and BI tools must propagate the authenticated user's role to the database layer."
+    }
+  ],
+  "database_roles": [
+    {
+      "db_role": "helix_bronze_loader",
+      "helix_governance_role": "Data Custodian",
+      "purpose": "Ingest raw data into bronze landing zones. Write-only to bronze; no read access to any layer.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": true,
+          "schema_alter": true
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "restricted",
+      "classification_note": "Loaders handle all classification tiers in transit (raw source data includes everything) but cannot query bronze tables after loading.",
+      "authentication": "Service account with MFA on interactive sessions. API keys for automated pipelines with IP allowlisting.",
+      "typical_assignments": [
+        "ETL service accounts",
+        "ERP extraction jobs",
+        "SFTP landing processes",
+        "CDC replication agents"
+      ]
+    },
+    {
+      "db_role": "helix_silver_engineer",
+      "helix_governance_role": "Data Custodian",
+      "purpose": "Transform bronze \u2192 silver. Read bronze, write silver. Access to PII for identity resolution, but restricted columns are masked except through tokenization views.",
+      "grants": {
+        "bronze": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": true,
+          "write": true,
+          "schema_alter": true
+        },
+        "gold": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "confidential",
+      "restricted_access": {
+        "cleartext": false,
+        "mechanism": "Restricted columns (SSN, bank_account, routing_number, SAI/EFC, tax data) are accessible only through tokenization views that emit SHA-256 tokens. The silver engineer uses tokens for identity resolution (deterministic matching) but never sees cleartext values.",
+        "exception_process": "If cleartext access is required for a specific data quality investigation, the CDO must approve a time-bounded exception with enhanced audit logging. The exception is logged in the grant lifecycle audit trail."
+      },
+      "authentication": "Named individual accounts. MFA required. SSH key or certificate for automated pipeline execution.",
+      "typical_assignments": [
+        "Senior data engineers",
+        "Identity resolution specialists",
+        "dbt project owners"
+      ]
+    },
+    {
+      "db_role": "helix_gold_engineer",
+      "helix_governance_role": "Data Custodian",
+      "purpose": "Build gold-layer models (dimensions, facts, reports, semantic views). Read silver, write gold. No restricted column access.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": true,
+          "schema_alter": true
+        }
+      },
+      "max_classification": "confidential",
+      "restricted_access": {
+        "cleartext": false,
+        "mechanism": "Gold models that need restricted-origin data must consume pre-aggregated or tokenized silver views. Gold engineers never see raw restricted values. If a gold model needs to reference SAI for a financial aid aggregate, it reads from a silver view that exposes only the aggregate, not individual values."
+      },
+      "authentication": "Named individual accounts. MFA required.",
+      "typical_assignments": [
+        "BI developers",
+        "Gold-layer dbt engineers",
+        "Semantic model architects"
+      ]
+    },
+    {
+      "db_role": "helix_analyst_standard",
+      "helix_governance_role": "Data Consumer",
+      "purpose": "Query gold tables for institutional reporting and analytics. Read-only on gold. Sees only public and internal classified data. Student data visible only as aggregates with FERPA suppression applied.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "internal",
+      "student_data_access": "aggregate_only",
+      "suppression": "All aggregate views enforce FERPA small-cell suppression (see ferpa-suppression-policy.json). Cells with fewer than the configured threshold are replaced with suppression markers.",
+      "authentication": "Institutional SSO. MFA recommended for remote access.",
+      "typical_assignments": [
+        "IR analysts (aggregate reports)",
+        "Marketing analysts",
+        "Assessment coordinators",
+        "BI dashboard consumers",
+        "Department administrators"
+      ]
+    },
+    {
+      "db_role": "helix_analyst_confidential",
+      "helix_governance_role": "Data Consumer (with legitimate educational interest)",
+      "purpose": "Query gold tables with confidential student data at the individual record level. Requires documented FERPA legitimate educational interest under 99.31(a)(1).",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "confidential",
+      "ferpa_basis": "34 CFR 99.31(a)(1) \u2014 school officials with legitimate educational interest",
+      "student_data_access": "individual_records",
+      "row_level_security": "Functional scope: advisors see advisees, department chairs see their majors, deans see their college. Scope defined by RLS policy joining the user's identity to their functional assignment.",
+      "authentication": "Institutional SSO with MFA required.",
+      "access_documentation": "Each user must have a documented legitimate educational interest on file, reviewed annually by their Data Steward.",
+      "typical_assignments": [
+        "University Registrar",
+        "Financial aid counselors",
+        "Academic advisors",
+        "Department chairs",
+        "Deans",
+        "Student affairs directors",
+        "Enrollment management staff",
+        "IR director (individual student analysis)"
+      ]
+    },
+    {
+      "db_role": "helix_analyst_restricted",
+      "helix_governance_role": "Data Consumer (GLBA-authorized / HR-authorized)",
+      "purpose": "Query gold tables containing restricted data (GLBA financial data, HR compensation/benefits/payroll). Named-individual authorization only.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "restricted",
+      "ferpa_basis": "34 CFR 99.31(a)(1) + GLBA Safeguards Rule authorization (for financial data) or HR authorization (for employment data)",
+      "student_data_access": "individual_records_including_restricted",
+      "restricted_subtypes": [
+        {
+          "subtype": "helix_analyst_restricted_finaid",
+          "scope": "GLBA-covered financial aid data (SAI/EFC, ISIR, bank/routing, tax data)",
+          "typical_assignments": [
+            "Financial aid director",
+            "Senior financial aid counselors",
+            "Financial aid auditor",
+            "Student billing manager"
+          ]
+        },
+        {
+          "subtype": "helix_analyst_restricted_hr",
+          "scope": "Restricted HR data (compensation, benefits, payroll, performance reviews)",
+          "typical_assignments": [
+            "CHRO/VP HR",
+            "Compensation director",
+            "Benefits manager",
+            "Payroll director",
+            "HR compliance officer"
+          ]
+        }
+      ],
+      "authentication": "Institutional SSO with phishing-resistant MFA (hardware token / FIDO2). Named-individual grant only \u2014 no group membership.",
+      "audit": "All queries logged with full SQL text. Real-time alerting on anomalous access patterns.",
+      "typical_assignments": [
+        "See subtypes above"
+      ]
+    },
+    {
+      "db_role": "helix_steward",
+      "helix_governance_role": "Data Steward",
+      "purpose": "Review data quality, validate definitions, approve quality rules, investigate data issues. Read silver + gold for their assigned domain only.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "confidential",
+      "domain_scoped": true,
+      "domain_scoping_mechanism": "Each steward is assigned one or more domains from govern/domain-taxonomy.json. Their database role is parameterized by domain: helix_steward_enrollment, helix_steward_hr, helix_steward_finance, etc. Each variant grants access only to tables/views in their domain.",
+      "restricted_access": {
+        "cleartext": false,
+        "mechanism": "Stewards do not see restricted columns in cleartext. For data quality investigations on restricted data, the CDO must co-authorize and the investigation is logged."
+      },
+      "authentication": "Institutional SSO with MFA.",
+      "typical_assignments": [
+        "University Registrar (enrollment domain)",
+        "Director of Financial Aid (financial aid domain)",
+        "Director of HR Systems (HR domain)",
+        "Director of Advancement Services (advancement domain)",
+        "Controller (finance domain)",
+        "Director of Institutional Research (cross-domain, approved by CDO)"
+      ]
+    },
+    {
+      "db_role": "helix_research",
+      "helix_governance_role": "Data Consumer (research/studies)",
+      "purpose": "Access de-identified research extracts under a 34 CFR 99.31(a)(6) studies agreement. Time-bounded access with destruction verification.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": true,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "max_classification": "internal",
+      "ferpa_basis": "34 CFR 99.31(a)(6) \u2014 organizations conducting studies for or on behalf of the institution",
+      "student_data_access": "de_identified_only",
+      "data_access_constraints": {
+        "views_available": "Research-specific gold views that strip or tokenize all direct identifiers (name, SSN, email, phone, address). Indirect identifiers (race, gender, DOB, major, ZIP) available only in combination limits (no more than 3 quasi-identifiers per query without steward approval).",
+        "suppression": "FERPA small-cell suppression enforced on all aggregate outputs.",
+        "export_allowed": true,
+        "export_constraints": "Exported data must match the de-identification standard specified in the studies agreement. Export logged with agreement ID."
+      },
+      "time_bounded": true,
+      "grant_expiration": "Access expires on the studies agreement end date. Automated revocation with 14-day advance warning.",
+      "destruction_requirement": "Upon expiration, researcher must submit a certificate of destruction. Access is revoked immediately; destruction verification tracked in the grant lifecycle audit trail.",
+      "authentication": "Institutional SSO or federated SSO for external researchers. MFA required.",
+      "typical_assignments": [
+        "IR researchers",
+        "Faculty researchers with IRB approval",
+        "External organizations under a studies agreement (NSSE, EAB, consultants)"
+      ]
+    },
+    {
+      "db_role": "helix_admin",
+      "helix_governance_role": "CDO / Data Trustee",
+      "purpose": "Grant management, audit review, governance administration. Administrative privileges for managing roles and policies. Does NOT imply read access to institutional data.",
+      "grants": {
+        "bronze": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "silver": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        },
+        "gold": {
+          "read": false,
+          "write": false,
+          "schema_alter": false
+        }
+      },
+      "admin_grants": [
+        "MANAGE GRANTS \u2014 create, modify, revoke role assignments",
+        "CREATE ROLE \u2014 provision new database roles",
+        "AUDIT LOG ACCESS \u2014 read access, query, and export audit logs",
+        "MASKING POLICY ADMIN \u2014 create and modify column masking policies",
+        "ROW ACCESS POLICY ADMIN \u2014 create and modify RLS policies",
+        "TAG ADMIN \u2014 manage classification tags on tables/columns"
+      ],
+      "max_classification": "none (admin does not read data)",
+      "separation_of_duty": "The helix_admin role explicitly does NOT include data read grants. A CDO who also needs to read data for governance oversight must hold a separate analyst role (typically helix_analyst_confidential) with appropriate documentation. This prevents a single credential compromise from yielding both admin control and data access.",
+      "authentication": "Named individual. Phishing-resistant MFA. Break-glass access only for emergency scenarios.",
+      "typical_assignments": [
+        "Chief Data Officer",
+        "VP/CIO (data governance oversight)",
+        "Database administrator (role provisioning only)"
+      ]
+    }
+  ],
+  "column_level_security": {
+    "description": "Column masking policies enforce classification-driven visibility. Each policy defines who sees cleartext, who sees masked/tokenized values, and who sees nothing. Policies are attached to columns, not tables \u2014 a single table can have columns at different classification tiers.",
+    "masking_policies": [
+      {
+        "policy_name": "helix_mask_restricted",
+        "description": "Masks restricted-tier columns: SSN, national_id, bank_account, routing_number, SAI/EFC, tax return data, SEVIS number, visa details.",
+        "applies_to_columns": [
+          "person.ssn",
+          "person.national_id",
+          "person.bank_account",
+          "person.routing_number",
+          "fin_aid_award.sai",
+          "fin_aid_award.efc",
+          "fin_aid_award.family_income",
+          "fin_aid_award.tax_data",
+          "international_student.sevis_number",
+          "international_student.visa_number",
+          "compensation.annual_salary",
+          "compensation.hourly_rate",
+          "compensation.total_compensation",
+          "benefit_enrollment.plan_details",
+          "benefit_enrollment.dependent_ssn",
+          "payroll_result.gross_pay",
+          "payroll_result.net_pay",
+          "payroll_result.tax_withholding",
+          "performance_review.overall_rating",
+          "performance_review.reviewer_comments"
+        ],
+        "roles_that_see_cleartext": [
+          "helix_analyst_restricted"
+        ],
+        "all_other_roles_see": "SHA-256 token (for join-safe masking) or literal 'RESTRICTED'",
+        "platform_implementations": {
+          "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_restricted\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_RESTRICTED', 'HELIX_ANALYST_RESTRICTED_FINAID', 'HELIX_ANALYST_RESTRICTED_HR')\n    THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply to column:\nALTER TABLE silver.fin_aid_award\n  MODIFY COLUMN sai\n  SET MASKING POLICY helix_mask_restricted;",
+          "databricks_unity_catalog": "CREATE FUNCTION helix_mask_restricted(val STRING)\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_restricted') THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply as column mask:\nALTER TABLE silver.fin_aid_award\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;",
+          "redshift": "-- Redshift uses column-level GRANT (no native masking policies)\n-- Create a masking view instead:\nCREATE VIEW silver.fin_aid_award_masked AS\nSELECT\n  helix_id,\n  student_ref,\n  CASE WHEN pg_has_role(CURRENT_USER, 'helix_analyst_restricted', 'member')\n    THEN sai\n    ELSE 'RESTRICTED'\n  END AS sai,\n  -- repeat for each restricted column\n  award_type, award_amount, disbursement_date\nFROM silver.fin_aid_award_raw;",
+          "bigquery": "-- BigQuery uses column-level security with policy tags\n-- 1. Create a taxonomy and policy tag in Data Catalog:\n--    Taxonomy: helix_classification\n--    Policy tag: restricted\n-- 2. Apply the tag to restricted columns\n-- 3. Grant Fine-Grained Reader on the policy tag to helix_analyst_restricted group\n-- All other users see ACCESS DENIED on those columns.",
+          "aws_lake_formation": "-- Lake Formation uses LF-Tags for column-level access\n-- 1. Create LF-Tag: classification = [public, internal, confidential, restricted]\n-- 2. Tag restricted columns with classification=restricted\n-- 3. Grant SELECT on classification=restricted to helix_analyst_restricted\n-- 4. All other roles lack the tag grant \u2192 column returns NULL"
+        }
+      },
+      {
+        "policy_name": "helix_mask_confidential_pii",
+        "description": "Partially masks confidential PII columns: legal_name, email, phone, address. Used when the requesting role has internal-only access but the data is confidential.",
+        "applies_to_columns": [
+          "person.legal_name",
+          "person.preferred_name",
+          "person.primary_email",
+          "person.primary_phone",
+          "person.addresses",
+          "employee.legal_name",
+          "employee.email",
+          "employee.phone",
+          "constituent.legal_name",
+          "constituent.email",
+          "constituent.phone"
+        ],
+        "roles_that_see_cleartext": [
+          "helix_analyst_confidential",
+          "helix_analyst_restricted",
+          "helix_steward"
+        ],
+        "partial_mask_roles": [
+          "helix_analyst_standard"
+        ],
+        "no_access_roles": [
+          "helix_research"
+        ],
+        "partial_mask_format": {
+          "name": "First initial + '***' (e.g., 'J*** D***')",
+          "email": "'***@' + domain (e.g., '***@university.edu')",
+          "phone": "Last 4 digits only (e.g., '***-***-1234')",
+          "address": "City + State only (e.g., 'Austin, TX')"
+        },
+        "platform_implementations": {
+          "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_pii_name\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_ANALYST_RESTRICTED_FINAID',\n      'HELIX_ANALYST_RESTRICTED_HR',\n      'HELIX_STEWARD_ENROLLMENT',\n      'HELIX_STEWARD_HR',\n      'HELIX_STEWARD_FINANCE',\n      'HELIX_STEWARD_ADVANCEMENT'\n    )\n    THEN val\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_STANDARD')\n    THEN CONCAT(LEFT(val, 1), '***')\n    ELSE 'MASKED'\n  END;\n\nCREATE OR REPLACE MASKING POLICY helix_mask_pii_email\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_STEWARD_ENROLLMENT'\n    )\n    THEN val\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_STANDARD')\n    THEN CONCAT('***@', SPLIT_PART(val, '@', 2))\n    ELSE 'MASKED'\n  END;",
+          "databricks_unity_catalog": "CREATE FUNCTION helix_mask_pii_name(val STRING)\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_confidential')\n      OR IS_MEMBER('helix_analyst_restricted')\n      OR IS_MEMBER('helix_steward')\n    THEN val\n    WHEN IS_MEMBER('helix_analyst_standard')\n    THEN CONCAT(LEFT(val, 1), '***')\n    ELSE 'MASKED'\n  END;"
+        }
+      },
+      {
+        "policy_name": "helix_mask_research_deidentify",
+        "description": "De-identification mask for research views. Replaces all direct identifiers with tokens. Quasi-identifiers (race, gender, age, major) pass through but are subject to suppression.",
+        "applies_to_columns": [
+          "All direct identifier columns in research-facing gold views"
+        ],
+        "roles_that_see_cleartext": [],
+        "research_role_sees": "Opaque token (UUID v4 generated per research extract, not linked to institutional IDs)",
+        "platform_implementations": {
+          "snowflake": "-- Research views use a deterministic-within-extract but non-reversible token:\nCREATE OR REPLACE MASKING POLICY helix_mask_research_id\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_RESEARCH')\n    THEN SHA2(CONCAT(val, CURRENT_SESSION()), 256)\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED'\n    )\n    THEN val\n    ELSE 'MASKED'\n  END;"
+        }
+      }
+    ]
+  },
+  "row_level_security": {
+    "description": "Row-level security (RLS) policies restrict which rows a role can see. RLS is the primary mechanism for functional scoping (advisor sees advisees, dean sees their college) and FERPA directory restriction enforcement.",
+    "patterns": [
+      {
+        "pattern_id": "RLS-001",
+        "name": "FERPA directory restriction",
+        "description": "Any externally-facing gold view or report automatically excludes students who have an active directory information restriction. This is the most critical RLS pattern \u2014 it must be applied universally to any data path that could reach non-school-officials.",
+        "applies_to": "All gold views consumed by helix_analyst_standard, helix_research, or any external system/report",
+        "sql_pattern": "CREATE OR REPLACE ROW ACCESS POLICY helix_rls_ferpa_directory\n  AS (student_ref_col STRING)\n  RETURNS BOOLEAN ->\n  CASE\n    -- School officials with legitimate interest see all students\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_ANALYST_RESTRICTED_FINAID',\n      'HELIX_STEWARD_ENROLLMENT'\n    )\n    THEN TRUE\n    -- External-facing roles: exclude directory-restricted students\n    ELSE NOT EXISTS (\n      SELECT 1 FROM silver.ferpa_restriction fr\n      WHERE fr.student_ref = student_ref_col\n        AND fr.is_active = TRUE\n        AND fr.restrict_directory = TRUE\n    )\n  END;",
+        "implementation_note": "Apply this policy to every gold table or view that contains student_ref and could be consumed by non-school-official roles."
+      },
+      {
+        "pattern_id": "RLS-002",
+        "name": "Advisor functional scope",
+        "description": "Academic advisors with helix_analyst_confidential role see only students assigned to them as advisees.",
+        "applies_to": "gold.dim_student, gold.fct_enrollment, and related student-facing gold tables",
+        "sql_pattern": "CREATE OR REPLACE ROW ACCESS POLICY helix_rls_advisor_scope\n  AS (student_ref_col STRING)\n  RETURNS BOOLEAN ->\n  CASE\n    -- Unscoped roles (registrar, IR director, dean) see all\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL_UNSCOPED',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_STEWARD_ENROLLMENT'\n    )\n    THEN TRUE\n    -- Scoped advisors see their advisees only\n    WHEN CURRENT_ROLE() = 'HELIX_ANALYST_CONFIDENTIAL'\n    THEN EXISTS (\n      SELECT 1 FROM gold.advisor_assignment aa\n      WHERE aa.student_ref = student_ref_col\n        AND aa.advisor_employee_id = CURRENT_USER()\n        AND aa.is_active = TRUE\n    )\n    ELSE FALSE\n  END;"
+      },
+      {
+        "pattern_id": "RLS-003",
+        "name": "Department/college scope",
+        "description": "Department chairs and deans see only students enrolled in programs within their academic unit.",
+        "applies_to": "gold.dim_student, gold.fct_enrollment",
+        "sql_pattern": "-- Join chain: student \u2192 student_program \u2192 program \u2192 academic_org \u2192 chair/dean assignment\nCREATE OR REPLACE ROW ACCESS POLICY helix_rls_department_scope\n  AS (student_ref_col STRING)\n  RETURNS BOOLEAN ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_CONFIDENTIAL_UNSCOPED', 'HELIX_ANALYST_RESTRICTED')\n    THEN TRUE\n    WHEN CURRENT_ROLE() = 'HELIX_ANALYST_CONFIDENTIAL'\n    THEN EXISTS (\n      SELECT 1\n      FROM silver.student_program sp\n      JOIN silver.program p ON p.helix_id = sp.program_ref\n      JOIN silver.academic_org ao ON ao.helix_id = p.academic_org_ref\n      JOIN gold.unit_leadership ul ON ul.academic_org_ref = ao.helix_id\n      WHERE sp.student_ref = student_ref_col\n        AND sp.is_active = TRUE\n        AND ul.leader_employee_id = CURRENT_USER()\n    )\n    ELSE FALSE\n  END;"
+      },
+      {
+        "pattern_id": "RLS-004",
+        "name": "Steward domain scope",
+        "description": "Data Stewards see only resources in their assigned domain. Implemented via domain-specific steward roles.",
+        "applies_to": "silver and gold tables",
+        "implementation": "Rather than a single helix_steward role, create domain-specific variants:\n  - HELIX_STEWARD_ENROLLMENT \u2192 silver/gold enrollment, student, registration tables\n  - HELIX_STEWARD_HR \u2192 silver/gold HR tables\n  - HELIX_STEWARD_FINANCE \u2192 silver/gold financial operations tables\n  - HELIX_STEWARD_ADVANCEMENT \u2192 silver/gold advancement tables\n  - HELIX_STEWARD_ACADEMIC \u2192 silver/gold academic structure tables\nEach variant gets SELECT grants only on their domain's tables."
+      },
+      {
+        "pattern_id": "RLS-005",
+        "name": "Research time-bounded access",
+        "description": "Research role access expires on the studies agreement end date. Implemented via a time check in the RLS policy.",
+        "sql_pattern": "CREATE OR REPLACE ROW ACCESS POLICY helix_rls_research_timebound\n  AS ()\n  RETURNS BOOLEAN ->\n  CASE\n    WHEN CURRENT_ROLE() = 'HELIX_RESEARCH'\n    THEN EXISTS (\n      SELECT 1 FROM govern.active_research_agreements ara\n      WHERE ara.grantee_user = CURRENT_USER()\n        AND ara.agreement_end_date >= CURRENT_DATE()\n        AND ara.is_active = TRUE\n    )\n    ELSE TRUE  -- non-research roles not affected\n  END;"
+      }
+    ]
+  },
+  "implementation_guides": {
+    "snowflake": {
+      "description": "Snowflake implementation using roles, masking policies, and row access policies.",
+      "role_hierarchy_sql": "-- Create role hierarchy\nCREATE ROLE HELIX_BRONZE_LOADER;\nCREATE ROLE HELIX_SILVER_ENGINEER;\nCREATE ROLE HELIX_GOLD_ENGINEER;\nCREATE ROLE HELIX_ANALYST_STANDARD;\nCREATE ROLE HELIX_ANALYST_CONFIDENTIAL;\nCREATE ROLE HELIX_ANALYST_CONFIDENTIAL_UNSCOPED;\nCREATE ROLE HELIX_ANALYST_RESTRICTED;\nCREATE ROLE HELIX_ANALYST_RESTRICTED_FINAID;\nCREATE ROLE HELIX_ANALYST_RESTRICTED_HR;\nCREATE ROLE HELIX_STEWARD_ENROLLMENT;\nCREATE ROLE HELIX_STEWARD_HR;\nCREATE ROLE HELIX_STEWARD_FINANCE;\nCREATE ROLE HELIX_STEWARD_ADVANCEMENT;\nCREATE ROLE HELIX_STEWARD_ACADEMIC;\nCREATE ROLE HELIX_RESEARCH;\nCREATE ROLE HELIX_ADMIN;\n\n-- Role inheritance (least to most privileged)\nGRANT ROLE HELIX_ANALYST_STANDARD TO ROLE HELIX_ANALYST_CONFIDENTIAL;\nGRANT ROLE HELIX_ANALYST_CONFIDENTIAL TO ROLE HELIX_ANALYST_CONFIDENTIAL_UNSCOPED;\nGRANT ROLE HELIX_ANALYST_CONFIDENTIAL TO ROLE HELIX_ANALYST_RESTRICTED;\n\n-- Schema grants\nGRANT USAGE ON SCHEMA bronze TO ROLE HELIX_BRONZE_LOADER;\nGRANT INSERT, CREATE TABLE ON SCHEMA bronze TO ROLE HELIX_BRONZE_LOADER;\n\nGRANT USAGE ON SCHEMA bronze TO ROLE HELIX_SILVER_ENGINEER;\nGRANT SELECT ON ALL TABLES IN SCHEMA bronze TO ROLE HELIX_SILVER_ENGINEER;\nGRANT USAGE, CREATE TABLE, INSERT, UPDATE ON SCHEMA silver TO ROLE HELIX_SILVER_ENGINEER;\n\nGRANT USAGE ON SCHEMA silver TO ROLE HELIX_GOLD_ENGINEER;\nGRANT SELECT ON ALL TABLES IN SCHEMA silver TO ROLE HELIX_GOLD_ENGINEER;\nGRANT USAGE, CREATE TABLE, CREATE VIEW, INSERT, UPDATE ON SCHEMA gold TO ROLE HELIX_GOLD_ENGINEER;\n\nGRANT USAGE ON SCHEMA gold TO ROLE HELIX_ANALYST_STANDARD;\nGRANT SELECT ON ALL TABLES IN SCHEMA gold TO ROLE HELIX_ANALYST_STANDARD;\n-- Note: Masking policies and RLS automatically apply to gold tables\n\n-- Admin grants (no data access)\nGRANT MANAGE GRANTS ON ACCOUNT TO ROLE HELIX_ADMIN;\nGRANT CREATE ROLE ON ACCOUNT TO ROLE HELIX_ADMIN;\nGRANT APPLY MASKING POLICY ON ACCOUNT TO ROLE HELIX_ADMIN;\nGRANT APPLY ROW ACCESS POLICY ON ACCOUNT TO ROLE HELIX_ADMIN;"
+    },
+    "databricks_unity_catalog": {
+      "description": "Databricks Unity Catalog implementation using groups, column masks, and row filters.",
+      "setup_sql": "-- Create groups (Unity Catalog uses groups, not roles)\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\nCREATE GROUP helix_admin;\n\n-- Schema grants\nGRANT USE SCHEMA ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\nGRANT CREATE TABLE ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.bronze TO helix_silver_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.silver TO helix_silver_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.silver TO helix_gold_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.gold TO helix_gold_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.gold TO helix_analyst_standard;\n\n-- Column masks (Unity Catalog 2024+)\nALTER TABLE helix_catalog.silver.fin_aid_award\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;\n\n-- Row filters\nALTER TABLE helix_catalog.gold.dim_student\n  SET ROW FILTER helix_rls_ferpa_directory ON (student_ref);"
+    },
+    "aws_lake_formation": {
+      "description": "AWS Lake Formation implementation using LF-Tags for tag-based access control.",
+      "setup_steps": [
+        "1. Create LF-Tag key: 'helix_classification' with values: ['public', 'internal', 'confidential', 'restricted']",
+        "2. Create LF-Tag key: 'helix_domain' with values: ['identity', 'enrollment', 'financial_aid', 'academic', 'hr', 'finance', 'advancement', 'outcomes', 'student_services']",
+        "3. Tag every table and column in the Glue Data Catalog with both tags",
+        "4. Create Lake Formation data permissions mapping roles to tag combinations:",
+        "   - helix_analyst_standard \u2192 helix_classification IN ('public', 'internal')",
+        "   - helix_analyst_confidential \u2192 helix_classification IN ('public', 'internal', 'confidential')",
+        "   - helix_analyst_restricted \u2192 helix_classification IN ('public', 'internal', 'confidential', 'restricted')",
+        "   - helix_steward_enrollment \u2192 helix_domain = 'enrollment' AND helix_classification IN ('public', 'internal', 'confidential')",
+        "5. Enable column-level filtering: restricted columns tagged 'restricted' are hidden from all but helix_analyst_restricted",
+        "6. Enable data filters for FERPA RLS equivalent"
+      ],
+      "terraform_example": "resource \"aws_lakeformation_permissions\" \"analyst_standard\" {\n  principal   = aws_iam_role.helix_analyst_standard.arn\n  permissions = [\"SELECT\"]\n\n  lf_tag_policy {\n    resource_type = \"TABLE\"\n    expression {\n      key    = \"helix_classification\"\n      values = [\"public\", \"internal\"]\n    }\n  }\n}"
+    },
+    "redshift": {
+      "description": "Redshift implementation using groups and column-level GRANT.",
+      "setup_sql": "-- Create groups\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\n\n-- Schema grants\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_bronze_loader;\nGRANT INSERT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_bronze_loader;\n\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT SELECT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT USAGE, CREATE ON SCHEMA silver TO GROUP helix_silver_engineer;\n\n-- Column-level GRANT for restricted columns\n-- Redshift supports column-level GRANT natively:\nGRANT SELECT (helix_id, student_ref, award_type, award_amount, disbursement_date)\n  ON silver.fin_aid_award TO GROUP helix_gold_engineer;\n-- Note: sai, efc, family_income columns NOT granted \u2192 access denied\n\nGRANT SELECT (helix_id, student_ref, award_type, award_amount, disbursement_date, sai, efc, family_income)\n  ON silver.fin_aid_award TO GROUP helix_analyst_restricted;\n\n-- RLS via views (Redshift lacks native RLS policies)\nCREATE VIEW gold.dim_student_ferpa_safe AS\nSELECT s.*\nFROM gold.dim_student s\nWHERE NOT EXISTS (\n  SELECT 1 FROM silver.ferpa_restriction fr\n  WHERE fr.student_ref = s.student_ref\n    AND fr.is_active = TRUE\n    AND fr.restrict_directory = TRUE\n)\nOR pg_has_role(CURRENT_USER, 'helix_analyst_confidential', 'member');\n\nGRANT SELECT ON gold.dim_student_ferpa_safe TO GROUP helix_analyst_standard;"
+    },
+    "bigquery": {
+      "description": "BigQuery implementation using IAM, policy tags, and row-level security.",
+      "setup_steps": [
+        "1. Create a Data Catalog taxonomy: 'helix_classification'",
+        "2. Create policy tags: 'public', 'internal', 'confidential', 'restricted'",
+        "3. Apply policy tags to columns in BigQuery schema",
+        "4. Create IAM groups: helix-analyst-standard@domain, helix-analyst-confidential@domain, etc.",
+        "5. Grant 'Fine-Grained Reader' on policy tags to appropriate groups:",
+        "   - helix-analyst-standard: Fine-Grained Reader on 'public', 'internal' tags",
+        "   - helix-analyst-confidential: Fine-Grained Reader on 'public', 'internal', 'confidential' tags",
+        "   - helix-analyst-restricted: Fine-Grained Reader on all tags",
+        "6. Enable Row-Level Security:",
+        "   CREATE ROW ACCESS POLICY helix_ferpa_rls",
+        "   ON gold.dim_student",
+        "   GRANT TO ('group:helix-analyst-confidential@domain')",
+        "   FILTER USING (TRUE);",
+        "   -- Standard analysts get filtered view excluding directory-restricted students"
+      ]
+    }
+  },
+  "grant_lifecycle": {
+    "description": "The full lifecycle of an access grant from request through revocation.",
+    "stages": [
+      {
+        "stage": "Request",
+        "description": "Data Consumer submits an access request specifying: the database role requested, specific resources needed, business justification (including FERPA disclosure basis if student data), and requested duration.",
+        "approval_required": true,
+        "form_fields": [
+          "requestor_name",
+          "requestor_employee_id",
+          "role_requested",
+          "resources_needed",
+          "business_justification",
+          "ferpa_disclosure_basis",
+          "requested_start_date",
+          "requested_end_date",
+          "supervisor_approval"
+        ]
+      },
+      {
+        "stage": "Approval",
+        "description": "Data Steward for the relevant domain reviews and approves (or denies). Cross-domain or restricted requests require additional CDO approval.",
+        "approval_matrix": {
+          "public_internal": "Data Steward approval only",
+          "confidential": "Data Steward approval + supervisor confirmation of legitimate educational interest",
+          "restricted": "Data Steward + CDO + Qualified Individual (GLBA) or CHRO (HR restricted)",
+          "research": "Data Steward + CDO + IRB approval documentation + signed studies agreement"
+        }
+      },
+      {
+        "stage": "Provisioning",
+        "description": "Data Custodian executes the GRANT statement and documents it in the grant registry.",
+        "logging": "Grant event recorded with: grantee, role, resources, approval reference, effective date, expiration date, provisioner identity"
+      },
+      {
+        "stage": "Periodic Review",
+        "description": "All active grants are reviewed on a regular cadence. Grants without confirmed continued need are revoked.",
+        "review_cadence": {
+          "restricted": "Quarterly (every 90 days)",
+          "confidential": "Semi-annually (every 180 days)",
+          "internal": "Annually"
+        },
+        "review_process": "Data Steward receives a list of active grants in their domain. For each grant, they confirm: (1) the user still holds the role justifying access, (2) the business need persists, (3) the access level is still appropriate."
+      },
+      {
+        "stage": "Revocation",
+        "description": "Access is removed immediately upon any triggering event.",
+        "triggers": [
+          "Employee separation (automated via HR feed \u2014 REVOKE within 24 hours of termination date)",
+          "Role change (employee transfers to a different functional area \u2014 access reviewed within 7 days)",
+          "Grant expiration (automated REVOKE on the expiration date)",
+          "Steward revocation (steward determines access is no longer appropriate)",
+          "Incident response (emergency revocation during a security or compliance investigation)"
+        ],
+        "logging": "Revocation event recorded with: grantee, role revoked, trigger reason, revoker identity, effective timestamp"
+      }
+    ]
+  },
+  "references": [
+    "HELIX Govern roles.json \u2014 governance role definitions",
+    "HELIX Govern classification-handling-rules.json \u2014 per-tier handling requirements",
+    "HELIX Govern glba-safeguards-framework.json \u2014 16 CFR 314.4(c)(1) access control requirements",
+    "HELIX Govern ferpa-disclosure-framework.json \u2014 FERPA enforcement patterns",
+    "HELIX Govern raci-matrix.json \u2014 role responsibilities for access-related activities",
+    "NIST SP 800-53 AC-2 (Account Management), AC-3 (Access Enforcement), AC-6 (Least Privilege)"
+  ]
+}

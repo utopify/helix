@@ -1,0 +1,521 @@
+{
+  "$schema": "https://helixedu.org/govern/glba-compliance-scanner-schema.json",
+  "title": "HELIX Govern: GLBA Compliance Scanner",
+  "description": "Executable audit rules for detecting GLBA non-compliance across a HELIX-conformant medallion lakehouse. Companion to glba-safeguards-framework.json: that document defines WHAT must be done; this document provides HOW to detect what ISN'T done. Each rule includes a testable query or metadata check, severity, remediation, regulatory citation, and platform-specific implementation notes.",
+  "version": "0.1",
+  "purpose": "Scan a HELIX lakehouse for GLBA Safeguards Rule (16 CFR Part 314) non-compliance. Covers encryption at rest, encryption in transit, access control, data inventory completeness, monitoring, disposal, and service provider oversight. Intended to be run quarterly at minimum, with critical rules run on every deployment.",
+  "scope": {
+    "covered_resources": [
+      "FinAidAward (all attributes \u2014 classified restricted)",
+      "Person (financial identifiers: ssn, bank_account, routing_number, tax_id)",
+      "ARTransaction (student billing when tied to financial aid disbursement)"
+    ],
+    "covered_data_elements": [
+      "student_aid_index (SAI, formerly EFC)",
+      "expected_family_contribution (legacy EFC)",
+      "family_income",
+      "parent_income",
+      "parent_assets",
+      "bank_account_number",
+      "routing_number",
+      "ssn (Social Security Number)",
+      "tax_return_data (AGI, tax filing status, untaxed income)",
+      "fafsa_transaction_number",
+      "isir_data (Institutional Student Information Record)",
+      "loan_amount",
+      "disbursement_amount",
+      "disbursement_date",
+      "loan_servicer_account_number",
+      "verification_documents (tax transcripts, W-2s)"
+    ],
+    "covered_layers": [
+      "bronze",
+      "silver",
+      "gold",
+      "transport",
+      "backup",
+      "export"
+    ],
+    "helix_classification_tier": "restricted"
+  },
+  "scan_categories": [
+    {
+      "category": "Encryption at Rest",
+      "citation": "16 CFR 314.4(c)(3)",
+      "description": "GLBA-covered data must be encrypted at rest using a dedicated KMS key, separate from keys used for confidential or internal data. This ensures crypto-shredding is possible without affecting non-GLBA data.",
+      "rules": [
+        {
+          "rule_id": "GLBA-EAR-001",
+          "name": "GLBA tables must use dedicated KMS encryption key",
+          "description": "All tables containing GLBA-covered data must be encrypted with a KMS key dedicated to restricted-tier data, separate from confidential-tier keys. This enables independent crypto-shredding and key rotation.",
+          "severity": "critical",
+          "check_type": "metadata_query",
+          "check_sql": {
+            "ansi": "-- Verify encryption key assignment for GLBA tables\n-- Requires platform-specific metadata views (see platform notes)\nSELECT\n  t.table_schema,\n  t.table_name,\n  t.encryption_key_id,\n  CASE\n    WHEN t.encryption_key_id = :restricted_kms_key_arn THEN 'PASS'\n    WHEN t.encryption_key_id IS NULL THEN 'FAIL_NO_ENCRYPTION'\n    ELSE 'FAIL_WRONG_KEY'\n  END AS check_result\nFROM information_schema.tables t\nWHERE t.table_name IN (\n  'fin_aid_award',\n  'person',           -- only financial-identifier columns\n  'ar_transaction'    -- student billing subset\n)\nAND t.table_schema IN ('bronze', 'silver', 'gold');",
+            "snowflake": "SELECT\n  table_catalog, table_schema, table_name,\n  -- Snowflake encrypts all data; check is whether the table\n  -- resides in a schema with the correct encryption policy\n  'CHECK_MANUALLY' AS encryption_note\nFROM snowflake.account_usage.tables\nWHERE table_name IN ('FIN_AID_AWARD','PERSON','AR_TRANSACTION')\nAND deleted IS NULL;",
+            "redshift": "SELECT\n  schemaname, tablename,\n  -- Redshift uses cluster-level encryption; verify via\n  -- SELECT encrypted FROM stv_startup_recovery_state;\n  'CHECK_CLUSTER_ENCRYPTION' AS note\nFROM pg_tables\nWHERE tablename IN ('fin_aid_award','person','ar_transaction');",
+            "databricks": "-- Unity Catalog: check table properties for encryption\nSHOW TBLPROPERTIES silver.fin_aid_award;\n-- Look for delta.encryption.key property",
+            "bigquery": "SELECT\n  table_id, kms_key_name,\n  CASE WHEN kms_key_name = @restricted_key THEN 'PASS' ELSE 'FAIL' END AS check_result\nFROM `project.dataset.__TABLES__`\nWHERE table_id IN ('fin_aid_award','person','ar_transaction');"
+          },
+          "expected_result": "All GLBA tables use the restricted-tier KMS key ARN",
+          "finding_if_failed": "Table '{schema}.{table_name}' uses {encryption_key_id} instead of the dedicated restricted-tier KMS key",
+          "remediation": "Re-encrypt the table with the restricted-tier KMS key. For S3/Iceberg: update the table's storage encryption configuration and rewrite data files. For Snowflake: tables are encrypted by default but ensure the storage integration uses the correct key. For Redshift: the entire cluster must use encryption \u2014 cannot be per-table.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-EAR-002",
+          "name": "No GLBA data in unencrypted staging areas",
+          "description": "Scan for GLBA-covered column names appearing in temporary, staging, or scratch schemas that may not have encryption policies applied.",
+          "severity": "critical",
+          "check_type": "metadata_scan",
+          "check_sql": {
+            "ansi": "SELECT\n  c.table_schema,\n  c.table_name,\n  c.column_name\nFROM information_schema.columns c\nWHERE c.column_name IN (\n  'sai', 'efc', 'expected_family_contribution', 'student_aid_index',\n  'family_income', 'parent_income', 'parent_assets',\n  'bank_account', 'bank_account_number', 'routing_number',\n  'ssn', 'social_security_number', 'tax_id',\n  'agi', 'adjusted_gross_income', 'tax_filing_status',\n  'fafsa_transaction_number', 'isir_data',\n  'loan_servicer_account', 'disbursement_amount'\n)\nAND c.table_schema NOT IN ('bronze', 'silver', 'gold')\nORDER BY c.table_schema, c.table_name;"
+          },
+          "expected_result": "Zero rows \u2014 no GLBA columns exist outside governed schemas",
+          "finding_if_failed": "GLBA-covered column '{column_name}' found in ungoverned location '{schema}.{table_name}'",
+          "remediation": "Move data to a governed schema with proper encryption and access controls, or drop the ungoverned copy. Investigate how GLBA data reached this location.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-EAR-003",
+          "name": "No GLBA data in unencrypted export files",
+          "description": "Check for CSV, Parquet, or JSON export files containing GLBA data that were written to unencrypted storage (e.g., an S3 bucket without default encryption, a local file share).",
+          "severity": "critical",
+          "check_type": "storage_scan",
+          "check_sql": {
+            "ansi": "-- Check for recent COPY/UNLOAD commands that wrote GLBA tables to external storage\nSELECT\n  query_id,\n  query_text,\n  start_time,\n  user_name\nFROM query_history\nWHERE LOWER(query_text) LIKE '%unload%fin_aid_award%'\n   OR LOWER(query_text) LIKE '%copy into%fin_aid_award%'\n   OR LOWER(query_text) LIKE '%export%fin_aid_award%'\nORDER BY start_time DESC\nLIMIT 100;",
+            "snowflake": "SELECT\n  query_id, query_text, start_time, user_name, role_name\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%copy into%@%' OR LOWER(query_text) LIKE '%unload%')\nAND (LOWER(query_text) LIKE '%fin_aid_award%'\n     OR LOWER(query_text) LIKE '%sai%'\n     OR LOWER(query_text) LIKE '%efc%')\nAND start_time > DATEADD('day', -90, CURRENT_TIMESTAMP())\nORDER BY start_time DESC;"
+          },
+          "expected_result": "Zero unauthorized exports, or all exports target encrypted destinations",
+          "finding_if_failed": "GLBA data exported by '{user_name}' at {start_time} \u2014 verify destination encryption",
+          "remediation": "Audit the export destination. If unencrypted, delete the export file immediately and re-export to an encrypted location. Add an alert rule to prevent future unencrypted exports.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Encryption in Transit",
+      "citation": "16 CFR 314.4(c)(3)",
+      "description": "All connections transmitting GLBA data must use TLS 1.2 or higher. Unencrypted protocols (FTP, HTTP, SMTP without TLS) must never carry GLBA data.",
+      "rules": [
+        {
+          "rule_id": "GLBA-EIT-001",
+          "name": "Database connections require TLS 1.2+",
+          "description": "All database connections to schemas containing GLBA data must enforce TLS 1.2 or higher. Connections using TLS 1.0/1.1 or no TLS must be rejected.",
+          "severity": "critical",
+          "check_type": "configuration_check",
+          "check_sql": {
+            "snowflake": "-- Snowflake enforces TLS 1.2 by default on all connections.\n-- Verify network policy doesn't allow exceptions:\nSHOW NETWORK POLICIES;\n-- Check that ALLOWED_IP_LIST doesn't bypass TLS requirements",
+            "redshift": "-- Check cluster parameter group for require_ssl\nSELECT name, setting\nFROM pg_settings\nWHERE name = 'ssl'\n-- Must return 'on'\nUNION ALL\nSELECT 'min_tls', '1.2';  -- verify in parameter group",
+            "bigquery": "-- BigQuery enforces TLS 1.2+ on all connections by default.\n-- Verify VPC Service Controls are configured for the GLBA dataset:\n-- Check via gcloud: gcloud access-context-manager perimeters list"
+          },
+          "expected_result": "TLS 1.2+ enforced on all database connections",
+          "finding_if_failed": "Database allows connections below TLS 1.2",
+          "remediation": "Update database/cluster configuration to require TLS 1.2 minimum. For Redshift: set require_ssl=true and ssl_min_protocol_version=TLSv1.2 in the parameter group.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-EIT-002",
+          "name": "No GLBA data via unencrypted protocols",
+          "description": "Scan network/firewall logs for GLBA data transmitted via FTP (port 21), HTTP (port 80), or unencrypted SMTP (port 25) instead of SFTP/FTPS, HTTPS, or SMTP+TLS.",
+          "severity": "critical",
+          "check_type": "network_audit",
+          "check_sql": {
+            "ansi": "-- This is a network-level check, not a database query.\n-- Implementation: review firewall/VPC flow logs for connections\n-- from GLBA data stores to ports 21 (FTP), 80 (HTTP), 25 (SMTP).\n-- Alert on any match.\nSELECT 'Review VPC flow logs / firewall logs for unencrypted traffic from GLBA data stores' AS action;"
+          },
+          "expected_result": "Zero connections from GLBA data stores over unencrypted protocols",
+          "finding_if_failed": "Unencrypted {protocol} connection detected from GLBA data store to {destination}",
+          "remediation": "Block the unencrypted port at the firewall/security group level. Migrate the integration to the encrypted equivalent (FTP\u2192SFTP, HTTP\u2192HTTPS).",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-EIT-003",
+          "name": "HELIX Connect API endpoints enforce HTTPS with HSTS",
+          "description": "Any HELIX Connect API endpoint that serves GLBA-covered data (e.g., /financial-aid, /ar-transactions) must enforce HTTPS and return Strict-Transport-Security headers.",
+          "severity": "high",
+          "check_type": "api_check",
+          "check_sql": {
+            "ansi": "-- Manual check: curl the API endpoint\n-- curl -I https://helix-api.institution.edu/v1/financial-aid\n-- Verify: Strict-Transport-Security header present\n-- Verify: HTTP (port 80) returns 301 redirect to HTTPS\nSELECT 'Test API endpoints with curl -I for HSTS header' AS action;"
+          },
+          "expected_result": "HSTS header present with max-age >= 31536000 (1 year)",
+          "finding_if_failed": "API endpoint {endpoint} missing HSTS header or allows HTTP access",
+          "remediation": "Configure the API gateway/load balancer to add Strict-Transport-Security: max-age=31536000; includeSubDomains and redirect all HTTP to HTTPS.",
+          "remediation_deadline": "7 days (high)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Access Control",
+      "citation": "16 CFR 314.4(c)(1)",
+      "description": "GLBA data must use named-individual access grants (not broad role-based access). All grants must be reviewed periodically and revoked promptly upon separation.",
+      "rules": [
+        {
+          "rule_id": "GLBA-AC-001",
+          "name": "No broad role grants on GLBA tables",
+          "description": "GLBA data must not be accessible through generic roles (e.g., 'analyst', 'all_users', 'public'). Access must be granted to named individuals or to a dedicated restricted-access role with named membership.",
+          "severity": "critical",
+          "check_type": "privilege_scan",
+          "check_sql": {
+            "ansi": "SELECT\n  grantee,\n  table_schema,\n  table_name,\n  privilege_type\nFROM information_schema.table_privileges\nWHERE table_name IN ('fin_aid_award', 'person', 'ar_transaction')\nAND grantee NOT IN (\n  'helix_analyst_restricted',  -- dedicated named-membership role\n  'helix_silver_engineer',\n  'helix_bronze_loader'\n)\nORDER BY grantee;",
+            "snowflake": "SELECT\n  grantee_name, privilege, table_schema, table_name, granted_by\nFROM snowflake.account_usage.grants_to_roles\nWHERE table_name IN ('FIN_AID_AWARD','PERSON','AR_TRANSACTION')\nAND privilege IN ('SELECT','INSERT','UPDATE')\nAND deleted_on IS NULL\nAND grantee_name NOT IN ('HELIX_ANALYST_RESTRICTED','HELIX_SILVER_ENGINEER','HELIX_BRONZE_LOADER');",
+            "redshift": "SELECT\n  u.usename AS grantee,\n  s.schemaname,\n  s.tablename,\n  HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') AS has_select\nFROM pg_user u\nCROSS JOIN pg_tables s\nWHERE s.tablename IN ('fin_aid_award','person','ar_transaction')\nAND HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') = true\nORDER BY u.usename;"
+          },
+          "expected_result": "Only authorized restricted-tier roles and named individuals have access",
+          "finding_if_failed": "Unauthorized role/user '{grantee}' has {privilege_type} access to GLBA table '{table_name}'",
+          "remediation": "REVOKE {privilege_type} ON {table_name} FROM {grantee}; Investigate how the grant was created and establish a preventive control.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": true,
+          "fix_sql": "REVOKE SELECT ON {schema}.{table_name} FROM {grantee};"
+        },
+        {
+          "rule_id": "GLBA-AC-002",
+          "name": "Access review currency \u2014 GLBA grants reviewed within 90 days",
+          "description": "All active access grants to GLBA data must have been reviewed (approved or re-certified) within the last 90 days.",
+          "severity": "high",
+          "check_type": "governance_check",
+          "check_sql": {
+            "ansi": "-- Requires an access_review_log table maintained by governance process\nSELECT\n  g.grantee,\n  g.table_name,\n  g.granted_on,\n  r.last_review_date,\n  DATEDIFF('day', r.last_review_date, CURRENT_DATE) AS days_since_review\nFROM glba_grants g\nLEFT JOIN access_review_log r\n  ON g.grantee = r.grantee AND g.table_name = r.table_name\nWHERE r.last_review_date IS NULL\n   OR DATEDIFF('day', r.last_review_date, CURRENT_DATE) > 90;"
+          },
+          "expected_result": "Zero grants with reviews older than 90 days",
+          "finding_if_failed": "Grant for '{grantee}' on '{table_name}' has not been reviewed in {days_since_review} days",
+          "remediation": "Conduct an access review immediately. Re-certify the grant if still needed; revoke if not.",
+          "remediation_deadline": "7 days (high)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-AC-003",
+          "name": "No service accounts with GLBA access lacking an owner",
+          "description": "Service accounts (ETL, API, application accounts) with GLBA data access must each have a named human owner who is accountable for the account's activity.",
+          "severity": "high",
+          "check_type": "governance_check",
+          "check_sql": {
+            "ansi": "-- Requires a service_account_registry table\nSELECT\n  sa.account_name,\n  sa.purpose,\n  sa.owner_name,\n  sa.owner_email\nFROM service_account_registry sa\nWHERE sa.has_glba_access = true\nAND (sa.owner_name IS NULL OR sa.owner_email IS NULL);"
+          },
+          "expected_result": "All GLBA service accounts have a named owner",
+          "finding_if_failed": "Service account '{account_name}' has GLBA access but no named owner",
+          "remediation": "Assign a named owner to the service account or revoke its GLBA access. Document the owner in the service account registry.",
+          "remediation_deadline": "7 days (high)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-AC-004",
+          "name": "Terminated employees have no active GLBA grants",
+          "description": "Cross-reference active GLBA access grants against the HR separation feed. Any employee who has separated should have GLBA grants revoked within 24 hours.",
+          "severity": "critical",
+          "check_type": "cross_system_check",
+          "check_sql": {
+            "ansi": "SELECT\n  g.grantee AS db_user,\n  e.employee_id,\n  e.termination_date,\n  DATEDIFF('day', e.termination_date, CURRENT_DATE) AS days_since_term\nFROM glba_grants g\nJOIN silver.employee e\n  ON LOWER(g.grantee) = LOWER(e.username)\nWHERE e.employment_status = 'terminated'\nAND g.is_active = true;"
+          },
+          "expected_result": "Zero active GLBA grants for terminated employees",
+          "finding_if_failed": "CRITICAL: Terminated employee '{db_user}' (separated {days_since_term} days ago) still has active GLBA access",
+          "remediation": "Immediately revoke all database grants. Audit access logs since termination date for unauthorized access. Report as a potential incident.",
+          "remediation_deadline": "Immediate (critical)",
+          "automated_fix": true,
+          "fix_sql": "REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA silver FROM {db_user};\nREVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA gold FROM {db_user};\n-- Also revoke role membership:\nREVOKE ROLE helix_analyst_restricted FROM {db_user};"
+        },
+        {
+          "rule_id": "GLBA-AC-005",
+          "name": "MFA required on all GLBA access paths",
+          "description": "Verify that multi-factor authentication is enforced for all authentication paths that lead to GLBA data (direct database, BI tool, API, SSH tunnel).",
+          "severity": "critical",
+          "check_type": "configuration_check",
+          "check_sql": {
+            "ansi": "-- Check IdP/SSO configuration for MFA enforcement\n-- This is typically checked via the identity provider admin console, not SQL.\n-- For database-native auth:\nSELECT\n  username,\n  authentication_method,\n  mfa_enabled\nFROM user_authentication_config\nWHERE username IN (\n  SELECT grantee FROM glba_grants WHERE is_active = true\n)\nAND (mfa_enabled = false OR mfa_enabled IS NULL);",
+            "snowflake": "-- Check Snowflake network policy for MFA\nSHOW PARAMETERS LIKE 'CLIENT_SESSION_KEEP_ALIVE' IN ACCOUNT;\n-- Check that SSO/SAML is configured with MFA from the IdP side\n-- Snowflake MFA: SHOW USERS; look for has_mfa = 'true'"
+          },
+          "expected_result": "MFA enabled for all users with GLBA access",
+          "finding_if_failed": "User '{username}' has GLBA access without MFA enabled",
+          "remediation": "Enable MFA for the user or enforce MFA at the IdP level. Block access until MFA is configured.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Data Inventory Completeness",
+      "citation": "16 CFR 314.4(c)(2)",
+      "description": "Maintain a complete inventory of where GLBA data is collected, stored, and transmitted. The HELIX data dictionary is the source of truth; actual lakehouse state must match.",
+      "rules": [
+        {
+          "rule_id": "GLBA-INV-001",
+          "name": "Data dictionary GLBA flags match actual schema",
+          "description": "Every field flagged glba=true in the HELIX data dictionary must exist as a column in the lakehouse. Every GLBA-covered column in the lakehouse must be flagged in the data dictionary.",
+          "severity": "high",
+          "check_type": "reconciliation",
+          "check_sql": {
+            "ansi": "-- Compare data dictionary to actual schema\n-- Step 1: Fields in dictionary flagged GLBA but missing from lakehouse\nSELECT dd.term, dd.resource, 'IN_DICTIONARY_NOT_IN_DB' AS gap_type\nFROM helix_data_dictionary dd\nWHERE dd.glba = true\nAND NOT EXISTS (\n  SELECT 1 FROM information_schema.columns c\n  WHERE LOWER(c.column_name) = LOWER(dd.term)\n  AND LOWER(c.table_name) = LOWER(dd.resource)\n)\nUNION ALL\n-- Step 2: Columns with GLBA-pattern names not in dictionary\nSELECT c.column_name, c.table_name, 'IN_DB_NOT_IN_DICTIONARY' AS gap_type\nFROM information_schema.columns c\nWHERE c.column_name IN ('sai','efc','bank_account','routing_number','ssn','family_income','parent_income','parent_assets','tax_id','agi')\nAND NOT EXISTS (\n  SELECT 1 FROM helix_data_dictionary dd\n  WHERE dd.glba = true\n  AND LOWER(dd.term) = LOWER(c.column_name)\n  AND LOWER(dd.resource) = LOWER(c.table_name)\n);"
+          },
+          "expected_result": "Zero gaps \u2014 dictionary and lakehouse are in sync",
+          "finding_if_failed": "Gap: '{term}' in '{resource}' \u2014 {gap_type}",
+          "remediation": "Update the data dictionary to match the lakehouse (if the lakehouse is correct) or update the lakehouse to match the dictionary (if data was added without governance).",
+          "remediation_deadline": "7 days (high)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-INV-002",
+          "name": "No GLBA data in undocumented locations",
+          "description": "Scan ALL schemas (including temp, staging, sandbox, user-created) for columns matching GLBA field name patterns. Any GLBA data outside bronze/silver/gold is a potential compliance gap.",
+          "severity": "high",
+          "check_type": "full_schema_scan",
+          "check_sql": {
+            "ansi": "SELECT\n  c.table_schema,\n  c.table_name,\n  c.column_name,\n  'UNDOCUMENTED_GLBA_DATA' AS finding\nFROM information_schema.columns c\nWHERE c.column_name IN (\n  'sai','efc','expected_family_contribution','student_aid_index',\n  'family_income','parent_income','parent_assets',\n  'bank_account','bank_account_number','routing_number',\n  'ssn','social_security_number','tax_id',\n  'agi','adjusted_gross_income','fafsa_transaction_number'\n)\nAND c.table_schema NOT IN ('bronze','silver','gold','information_schema')\nORDER BY c.table_schema, c.table_name;"
+          },
+          "expected_result": "Zero rows \u2014 no GLBA data outside governed schemas",
+          "finding_if_failed": "Undocumented GLBA column '{column_name}' found in '{table_schema}.{table_name}'",
+          "remediation": "Investigate origin. Drop if unauthorized copy. If legitimate, move to governed schema and document in data dictionary.",
+          "remediation_deadline": "7 days (high)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Monitoring & Logging",
+      "citation": "16 CFR 314.4(c)(8)",
+      "description": "All access to GLBA data must be logged with full query text. Logs must be retained for 7+ years. Anomalous access must trigger real-time alerts.",
+      "rules": [
+        {
+          "rule_id": "GLBA-MON-001",
+          "name": "All reads of GLBA tables are logged with query text",
+          "description": "Verify that query history / access history captures every SELECT against GLBA tables, including the full query text, user identity, timestamp, and rows returned.",
+          "severity": "critical",
+          "check_type": "log_verification",
+          "check_sql": {
+            "snowflake": "-- Verify access history is capturing GLBA table reads\nSELECT COUNT(*) AS glba_queries_last_24h\nFROM snowflake.account_usage.access_history\nWHERE ARRAY_CONTAINS('FIN_AID_AWARD'::VARIANT, base_objects_accessed:objectName)\nAND query_start_time > DATEADD('hour', -24, CURRENT_TIMESTAMP());",
+            "redshift": "-- Verify STL_QUERY or SYS_QUERY_HISTORY captures GLBA queries\nSELECT COUNT(*) AS glba_queries_last_24h\nFROM stl_query\nWHERE LOWER(querytxt) LIKE '%fin_aid_award%'\nAND starttime > GETDATE() - INTERVAL '24 hours';",
+            "ansi": "SELECT COUNT(*) AS glba_queries_last_24h\nFROM query_history\nWHERE LOWER(query_text) LIKE '%fin_aid_award%'\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '24' HOUR;"
+          },
+          "expected_result": "Count > 0 if GLBA tables were queried (confirms logging is active). If count = 0 and tables were queried, logging is broken.",
+          "finding_if_failed": "Query logging is not capturing GLBA table access",
+          "remediation": "Enable query history / access history logging. For Snowflake: this is automatic in Enterprise+. For Redshift: ensure STL logging is not disabled. For BigQuery: audit logs are automatic.",
+          "remediation_deadline": "24 hours (critical)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-MON-002",
+          "name": "Anomalous access detection \u2014 bulk GLBA reads",
+          "description": "Flag queries that return an unusually high number of GLBA records (more than 1000 rows in a single query). Normal operations rarely need bulk access to GLBA data.",
+          "severity": "high",
+          "check_type": "anomaly_detection",
+          "check_sql": {
+            "snowflake": "SELECT\n  user_name,\n  query_id,\n  query_text,\n  rows_produced,\n  query_start_time\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%fin_aid_award%'\n       OR LOWER(query_text) LIKE '%sai%'\n       OR LOWER(query_text) LIKE '%efc%')\nAND rows_produced > 1000\nAND query_start_time > DATEADD('day', -7, CURRENT_TIMESTAMP())\nORDER BY rows_produced DESC;",
+            "ansi": "SELECT\n  user_name, query_id, query_text, rows_returned, start_time\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award','person','ar_transaction')\nAND rows_returned > 1000\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '7' DAY\nORDER BY rows_returned DESC;"
+          },
+          "expected_result": "Zero bulk reads, or all bulk reads are from authorized batch processes",
+          "finding_if_failed": "User '{user_name}' retrieved {rows_produced} GLBA records at {query_start_time}. Query: {query_text}",
+          "remediation": "Investigate the query. If unauthorized bulk export, treat as a potential data incident. If authorized ETL, document in the authorized_batch_processes list.",
+          "remediation_deadline": "24 hours (high \u2014 potential incident)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-MON-003",
+          "name": "GLBA access log retention \u2014 7+ years",
+          "description": "Verify that GLBA access logs are retained for at least 7 years. Check the oldest available log entry for GLBA tables.",
+          "severity": "high",
+          "check_type": "retention_check",
+          "check_sql": {
+            "snowflake": "-- Snowflake account_usage retains 365 days by default.\n-- For 7-year retention, logs must be exported to long-term storage.\nSELECT\n  MIN(query_start_time) AS oldest_log_entry,\n  DATEDIFF('day', MIN(query_start_time), CURRENT_TIMESTAMP()) AS retention_days\nFROM snowflake.account_usage.query_history\nWHERE LOWER(query_text) LIKE '%fin_aid_award%';",
+            "ansi": "SELECT\n  MIN(start_time) AS oldest_log,\n  DATEDIFF('day', MIN(start_time), CURRENT_DATE) AS retention_days\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award');"
+          },
+          "expected_result": "Retention >= 2555 days (7 years), OR confirmed export to long-term archive",
+          "finding_if_failed": "GLBA access logs only retained for {retention_days} days \u2014 below 7-year requirement",
+          "remediation": "Configure log export to long-term storage (S3 Glacier, Azure Archive, GCS Archive) with a 7-year lifecycle policy. Implement a nightly export job.",
+          "remediation_deadline": "30 days (high)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-MON-004",
+          "name": "After-hours GLBA access alerting",
+          "description": "Verify that an alert is configured to notify the Qualified Individual when GLBA data is accessed outside normal business hours (before 7 AM or after 7 PM local time, weekends, holidays).",
+          "severity": "medium",
+          "check_type": "alert_configuration",
+          "check_sql": {
+            "ansi": "-- Check for after-hours GLBA access in the last 30 days\nSELECT\n  user_name,\n  query_id,\n  start_time,\n  EXTRACT(HOUR FROM start_time) AS hour_of_day,\n  EXTRACT(DOW FROM start_time) AS day_of_week\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award','person','ar_transaction')\nAND (\n  EXTRACT(HOUR FROM start_time) < 7\n  OR EXTRACT(HOUR FROM start_time) > 19\n  OR EXTRACT(DOW FROM start_time) IN (0, 6)  -- Sunday, Saturday\n)\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '30' DAY\nORDER BY start_time DESC;"
+          },
+          "expected_result": "Zero after-hours access, or all flagged access has documented justification",
+          "finding_if_failed": "After-hours GLBA access by '{user_name}' at {start_time} \u2014 verify this was authorized",
+          "remediation": "Configure an automated alert (SNS, PagerDuty, email) that fires on after-hours GLBA queries. Investigate any unauthorized access.",
+          "remediation_deadline": "30 days (medium)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Secure Disposal",
+      "citation": "16 CFR 314.4(c)(6)",
+      "description": "GLBA data must be disposed of no later than two years after the last use, unless retention is otherwise required. Disposal means crypto-shredding across all copies.",
+      "rules": [
+        {
+          "rule_id": "GLBA-DISP-001",
+          "name": "GLBA data past retention period identified",
+          "description": "Identify GLBA records where the student's last enrollment/aid year plus the retention period has passed. Federal regulations require retention through the end of the award year plus the audit resolution period (typically 3 years after the close of the award year).",
+          "severity": "medium",
+          "check_type": "data_query",
+          "check_sql": {
+            "ansi": "SELECT\n  fa.helix_id,\n  fa.student_ref,\n  fa.academic_period_ref,\n  fa.award_year,\n  DATEDIFF('year', fa.award_year_end_date, CURRENT_DATE) AS years_since_award_year_end\nFROM silver.fin_aid_award fa\nWHERE DATEDIFF('year', fa.award_year_end_date, CURRENT_DATE) > 6\n-- 3 years post-award-year for federal retention + 3 year buffer\nAND fa.disposal_status IS NULL\nORDER BY fa.award_year_end_date ASC;"
+          },
+          "expected_result": "All records past retention are flagged for disposal review",
+          "finding_if_failed": "{count} GLBA records past retention period without disposal flag",
+          "remediation": "Flag records for disposal review by the Data Steward. Upon approval, crypto-shred with certificate of destruction.",
+          "remediation_deadline": "90 days (medium)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-DISP-002",
+          "name": "Disposed GLBA data has certificate of destruction",
+          "description": "Every GLBA disposal action must be documented with a certificate recording: what was destroyed, when, by whom, method (crypto-shred, overwrite), and confirmation that backups were also destroyed.",
+          "severity": "medium",
+          "check_type": "governance_check",
+          "check_sql": {
+            "ansi": "SELECT\n  d.disposal_id,\n  d.resource_name,\n  d.records_destroyed,\n  d.disposal_date,\n  d.disposed_by,\n  d.method,\n  d.backup_confirmed_destroyed,\n  d.certificate_on_file\nFROM disposal_log d\nWHERE d.resource_name IN ('fin_aid_award','person','ar_transaction')\nAND (d.certificate_on_file = false OR d.backup_confirmed_destroyed = false);"
+          },
+          "expected_result": "All disposals have certificates and backup confirmation",
+          "finding_if_failed": "Disposal {disposal_id} on {disposal_date} missing certificate or backup confirmation",
+          "remediation": "Complete the certificate of destruction. Verify backup copies were also destroyed and document the verification.",
+          "remediation_deadline": "30 days (medium)",
+          "automated_fix": false
+        }
+      ]
+    },
+    {
+      "category": "Service Provider Oversight",
+      "citation": "16 CFR 314.4(f)",
+      "description": "Select and retain service providers capable of maintaining safeguards. Contractually require safeguards. Periodically assess compliance.",
+      "rules": [
+        {
+          "rule_id": "GLBA-SP-001",
+          "name": "All vendors with GLBA data access have current DSA",
+          "description": "Every third-party vendor, cloud provider, or contractor with access to GLBA data must have a current, signed data sharing agreement (DSA) that includes GLBA safeguards provisions.",
+          "severity": "high",
+          "check_type": "governance_check",
+          "check_sql": {
+            "ansi": "SELECT\n  v.vendor_name,\n  v.service_description,\n  v.has_glba_data_access,\n  v.dsa_signed_date,\n  v.dsa_expiration_date,\n  CASE\n    WHEN v.dsa_expiration_date < CURRENT_DATE THEN 'EXPIRED'\n    WHEN v.dsa_signed_date IS NULL THEN 'NO_DSA'\n    ELSE 'CURRENT'\n  END AS dsa_status\nFROM vendor_registry v\nWHERE v.has_glba_data_access = true\nAND (v.dsa_expiration_date < CURRENT_DATE OR v.dsa_signed_date IS NULL);"
+          },
+          "expected_result": "All GLBA vendors have current DSAs",
+          "finding_if_failed": "Vendor '{vendor_name}' has GLBA access with {dsa_status} data sharing agreement",
+          "remediation": "Execute or renew the DSA immediately. If vendor refuses GLBA terms, terminate their access to GLBA data. Reference govern/data-sharing-agreement-template.json for the required provisions.",
+          "remediation_deadline": "30 days (high)",
+          "automated_fix": false
+        },
+        {
+          "rule_id": "GLBA-SP-002",
+          "name": "Vendor security assessments current within 12 months",
+          "description": "Each vendor with GLBA access must have a security assessment (SOC 2, HECVAT, or equivalent) on file that is no older than 12 months.",
+          "severity": "medium",
+          "check_type": "governance_check",
+          "check_sql": {
+            "ansi": "SELECT\n  v.vendor_name,\n  v.last_security_assessment_date,\n  v.assessment_type,\n  DATEDIFF('month', v.last_security_assessment_date, CURRENT_DATE) AS months_since_assessment\nFROM vendor_registry v\nWHERE v.has_glba_data_access = true\nAND (\n  v.last_security_assessment_date IS NULL\n  OR DATEDIFF('month', v.last_security_assessment_date, CURRENT_DATE) > 12\n);"
+          },
+          "expected_result": "All GLBA vendors assessed within 12 months",
+          "finding_if_failed": "Vendor '{vendor_name}' last assessed {months_since_assessment} months ago (or never assessed)",
+          "remediation": "Request updated SOC 2 Type II or HECVAT from the vendor. If not available within 30 days, escalate to the Qualified Individual for risk acceptance or access termination.",
+          "remediation_deadline": "30 days (medium)",
+          "automated_fix": false
+        }
+      ]
+    }
+  ],
+  "reporting": {
+    "finding_format": {
+      "description": "Each finding produced by the scanner follows this structure",
+      "schema": {
+        "rule_id": "string \u2014 the rule that generated this finding",
+        "severity": "critical | high | medium | low",
+        "status": "pass | fail | warning | not_tested | not_applicable",
+        "layer": "bronze | silver | gold | transport | backup | governance",
+        "resource": "HELIX resource name",
+        "detail": "string \u2014 specific finding description with interpolated values",
+        "remediation": "string \u2014 what to do",
+        "remediation_deadline": "string \u2014 based on severity",
+        "tested_at": "ISO 8601 timestamp",
+        "tested_by": "string \u2014 scanner version, auditor name, or automated job ID"
+      }
+    },
+    "summary_format": {
+      "description": "Aggregate scan results for dashboards and reporting",
+      "schema": {
+        "scan_date": "ISO 8601 date",
+        "scan_version": "HELIX GLBA Scanner v0.1",
+        "institution": "Institution name",
+        "total_rules_tested": "integer",
+        "passed": "integer",
+        "failed": "integer",
+        "warnings": "integer",
+        "not_tested": "integer",
+        "critical_findings": "integer",
+        "high_findings": "integer",
+        "medium_findings": "integer",
+        "low_findings": "integer",
+        "compliance_score": "float \u2014 (passed / total_tested) \u00d7 100",
+        "prior_scan_score": "float \u2014 for trend comparison",
+        "open_remediation_items": "integer",
+        "overdue_remediation_items": "integer"
+      }
+    },
+    "annual_board_report_template": {
+      "description": "Template for the Qualified Individual's annual report to the governing board per 16 CFR 314.4(i). Must be in writing and cover all required elements.",
+      "citation": "16 CFR 314.4(i)",
+      "sections": [
+        {
+          "section": "1. Program Overview",
+          "content": "Summary of the institution's GLBA information security program, including the designated Qualified Individual, program scope, and organizational structure."
+        },
+        {
+          "section": "2. Risk Assessment Results",
+          "content": "Summary of the most recent written risk assessment (314.4(b)): key risks identified, risk ratings (likelihood \u00d7 impact), and changes from the prior assessment."
+        },
+        {
+          "section": "3. Compliance Scan Results",
+          "content": "HELIX GLBA Scanner summary: total rules tested, pass/fail counts by category (encryption, access control, monitoring, disposal, vendor oversight), compliance score, trend vs. prior quarter/year."
+        },
+        {
+          "section": "4. Security Incidents",
+          "content": "Summary of any security incidents involving GLBA-covered data: number of incidents, nature (unauthorized access, data breach, lost device, phishing), individuals affected, notification actions taken (FTC 30-day rule for 500+ consumers), remediation status."
+        },
+        {
+          "section": "5. Remediation Progress",
+          "content": "Status of all open remediation items from prior scans: items closed, items still open, items overdue, root cause analysis for recurring findings."
+        },
+        {
+          "section": "6. Penetration Testing & Vulnerability Assessment",
+          "content": "Summary of annual penetration test and semi-annual vulnerability assessments (314.4(d)): findings, severity, remediation status."
+        },
+        {
+          "section": "7. Training Compliance",
+          "content": "Percentage of employees who completed security awareness training. Completion rate for specialized GLBA training for financial aid and data engineering staff."
+        },
+        {
+          "section": "8. Service Provider Oversight",
+          "content": "Number of vendors with GLBA access, DSA status (current/expired/missing), most recent security assessments, any vendor-related incidents."
+        },
+        {
+          "section": "9. Material Changes",
+          "content": "Any material changes to the information security program since the last report: new systems, vendor changes, organizational changes, regulatory updates."
+        },
+        {
+          "section": "10. Recommendations",
+          "content": "Qualified Individual's recommendations for program improvements, resource requests, and risk acceptance decisions requiring board approval."
+        }
+      ]
+    }
+  },
+  "implementation_notes": {
+    "automation": "Deploy scanner rules as scheduled SQL tasks (Snowflake Tasks, Redshift Scheduled Queries, Databricks Jobs, BigQuery Scheduled Queries) running at least quarterly. Critical rules (EAR-001, AC-004, EIT-001) should run daily.",
+    "integration": "Scanner findings can be exported as JSON and ingested into GRC tools (ServiceNow GRC, Archer, LogicGate) or ticketing systems for remediation tracking.",
+    "testing": "Before first production scan, validate each rule against a known-good environment (all passing) and a known-bad test environment (all failing) to confirm the scanner works correctly.",
+    "customization": "Institutions should customize: KMS key ARNs, schema names (if not bronze/silver/gold), authorized role names, retention periods (if state law requires longer than federal), business hours for after-hours alerting."
+  },
+  "references": [
+    "16 CFR Part 314 \u2014 Standards for Safeguarding Customer Information (FTC Safeguards Rule)",
+    "16 CFR 314.4(i) \u2014 Annual board report requirement",
+    "FTC Safeguards Rule Compliance Guide (ftc.gov)",
+    "HELIX govern/glba-safeguards-framework.json (policy companion)",
+    "HELIX govern/classification-handling-rules.json (restricted tier)",
+    "HELIX govern/data-sharing-agreement-template.json (vendor DSA template)"
+  ]
+}

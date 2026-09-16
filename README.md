@@ -9,7 +9,7 @@ HELIX is an open framework of foundational data models, governance standards, an
 ---
 
 **Founded by:** Dallas Maddox
-**Version:** 0.3.1 (September 2026)
+**Version:** 0.3.2 (September 2026)
 **License:** Apache 2.0
 
 --- 
@@ -147,6 +147,11 @@ See the [Bridge Reference](docs/bridge-reference.md) and [Migration Adventure Gu
 | **Data Sharing Agreement** | Template with FERPA/GLBA provisions, security requirements, breach notification, and audit rights |
 | **Schema Evolution Policy** | Versioning rules (MAJOR.MINOR.PATCH), backward compatibility guarantees, deprecation process, and institutional extension patterns |
 | **Data Dictionary** | 1,258-entry structured dictionary (JSON + CSV) covering all 47 resources — importable into Collibra, Alation, Atlan, Purview, AWS Glue |
+| **GLBA Compliance Scanner** | 21 executable audit rules across 7 categories (encryption at rest/in transit, access control, data inventory, monitoring, disposal, service-provider oversight) with platform-specific SQL and a 10-section annual board report template per 16 CFR 314.4(i) |
+| **FERPA Suppression Policy** | 8 small-cell suppression rules (primary N<5, complementary, rate, dominance, cross-tab depth, longitudinal, rounding, derived-metric) with a `helix_suppress()` SQL function, complementary-suppression CTE, dbt macro, and 6 IPEDS survey guides |
+| **Lakehouse RBAC Model** | 9 database roles mapped to governance roles across Bronze/Silver/Gold, 3 column-masking policies, 5 row-level-security patterns, grant lifecycle, and 5 platform guides (Snowflake, Databricks Unity Catalog, AWS Lake Formation, Redshift, BigQuery) |
+| **Access Control Matrix** | Enforceable truth table: 9 roles × 3 layers across all 47 resources, 11 column-level exceptions, 8 special rules (FERPA directory, GLBA, HR restricted, steward scoping, research de-identification, admin separation of duties) |
+| **Agent Guardrails** | AI agent & NLQ governance: 5 core principles, 4 classification-tier rules, 7 prohibited query patterns, 3 architecture patterns (text-to-SQL, RAG, tool-calling), 5 output filters, 21-field audit schema, 12-step implementation checklist |
 
 See the [Govern Overview](docs/govern-overview.md) for details.
 
@@ -219,7 +224,7 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ---
 
-## Repository Structure (294 files)
+## Repository Structure (299 files)
 
 ```
 helix/
@@ -245,8 +250,13 @@ helix/
 |   +-- governance-committee-charter.json   <-- Council charter template
 |   +-- data-sharing-agreement-template.json <-- DSA with FERPA/GLBA
 |   +-- schema-evolution-policy.json   <-- Versioning + extension rules
-|   +-- glba-safeguards-framework.json <-- FTC Safeguards Rule (16 CFR 314)
-|   +-- ferpa-disclosure-framework.json <-- 99.31(a)(1)/(6)/(11) enforcement
+|   +-- glba-safeguards-framework.json <-- FTC Safeguards Rule (16 CFR 314) — policy
+|   +-- glba-compliance-scanner.json   <-- 21 executable audit rules + board report
+|   +-- ferpa-disclosure-framework.json <-- 99.31(a)(1)/(6)/(11) enforcement — policy
+|   +-- ferpa-suppression-policy.json  <-- Small-cell suppression (N<5) + helix_suppress()
+|   +-- lakehouse-rbac-model.json      <-- 9 DB roles, masking, RLS, platform guides
+|   +-- access-control-matrix.json     <-- Role x Resource x Layer truth table (47 resources)
+|   +-- agent-guardrails.json          <-- AI agent & NLQ guardrails
 +-- bridge/
 |   +-- peoplesoft/                    <-- Oracle PeopleSoft mappings (42)
 |   |   +-- cs/                        <-- Campus Solutions / SIS (19)
@@ -355,5 +365,5 @@ The double helix is a fitting metaphor. Two strands — data and governance — 
 
 ---
 
-*HELIX v0.3.1 — September 2026*
+*HELIX v0.3.2 — September 2026*
 *Licensed under Apache 2.0*

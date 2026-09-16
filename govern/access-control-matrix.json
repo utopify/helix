@@ -1,0 +1,2659 @@
+{
+  "$schema": "https://helixedu.org/govern/access-control-matrix-schema.json",
+  "title": "HELIX Govern: Access Control Matrix",
+  "description": "Comprehensive matrix mapping database roles to specific HELIX resources, layers, and operations. The single source of truth for who can access what. Covers all 47 HELIX Core resources across 9 domains with column-level exceptions for restricted and PII fields.",
+  "version": "0.1",
+  "matrix_dimensions": {
+    "roles": [
+      "helix_bronze_loader",
+      "helix_silver_engineer",
+      "helix_gold_engineer",
+      "helix_analyst_standard",
+      "helix_analyst_confidential",
+      "helix_analyst_restricted",
+      "helix_steward",
+      "helix_research",
+      "helix_admin"
+    ],
+    "role_descriptions": {
+      "helix_bronze_loader": "Write-only bronze ingestion",
+      "helix_silver_engineer": "Bronze\u2192Silver transformation engineer",
+      "helix_gold_engineer": "Silver\u2192Gold model builder",
+      "helix_analyst_standard": "Gold read-only, public+internal, aggregates only for student data",
+      "helix_analyst_confidential": "Gold read with legitimate educational interest (individual student records)",
+      "helix_analyst_restricted": "Gold read including restricted data (GLBA financial, HR compensation)",
+      "helix_steward": "Silver+Gold read for domain quality oversight",
+      "helix_research": "Gold de-identified research extracts under studies agreement",
+      "helix_admin": "Grant management and governance administration (no data read)"
+    },
+    "layers": [
+      "bronze",
+      "silver",
+      "gold"
+    ],
+    "operations": {
+      "write": "Full read/write access (create, update, alter schema)",
+      "read": "SELECT access to all columns (subject to masking policies)",
+      "aggregate_only": "SELECT access but only through aggregate/suppressed views \u2014 no individual records",
+      "masked_read": "SELECT access with PII/restricted columns masked or tokenized",
+      "no_access": "No access to this resource at this layer"
+    },
+    "resources_covered": 47,
+    "domains_covered": 9
+  },
+  "matrix": [
+    {
+      "domain": "Identity",
+      "classification": "mixed",
+      "resources": [
+        "Institution",
+        "Person",
+        "Student"
+      ],
+      "ferpa_education_record": true,
+      "access_by_resource": {
+        "Institution": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Person": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Student": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      },
+      "column_exceptions": [
+        {
+          "resource": "Person",
+          "columns": [
+            "ssn",
+            "national_id",
+            "bank_account",
+            "routing_number"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted sees cleartext. Silver engineers see SHA-256 tokens for identity resolution. All others see 'RESTRICTED' literal.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "Person",
+          "columns": [
+            "legal_name",
+            "preferred_name",
+            "primary_email",
+            "primary_phone",
+            "addresses"
+          ],
+          "classification": "confidential",
+          "override": "helix_analyst_confidential and helix_steward see cleartext. helix_analyst_standard sees partial mask (first initial, domain-only email). helix_research sees opaque token.",
+          "masking_policy": "helix_mask_confidential_pii"
+        }
+      ]
+    },
+    {
+      "domain": "Academic Structure",
+      "classification": "mixed",
+      "resources": [
+        "AcademicOrg",
+        "AcademicPeriod",
+        "Course",
+        "CourseSection",
+        "Program"
+      ],
+      "ferpa_education_record": false,
+      "access_by_resource": {
+        "AcademicOrg": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "AcademicPeriod": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Course": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "CourseSection": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Program": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      }
+    },
+    {
+      "domain": "Enrollment & Registration",
+      "classification": "mixed",
+      "resources": [
+        "AcademicTermRecord",
+        "AdmissionApplication",
+        "DegreeAudit",
+        "Enrollment",
+        "FerpaRestriction",
+        "InternationalStudent",
+        "StudentGroup",
+        "StudentProgram",
+        "TransferCredit"
+      ],
+      "ferpa_education_record": true,
+      "access_by_resource": {
+        "AcademicTermRecord": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "AdmissionApplication": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "DegreeAudit": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Enrollment": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "FerpaRestriction": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "InternationalStudent": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "StudentGroup": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "StudentProgram": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "TransferCredit": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      },
+      "column_exceptions": [
+        {
+          "resource": "InternationalStudent",
+          "columns": [
+            "sevis_number",
+            "visa_number",
+            "passport_number",
+            "i20_details"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted sees cleartext. All others see 'RESTRICTED' literal. Export-controlled data.",
+          "masking_policy": "helix_mask_restricted"
+        }
+      ]
+    },
+    {
+      "domain": "Financial Aid",
+      "classification": "confidential",
+      "resources": [
+        "FinAidAward"
+      ],
+      "ferpa_education_record": true,
+      "access_by_resource": {
+        "FinAidAward": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      },
+      "column_exceptions": [
+        {
+          "resource": "FinAidAward",
+          "columns": [
+            "sai",
+            "efc",
+            "family_income",
+            "tax_data",
+            "bank_account",
+            "routing_number"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Only helix_analyst_restricted_finaid sees cleartext. All others see SHA-256 token or 'RESTRICTED'. GLBA 16 CFR 314.4(c)(3) encryption required at rest and in transit.",
+          "masking_policy": "helix_mask_restricted"
+        }
+      ]
+    },
+    {
+      "domain": "Outcomes",
+      "classification": "confidential",
+      "resources": [
+        "Degree"
+      ],
+      "ferpa_education_record": true,
+      "access_by_resource": {
+        "Degree": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      }
+    },
+    {
+      "domain": "Student Services",
+      "classification": "confidential",
+      "resources": [
+        "Hold"
+      ],
+      "ferpa_education_record": true,
+      "access_by_resource": {
+        "Hold": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      }
+    },
+    {
+      "domain": "Advancement",
+      "classification": "mixed",
+      "resources": [
+        "Campaign",
+        "Constituent",
+        "EngagementActivity",
+        "Gift"
+      ],
+      "ferpa_education_record": false,
+      "access_by_resource": {
+        "Campaign": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Constituent": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "EngagementActivity": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Gift": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      },
+      "column_exceptions": [
+        {
+          "resource": "Constituent",
+          "columns": [
+            "giving_capacity",
+            "wealth_screening_data",
+            "prospect_rating"
+          ],
+          "classification": "confidential",
+          "override": "Only helix_analyst_confidential with advancement steward authorization. helix_analyst_standard sees aggregate giving by segment only.",
+          "masking_policy": "helix_mask_confidential_pii"
+        },
+        {
+          "resource": "Gift",
+          "columns": [
+            "giving_capacity",
+            "wealth_screening_data",
+            "prospect_rating"
+          ],
+          "classification": "confidential",
+          "override": "Only helix_analyst_confidential with advancement steward authorization. helix_analyst_standard sees aggregate giving by segment only.",
+          "masking_policy": "helix_mask_confidential_pii"
+        }
+      ]
+    },
+    {
+      "domain": "Financial Operations",
+      "classification": "internal",
+      "resources": [
+        "ApVoucher",
+        "ArTransaction",
+        "Asset",
+        "Budget",
+        "Contract",
+        "ExpenseReport",
+        "FinancialOrg",
+        "Fund",
+        "GlTransaction",
+        "Grant",
+        "PurchaseOrder"
+      ],
+      "ferpa_education_record": false,
+      "access_by_resource": {
+        "ApVoucher": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "ArTransaction": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Asset": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Budget": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Contract": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "ExpenseReport": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "FinancialOrg": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Fund": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "GlTransaction": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Grant": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "PurchaseOrder": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      }
+    },
+    {
+      "domain": "Human Resources",
+      "classification": "mixed",
+      "resources": [
+        "AbsenceRecord",
+        "BenefitEnrollment",
+        "Compensation",
+        "Employee",
+        "JobClassification",
+        "LearningRecord",
+        "PayrollResult",
+        "PerformanceReview",
+        "Position",
+        "PositionBudget",
+        "Requisition",
+        "TimeEntry"
+      ],
+      "ferpa_education_record": false,
+      "access_by_resource": {
+        "AbsenceRecord": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "BenefitEnrollment": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Compensation": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Employee": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "JobClassification": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "LearningRecord": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "PayrollResult": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "PerformanceReview": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Position": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "PositionBudget": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Requisition": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "TimeEntry": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        }
+      },
+      "column_exceptions": [
+        {
+          "resource": "BenefitEnrollment",
+          "columns": [
+            "plan_details",
+            "dependent_ssn",
+            "dependent_dob",
+            "coverage_amount"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted_hr (benefits subtype) sees cleartext.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "Compensation",
+          "columns": [
+            "annual_salary",
+            "hourly_rate",
+            "total_compensation",
+            "bonus_amount"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. All others see 'RESTRICTED'. Aggregate salary data by department/rank may be exposed to helix_analyst_standard in gold aggregates.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "Employee",
+          "columns": [
+            "ssn",
+            "national_id",
+            "bank_account"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. All others see SHA-256 token.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "PayrollResult",
+          "columns": [
+            "gross_pay",
+            "net_pay",
+            "tax_withholding",
+            "deductions",
+            "bank_account",
+            "routing_number"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. Bank/routing numbers: only payroll director.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "PerformanceReview",
+          "columns": [
+            "overall_rating",
+            "reviewer_comments",
+            "improvement_plan",
+            "goals"
+          ],
+          "classification": "restricted",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. Aggregate ratings by department available to helix_analyst_standard.",
+          "masking_policy": "helix_mask_restricted"
+        }
+      ]
+    }
+  ],
+  "special_rules": [
+    {
+      "rule_id": "ACM-SPECIAL-001",
+      "name": "FERPA directory-restricted students",
+      "description": "Any gold view or report consumed by helix_analyst_standard, helix_research, or external systems must exclude students with an active directory information restriction (ferpa_restriction.restrict_directory = true).",
+      "enforcement": "Row-level security policy RLS-001 from lakehouse-rbac-model.json",
+      "applies_to_roles": [
+        "helix_analyst_standard",
+        "helix_research"
+      ],
+      "applies_to_resources": "All student-facing resources: Person, Student, Enrollment, StudentProgram, AdmissionApplication, TransferCredit, AcademicTermRecord, DegreeAudit, StudentGroup, FinAidAward, Degree, Hold",
+      "ferpa_citation": "34 CFR 99.31(a)(11), 99.37"
+    },
+    {
+      "rule_id": "ACM-SPECIAL-002",
+      "name": "GLBA restricted financial data",
+      "description": "Only helix_analyst_restricted with the finaid subtype and named-individual authorization can access GLBA-covered columns on FinAidAward and Person financial identifiers.",
+      "enforcement": "Column masking policy helix_mask_restricted + named grant",
+      "applies_to_roles": [
+        "helix_analyst_restricted_finaid"
+      ],
+      "applies_to_resources": [
+        "FinAidAward",
+        "Person (ssn, bank_account, routing_number)",
+        "ARTransaction (student billing with financial identifiers)"
+      ],
+      "glba_citation": "16 CFR 314.4(c)(1), (c)(3)"
+    },
+    {
+      "rule_id": "ACM-SPECIAL-003",
+      "name": "HR restricted data \u2014 compensation, benefits, payroll, performance",
+      "description": "Compensation, BenefitEnrollment, PayrollResult, and PerformanceReview require helix_analyst_restricted with the HR subtype. These resources are restricted even to standard confidential analysts.",
+      "enforcement": "Column masking policy helix_mask_restricted + HR-specific named grant",
+      "applies_to_roles": [
+        "helix_analyst_restricted_hr"
+      ],
+      "applies_to_resources": [
+        "Compensation",
+        "BenefitEnrollment",
+        "PayrollResult",
+        "PerformanceReview"
+      ],
+      "note": "Aggregate salary/rating data by department, rank, or classification may be exposed via gold aggregate views to helix_analyst_standard for IPEDS, equity analysis, and institutional reporting."
+    },
+    {
+      "rule_id": "ACM-SPECIAL-004",
+      "name": "Steward domain scoping",
+      "description": "Data Stewards see only resources in their assigned domain. A steward for Enrollment cannot read HR tables, and vice versa.",
+      "enforcement": "Domain-specific steward roles: helix_steward_enrollment, helix_steward_hr, helix_steward_finance, helix_steward_advancement, helix_steward_academic. Each variant gets SELECT grants only on their domain's tables.",
+      "applies_to_roles": [
+        "helix_steward"
+      ],
+      "domain_mapping": {
+        "helix_steward_enrollment": [
+          "Identity",
+          "Enrollment & Registration",
+          "Financial Aid",
+          "Outcomes",
+          "Student Services"
+        ],
+        "helix_steward_hr": [
+          "Human Resources"
+        ],
+        "helix_steward_finance": [
+          "Financial Operations"
+        ],
+        "helix_steward_advancement": [
+          "Advancement"
+        ],
+        "helix_steward_academic": [
+          "Academic Structure"
+        ]
+      }
+    },
+    {
+      "rule_id": "ACM-SPECIAL-005",
+      "name": "Research de-identification requirement",
+      "description": "The helix_research role sees only de-identified data. Direct identifiers (name, SSN, email, phone, address) are replaced with opaque tokens. Quasi-identifiers (race, gender, DOB, major, ZIP) are available but subject to small-cell suppression.",
+      "enforcement": "Research-specific gold views with helix_mask_research_deidentify masking policy",
+      "applies_to_roles": [
+        "helix_research"
+      ],
+      "applies_to_resources": "Student-facing resources only. HR, Finance, and Advancement data is not available to the research role.",
+      "ferpa_citation": "34 CFR 99.31(a)(6)"
+    },
+    {
+      "rule_id": "ACM-SPECIAL-006",
+      "name": "Admin separation of duties",
+      "description": "The helix_admin role has no data read access. CDOs or administrators who need to read data for governance oversight must hold a separate analyst role with documented justification.",
+      "enforcement": "helix_admin role has zero SELECT grants on bronze/silver/gold. Admin grants (MANAGE GRANTS, CREATE ROLE, policy management) are separate from data access.",
+      "applies_to_roles": [
+        "helix_admin"
+      ],
+      "rationale": "Prevents a single credential compromise from yielding both administrative control and unrestricted data access."
+    },
+    {
+      "rule_id": "ACM-SPECIAL-007",
+      "name": "Small-cell suppression on all aggregates",
+      "description": "Any gold view, report, or agent response that produces aggregate counts, rates, or averages from FERPA education records must apply FERPA small-cell suppression. Cells with fewer than the configured threshold (default: 5) are suppressed.",
+      "enforcement": "Gold views wrap aggregates with helix_suppress() function. Agents apply suppression post-query (see agent-guardrails.json).",
+      "applies_to_roles": [
+        "helix_analyst_standard",
+        "helix_research"
+      ],
+      "applies_to_resources": "All education-record aggregates",
+      "reference": "ferpa-suppression-policy.json"
+    },
+    {
+      "rule_id": "ACM-SPECIAL-008",
+      "name": "Time-bounded research access",
+      "description": "Research role access expires on the studies agreement end date. Automated revocation with destruction verification.",
+      "enforcement": "RLS policy RLS-005 from lakehouse-rbac-model.json. Automated grant expiration in the grant lifecycle.",
+      "applies_to_roles": [
+        "helix_research"
+      ]
+    }
+  ],
+  "operation_legend": {
+    "note": "The matrix shows the DEFAULT access level for each role\u00d7resource\u00d7layer combination. Column-level exceptions (in column_exceptions) override the default for specific sensitive columns. For example, a role with 'read' access to Person still sees restricted columns (SSN, bank_account) as masked tokens unless they hold helix_analyst_restricted.",
+    "ferpa_education_records": "Resources marked ferpa_education_record=true require disclosure basis assertion. The helix_analyst_standard role can access these only as aggregates with suppression. The helix_research role can access them only as de-identified extracts.",
+    "steward_scoping": "The helix_steward column in the matrix shows the MAXIMUM access. Actual access is scoped to the steward's assigned domain (see ACM-SPECIAL-004)."
+  },
+  "references": [
+    "govern/lakehouse-rbac-model.json \u2014 role definitions, masking policies, RLS patterns, platform implementations",
+    "govern/classification-handling-rules.json \u2014 per-tier handling requirements",
+    "govern/ferpa-disclosure-framework.json \u2014 FERPA enforcement model",
+    "govern/glba-safeguards-framework.json \u2014 GLBA access control requirements",
+    "govern/ferpa-suppression-policy.json \u2014 small-cell suppression rules",
+    "govern/agent-guardrails.json \u2014 AI agent and NLQ access controls",
+    "govern/roles.json \u2014 institutional governance role definitions",
+    "govern/domain-taxonomy.json \u2014 domain assignments for steward scoping"
+  ]
+}

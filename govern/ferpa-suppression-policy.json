@@ -1,0 +1,278 @@
+{
+  "$schema": "https://helixedu.org/govern/ferpa-suppression-policy-schema.json",
+  "title": "HELIX Govern: FERPA Small-Cell Suppression Policy",
+  "description": "Rules for suppressing small cells in aggregate reports to prevent re-identification of individuals in published or shared data. Implements NCES/IPEDS statistical standards and extends them for institutional analytics, dashboards, and AI agent responses. Includes executable SQL patterns, a dbt macro, and BI tool implementation guidance.",
+  "version": "0.1",
+  "regulatory_basis": {
+    "ferpa_connection": "While FERPA (34 CFR Part 99) does not explicitly mandate a minimum cell size, the Department of Education's Privacy Technical Assistance Center (PTAC) guidance states that aggregate data can become personally identifiable information (PII) when cell sizes are too small. Publishing a graduation rate of 100% for 'Native Hawaiian males in Computer Science' when there is only 1 such student effectively discloses that individual student's educational outcome \u2014 a FERPA violation. The standard of 'reasonable determination' under 34 CFR 99.31(b)(1) means institutions must take steps to ensure aggregate data cannot be used to identify individual students.",
+    "nces_standard": "The National Center for Education Statistics (NCES) requires suppression of cells with fewer than 3 students in published data tables. This is the minimum federal standard for IPEDS reporting.",
+    "common_institutional_threshold": "Most institutions and state higher education systems use a threshold of N < 5 (suppress any cell based on fewer than 5 individuals). HELIX adopts N < 5 as the default.",
+    "state_variations": [
+      {
+        "state": "California",
+        "threshold": 10,
+        "note": "CCCCO and CSU systems use N < 10 for some published reports"
+      },
+      {
+        "state": "Texas",
+        "threshold": 5,
+        "note": "THECB standard is N < 5"
+      },
+      {
+        "state": "New York",
+        "threshold": 5,
+        "note": "SUNY/CUNY standard is N < 5"
+      },
+      {
+        "state": "NCES/IPEDS",
+        "threshold": 3,
+        "note": "Federal minimum for IPEDS submissions"
+      },
+      {
+        "state": "Virginia",
+        "threshold": 10,
+        "note": "SCHEV requires N < 10 for public data"
+      }
+    ],
+    "ptac_guidance": "PTAC Best Practices Document: Data De-identification (2012, updated). Key principle: 'Even when data appears to be aggregate, if the underlying population is small enough, the aggregated data can still constitute PII under FERPA.'"
+  },
+  "suppression_rules": [
+    {
+      "rule_id": "SUPP-001",
+      "name": "Primary suppression \u2014 minimum cell size",
+      "description": "Any aggregate cell (count, rate, average, median, sum) based on fewer than N individuals must be suppressed and replaced with a suppression marker. This is the foundational rule \u2014 all other rules extend it.",
+      "default_threshold": 5,
+      "configurable": true,
+      "parameter": "min_cell_size",
+      "applies_to": [
+        "counts",
+        "percentages",
+        "rates",
+        "averages",
+        "medians",
+        "sums"
+      ],
+      "suppression_marker": {
+        "recommended": "*",
+        "alternatives": [
+          "S",
+          "N<5",
+          "\u2014",
+          "suppressed"
+        ],
+        "footnote": "* Value suppressed to protect student privacy per FERPA guidelines. Cells with fewer than {min_cell_size} students are not displayed.",
+        "null_in_data": "In the underlying data layer, suppressed values should be NULL (not the marker string). The marker is applied at the presentation layer."
+      },
+      "sql_pattern": "CASE\n  WHEN COUNT(*) < :min_cell_size THEN NULL\n  ELSE COUNT(*)\nEND AS student_count,\nCASE\n  WHEN COUNT(*) < :min_cell_size THEN NULL\n  ELSE ROUND(AVG(metric_value), 2)\nEND AS avg_metric"
+    },
+    {
+      "rule_id": "SUPP-002",
+      "name": "Complementary suppression \u2014 prevent back-calculation",
+      "description": "When one cell in a row or column of a cross-tabulation is primary-suppressed, at least one additional cell in the same row or column must also be suppressed (called 'complementary suppression') to prevent deriving the suppressed value by subtracting all visible cells from the marginal total.",
+      "explanation": "Example: A table shows enrollment by race. Total = 500. All cells are visible except 'American Indian' (suppressed because N=3). If White=300, Hispanic=120, Black=50, Asian=25, Two or More=2 (also suppressed), then the user can calculate American Indian = 500 - 300 - 120 - 50 - 25 = 5... but wait, Two or More is also suppressed. Without complementary suppression, they'd know American Indian = 500 - 300 - 120 - 50 - 25 - visible_others. Complementary suppression blocks this by hiding at least one additional cell.",
+      "algorithm": [
+        "1. Apply primary suppression (SUPP-001) to all cells below threshold.",
+        "2. For each row/column containing a suppressed cell, check: can the suppressed value be derived by subtracting all visible cells from the row/column total?",
+        "3. If yes (only one cell is suppressed in a row/column where the total is visible), additionally suppress the next-smallest visible cell in that row/column.",
+        "4. Repeat until no suppressed cell can be back-calculated.",
+        "5. If the total itself would reveal the suppressed value (e.g., total = 3 and only one cell is populated), suppress the total as well."
+      ],
+      "sql_pattern_complementary_suppression_cte": "-- Complementary suppression for a graduation rate by race/ethnicity report\n-- This CTE identifies which cells need complementary suppression\nWITH base AS (\n  SELECT\n    race_ethnicity,\n    COUNT(*) AS n_students,\n    SUM(CASE WHEN graduated = true THEN 1 ELSE 0 END) AS n_graduated\n  FROM gold.cohort_graduation\n  WHERE cohort_year = :cohort_year\n  GROUP BY race_ethnicity\n),\nprimary_suppressed AS (\n  SELECT\n    race_ethnicity,\n    n_students,\n    n_graduated,\n    CASE WHEN n_students < :min_cell_size THEN true ELSE false END AS is_suppressed\n  FROM base\n),\ntotals AS (\n  SELECT\n    SUM(n_students) AS total_students,\n    SUM(CASE WHEN is_suppressed THEN 0 ELSE n_students END) AS visible_sum,\n    COUNT(CASE WHEN is_suppressed THEN 1 END) AS suppressed_count\n  FROM primary_suppressed\n),\ncomplementary AS (\n  SELECT\n    ps.*,\n    -- If only 1 cell is suppressed, the total minus visible_sum reveals it.\n    -- Mark the smallest visible cell for complementary suppression.\n    CASE\n      WHEN ps.is_suppressed THEN true\n      WHEN t.suppressed_count = 1\n        AND ps.is_suppressed = false\n        AND ps.n_students = (\n          SELECT MIN(n_students)\n          FROM primary_suppressed\n          WHERE is_suppressed = false\n        )\n        THEN true\n      ELSE false\n    END AS final_suppressed\n  FROM primary_suppressed ps\n  CROSS JOIN totals t\n)\nSELECT\n  race_ethnicity,\n  CASE WHEN final_suppressed THEN NULL ELSE n_students END AS student_count,\n  CASE WHEN final_suppressed THEN NULL\n       WHEN n_graduated < :min_cell_size THEN NULL\n       ELSE ROUND(n_graduated * 100.0 / NULLIF(n_students, 0), 1)\n  END AS graduation_rate\nFROM complementary\nORDER BY race_ethnicity;"
+    },
+    {
+      "rule_id": "SUPP-003",
+      "name": "Percentage and rate suppression",
+      "description": "Suppress percentages and rates where either the numerator OR the denominator is below the suppression threshold. A rate of 100% or 0% for a small group is as identifying as the raw count. Also suppress rates where the denominator is visible but the combination of the rate and denominator allows back-calculation of the numerator.",
+      "threshold_logic": "Both numerator AND denominator must be >= min_cell_size for the rate to be displayed.",
+      "sql_pattern": "CASE\n  WHEN cohort_count < :min_cell_size THEN NULL  -- denominator too small\n  WHEN graduated_count < :min_cell_size THEN NULL  -- numerator too small\n  ELSE ROUND(graduated_count * 100.0 / NULLIF(cohort_count, 0), 1)\nEND AS graduation_rate",
+      "edge_cases": [
+        "0% rate with small denominator: suppress (reveals that no one in the group graduated)",
+        "100% rate with small denominator: suppress (reveals that everyone in the group graduated)",
+        "Rate near 0% or 100%: consider suppressing if denominator < 2\u00d7 threshold (rounding could reveal exact count)"
+      ]
+    },
+    {
+      "rule_id": "SUPP-004",
+      "name": "Dominance suppression",
+      "description": "Suppress cells where a single individual contributes more than a specified percentage of the aggregate value. This primarily applies to financial aggregates (e.g., total gift amount by donor segment where one donor contributes 90% of the total) and weighted averages where one student's value dominates.",
+      "default_dominance_threshold_pct": 80,
+      "configurable": true,
+      "parameter": "max_dominance_pct",
+      "applies_to": [
+        "sums",
+        "averages",
+        "totals"
+      ],
+      "sql_pattern": "WITH ranked AS (\n  SELECT\n    segment,\n    gift_amount,\n    SUM(gift_amount) OVER (PARTITION BY segment) AS segment_total,\n    gift_amount * 100.0 / NULLIF(SUM(gift_amount) OVER (PARTITION BY segment), 0) AS pct_of_total\n  FROM gold.gifts\n)\nSELECT\n  segment,\n  CASE\n    WHEN MAX(pct_of_total) > :max_dominance_pct THEN NULL\n    ELSE SUM(gift_amount)\n  END AS total_gifts\nFROM ranked\nGROUP BY segment;",
+      "examples": [
+        "Donor segment 'Transformational' has 3 donors. One gave $10M, others gave $50K each. The $10M donor is 99% of the segment total. Publishing the total effectively discloses one donor's gift.",
+        "Average GPA for a program with 6 students: one student's 4.0 disproportionately affects the average. If reported to one decimal, the average could narrow identification."
+      ]
+    },
+    {
+      "rule_id": "SUPP-005",
+      "name": "Cross-tabulation depth limit",
+      "description": "Limit the number of dimensions in any public cross-tabulation to prevent creating cells so specific they identify individuals. Even large institutions create very small cells when crossing Race \u00d7 Gender \u00d7 Major \u00d7 Term \u00d7 Level.",
+      "recommended_max_dimensions": 3,
+      "configurable": true,
+      "mitigation_strategies": [
+        "Use broader categories: CIP 2-digit (26 groups) instead of CIP 6-digit (1,500+ programs)",
+        "Combine small racial/ethnic groups into 'Other' when below threshold",
+        "Aggregate terms to academic year instead of individual terms",
+        "Use degree level (Bachelors, Masters, Doctoral) instead of specific program"
+      ],
+      "sql_pattern": "-- Before generating any report, count dimensions:\n-- If dimensions > 3 for an external/public report, alert:\nSELECT\n  report_name,\n  dimension_count,\n  CASE\n    WHEN dimension_count > 3 AND audience = 'external'\n    THEN 'WARNING: >3 dimensions in public report \u2014 review for small cells'\n    ELSE 'OK'\n  END AS review_flag\nFROM report_metadata;"
+    },
+    {
+      "rule_id": "SUPP-006",
+      "name": "Longitudinal suppression consistency",
+      "description": "When publishing multi-year data, the same dimension combination suppressed in one year should trigger review for adjacent years. Revealing the current year's value when the prior year was suppressed can sometimes enable inference about the prior year's value (especially in small, stable populations).",
+      "algorithm": [
+        "1. For each dimension combination, retrieve suppression status across all years being published.",
+        "2. If a cell was suppressed in Year N-1 but is visible in Year N, check: is the Year N population similar enough that Year N's value reveals Year N-1's approximate value?",
+        "3. If the population changed by fewer than min_cell_size individuals between years, consider suppressing Year N as well.",
+        "4. Document the decision (suppress or publish) with rationale."
+      ],
+      "note": "This is a judgment call, not a hard rule. PTAC guidance recommends review but doesn't mandate suppression of adjacent years. HELIX recommends institutional policy documentation."
+    },
+    {
+      "rule_id": "SUPP-007",
+      "name": "Rounding for additional protection",
+      "description": "When publishing aggregate counts, round to the nearest 5 or 10 for additional de-identification protection beyond suppression. Rounding prevents exact counts from being used for re-identification even when cells exceed the suppression threshold.",
+      "recommended_rounding": "Nearest 5 for cells >= min_cell_size",
+      "configurable": true,
+      "sql_pattern": "CASE\n  WHEN COUNT(*) < :min_cell_size THEN NULL  -- suppress\n  ELSE ROUND(COUNT(*) / 5.0, 0) * 5  -- round to nearest 5\nEND AS rounded_count",
+      "note": "Rounding is typically applied ONLY to externally published data (IPEDS, state reports, public fact book). Internal dashboards for authorized users may show exact counts with proper FERPA authorization."
+    },
+    {
+      "rule_id": "SUPP-008",
+      "name": "Weighted and derived metric suppression",
+      "description": "When publishing derived metrics (weighted averages, percentiles, regression coefficients), apply suppression if the underlying population is below threshold. A weighted average GPA for 3 students is as identifying as a raw count of 3.",
+      "applies_to": [
+        "weighted_averages",
+        "percentiles",
+        "regression_outputs",
+        "standard_deviations"
+      ],
+      "sql_pattern": "CASE\n  WHEN COUNT(*) < :min_cell_size THEN NULL\n  ELSE ROUND(\n    SUM(gpa * credit_hours) / NULLIF(SUM(credit_hours), 0),\n    2\n  )\nEND AS weighted_avg_gpa"
+    }
+  ],
+  "ipeds_specific_guidance": {
+    "description": "IPEDS-specific suppression rules for each major survey component. IPEDS will accept suppressed cells (reported as blank or with a suppression flag).",
+    "surveys": [
+      {
+        "survey": "Graduation Rates (GR/GR200)",
+        "dimensions": "Cohort \u00d7 Race/Ethnicity \u00d7 Gender \u00d7 Pell/Subsidized Loan status",
+        "threshold": "Suppress cohort cells < 5 by any dimension combination",
+        "note": "GR200 (200% time) has the same suppression requirements as GR (150% time)"
+      },
+      {
+        "survey": "Fall Enrollment (EF)",
+        "dimensions": "Race/Ethnicity \u00d7 Gender \u00d7 Level (UG/GR) \u00d7 Attendance Status (FT/PT)",
+        "threshold": "Suppress cells < 5 in any cross-tabulation",
+        "note": "Age categories create additional small cells \u2014 aggregate to broad bands (under 18, 18-24, 25-64, 65+) if needed"
+      },
+      {
+        "survey": "Completions (C)",
+        "dimensions": "CIP Code \u00d7 Award Level \u00d7 Race/Ethnicity \u00d7 Gender",
+        "threshold": "Suppress cells < 5. At CIP 6-digit level, many programs will have small cells",
+        "note": "Consider reporting at CIP 2-digit for public fact books; CIP 6-digit with suppression for IPEDS submission"
+      },
+      {
+        "survey": "Human Resources (HR)",
+        "dimensions": "Occupational Category \u00d7 Race/Ethnicity \u00d7 Gender \u00d7 Faculty Status",
+        "threshold": "Suppress cells < 5",
+        "note": "HR data is not FERPA-protected (not education records), but re-identification risk still exists. Apply suppression as best practice."
+      },
+      {
+        "survey": "Student Financial Aid (SFA)",
+        "dimensions": "Aid Type \u00d7 Income Band \u00d7 Dependency Status",
+        "threshold": "Suppress recipient counts < 5 by any combination. Also suppress average award amounts when recipient count < 5 (the average becomes individually identifying)."
+      },
+      {
+        "survey": "Outcome Measures (OM)",
+        "dimensions": "Entry Status \u00d7 Pell/Non-Pell \u00d7 Race/Ethnicity",
+        "threshold": "Suppress cohort cells < 5. OM's 8-year window means some cohorts will have natural attrition below threshold."
+      }
+    ]
+  },
+  "dashboard_implementation": {
+    "description": "Guidance for implementing suppression in interactive dashboards and BI tools.",
+    "core_principle": "Apply suppression in the gold/semantic layer BEFORE the BI tool. Never rely on the BI tool alone to suppress \u2014 users can export underlying data, bypass calculated fields, or use custom SQL. The suppression must be enforced at the data layer.",
+    "patterns": {
+      "pre_suppressed_views": {
+        "description": "Create pre-suppressed gold views that BI tools consume. The view applies suppression logic \u2014 the BI tool simply displays what the view returns.",
+        "advantage": "Simplest. No BI-tool configuration needed. Suppression enforced regardless of which tool connects.",
+        "disadvantage": "Static suppression. If a user filters to a narrower population, the pre-computed suppression may not catch newly-small cells."
+      },
+      "dynamic_suppression_function": {
+        "description": "For interactive dashboards where users can slice and filter, implement a SQL function that evaluates cell size at query time and suppresses dynamically.",
+        "advantage": "Catches small cells created by user-applied filters.",
+        "disadvantage": "More complex. Requires the function to be applied consistently in all dashboard queries.",
+        "sql_function": "-- Snowflake / BigQuery compatible\nCREATE OR REPLACE FUNCTION helix_suppress(\n  value NUMERIC,\n  cell_count INTEGER,\n  threshold INTEGER DEFAULT 5\n)\nRETURNS NUMERIC\nLANGUAGE SQL\nAS $$\n  CASE\n    WHEN cell_count < threshold THEN NULL\n    ELSE value\n  END\n$$;\n\n-- Usage in any query:\nSELECT\n  race_ethnicity,\n  helix_suppress(COUNT(*), COUNT(*), 5) AS student_count,\n  helix_suppress(\n    ROUND(SUM(CASE WHEN graduated THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0), 1),\n    COUNT(*),\n    5\n  ) AS graduation_rate\nFROM gold.cohort_graduation\nGROUP BY race_ethnicity;",
+        "redshift_variant": "-- Redshift doesn't support CREATE FUNCTION easily; use a CTE pattern instead:\nWITH suppressed AS (\n  SELECT\n    race_ethnicity,\n    COUNT(*) AS n,\n    SUM(CASE WHEN graduated THEN 1 ELSE 0 END) AS n_grad\n  FROM gold.cohort_graduation\n  GROUP BY race_ethnicity\n)\nSELECT\n  race_ethnicity,\n  CASE WHEN n < 5 THEN NULL ELSE n END AS student_count,\n  CASE WHEN n < 5 OR n_grad < 5 THEN NULL\n       ELSE ROUND(n_grad * 100.0 / NULLIF(n, 0), 1)\n  END AS graduation_rate\nFROM suppressed;"
+      }
+    },
+    "bi_tool_notes": {
+      "tableau": "Use a calculated field: IF [Student Count] < 5 THEN NULL ELSE [Metric] END. But enforce at the data layer too \u2014 Tableau users can download underlying data.",
+      "power_bi": "Use DAX: IF([StudentCount] < 5, BLANK(), [Metric]). Set the data model to prevent drill-through below threshold.",
+      "quicksight": "Use a calculated field with ifelse(). Configure row-level security to prevent unauthorized drill-to-detail.",
+      "looker": "Use a dimension/measure with a sql: parameter that applies CASE WHEN suppression. Configure user attributes to enforce thresholds."
+    }
+  },
+  "enforcement_patterns": {
+    "gold_view_pattern": {
+      "description": "Complete SQL for a suppressed graduation rate view with primary + complementary suppression, rate suppression, and rounding.",
+      "sql": "CREATE OR REPLACE VIEW gold.rpt_graduation_rate_by_race AS\nWITH base AS (\n  SELECT\n    cg.race_ethnicity,\n    COUNT(*) AS cohort_n,\n    SUM(CASE WHEN cg.graduated = true THEN 1 ELSE 0 END) AS grad_n\n  FROM gold.cohort_graduation cg\n  WHERE cg.cohort_year = (SELECT MAX(cohort_year) FROM gold.cohort_graduation)\n  -- Exclude directory-restricted students from external reports\n  AND NOT EXISTS (\n    SELECT 1 FROM silver.ferpa_restriction fr\n    WHERE fr.student_ref = cg.student_ref\n    AND fr.is_active = true\n    AND fr.restrict_directory = true\n  )\n  GROUP BY cg.race_ethnicity\n),\nprimary_supp AS (\n  SELECT\n    race_ethnicity,\n    cohort_n,\n    grad_n,\n    (cohort_n < 5) AS cell_suppressed\n  FROM base\n),\ntotals AS (\n  SELECT\n    SUM(cohort_n) AS total_cohort,\n    SUM(grad_n) AS total_grad,\n    SUM(CASE WHEN NOT cell_suppressed THEN cohort_n ELSE 0 END) AS visible_cohort_sum,\n    COUNT(CASE WHEN cell_suppressed THEN 1 END) AS n_suppressed\n  FROM primary_supp\n),\ncomplementary AS (\n  SELECT\n    ps.race_ethnicity,\n    ps.cohort_n,\n    ps.grad_n,\n    CASE\n      -- Already primary-suppressed\n      WHEN ps.cell_suppressed THEN true\n      -- Need complementary: only 1 cell suppressed and total visible\n      -- Suppress the smallest visible cell to prevent back-calc\n      WHEN t.n_suppressed = 1\n        AND NOT ps.cell_suppressed\n        AND ps.cohort_n = (\n          SELECT MIN(cohort_n) FROM primary_supp WHERE NOT cell_suppressed\n        )\n        THEN true\n      ELSE false\n    END AS final_suppressed\n  FROM primary_supp ps\n  CROSS JOIN totals t\n)\nSELECT\n  race_ethnicity,\n  CASE\n    WHEN final_suppressed THEN NULL\n    ELSE ROUND(cohort_n / 5.0, 0) * 5  -- round to nearest 5\n  END AS cohort_count,\n  CASE\n    WHEN final_suppressed THEN NULL\n    WHEN grad_n < 5 THEN NULL  -- numerator suppression\n    ELSE ROUND(grad_n * 100.0 / NULLIF(cohort_n, 0), 1)\n  END AS graduation_rate,\n  CASE WHEN final_suppressed THEN '*' ELSE NULL END AS suppression_flag\nFROM complementary\nUNION ALL\n-- Total row (always visible if total cohort >= threshold)\nSELECT\n  'Total' AS race_ethnicity,\n  CASE\n    WHEN total_cohort < 5 THEN NULL\n    ELSE ROUND(total_cohort / 5.0, 0) * 5\n  END AS cohort_count,\n  CASE\n    WHEN total_cohort < 5 OR total_grad < 5 THEN NULL\n    ELSE ROUND(total_grad * 100.0 / NULLIF(total_cohort, 0), 1)\n  END AS graduation_rate,\n  NULL AS suppression_flag\nFROM totals\nORDER BY\n  CASE WHEN race_ethnicity = 'Total' THEN 1 ELSE 0 END,\n  race_ethnicity;"
+    },
+    "dbt_macro": {
+      "description": "A dbt Jinja macro that can be applied in any gold model. Drop this into your macros/ directory.",
+      "macro": "{% macro helix_suppress(value, cell_count, threshold=5) %}\n  CASE\n    WHEN {{ cell_count }} < {{ threshold }} THEN NULL\n    ELSE {{ value }}\n  END\n{% endmacro %}\n\n{# Usage in a model: #}\n{# SELECT #}\n{#   race_ethnicity, #}\n{#   {{ helix_suppress('COUNT(*)', 'COUNT(*)', 5) }} AS student_count, #}\n{#   {{ helix_suppress( #}\n{#     'ROUND(SUM(CASE WHEN graduated THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0), 1)', #}\n{#     'COUNT(*)', #}\n{#     5 #}\n{#   ) }} AS graduation_rate #}\n{# FROM {{ ref('silver_cohort_graduation') }} #}\n{# GROUP BY race_ethnicity #}",
+      "rounded_variant": "{% macro helix_suppress_rounded(value, cell_count, threshold=5, round_to=5) %}\n  CASE\n    WHEN {{ cell_count }} < {{ threshold }} THEN NULL\n    ELSE ROUND({{ value }} / {{ round_to }}.0, 0) * {{ round_to }}\n  END\n{% endmacro %}"
+    },
+    "suppression_audit_view": {
+      "description": "A view that logs which cells were suppressed for audit and compliance documentation.",
+      "sql": "CREATE OR REPLACE VIEW gold.suppression_audit_log AS\nSELECT\n  report_name,\n  dimension_values,\n  cell_count,\n  suppression_reason,\n  CASE\n    WHEN cell_count < :min_cell_size THEN 'primary'\n    WHEN complementary_flag THEN 'complementary'\n    ELSE 'not_suppressed'\n  END AS suppression_type,\n  CURRENT_TIMESTAMP() AS evaluated_at\nFROM gold.report_cell_metadata\nWHERE cell_count < :min_cell_size\n   OR complementary_flag = true;"
+    }
+  },
+  "agent_integration": {
+    "description": "How the suppression policy integrates with HELIX AI agents and NLQ interfaces (see govern/agent-guardrails.json for the full agent framework).",
+    "requirements": [
+      "Any AI agent generating aggregate data from HELIX student records MUST apply the helix_suppress() function or equivalent before presenting results to users.",
+      "If an agent response would include a suppressed cell, the agent should say: 'That breakdown includes groups too small to report without risking student identification. I can show you the data at a broader level.'",
+      "Agents must NOT allow iterative narrowing queries that triangulate suppressed values within a single session (anti-drill-down rule).",
+      "When an agent generates a table for download/export, all cells must be evaluated for suppression BEFORE the export is produced."
+    ],
+    "anti_drill_down_example": "User asks: 'What's the graduation rate for Native Hawaiian CS majors?' \u2192 Agent: 'That group is too small to report.' User asks: 'What's the total CS graduation rate?' \u2192 Agent answers. User asks: 'What about for everyone except Native Hawaiian?' \u2192 Agent should recognize this as a back-calculation attempt and decline: 'I can't provide breakdowns that would allow calculating the suppressed value.'"
+  },
+  "helix_resource_mapping": {
+    "applies_to": [
+      "Any aggregate derived from FERPA education records:",
+      "Enrollment counts (from Enrollment, Student, StudentProgram)",
+      "Graduation/completion rates (from Degree, StudentProgram)",
+      "Retention rates (from Enrollment, AcademicTermRecord)",
+      "Grade distributions and GPA averages (from Enrollment, AcademicTermRecord)",
+      "Financial aid summaries (from FinAidAward)",
+      "Admission rates and yield (from AdmissionApplication)",
+      "Course section enrollment (from Enrollment, CourseSection)",
+      "Student demographic distributions (from Person, Student)"
+    ],
+    "not_applicable_to": [
+      "HR aggregates (Employee, Position, etc.) \u2014 not FERPA education records, though institutions may choose to apply suppression as best practice",
+      "Financial operations aggregates (GLTransaction, Budget, etc.) \u2014 not education records",
+      "Course catalog data (Course, Program) \u2014 public information",
+      "Institutional data (Institution, AcademicOrg) \u2014 public information",
+      "Advancement data (Gift, Campaign) \u2014 not education records, but donor privacy may warrant suppression for gift amounts"
+    ]
+  },
+  "references": [
+    "34 CFR Part 99 (FERPA regulations)",
+    "34 CFR 99.31(b)(1) \u2014 reasonable determination that student is not personally identifiable",
+    "PTAC Best Practices: Data De-identification (2012, updated 2014)",
+    "PTAC Technical Brief: Statistical Methods for Protecting PII in Aggregate Reporting",
+    "NCES Statistical Standards (NCES 2012-802, Section 4-2-5: Suppression Rules)",
+    "IPEDS Survey Materials \u2014 Instructions for reporting suppressed data",
+    "HELIX govern/ferpa-disclosure-framework.json (companion FERPA document)",
+    "HELIX govern/agent-guardrails.json (agent integration)"
+  ]
+}
