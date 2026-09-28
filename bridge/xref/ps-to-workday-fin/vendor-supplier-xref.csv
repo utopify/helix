@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+R (Regular),Regular vendor,VENDOR.VENDOR_CLASS,SUP-STANDARD,,Supplier,Standard supplier,Supplier (Supplier Category),VALIDATE: VENDOR_CLASS delivered values.
+E (Employee),Employee as vendor,VENDOR.VENDOR_CLASS,SUP-EXCLUDE-EMPLOYEE,,(not converted),Handled as worker expense payee,Expense Report / Worker payment election,Do not convert. Reimbursements pay through Workday Expenses to the worker.
+Student refund payee,Student vendors for refunds,VENDOR (student payees),SUP-EXCLUDE-STUDENT,,(not converted),Handled in Student Financials,Student refund / payment election,Do not convert. Workday Student handles credit balance refunds.
+A,Approved vendor,VENDOR.VENDOR_STATUS,SUP-ACTIVE,,Supplier Status: Active,Eligible for POs and payment,Supplier (status),Convert active suppliers with activity in the last 2-3 years only.
+I,Inactive vendor,VENDOR.VENDOR_STATUS,SUP-INACTIVE,,Supplier Status: Inactive,Not eligible,Supplier (status),Typically not converted; keep in archive for 1099 lookback.
+U,Unapproved vendor,VENDOR.VENDOR_STATUS,SUP-PENDING,,Supplier Status: Pending,Awaiting approval,Supplier (Create Supplier business process),
+CHK,Check,VNDR_PAYMETH.PYMNT_METHOD,PAY-CHECK,,Payment Type: Check,Printed check,Payment Type,Good moment to push suppliers to ACH.
+ACH,ACH / EFT,VNDR_PAYMETH.PYMNT_METHOD,PAY-ACH,,Payment Type: ACH,Electronic funds transfer,Payment Type + Supplier Bank Account,Bank account and routing data are restricted; load through secured channel and verify.
+WIR,Wire,VNDR_PAYMETH.PYMNT_METHOD,PAY-WIRE,,Payment Type: Wire,Domestic or international wire,Payment Type,International suppliers need tax and banking validation.
+1099 withholding,1099 reportable vendor,VENDOR_WTHD.WTHD_SW / WTHD_CLASS,SUP-1099,,Supplier Tax: 1099 Reportable,1099-MISC / 1099-NEC,Supplier (Tax Authority Form Type),Carry calendar-year-to-date 1099 amounts if cutover is mid-year.
+Vendor category,Vendor category / classification,VENDOR.VENDOR_CATEGORY or local field,SUP-CATEGORY,,Supplier Category,Commodity or type grouping,Supplier Category,VALIDATE: many PS vendors have no category; derive from spend history.
+Diverse supplier flag,Minority / small business status,VENDOR classification (local),SUP-DIVERSITY,,Supplier Classification,Diversity certification,Supplier Classification,Often required for state reporting.

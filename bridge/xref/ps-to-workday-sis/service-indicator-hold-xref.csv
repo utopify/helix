@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+FIN,Bursar / past-due balance,SRVC_IND_DATA.SRVC_IND_CD,financial,helix/hold-type,Financial Hold,Unpaid balance,Student Hold Type,"Restrictions (registration, transcript, diploma) move from PS SRVC_IMPACT to the Hold Type's affected actions."
+REG,Registrar hold,SRVC_IND_DATA.SRVC_IND_CD,registration,helix/hold-type,Registration Hold,Blocks registration,Student Hold Type,
+ADV,Advising required,SRVC_IND_DATA.SRVC_IND_CD,academic,helix/hold-type,Advising Hold,Must meet advisor,Student Hold Type,Often term specific. Convert only active holds.
+ACP,Academic probation,SRVC_IND_DATA.SRVC_IND_CD,academic,helix/hold-type,Academic Standing Hold,Probation or standing issue,Student Hold Type,"Academic standing itself converts as standing history, the hold is separate."
+CND,Student conduct,SRVC_IND_DATA.SRVC_IND_CD,disciplinary,helix/hold-type,Conduct Hold,Conduct office hold,Student Hold Type,Restricted reason detail. Do not expose conduct reasons broadly.
+TRN,Transcript hold,SRVC_IND_DATA.SRVC_IND_CD,transcript,helix/hold-type,Transcript Hold,Blocks official transcripts,Student Hold Type,
+GRD,Graduation hold,SRVC_IND_DATA.SRVC_IND_CD,graduation,helix/hold-type,Diploma Hold,Blocks conferral or diploma,Student Hold Type,
+LIB,Library fines,SRVC_IND_DATA.SRVC_IND_CD,library,helix/hold-type,Library Hold,Outstanding library items,Student Hold Type,
+IMM,Immunization,SRVC_IND_DATA.SRVC_IND_CD,health_compliance,helix/hold-type,Immunization Hold,Missing immunization records,Student Hold Type,Health detail stays in the health system; only the hold converts.
+ADM,Missing admission documents,SRVC_IND_DATA.SRVC_IND_CD,admissions,helix/hold-type,Admissions Documents Hold,Final transcript or documents missing,Student Hold Type,
+ISS,International student services,SRVC_IND_DATA.SRVC_IND_CD,international,helix/hold-type,International Hold,SEVIS or check-in requirement,Student Hold Type,
+PRK,Parking citations,SRVC_IND_DATA.SRVC_IND_CD,parking,helix/hold-type,Parking Hold,Unpaid parking fines,Student Hold Type,VALIDATE: some institutions retire parking holds at migration.

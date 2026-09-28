@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Compensation — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Compensation Component / Earning",
+  "description": "Maps PeopleSoft rate codes (COMP_RATECD on PS_COMPENSATION) and earnings codes (ERNCD) to Workday Compensation Plans and payroll Earnings through helix/compensation-type.",
+  "mappings": [
+    {
+      "ps_code": "NAANNL / SAL",
+      "ps_description": "Annual Salary",
+      "ps_source": "PS_COMPENSATION.COMP_RATECD / PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "base_salary",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Salary Plan",
+      "wd_description": "Annual base salary",
+      "wd_object": "Compensation Plan (Salary) + Earning (Regular Salary)",
+      "notes": "Faculty 9-month salary: set plan frequency Annual with the academic-year amount; payout spread handled by pay group and period schedule."
+    },
+    {
+      "ps_code": "NAHRLY / REG",
+      "ps_description": "Regular Hourly",
+      "ps_source": "PS_COMPENSATION.COMP_RATECD / ERNCD REG",
+      "helix_code": "hourly",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Hourly Plan",
+      "wd_description": "Hourly wage",
+      "wd_object": "Compensation Plan (Hourly) + Earning (Regular Hourly)",
+      "notes": ""
+    },
+    {
+      "ps_code": "OVT",
+      "ps_description": "Overtime 1.5x",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "hourly",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Earning: Overtime",
+      "wd_description": "Overtime premium",
+      "wd_object": "Earning (Overtime) calculated from Hourly plan",
+      "notes": "No separate HELIX code for overtime; it is an earning derived from hourly rate. Driven by Time Tracking in Workday."
+    },
+    {
+      "ps_code": "STP",
+      "ps_description": "Stipend",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD / ADDL_PAY",
+      "helix_code": "stipend",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Stipend Plan",
+      "wd_description": "Fixed stipend",
+      "wd_object": "Compensation Plan (Stipend) or One-Time Payment",
+      "notes": "Recurring stipends: Stipend plan. One-time: One-Time Payment. PS ADDL_PAY_DATA rows usually feed this."
+    },
+    {
+      "ps_code": "ADM",
+      "ps_description": "Administrative Supplement",
+      "ps_source": "PS_COMPENSATION.COMP_RATECD / ADDL_PAY",
+      "helix_code": "administrative_supplement",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Allowance Plan (Admin Supplement)",
+      "wd_description": "Temporary admin supplement",
+      "wd_object": "Compensation Plan (Allowance) with end date",
+      "notes": "Set assignment end date so it drops off automatically. Often on an additional job in PS; decide whether to keep as additional job or allowance."
+    },
+    {
+      "ps_code": "SUM",
+      "ps_description": "Summer Salary",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD / ADDL_PAY",
+      "helix_code": "summer_pay",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Period Salary Plan or One-Time Payment (Summer)",
+      "wd_description": "9-month faculty summer pay",
+      "wd_object": "Period Salary Plan / One-Time Payment",
+      "notes": "Grant-funded summer pay must carry the Grant worktag through costing allocation."
+    },
+    {
+      "ps_code": "OVL",
+      "ps_description": "Overload",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD / ADDL_PAY",
+      "helix_code": "overload",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "One-Time Payment (Overload) or Period Salary Plan",
+      "wd_description": "Teaching overload",
+      "wd_object": "One-Time Payment / Period Salary Plan",
+      "notes": "Often calculated per credit hour. VALIDATE: ERNCD value (OVL, OLD, OVLD vary)."
+    },
+    {
+      "ps_code": "ACT",
+      "ps_description": "Acting Pay",
+      "ps_source": "PS_COMPENSATION.COMP_RATECD",
+      "helix_code": "acting_pay",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Allowance Plan (Acting)",
+      "wd_description": "Acting appointment pay",
+      "wd_object": "Compensation Plan (Allowance) with end date",
+      "notes": "VALIDATE: rate code value."
+    },
+    {
+      "ps_code": "SHF",
+      "ps_description": "Shift Differential",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "shift_differential",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Earning: Shift Differential",
+      "wd_description": "Shift premium",
+      "wd_object": "Earning driven by Time Tracking / Time Calculation",
+      "notes": "In Workday this is usually a time calculation, not a comp plan."
+    },
+    {
+      "ps_code": "ONC",
+      "ps_description": "On-Call Pay",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "on_call",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Earning: On-Call",
+      "wd_description": "On-call availability pay",
+      "wd_object": "Earning / Time Calculation",
+      "notes": "VALIDATE: ERNCD value."
+    },
+    {
+      "ps_code": "LNG",
+      "ps_description": "Longevity",
+      "ps_source": "PS_COMPENSATION.COMP_RATECD",
+      "helix_code": "longevity",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Allowance Plan (Longevity)",
+      "wd_description": "Service-based pay",
+      "wd_object": "Compensation Plan (Allowance)",
+      "notes": "Common under state pay plans. VALIDATE: rate code value."
+    },
+    {
+      "ps_code": "BON",
+      "ps_description": "Bonus / Incentive",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "bonus",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Bonus Plan or One-Time Payment",
+      "wd_description": "Bonus",
+      "wd_object": "Bonus Plan / One-Time Payment",
+      "notes": ""
+    },
+    {
+      "ps_code": "HSG",
+      "ps_description": "Housing Allowance",
+      "ps_source": "PS_EARNINGS_TBL.ERNCD",
+      "helix_code": "housing_allowance",
+      "helix_terminology": "helix/compensation-type",
+      "wd_value": "Allowance Plan (Housing)",
+      "wd_description": "Housing allowance",
+      "wd_object": "Compensation Plan (Allowance)",
+      "notes": "Confirm taxability configuration in Workday Payroll. VALIDATE: ERNCD value."
+    }
+  ]
+}

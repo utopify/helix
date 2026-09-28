@@ -1,0 +1,60 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX Course \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "Course",
+  "ethos_resource": "courses",
+  "api_method": "Ethos Integration API",
+  "version": "0.1",
+  "write_model": "POST/PUT /api/courses with GUID-resolved references (subject, owning units, levels). Search by subject+number before create to avoid duplicates.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to courses GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "subject_code + course_number",
+      "ethos_field": "courses.subject.id (GUID) + courses.number",
+      "transformation": "subject is a GUID reference to subjects; number is the catalog number.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "title",
+      "ethos_field": "courses.title",
+      "transformation": "Course title.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "description",
+      "ethos_field": "courses.description",
+      "transformation": "Catalog description.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "ethos_field": "courses.credits[].measure + .minimum/.maximum",
+      "transformation": "Map fixed or variable credit to the credits[] structure.",
+      "notes": "Ethos courses model credits as an array supporting variable ranges."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "ethos_field": "courses.owningInstitutionUnits[].institutionUnit.id (GUID)",
+      "transformation": "Map owning department/college to institution-units GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "level",
+      "ethos_field": "courses.courseLevels[].id (GUID)",
+      "transformation": "Map helix/course-level to course-levels GUID.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "courses supports create/update on many tenants but requires GUID resolution for subject, institution-units, course-levels, and academic-levels.",
+    "Catalog structure is often curriculum-governed; coordinate writes with the registrar's catalog process."
+  ]
+}

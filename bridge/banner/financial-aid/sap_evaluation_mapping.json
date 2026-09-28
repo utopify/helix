@@ -1,0 +1,125 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 SAPEvaluation",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "SAPEvaluation",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RORSTAT",
+      "description": "Applicant Status. SAP status by aid year."
+    },
+    {
+      "table": "RHRTPADV",
+      "description": "Academic Progress / SAP evaluation history. Term SAP evaluation, pace, GPA, max-timeframe. FLAG: confirm SAP history table name."
+    },
+    {
+      "table": "RTVSAPR",
+      "description": "SAP Status validation. SAP status codes."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PIDM + TERM + AIDY."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RORSTAT_PIDM",
+      "transformation": "Applicant PIDM."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "RHRTPADV_TERM_CODE",
+      "transformation": "Term evaluated."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RORSTAT_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "evaluation_date",
+      "source": "RHRTPADV_ACTIVITY_DATE",
+      "transformation": "Evaluation date."
+    },
+    {
+      "helix_attribute": "sap_status",
+      "source": "RORSTAT_SAP_IND / RTVSAPR",
+      "transformation": "SAP status code. Bind to helix/sap-status."
+    },
+    {
+      "helix_attribute": "quantitative_measure_pace",
+      "source": "RHRTPADV_PACE",
+      "transformation": "Completion pace (completed/attempted). FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "qualitative_measure_gpa",
+      "source": "RHRTPADV_GPA / SHRLGPA",
+      "transformation": "Cumulative GPA measure."
+    },
+    {
+      "helix_attribute": "max_timeframe_pct",
+      "source": "RHRTPADV_MAXTIME_PCT",
+      "transformation": "Percent of 150% max timeframe used. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "credits_attempted_cumulative",
+      "source": "RHRTPADV_ATTEMPTED / SHRLGPA",
+      "transformation": "Cumulative attempted credits."
+    },
+    {
+      "helix_attribute": "credits_completed_cumulative",
+      "source": "RHRTPADV_EARNED / SHRLGPA",
+      "transformation": "Cumulative earned credits."
+    },
+    {
+      "helix_attribute": "appeal_filed_flag",
+      "source": "RORSTAT_APPEAL_IND",
+      "transformation": "SAP appeal filed indicator. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "appeal_date",
+      "source": "RORSTAT_APPEAL_DATE",
+      "transformation": "Appeal date."
+    },
+    {
+      "helix_attribute": "appeal_status",
+      "source": "RORSTAT_APPEAL_STATUS",
+      "transformation": "Appeal status (approved/denied)."
+    },
+    {
+      "helix_attribute": "appeal_reason",
+      "source": "free-text",
+      "transformation": "Appeal reason if recorded."
+    },
+    {
+      "helix_attribute": "academic_plan_flag",
+      "source": "RORSTAT_ACADPLAN_IND",
+      "transformation": "Academic plan indicator."
+    },
+    {
+      "helix_attribute": "academic_plan_terms",
+      "source": "Derived",
+      "transformation": "Number of terms in the academic plan."
+    },
+    {
+      "helix_attribute": "financial_aid_warning_flag",
+      "source": "Derived from SAP status = warning",
+      "transformation": "Warning status flag."
+    },
+    {
+      "helix_attribute": "financial_aid_suspension_flag",
+      "source": "Derived from SAP status = suspension",
+      "transformation": "Suspension status flag."
+    },
+    {
+      "helix_attribute": "probation_flag",
+      "source": "Derived from SAP status = probation",
+      "transformation": "Probation status flag."
+    }
+  ]
+}

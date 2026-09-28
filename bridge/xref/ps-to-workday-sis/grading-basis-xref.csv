@@ -1,0 +1,9 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+GRD,Graded,GRADE_BASIS_TBL.GRADING_BASIS,standard,helix/grade-mode,Graded,Letter-graded,Grading Basis,Pair with a Grading Scheme (A-F with plus/minus) that mirrors the PS GRADING_SCHEME.
+OPT,Student option,GRADE_BASIS_TBL.GRADING_BASIS,standard,helix/grade-mode,Graded (Student Option),Student may elect P/NP,Grading Basis (student-elected),VALIDATE: some tenants model student option as allowed grading bases on the course section.
+PNP,Pass / No Pass,GRADE_BASIS_TBL.GRADING_BASIS,pass_fail,helix/grade-mode,Pass/Fail,Pass or no credit,Grading Basis,
+CNC,Credit / No Credit,GRADE_BASIS_TBL.GRADING_BASIS,pass_fail,helix/grade-mode,Credit/No Credit,Credit or no credit,Grading Basis,Keep separate from PNP if transcripts label them differently.
+SUS,Satisfactory / Unsatisfactory,GRADE_BASIS_TBL.GRADING_BASIS,satisfactory_unsatisfactory,helix/grade-mode,Satisfactory/Unsatisfactory,S/U,Grading Basis,Common for graduate research and thesis credits.
+AUD,Audit,GRADE_BASIS_TBL.GRADING_BASIS,audit,helix/grade-mode,Audit,"No credit, attendance only",Grading Basis,
+NON,Non-graded,GRADE_BASIS_TBL.GRADING_BASIS,other,helix/grade-mode,Non-Graded,No grade issued,Grading Basis,Used for zero-credit labs or recitations.
+TRN,Transfer,GRADE_BASIS_TBL.GRADING_BASIS,other,helix/grade-mode,Transfer,Transfer credit basis,Grading Basis (Transfer),"Transfer credit usually converts through the Workday external/transfer credit load, not registrations."

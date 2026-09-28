@@ -44,3 +44,7 @@ Student Information System mappings from Oracle PeopleSoft Campus Solutions to H
 - Tuition Calculation Rules (PS_ITEM_TYPE_TBL configuration)
 - Housing / Residence Life (PS_HOUSING_APPL)
 - Student Activities / Organizations
+
+## Workday crosswalk
+
+Direct PeopleSoft to Workday value lookups for this module live in `../../xref/ps-to-workday-sis/`. *(v0.6.0)*

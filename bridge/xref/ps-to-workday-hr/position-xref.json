@@ -1,0 +1,118 @@
+{
+  "title": "HELIX XREF: Position — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Position / Staffing Model",
+  "description": "Maps PeopleSoft POSITION_DATA (POSITION_NBR, EFF_STATUS, POSN_STATUS, BUDGETED_POSN, MAX_HEAD_COUNT, REPORTS_TO) to Workday staffing models through helix/position-status. Also records how PS position hierarchy becomes Workday Supervisory Organizations.",
+  "mappings": [
+    {
+      "ps_code": "A + filled",
+      "ps_description": "Active position with incumbent",
+      "ps_source": "PS_POSITION_DATA.EFF_STATUS = 'A' + PS_JOB.POSITION_NBR",
+      "helix_code": "filled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position (filled)",
+      "wd_description": "Filled position",
+      "wd_object": "Position Management: Position + Worker assignment",
+      "notes": "Position ID seeded from POSITION_NBR to keep budgets and history traceable."
+    },
+    {
+      "ps_code": "A + vacant",
+      "ps_description": "Active position, no incumbent",
+      "ps_source": "PS_POSITION_DATA.EFF_STATUS = 'A' (no active JOB)",
+      "helix_code": "open",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position (unfilled, available for hire)",
+      "wd_description": "Open position",
+      "wd_object": "Create Position business process",
+      "notes": "Only convert vacancies that are approved to hire; stale vacancies inflate headcount."
+    },
+    {
+      "ps_code": "F",
+      "ps_description": "Frozen position",
+      "ps_source": "PS_POSITION_DATA.POSN_STATUS = 'F'",
+      "helix_code": "frozen",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position (frozen, freeze hiring)",
+      "wd_description": "Frozen",
+      "wd_object": "Position Restrictions (Freeze)",
+      "notes": "VALIDATE: POSN_STATUS values (A approved, F frozen, P proposed are common)."
+    },
+    {
+      "ps_code": "P",
+      "ps_description": "Proposed position",
+      "ps_source": "PS_POSITION_DATA.POSN_STATUS = 'P'",
+      "helix_code": "proposed",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position request (not yet created)",
+      "wd_description": "Proposed",
+      "wd_object": "Create Position business process (in progress) or exclude",
+      "notes": "Usually excluded from conversion; recreate in Workday after go-live."
+    },
+    {
+      "ps_code": "I",
+      "ps_description": "Inactive / abolished",
+      "ps_source": "PS_POSITION_DATA.EFF_STATUS = 'I'",
+      "helix_code": "abolished",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Closed position",
+      "wd_description": "Abolished",
+      "wd_object": "Close Position business process / not converted",
+      "notes": "Convert only if needed for history; otherwise archive."
+    },
+    {
+      "ps_code": "MAX_HEAD_COUNT > 1",
+      "ps_description": "Pooled position",
+      "ps_source": "PS_POSITION_DATA.MAX_HEAD_COUNT",
+      "helix_code": "pooled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Job Management headcount or multiple positions",
+      "wd_description": "Pooled (many incumbents)",
+      "wd_object": "Job Management (Headcount Restriction) or split into N positions",
+      "notes": "Workday positions hold one worker. Split pooled PS positions or move the org to Job Management."
+    },
+    {
+      "ps_code": "BUDGETED_POSN = Y",
+      "ps_description": "Budgeted position",
+      "ps_source": "PS_POSITION_DATA.BUDGETED_POSN",
+      "helix_code": "filled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position with budget (Workday Budget or Planning)",
+      "wd_description": "Budgeted",
+      "wd_object": "Position + Position Budget / Adaptive Planning",
+      "notes": "Position budgets live in Workday Budgets or Adaptive Planning; link via Position ID."
+    },
+    {
+      "ps_code": "REPORTS_TO",
+      "ps_description": "Reports-to position",
+      "ps_source": "PS_POSITION_DATA.REPORTS_TO",
+      "helix_code": "filled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Supervisory Organization manager",
+      "wd_description": "Hierarchy",
+      "wd_object": "Supervisory Organization + Manager role",
+      "notes": "Build Supervisory Organizations from the REPORTS_TO tree (each manager position leads one sup org), not from DEPTID. DEPTID becomes Cost Center. This is a design decision, not a load."
+    },
+    {
+      "ps_code": "Model choice: Position Mgmt",
+      "ps_description": "Strict position control orgs",
+      "ps_source": "Institution policy",
+      "helix_code": "filled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Position Management",
+      "wd_description": "One worker per position, pre-approved",
+      "wd_object": "Supervisory Organization staffing model",
+      "notes": "Use for budget-controlled staff and state-funded positions. Most PS position-control institutions choose this for staff."
+    },
+    {
+      "ps_code": "Model choice: Job Mgmt",
+      "ps_description": "Flexible staffing orgs",
+      "ps_source": "Institution policy",
+      "helix_code": "pooled",
+      "helix_terminology": "helix/position-status",
+      "wd_value": "Job Management",
+      "wd_description": "Headcount limits, no position records",
+      "wd_object": "Supervisory Organization staffing model",
+      "notes": "Use for student workers, adjuncts, temps, and high-turnover pools. Staffing model is set per Supervisory Organization."
+    }
+  ]
+}

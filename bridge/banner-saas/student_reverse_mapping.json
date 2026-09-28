@@ -1,0 +1,49 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX Student \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "Student",
+  "ethos_resource": "students",
+  "api_method": "Ethos Integration API / business-process API",
+  "version": "0.1",
+  "write_model": "PUT/POST /api/students keyed by person GUID where supported. In many tenants the student record is established through admissions/registration business processes rather than a direct write; treat direct write as best-effort with fallback to process APIs.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "External crosswalk to students GUID. Do not write helix_id.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "person_ref",
+      "ethos_field": "students.person.id (GUID)",
+      "transformation": "Resolve the person's Ethos GUID from the crosswalk; students references persons by GUID.",
+      "notes": "Person must exist in Ethos before the student record can be created."
+    },
+    {
+      "helix_attribute": "student_type",
+      "ethos_field": "students.type (guid ref to student-types)",
+      "transformation": "Map helix/student-type to tenant student-types GUID.",
+      "notes": "FLAG: 'students' resource in Ethos is comparatively thin; much student context lives in student-academic-programs. Verify field availability per API version."
+    },
+    {
+      "helix_attribute": "student_status",
+      "ethos_field": "(business process)",
+      "transformation": "Student status transitions are typically driven by registration/academic-program events, not a direct writable field.",
+      "notes": "Prefer student-academic-programs + section-registrations to establish effective status."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "ethos_field": "(n/a)",
+      "transformation": "HELIX provenance only.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "The Ethos 'students' resource is minimal; most student lifecycle state derives from student-academic-programs and section-registrations.",
+    "person GUID must pre-exist (create Person first).",
+    "Some tenants do not permit direct POST to students; the student is materialized as a side effect of program/admission processes \u2014 verify tenant capability."
+  ]
+}

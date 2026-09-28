@@ -1,0 +1,140 @@
+{
+  "title": "HELIX XREF: Absence Type — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Absence Type",
+  "description": "Maps PeopleSoft Absence Management take codes (PIN_TAKE_NUM / ABSENCE_TYPE) and Base Benefits LEAVE_PLAN types to Workday Time Off Plans and Leave of Absence Types through helix/absence-type.",
+  "mappings": [
+    {
+      "ps_code": "VAC",
+      "ps_description": "Vacation",
+      "ps_source": "GP_ABS_EVENT.PIN_TAKE_NUM / PS_LEAVE_PLAN (plan type 5x)",
+      "helix_code": "vacation",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Time Off Plan: Vacation",
+      "wd_description": "Vacation accrual and usage",
+      "wd_object": "Time Off Plan + Time Off Type",
+      "notes": "Convert balances as of cutover, not full accrual history. VALIDATE: take code names."
+    },
+    {
+      "ps_code": "SICK",
+      "ps_description": "Sick",
+      "ps_source": "GP_ABS_EVENT.PIN_TAKE_NUM / PS_LEAVE_PLAN",
+      "helix_code": "sick",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Time Off Plan: Sick",
+      "wd_description": "Sick accrual and usage",
+      "wd_object": "Time Off Plan + Time Off Type",
+      "notes": "State paid sick leave rules may need separate Workday plans."
+    },
+    {
+      "ps_code": "PERS",
+      "ps_description": "Personal",
+      "ps_source": "GP_ABS_EVENT.PIN_TAKE_NUM",
+      "helix_code": "personal",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Time Off Plan: Personal",
+      "wd_description": "Personal days",
+      "wd_object": "Time Off Plan",
+      "notes": ""
+    },
+    {
+      "ps_code": "FMLA",
+      "ps_description": "Family and Medical Leave",
+      "ps_source": "PS_JOB ACTION LOA + ACTION_REASON / FMLA tracking",
+      "helix_code": "fmla",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: FMLA",
+      "wd_description": "FMLA leave",
+      "wd_object": "Leave of Absence Type + Leave Family",
+      "notes": "FMLA entitlement tracking (12 weeks) must be seeded for open leaves."
+    },
+    {
+      "ps_code": "MIL",
+      "ps_description": "Military",
+      "ps_source": "PS_JOB ACTION_REASON",
+      "helix_code": "military",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Military (USERRA)",
+      "wd_description": "Military leave",
+      "wd_object": "Leave of Absence Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "BRV",
+      "ps_description": "Bereavement",
+      "ps_source": "GP_ABS_EVENT.PIN_TAKE_NUM",
+      "helix_code": "bereavement",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Time Off Type: Bereavement",
+      "wd_description": "Bereavement",
+      "wd_object": "Time Off Type (non-accruing)",
+      "notes": ""
+    },
+    {
+      "ps_code": "JURY",
+      "ps_description": "Jury Duty",
+      "ps_source": "GP_ABS_EVENT.PIN_TAKE_NUM",
+      "helix_code": "jury_duty",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Time Off Type: Jury Duty",
+      "wd_description": "Jury duty",
+      "wd_object": "Time Off Type (non-accruing)",
+      "notes": ""
+    },
+    {
+      "ps_code": "SABB",
+      "ps_description": "Sabbatical",
+      "ps_source": "PS_JOB ACTION PLA + ACTION_REASON",
+      "helix_code": "sabbatical",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Sabbatical",
+      "wd_description": "Faculty sabbatical",
+      "wd_object": "Leave of Absence Type",
+      "notes": "Half-pay sabbaticals also need a compensation change for the leave period."
+    },
+    {
+      "ps_code": "PARENTAL",
+      "ps_description": "Parental Leave",
+      "ps_source": "PS_JOB ACTION_REASON / take code",
+      "helix_code": "parental",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Parental",
+      "wd_description": "Parental leave",
+      "wd_object": "Leave of Absence Type",
+      "notes": "Often runs concurrently with FMLA; model as linked leaves."
+    },
+    {
+      "ps_code": "ADMIN",
+      "ps_description": "Administrative Leave",
+      "ps_source": "PS_JOB ACTION_REASON",
+      "helix_code": "administrative",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Administrative",
+      "wd_description": "Administrative leave",
+      "wd_object": "Leave of Absence Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "WC",
+      "ps_description": "Workers Compensation",
+      "ps_source": "PS_JOB ACTION_REASON",
+      "helix_code": "workers_compensation",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Workers Compensation",
+      "wd_description": "Workers comp leave",
+      "wd_object": "Leave of Absence Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "LWOP",
+      "ps_description": "Leave Without Pay",
+      "ps_source": "PS_JOB ACTION LOA",
+      "helix_code": "unpaid",
+      "helix_terminology": "helix/absence-type",
+      "wd_value": "Leave of Absence Type: Unpaid",
+      "wd_description": "Unpaid leave",
+      "wd_object": "Leave of Absence Type",
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Verification",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "Verification",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RRRAREQ",
+      "description": "Applicant Requirements. Tracking requirements/documents by aid year, status, satisfied date."
+    },
+    {
+      "table": "RTVTREQ",
+      "description": "Tracking Requirement validation. Requirement codes."
+    },
+    {
+      "table": "RORSTAT",
+      "description": "Applicant Status. Verification selection/completion flags."
+    },
+    {
+      "table": "RCRTPGP",
+      "description": "Verification Tracking Group. Tracking group assignment. FLAG: confirm table name."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + RORSTAT_PIDM + AIDY."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RORSTAT_PIDM",
+      "transformation": "Applicant PIDM."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "RORSTAT_PIDM + AIDY",
+      "transformation": "Link to AidApplication."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RORSTAT_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "verification_tracking_group",
+      "source": "RCRTPGP_TRGP_CODE / RCRESAR_VERIF_TRACKING_GRP",
+      "transformation": "Tracking group (V1/V4/V5)."
+    },
+    {
+      "helix_attribute": "verification_status",
+      "source": "RORSTAT_VERIF_STATUS_IND",
+      "transformation": "Verification status. Bind to helix/verification-status."
+    },
+    {
+      "helix_attribute": "selected_date",
+      "source": "RCRESAR_RECEIPT_DATE",
+      "transformation": "Date ISIR selected for verification."
+    },
+    {
+      "helix_attribute": "documents_required",
+      "source": "RRRAREQ (TREQ codes, unsatisfied)",
+      "transformation": "Required tracking documents. Decode via RTVTREQ."
+    },
+    {
+      "helix_attribute": "documents_received",
+      "source": "RRRAREQ where RRRAREQ_SAT_IND satisfied",
+      "transformation": "Received/satisfied documents."
+    },
+    {
+      "helix_attribute": "documents_outstanding",
+      "source": "RRRAREQ where not satisfied",
+      "transformation": "Outstanding documents."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "MAX(RRRAREQ_SATISFIED_DATE)",
+      "transformation": "Verification completion date."
+    },
+    {
+      "helix_attribute": "conflicting_information_flag",
+      "source": "RORSTAT_CONFLICT_IND",
+      "transformation": "Conflicting information flag. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "conflicting_info_resolution",
+      "source": "free-text",
+      "transformation": "Resolution note if recorded."
+    },
+    {
+      "helix_attribute": "sai_before_verification",
+      "source": "RCRESAR (original transaction SAI)",
+      "transformation": "SAI on the original ISIR transaction."
+    },
+    {
+      "helix_attribute": "sai_after_verification",
+      "source": "RCRESAR (corrected transaction SAI)",
+      "transformation": "SAI on the corrected ISIR transaction."
+    },
+    {
+      "helix_attribute": "sai_change_amount",
+      "source": "Derived",
+      "transformation": "Difference between corrected and original SAI."
+    },
+    {
+      "helix_attribute": "isir_correction_required_flag",
+      "source": "Derived",
+      "transformation": "True if a correction transaction was generated."
+    },
+    {
+      "helix_attribute": "correction_transaction_number",
+      "source": "RCRESAR_TRANS_NO (correction)",
+      "transformation": "Correction transaction number."
+    },
+    {
+      "helix_attribute": "verification_outcome",
+      "source": "Derived",
+      "transformation": "no_change / corrected / referred / incomplete."
+    }
+  ]
+}

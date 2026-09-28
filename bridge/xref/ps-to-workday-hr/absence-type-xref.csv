@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+VAC,Vacation,GP_ABS_EVENT.PIN_TAKE_NUM / PS_LEAVE_PLAN (plan type 5x),vacation,helix/absence-type,Time Off Plan: Vacation,Vacation accrual and usage,Time Off Plan + Time Off Type,"Convert balances as of cutover, not full accrual history. VALIDATE: take code names."
+SICK,Sick,GP_ABS_EVENT.PIN_TAKE_NUM / PS_LEAVE_PLAN,sick,helix/absence-type,Time Off Plan: Sick,Sick accrual and usage,Time Off Plan + Time Off Type,State paid sick leave rules may need separate Workday plans.
+PERS,Personal,GP_ABS_EVENT.PIN_TAKE_NUM,personal,helix/absence-type,Time Off Plan: Personal,Personal days,Time Off Plan,
+FMLA,Family and Medical Leave,PS_JOB ACTION LOA + ACTION_REASON / FMLA tracking,fmla,helix/absence-type,Leave of Absence Type: FMLA,FMLA leave,Leave of Absence Type + Leave Family,FMLA entitlement tracking (12 weeks) must be seeded for open leaves.
+MIL,Military,PS_JOB ACTION_REASON,military,helix/absence-type,Leave of Absence Type: Military (USERRA),Military leave,Leave of Absence Type,
+BRV,Bereavement,GP_ABS_EVENT.PIN_TAKE_NUM,bereavement,helix/absence-type,Time Off Type: Bereavement,Bereavement,Time Off Type (non-accruing),
+JURY,Jury Duty,GP_ABS_EVENT.PIN_TAKE_NUM,jury_duty,helix/absence-type,Time Off Type: Jury Duty,Jury duty,Time Off Type (non-accruing),
+SABB,Sabbatical,PS_JOB ACTION PLA + ACTION_REASON,sabbatical,helix/absence-type,Leave of Absence Type: Sabbatical,Faculty sabbatical,Leave of Absence Type,Half-pay sabbaticals also need a compensation change for the leave period.
+PARENTAL,Parental Leave,PS_JOB ACTION_REASON / take code,parental,helix/absence-type,Leave of Absence Type: Parental,Parental leave,Leave of Absence Type,Often runs concurrently with FMLA; model as linked leaves.
+ADMIN,Administrative Leave,PS_JOB ACTION_REASON,administrative,helix/absence-type,Leave of Absence Type: Administrative,Administrative leave,Leave of Absence Type,
+WC,Workers Compensation,PS_JOB ACTION_REASON,workers_compensation,helix/absence-type,Leave of Absence Type: Workers Compensation,Workers comp leave,Leave of Absence Type,
+LWOP,Leave Without Pay,PS_JOB ACTION LOA,unpaid,helix/absence-type,Leave of Absence Type: Unpaid,Unpaid leave,Leave of Absence Type,

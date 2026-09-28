@@ -1,0 +1,184 @@
+{
+  "title": "HELIX XREF: Admit Type and Admission Status \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Admit Type / Admission Status",
+  "description": "Maps PeopleSoft ADM_APPL_PROG.ADMIT_TYPE (entry pathway) to helix/student-type, and PROG_ACTION application decisions to helix/admission-status, then to Workday Admissions (Application, Admission Decision) and Student Recruitment.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "FYR",
+      "ps_description": "First-year freshman",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "first_time_freshman",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "First Year",
+      "wd_description": "First-time student",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": "VALIDATE: ADMIT_TYPE codes are institution defined."
+    },
+    {
+      "ps_code": "TRN",
+      "ps_description": "Transfer",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "transfer",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Transfer",
+      "wd_description": "Prior college credit",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": "Triggers transfer credit evaluation."
+    },
+    {
+      "ps_code": "RDM",
+      "ps_description": "Readmit",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "readmit",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Readmit",
+      "wd_description": "Returning after separation",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": "Readmits reuse the existing Workday person and Universal ID."
+    },
+    {
+      "ps_code": "VIS",
+      "ps_description": "Visiting / transient",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "transient",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Visiting",
+      "wd_description": "Enrolled elsewhere",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": ""
+    },
+    {
+      "ps_code": "HSD",
+      "ps_description": "High school dual enrollment",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "dual_enrollment",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Dual Enrollment",
+      "wd_description": "High school student",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": "Minors: check guardian and FERPA handling."
+    },
+    {
+      "ps_code": "NDG",
+      "ps_description": "Non-degree",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "non_degree",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Non-Degree",
+      "wd_description": "Non-degree seeking",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": ""
+    },
+    {
+      "ps_code": "PBC",
+      "ps_description": "Post-baccalaureate",
+      "ps_source": "ADM_APPL_PROG.ADMIT_TYPE",
+      "helix_code": "post_baccalaureate",
+      "helix_terminology": "helix/student-type",
+      "wd_value": "Post-Baccalaureate",
+      "wd_description": "Holds a bachelor degree",
+      "wd_object": "Student Application (Applicant Type)",
+      "notes": ""
+    },
+    {
+      "ps_code": "APPL",
+      "ps_description": "Application received",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "submitted",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Submitted",
+      "wd_description": "Application submitted",
+      "wd_object": "Student Application (status)",
+      "notes": ""
+    },
+    {
+      "ps_code": "ADMT",
+      "ps_description": "Admit",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "admitted",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Admit",
+      "wd_description": "Admit decision",
+      "wd_object": "Admission Decision",
+      "notes": ""
+    },
+    {
+      "ps_code": "COND",
+      "ps_description": "Conditional admit",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION + PROG_REASON",
+      "helix_code": "conditionally_admitted",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Conditional Admit",
+      "wd_description": "Admit with conditions",
+      "wd_object": "Admission Decision (with conditions)",
+      "notes": "VALIDATE: often ADMT with a PROG_REASON rather than a separate action."
+    },
+    {
+      "ps_code": "DENY",
+      "ps_description": "Deny",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "denied",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Deny",
+      "wd_description": "Denied",
+      "wd_object": "Admission Decision",
+      "notes": ""
+    },
+    {
+      "ps_code": "WAIT",
+      "ps_description": "Waitlist",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "waitlisted",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Waitlist",
+      "wd_description": "Waitlisted",
+      "wd_object": "Admission Decision",
+      "notes": "VALIDATE: institution-defined action."
+    },
+    {
+      "ps_code": "DEFR",
+      "ps_description": "Defer",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "deferred",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Defer",
+      "wd_description": "Decision or entry deferred",
+      "wd_object": "Admission Decision / Deferral",
+      "notes": ""
+    },
+    {
+      "ps_code": "WADM",
+      "ps_description": "Withdrawn after admit",
+      "ps_source": "ADM_APPL_PROG.PROG_ACTION",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/admission-status",
+      "wd_value": "Withdrawn",
+      "wd_description": "Admit declined or withdrawn",
+      "wd_object": "Student Application (status)",
+      "notes": ""
+    },
+    {
+      "ps_code": "PROSPECT",
+      "ps_description": "Prospect (Recruiting)",
+      "ps_source": "ADM_PRSPCT_CAR / SCC_ prospect records",
+      "helix_code": "prospective",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Prospect",
+      "wd_description": "Pre-application prospect",
+      "wd_object": "Student Prospect (Student Recruitment)",
+      "notes": "Many institutions keep prospects in the CRM (Slate, Salesforce) and do not convert them."
+    }
+  ]
+}

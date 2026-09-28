@@ -1,0 +1,149 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 FinAidAward",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "FinAidAward",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RPRAWRD",
+      "description": "Applicant Award by Aid Year. Award record \u2014 fund, offered/accepted/paid amounts, status, aid year."
+    },
+    {
+      "table": "RFRBASE",
+      "description": "Fund Base. Financial aid fund attributes \u2014 fund type, source, need/merit indicators."
+    },
+    {
+      "table": "RTVFTYP",
+      "description": "Fund Type validation. Aid fund type codes."
+    },
+    {
+      "table": "RFRMGMT",
+      "description": "Fund Management by Aid Year. Fund aid-year budget and rules. FLAG: confirm table for aid-year fund management."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + RPRAWRD_PIDM + AIDY + FUND."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RPRAWRD_PIDM",
+      "transformation": "Applicant PIDM -> HELIX Student."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "RPRATRM_TERM_CODE",
+      "transformation": "Term for the award (from term-level RPRATRM); award header is aid-year level."
+    },
+    {
+      "helix_attribute": "award_type",
+      "source": "RFRBASE_FTYP_CODE / RTVFTYP",
+      "transformation": "Fund type -> award type. Bind to helix/award-type."
+    },
+    {
+      "helix_attribute": "fund_source",
+      "source": "RFRBASE_FSRC_CODE",
+      "transformation": "Fund source (federal/state/institutional). Bind to helix/fund-source."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "RFRBASE_LONG_NAME / RFRBASE_FUND_TITLE",
+      "transformation": "Fund title."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "RPRAWRD_FUND_CODE",
+      "transformation": "Aid fund code."
+    },
+    {
+      "helix_attribute": "award_status",
+      "source": "RPRAWRD_AWST_CODE",
+      "transformation": "Award status code (offered/accepted/declined/cancelled). Bind to helix/award-type status via RTVAWST."
+    },
+    {
+      "helix_attribute": "amount_offered",
+      "source": "RPRAWRD_OFFER_AMT",
+      "transformation": "Offered amount."
+    },
+    {
+      "helix_attribute": "amount_accepted",
+      "source": "RPRAWRD_ACCEPT_AMT",
+      "transformation": "Accepted amount."
+    },
+    {
+      "helix_attribute": "amount_disbursed",
+      "source": "RPRAWRD_PAID_AMT",
+      "transformation": "Paid/disbursed amount."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "Configuration",
+      "transformation": "ISO 4217; USD for Title IV."
+    },
+    {
+      "helix_attribute": "disbursement_date",
+      "source": "RPRADSB_DISB_DATE",
+      "transformation": "Latest disbursement date (from RPRADSB)."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RPRAWRD_AIDY_CODE",
+      "transformation": "Aid year code (maps to YYYY-YYYY)."
+    },
+    {
+      "helix_attribute": "need_based_flag",
+      "source": "RFRBASE_NEED_ANALYSIS_IND",
+      "transformation": "Need-based indicator from fund base."
+    },
+    {
+      "helix_attribute": "merit_based_flag",
+      "source": "RFRBASE_MERIT_IND",
+      "transformation": "Merit indicator. FLAG: confirm merit column on RFRBASE."
+    },
+    {
+      "helix_attribute": "efc",
+      "source": "RCRESAR_PRIMARY_EFC / RORSTAT",
+      "transformation": "Legacy EFC (pre-2024) or SAI. Prefer AidApplication.sai for 2024-25+."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Derived",
+      "transformation": "Program association if the fund is program-specific."
+    },
+    {
+      "helix_attribute": "renewal_criteria",
+      "source": "RFRBASE / free-text",
+      "transformation": "Renewal conditions if defined on the fund."
+    },
+    {
+      "helix_attribute": "is_renewable",
+      "source": "RFRBASE_RENEWABLE_IND",
+      "transformation": "Renewable indicator. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "award_year_total",
+      "source": "SUM(RPRATRM_OFFER_AMT)",
+      "transformation": "Sum of term award amounts across the aid year."
+    },
+    {
+      "helix_attribute": "cost_of_attendance",
+      "source": "RBRCOMP total / RORSTAT_BUDGET",
+      "transformation": "COA budget used. Prefer AidPackage COA components."
+    },
+    {
+      "helix_attribute": "unmet_need",
+      "source": "Derived",
+      "transformation": "COA minus SAI/EFC minus aid. Prefer AidPackage.unmet_need."
+    },
+    {
+      "helix_attribute": "satisfactory_academic_progress",
+      "source": "RORSTAT_SAP_IND",
+      "transformation": "SAP status at award. Bind to helix/sap-status. Prefer SAPEvaluation resource."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX Enrollment \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "Enrollment",
+  "ethos_resource": "section-registrations",
+  "api_method": "Banner Integration API (BIA) / Ethos business-process API",
+  "version": "0.1",
+  "write_model": "Registration is process-governed. Use the registration/section-registrations process which validates holds, prerequisites, capacity, and time tickets. Direct resource POST is often disabled; treat as process invocation with server-side validation.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to section-registrations GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "student_ref",
+      "ethos_field": "section-registrations.registrant.id (GUID)",
+      "transformation": "Resolve student/person GUID.",
+      "notes": "Registrant must exist."
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "ethos_field": "section-registrations.section.id (GUID)",
+      "transformation": "Resolve section GUID.",
+      "notes": "Section must exist."
+    },
+    {
+      "helix_attribute": "status",
+      "ethos_field": "section-registrations.status (guid ref to section-registration-statuses)",
+      "transformation": "Map helix/enrollment-status to the registration status GUID (registered/dropped/withdrawn/waitlisted).",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "ethos_field": "section-registrations.credit.measure",
+      "transformation": "Registered credit hours.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "grade_mode",
+      "ethos_field": "section-registrations.gradingOption / academicLevel",
+      "transformation": "Map helix/grade-mode.",
+      "notes": "FLAG: grading option field name varies by Ethos version."
+    },
+    {
+      "helix_attribute": "registration_date",
+      "ethos_field": "(process-derived)",
+      "transformation": "Set by the registration business process, not directly writable in most tenants.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "Registration is a BUSINESS PROCESS. Direct writes to section-registrations are gated; many tenants require the registration process API which enforces prerequisites, holds, capacity, and time-ticketing.",
+    "Registrant (student) and section GUIDs must pre-exist.",
+    "Holds, prerequisites, and capacity rules are enforced server-side and can reject the write \u2014 handle rejections, do not retry blindly."
+  ]
+}

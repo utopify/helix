@@ -1,0 +1,67 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX StudentProgram \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "StudentProgram",
+  "ethos_resource": "student-academic-programs",
+  "api_method": "Ethos Integration API",
+  "version": "0.1",
+  "write_model": "POST/PUT /api/student-academic-programs with student + program GUIDs resolved. Establishes program of study, catalog year, and enrollment status. Write after Person, Student, and Program exist.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to student-academic-programs GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "student_ref",
+      "ethos_field": "student-academic-programs.student.id (GUID)",
+      "transformation": "Resolve student/person GUID.",
+      "notes": "Student must exist."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "ethos_field": "student-academic-programs.program.id (GUID)",
+      "transformation": "Resolve academic-program GUID.",
+      "notes": "Program must exist."
+    },
+    {
+      "helix_attribute": "academic_period_ref (start)",
+      "ethos_field": "student-academic-programs.startOn / academicPeriod.id",
+      "transformation": "Admit/effective term.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "status",
+      "ethos_field": "student-academic-programs.enrollmentStatus.status",
+      "transformation": "active/inactive/complete category.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "catalog_year",
+      "ethos_field": "student-academic-programs.curriculumObjective / academicCatalog.id (GUID)",
+      "transformation": "Reference the catalog GUID/objective.",
+      "notes": "FLAG: curriculumObjective enum vs academicCatalog GUID differs by version."
+    },
+    {
+      "helix_attribute": "expected_completion_period_ref",
+      "ethos_field": "student-academic-programs.expectedGraduationDate / endOn",
+      "transformation": "Anticipated completion.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "primary_flag",
+      "ethos_field": "student-academic-programs.preference",
+      "transformation": "Map primary program to preference='primary'.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "student-academic-programs is the pivotal record establishing a student's program of study; it depends on both student and academic-program GUIDs.",
+    "Curriculum rules (catalog, majors, concentrations) are validated server-side.",
+    "This is frequently the correct place to establish student status effects rather than the thin students resource."
+  ]
+}

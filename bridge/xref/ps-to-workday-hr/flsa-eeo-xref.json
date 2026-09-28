@@ -1,0 +1,118 @@
+{
+  "title": "HELIX XREF: FLSA and EEO/IPEDS — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "FLSA Status / EEO-IPEDS Category",
+  "description": "Maps PeopleSoft FLSA_STATUS (PS_JOB, PS_JOBCODE_TBL) and EEO/IPEDS job categories (EEO4CODE, IPEDSSCODE on PS_JOBCODE_TBL) to Workday FLSA status and Job Classifications through helix/flsa-status and helix/eeo-category. Rows are grouped by terminology.",
+  "mappings": [
+    {
+      "ps_code": "N",
+      "ps_description": "Nonexempt",
+      "ps_source": "PS_JOBCODE_TBL.FLSA_STATUS / PS_JOB.FLSA_STATUS",
+      "helix_code": "non_exempt",
+      "helix_terminology": "helix/flsa-status",
+      "wd_value": "Non-Exempt",
+      "wd_description": "Overtime eligible",
+      "wd_object": "Job Profile.Job_Exempt (false)",
+      "notes": "In Workday, exemption lives on the Job Profile (overridable by location). Check for PS job rows that override the job code."
+    },
+    {
+      "ps_code": "X",
+      "ps_description": "Exempt",
+      "ps_source": "PS_JOBCODE_TBL.FLSA_STATUS",
+      "helix_code": "exempt",
+      "helix_terminology": "helix/flsa-status",
+      "wd_value": "Exempt",
+      "wd_description": "Not overtime eligible",
+      "wd_object": "Job Profile.Job_Exempt (true)",
+      "notes": ""
+    },
+    {
+      "ps_code": "X (teaching)",
+      "ps_description": "Exempt, Teaching Professional",
+      "ps_source": "PS_JOBCODE_TBL.FLSA_STATUS + faculty job family",
+      "helix_code": "exempt_teaching",
+      "helix_terminology": "helix/flsa-status",
+      "wd_value": "Exempt (Teaching)",
+      "wd_description": "Teaching exemption (no salary test)",
+      "wd_object": "Job Profile.Job_Exempt + Job Classification",
+      "notes": "PS has no separate teaching code; derive from faculty job family. VALIDATE: some tenants use V or custom values for other exempt categories."
+    },
+    {
+      "ps_code": "1",
+      "ps_description": "Executive/Administrative/Managerial",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE / EEO4CODE",
+      "helix_code": "executive_admin",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Management",
+      "wd_description": "IPEDS management occupations",
+      "wd_object": "Job Classification Group (IPEDS) on Job Profile",
+      "notes": "Workday stores EEO-1, EEO-4 and IPEDS as separate Job Classification Groups. VALIDATE: numeric code values differ between EEO-4 and IPEDS."
+    },
+    {
+      "ps_code": "2",
+      "ps_description": "Faculty",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "faculty",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Instructional",
+      "wd_description": "Instructional / research / public service",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": "IPEDS splits instruction, research, and public service; keep the finer PS code if present."
+    },
+    {
+      "ps_code": "3",
+      "ps_description": "Professional Non-Faculty",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "professional_nonfaculty",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Professional",
+      "wd_description": "Business, computer, library, student services",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": ""
+    },
+    {
+      "ps_code": "4",
+      "ps_description": "Clerical and Secretarial",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "clerical_secretarial",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Office and Administrative Support",
+      "wd_description": "Office support",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": ""
+    },
+    {
+      "ps_code": "5",
+      "ps_description": "Technical and Paraprofessional",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "technical_paraprofessional",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Technical",
+      "wd_description": "Technical and paraprofessional",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": "Legacy category; newer IPEDS SOC-based categories may apply. VALIDATE."
+    },
+    {
+      "ps_code": "6",
+      "ps_description": "Skilled Crafts",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "skilled_crafts",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Construction/Maintenance",
+      "wd_description": "Skilled crafts",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": ""
+    },
+    {
+      "ps_code": "7",
+      "ps_description": "Service and Maintenance",
+      "ps_source": "PS_JOBCODE_TBL.IPEDSSCODE",
+      "helix_code": "service_maintenance",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Classification: IPEDS Service",
+      "wd_description": "Service and maintenance",
+      "wd_object": "Job Classification Group (IPEDS)",
+      "notes": ""
+    }
+  ]
+}

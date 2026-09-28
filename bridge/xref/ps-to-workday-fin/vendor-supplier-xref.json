@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Vendor to Supplier \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Vendor / Supplier",
+  "description": "Maps PeopleSoft vendor master (VENDOR, VENDOR_ADDR, VNDR_PAYMETH) to Workday Supplier, Supplier Category, and Payment Type. Key rule: not every PS vendor becomes a Workday Supplier. Employee and student payees move to Expenses and Student refunds. helix_code values are HELIX FIN classification codes, not bound to a terminology file.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "R (Regular)",
+      "ps_description": "Regular vendor",
+      "ps_source": "VENDOR.VENDOR_CLASS",
+      "helix_code": "SUP-STANDARD",
+      "helix_terminology": "",
+      "wd_value": "Supplier",
+      "wd_description": "Standard supplier",
+      "wd_object": "Supplier (Supplier Category)",
+      "notes": "VALIDATE: VENDOR_CLASS delivered values."
+    },
+    {
+      "ps_code": "E (Employee)",
+      "ps_description": "Employee as vendor",
+      "ps_source": "VENDOR.VENDOR_CLASS",
+      "helix_code": "SUP-EXCLUDE-EMPLOYEE",
+      "helix_terminology": "",
+      "wd_value": "(not converted)",
+      "wd_description": "Handled as worker expense payee",
+      "wd_object": "Expense Report / Worker payment election",
+      "notes": "Do not convert. Reimbursements pay through Workday Expenses to the worker."
+    },
+    {
+      "ps_code": "Student refund payee",
+      "ps_description": "Student vendors for refunds",
+      "ps_source": "VENDOR (student payees)",
+      "helix_code": "SUP-EXCLUDE-STUDENT",
+      "helix_terminology": "",
+      "wd_value": "(not converted)",
+      "wd_description": "Handled in Student Financials",
+      "wd_object": "Student refund / payment election",
+      "notes": "Do not convert. Workday Student handles credit balance refunds."
+    },
+    {
+      "ps_code": "A",
+      "ps_description": "Approved vendor",
+      "ps_source": "VENDOR.VENDOR_STATUS",
+      "helix_code": "SUP-ACTIVE",
+      "helix_terminology": "",
+      "wd_value": "Supplier Status: Active",
+      "wd_description": "Eligible for POs and payment",
+      "wd_object": "Supplier (status)",
+      "notes": "Convert active suppliers with activity in the last 2-3 years only."
+    },
+    {
+      "ps_code": "I",
+      "ps_description": "Inactive vendor",
+      "ps_source": "VENDOR.VENDOR_STATUS",
+      "helix_code": "SUP-INACTIVE",
+      "helix_terminology": "",
+      "wd_value": "Supplier Status: Inactive",
+      "wd_description": "Not eligible",
+      "wd_object": "Supplier (status)",
+      "notes": "Typically not converted; keep in archive for 1099 lookback."
+    },
+    {
+      "ps_code": "U",
+      "ps_description": "Unapproved vendor",
+      "ps_source": "VENDOR.VENDOR_STATUS",
+      "helix_code": "SUP-PENDING",
+      "helix_terminology": "",
+      "wd_value": "Supplier Status: Pending",
+      "wd_description": "Awaiting approval",
+      "wd_object": "Supplier (Create Supplier business process)",
+      "notes": ""
+    },
+    {
+      "ps_code": "CHK",
+      "ps_description": "Check",
+      "ps_source": "VNDR_PAYMETH.PYMNT_METHOD",
+      "helix_code": "PAY-CHECK",
+      "helix_terminology": "",
+      "wd_value": "Payment Type: Check",
+      "wd_description": "Printed check",
+      "wd_object": "Payment Type",
+      "notes": "Good moment to push suppliers to ACH."
+    },
+    {
+      "ps_code": "ACH",
+      "ps_description": "ACH / EFT",
+      "ps_source": "VNDR_PAYMETH.PYMNT_METHOD",
+      "helix_code": "PAY-ACH",
+      "helix_terminology": "",
+      "wd_value": "Payment Type: ACH",
+      "wd_description": "Electronic funds transfer",
+      "wd_object": "Payment Type + Supplier Bank Account",
+      "notes": "Bank account and routing data are restricted; load through secured channel and verify."
+    },
+    {
+      "ps_code": "WIR",
+      "ps_description": "Wire",
+      "ps_source": "VNDR_PAYMETH.PYMNT_METHOD",
+      "helix_code": "PAY-WIRE",
+      "helix_terminology": "",
+      "wd_value": "Payment Type: Wire",
+      "wd_description": "Domestic or international wire",
+      "wd_object": "Payment Type",
+      "notes": "International suppliers need tax and banking validation."
+    },
+    {
+      "ps_code": "1099 withholding",
+      "ps_description": "1099 reportable vendor",
+      "ps_source": "VENDOR_WTHD.WTHD_SW / WTHD_CLASS",
+      "helix_code": "SUP-1099",
+      "helix_terminology": "",
+      "wd_value": "Supplier Tax: 1099 Reportable",
+      "wd_description": "1099-MISC / 1099-NEC",
+      "wd_object": "Supplier (Tax Authority Form Type)",
+      "notes": "Carry calendar-year-to-date 1099 amounts if cutover is mid-year."
+    },
+    {
+      "ps_code": "Vendor category",
+      "ps_description": "Vendor category / classification",
+      "ps_source": "VENDOR.VENDOR_CATEGORY or local field",
+      "helix_code": "SUP-CATEGORY",
+      "helix_terminology": "",
+      "wd_value": "Supplier Category",
+      "wd_description": "Commodity or type grouping",
+      "wd_object": "Supplier Category",
+      "notes": "VALIDATE: many PS vendors have no category; derive from spend history."
+    },
+    {
+      "ps_code": "Diverse supplier flag",
+      "ps_description": "Minority / small business status",
+      "ps_source": "VENDOR classification (local)",
+      "helix_code": "SUP-DIVERSITY",
+      "helix_terminology": "",
+      "wd_value": "Supplier Classification",
+      "wd_description": "Diversity certification",
+      "wd_object": "Supplier Classification",
+      "notes": "Often required for state reporting."
+    }
+  ]
+}

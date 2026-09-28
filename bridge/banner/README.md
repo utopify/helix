@@ -19,8 +19,17 @@ HELIX Bridge mappings work with both — they reference the logical table/column
 |--------|-----------|----------|-------------|
 | **Student Information (SIS)** | `sis/` | 11 | Person, student records, enrollment, courses, sections, programs, degrees, GPA, academic org, athletics |
 | **Human Resources** | `hr/` | 2 | Employee/job records, position management |
+| **Finance** | `finance/` | 7 | GL transactions, funds, budgets, AP vouchers, purchase orders, financial orgs, grants (FOAPAL model) |
+| **Advancement** | `advancement/` | 4 | Constituents, gifts, campaigns, engagement/contacts |
+| **Financial Aid** | `financial-aid/` | 7 | Awards, FAFSA/ISIR applications, packaging, verification, SAP, disbursements, loans |
 
-**Total: 13 Banner mappings**
+**Total: 31 Banner mappings**
+
+## On-Prem Extraction
+
+For the self-managed (on-prem or Oracle-on-EC2) deployment model, see **[ONPREM_EXTRACTION.md](ONPREM_EXTRACTION.md)** — a practical playbook covering direct Oracle SQL access, PIDM joins, STV validation-table decode, effective-term dating, incremental/CDC options, and landing into the HELIX bronze layer.
+
+For Banner **SaaS** (Ellucian Platform), see the reverse write-back bridge in [`../banner-saas/`](../banner-saas/) and the [landing-architecture guide](../../docs/banner-saas-landing-architecture.md).
 
 ## Key Banner Concepts
 
@@ -30,6 +39,7 @@ HELIX Bridge mappings work with both — they reference the logical table/column
 - **Effective-Term Dating**: Many Banner tables use term codes (YYYYMM) for effective dating rather than calendar dates. Current record = max term code ≤ current term.
 - **Validation Tables (STV*)**: Banner uses hundreds of validation tables prefixed with STV (STVTERM, STVMAJR, STVDEPT, etc.). These define valid codes for every dropdown and field.
 - **Position-Centric HR**: Banner HR centers on positions (NBBPOSN) with employees assigned to positions (NBRBJOB). This differs from PeopleSoft's employee-centric job record model.
+- **Finance (FOAPAL)**: Banner Finance centers on the FOAPAL string (Fund, Organization, Account, Program, Activity, Location), with FGB* base tables and FTV* validation tables. Advancement uses APB/AGB/AFB/APR; Financial Aid uses RPR/RCR/RRR/ROR keyed on PIDM + aid year.
 - **Shared Person Model**: PIDM is shared across student and HR modules. A faculty member who is also a student has one PIDM with records in both areas.
 
 ## Getting Started

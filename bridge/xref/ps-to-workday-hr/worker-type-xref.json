@@ -1,0 +1,140 @@
+{
+  "title": "HELIX XREF: Worker Type — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Worker Type / Employee Type",
+  "description": "Maps PeopleSoft PER_ORG and EMPL_CLASS combinations to Workday Worker Type (Employee vs Contingent Worker) and Employee Type / Contingent Worker Type through helix/worker-type.",
+  "mappings": [
+    {
+      "ps_code": "EMP + R",
+      "ps_description": "Employee, Regular (EMPL_CLASS R, REG_TEMP R)",
+      "ps_source": "PS_JOB.PER_ORG + PS_JOB.EMPL_CLASS + PS_JOB.REG_TEMP",
+      "helix_code": "regular",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Regular",
+      "wd_description": "Regular employee",
+      "wd_object": "Worker.Worker_Type + Worker Job Data.Employee_Type",
+      "notes": "Most common row. REG_TEMP distinguishes regular vs temporary when EMPL_CLASS is reused."
+    },
+    {
+      "ps_code": "EMP + T",
+      "ps_description": "Employee, Temporary",
+      "ps_source": "PS_JOB.PER_ORG + PS_JOB.EMPL_CLASS + PS_JOB.REG_TEMP",
+      "helix_code": "temporary",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Temporary (Fixed Term)",
+      "wd_description": "Fixed-term or temporary employee",
+      "wd_object": "Worker Job Data.Employee_Type",
+      "notes": "Workday often uses Fixed Term for defined end dates; set End_Employment_Date on hire. VALIDATE: tenant Employee Type values."
+    },
+    {
+      "ps_code": "EMP + S",
+      "ps_description": "Employee, Student Worker",
+      "ps_source": "PS_JOB.EMPL_CLASS",
+      "helix_code": "student_worker",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Student",
+      "wd_description": "Student employee",
+      "wd_object": "Worker Job Data.Employee_Type",
+      "notes": "Keep FICA student exemption logic in payroll. VALIDATE: EMPL_CLASS value for students varies by institution (S, STU, H)."
+    },
+    {
+      "ps_code": "EMP + G",
+      "ps_description": "Employee, Graduate Assistant (GA/TA/RA)",
+      "ps_source": "PS_JOB.EMPL_CLASS + PS_JOB.JOBCODE",
+      "helix_code": "graduate_assistant",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Graduate Assistant",
+      "wd_description": "Graduate assistantship",
+      "wd_object": "Worker Job Data.Employee_Type",
+      "notes": "Tuition remission is not a comp element in Workday HCM; coordinate with Workday Student waiver setup. VALIDATE: EMPL_CLASS code."
+    },
+    {
+      "ps_code": "EMP + A",
+      "ps_description": "Employee, Adjunct Faculty",
+      "ps_source": "PS_JOB.EMPL_CLASS + PS_JOB.JOBCODE",
+      "helix_code": "adjunct",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Adjunct",
+      "wd_description": "Part-time per-course faculty",
+      "wd_object": "Worker Job Data.Employee_Type + Academic Appointment",
+      "notes": "Adjuncts in Workday usually also get an Academic Appointment track. Per-course pay maps to pay-frequency per_course. VALIDATE: EMPL_CLASS code."
+    },
+    {
+      "ps_code": "EMP + P",
+      "ps_description": "Employee, Postdoctoral Researcher",
+      "ps_source": "PS_JOB.EMPL_CLASS + PS_JOB.JOBCODE",
+      "helix_code": "postdoc",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Postdoc",
+      "wd_description": "Postdoctoral scholar (employee-funded)",
+      "wd_object": "Worker Job Data.Employee_Type",
+      "notes": "NIH NRSA trainee postdocs may not be employees; route those to fellow. VALIDATE: EMPL_CLASS code."
+    },
+    {
+      "ps_code": "EMP + I",
+      "ps_description": "Employee, Intern",
+      "ps_source": "PS_JOB.EMPL_CLASS",
+      "helix_code": "intern",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Employee / Intern",
+      "wd_description": "Paid intern",
+      "wd_object": "Worker Job Data.Employee_Type",
+      "notes": "Unpaid interns belong as Contingent Worker or not loaded. VALIDATE: EMPL_CLASS code."
+    },
+    {
+      "ps_code": "CWR",
+      "ps_description": "Contingent Worker (agency)",
+      "ps_source": "PS_JOB.PER_ORG = 'CWR'",
+      "helix_code": "contingent",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Contingent Worker / Agency",
+      "wd_description": "Agency-sourced contingent worker",
+      "wd_object": "Worker.Worker_Type + Contract Contingent Worker business process",
+      "notes": "PS CWR rows become Contract Contingent Worker in Workday, not Hire. Supplier link lives in Workday Procurement."
+    },
+    {
+      "ps_code": "CWR + IC",
+      "ps_description": "Contingent Worker, Independent Contractor",
+      "ps_source": "PS_JOB.PER_ORG = 'CWR' + contractor type",
+      "helix_code": "contractor",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Contingent Worker / Independent Contractor",
+      "wd_description": "1099 contractor",
+      "wd_object": "Contingent Worker Type",
+      "notes": "Paid through AP / Supplier Invoice, not payroll."
+    },
+    {
+      "ps_code": "POI + FEL",
+      "ps_description": "Person of Interest, Fellow",
+      "ps_source": "PS_PER_POI_TYPE.POI_TYPE",
+      "helix_code": "fellow",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Contingent Worker / Fellow (or Academic Affiliate)",
+      "wd_description": "Non-employee fellowship recipient",
+      "wd_object": "Contingent Worker Type or Academic Affiliate",
+      "notes": "POIs have no JOB row in PS. Decide per POI type whether to load as Contingent Worker, Academic Affiliate, or not at all. VALIDATE: POI_TYPE codes."
+    },
+    {
+      "ps_code": "POI + VOL",
+      "ps_description": "Person of Interest, Volunteer",
+      "ps_source": "PS_PER_POI_TYPE.POI_TYPE",
+      "helix_code": "volunteer",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Contingent Worker / Volunteer",
+      "wd_description": "Volunteer",
+      "wd_object": "Contingent Worker Type",
+      "notes": "Often excluded from conversion. VALIDATE: POI_TYPE codes."
+    },
+    {
+      "ps_code": "POI + EMR",
+      "ps_description": "Person of Interest, Emeritus",
+      "ps_source": "PS_PER_POI_TYPE.POI_TYPE",
+      "helix_code": "emeritus",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Academic Affiliate / Emeritus",
+      "wd_description": "Emeritus faculty",
+      "wd_object": "Academic Affiliate + Academic Appointment",
+      "notes": "Emeritus retirees are terminated employees who need an affiliate record for privileges. VALIDATE: POI_TYPE codes."
+    }
+  ]
+}

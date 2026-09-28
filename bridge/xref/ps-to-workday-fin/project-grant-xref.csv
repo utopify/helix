@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+SPON-FED,Federal sponsored project,"PROJECT.PROJECT_ID (PROJECT_TYPE = sponsored, fund federal)",grant_sponsored,helix/fund-type,Grant worktag + Award,Sponsored research or training,Grant / Award,One PS award with many projects often becomes one Workday Award with many Grants.
+SPON-PRIV,Private sponsor / foundation grant,PROJECT.PROJECT_ID,grant_sponsored,helix/fund-type,Grant worktag + Award,Non-federal sponsor,Grant / Award,
+CAPITAL,Capital construction project,PROJECT.PROJECT_ID (PROJECT_TYPE = capital),plant,helix/fund-type,Project worktag,Capital project,Project (+ Business Asset on completion),Construction in progress settles to Business Assets.
+INTERNAL,Internal / departmental project,PROJECT.PROJECT_ID,designated,helix/fund-type,Project or Program worktag,Internally funded effort,Project (or Program),Many institutions retire low-value internal projects and use Program instead.
+GIFT-RESTR,Restricted gift account,PROJECT.PROJECT_ID or FUND_CODE,current_restricted,helix/fund-type,Gift worktag,Donor-restricted expendable,Gift,Donor intent lives on the Gift; the Fund carries the restriction class.
+ENDOW,Endowment,PROJECT.PROJECT_ID or FUND_CODE,endowment,helix/fund-type,Gift worktag (endowed) + Fund,Endowed principal and payout,Gift + Fund,Keep corpus and spendable payout on separate Gifts or Funds.
+A,Award active,GM_AWARD.AWARD_STATUS,active,helix/grant-status,Active,Open for spending,Award (Award Status),VALIDATE: PS award status values.
+P,Award pending / proposal,GM_PROPOSAL.PROPOSAL_STATUS,pending,helix/grant-status,Proposal Submitted,Awaiting sponsor decision,Award Proposal,Workday Grants may manage proposals if pre-award is in scope.
+NCE,No-cost extension,GM_AWARD end date change,no_cost_extension,helix/grant-status,Active (extended),"End date extended, no new money",Award (amendment),Carry amendment history if audits need it.
+C,Award closed,GM_AWARD.AWARD_STATUS,closed,helix/grant-status,Closed,Closed out,Award (Award Status),"Closed awards usually convert as history only, not as open Grants."
+CONTRACT,Customer contract (billing),CA_CONTR_HDR.CONTRACT_NUM,grant_sponsored,helix/fund-type,Award Contract / Customer Contract,Billing arrangement,Award (Customer Contract),PS Contracts drives sponsor billing; Workday links billing to the Award. VALIDATE billing model.
+SUBREC,Outgoing subaward,GM_AWARD / PO for subrecipient,subaward_pending,helix/grant-status,Subaward (Supplier Contract),Subrecipient agreement,Supplier Contract linked to Grant,Subaward POs become Supplier Contracts with the Grant worktag.

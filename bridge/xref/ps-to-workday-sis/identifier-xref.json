@@ -1,0 +1,162 @@
+{
+  "title": "HELIX XREF: Person Identifiers \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Identifier",
+  "description": "Maps PeopleSoft person identifiers (shared across HCM and Campus Solutions) to Workday Universal ID, Student ID, and Other ID types through helix/identifier-type. Identity rule: PeopleSoft EMPLID is one key shared by HCM and Campus Solutions. Seed the Workday Universal ID from the resolved HELIX Person so one human stays one person across Workday HCM and Workday Student. Resolve duplicates Bronze to Silver before load, never after.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "EMPLID",
+      "ps_description": "PeopleSoft person ID (shared HCM + CS)",
+      "ps_source": "PERSON.EMPLID",
+      "helix_code": "institutional_id",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Universal ID",
+      "wd_description": "Cross-product person identifier",
+      "wd_object": "Universal ID (Person)",
+      "notes": "Seed Universal ID from HELIX Person.helix_id crosswalk so the same human is not created twice when Workday HCM and Workday Student load at different times."
+    },
+    {
+      "ps_code": "EMPLID",
+      "ps_description": "Student-facing ID",
+      "ps_source": "PERSON.EMPLID",
+      "helix_code": "institutional_id",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Student ID",
+      "wd_description": "Student ID assigned at student creation",
+      "wd_object": "Student ID",
+      "notes": "Many institutions keep the PS EMPLID value as the Workday Student ID for continuity on transcripts and ID cards. VALIDATE: confirm Student ID numbering sequence in the tenant."
+    },
+    {
+      "ps_code": "PR (SSN)",
+      "ps_description": "National ID, US Social Security Number",
+      "ps_source": "PERS_NID.NATIONAL_ID (NATIONAL_ID_TYPE = PR)",
+      "helix_code": "national_id",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Government ID: USA-SSN",
+      "wd_description": "US Social Security Number",
+      "wd_object": "Government ID (National ID Type)",
+      "notes": "Restricted and GLBA covered when used for aid. Tokenize in Silver, load cleartext only through the secured conversion channel."
+    },
+    {
+      "ps_code": "SSN last 4",
+      "ps_description": "Derived last four of SSN",
+      "ps_source": "PERS_NID.NATIONAL_ID (derived)",
+      "helix_code": "ssn_last4",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "(derived, not stored)",
+      "wd_description": "Not a separate Workday ID",
+      "wd_object": "n/a",
+      "notes": "Do not create an Other ID for last four; derive in reporting from the masked Government ID."
+    },
+    {
+      "ps_code": "PASSPORT",
+      "ps_description": "Passport number",
+      "ps_source": "CITIZEN_PSSPRT.PASSPORT_NBR",
+      "helix_code": "passport",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Passport ID",
+      "wd_description": "Passport number and issuing country",
+      "wd_object": "Passport ID",
+      "notes": "Carry issuing country and expiration. VALIDATE: PS record name varies by release (CITIZEN_PSSPRT)."
+    },
+    {
+      "ps_code": "DRIVERS_LIC",
+      "ps_description": "Driver license number",
+      "ps_source": "DRIVERS_LIC.DRIVERS_LIC_NBR",
+      "helix_code": "drivers_license",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "License ID",
+      "wd_description": "Driver license with issuing state",
+      "wd_object": "License ID",
+      "notes": "Often not converted for students; convert only if a business process consumes it."
+    },
+    {
+      "ps_code": "OPRID",
+      "ps_description": "PeopleSoft user ID",
+      "ps_source": "PSOPRDEFN.OPRID",
+      "helix_code": "login",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Workday Account user name",
+      "wd_description": "Authentication account",
+      "wd_object": "Workday Account",
+      "notes": "Usually replaced by SSO (SAML) user names. Map for audit history only."
+    },
+    {
+      "ps_code": "EMAIL",
+      "ps_description": "Institutional email",
+      "ps_source": "EMAIL_ADDRESSES.EMAIL_ADDR (E_ADDR_TYPE = CAMP)",
+      "helix_code": "email",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Email Address (Institutional)",
+      "wd_description": "Primary work/school email",
+      "wd_object": "Email Address (Usage: Institutional)",
+      "notes": "Email is also a common identity-match key during Bronze to Silver resolution."
+    },
+    {
+      "ps_code": "EXT: SLATE",
+      "ps_description": "CRM/applicant system ID",
+      "ps_source": "EXTERNAL_SYSTEM.EXTERNAL_SYSTEM_ID (EXTERNAL_SYSTEM = SLT)",
+      "helix_code": "other",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Other ID: CRM ID",
+      "wd_description": "Recruitment CRM identifier",
+      "wd_object": "Other ID (Other ID Type)",
+      "notes": "VALIDATE: EXTERNAL_SYSTEM type codes are institution defined."
+    },
+    {
+      "ps_code": "EXT: SEVIS",
+      "ps_description": "SEVIS ID for F/J students",
+      "ps_source": "EXTERNAL_SYSTEM.EXTERNAL_SYSTEM_ID or SEVIS records",
+      "helix_code": "other",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Other ID: SEVIS ID",
+      "wd_description": "Student and Exchange Visitor ID",
+      "wd_object": "Other ID (Other ID Type)",
+      "notes": "Restricted. VALIDATE: some tenants model SEVIS on the International Student data instead of Other ID."
+    },
+    {
+      "ps_code": "EXT: PRIOR",
+      "ps_description": "Prior institution / legacy ID",
+      "ps_source": "EXTERNAL_SYSTEM.EXTERNAL_SYSTEM_ID",
+      "helix_code": "prior_institution_id",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Other ID: Legacy ID",
+      "wd_description": "Pre-PeopleSoft legacy identifier",
+      "wd_object": "Other ID (Other ID Type)",
+      "notes": "Keep for transcript and archive lookups."
+    },
+    {
+      "ps_code": "EXT: NSC",
+      "ps_description": "National Student Clearinghouse ID",
+      "ps_source": "EXTERNAL_SYSTEM.EXTERNAL_SYSTEM_ID",
+      "helix_code": "clearing_house_id",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Other ID: Clearinghouse ID",
+      "wd_description": "NSC identifier",
+      "wd_object": "Other ID (Other ID Type)",
+      "notes": "VALIDATE: many institutions do not store an NSC ID and match on name plus DOB."
+    },
+    {
+      "ps_code": "EXT: ORCID",
+      "ps_description": "ORCID for researchers",
+      "ps_source": "EXTERNAL_SYSTEM.EXTERNAL_SYSTEM_ID",
+      "helix_code": "orcid",
+      "helix_terminology": "helix/identifier-type",
+      "wd_value": "Other ID: ORCID",
+      "wd_description": "Researcher identifier",
+      "wd_object": "Other ID (Other ID Type)",
+      "notes": "Mostly relevant on the HCM side for faculty and graduate researchers."
+    }
+  ]
+}

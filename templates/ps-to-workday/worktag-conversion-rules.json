@@ -1,0 +1,541 @@
+{
+  "$schema": "https://helixedu.org/templates/worktag-conversion-rules-schema.json",
+  "title": "HELIX Template: PeopleSoft Chartfield to Workday Worktag Conversion Rules",
+  "version": "0.1",
+  "description": "Executable-style ruleset that converts a PeopleSoft FSCM chartfield string into a Workday Ledger Account plus worktag set, routed through the HELIX canonical codes. Pair with the crosswalks in bridge/xref/ps-to-workday-fin/. Evaluate rules in ascending priority; later rules add worktags, they never overwrite Company or Ledger Account.",
+  "source_chartfields": [
+    "BUSINESS_UNIT",
+    "ACCOUNT",
+    "FUND_CODE",
+    "DEPTID",
+    "PROGRAM_CODE",
+    "CLASS_FLD",
+    "PROJECT_ID",
+    "PRODUCT",
+    "OPERATING_UNIT",
+    "BUDGET_REF",
+    "STATISTICS_CODE",
+    "AFFILIATE",
+    "CHARTFIELD1",
+    "CHARTFIELD2",
+    "CHARTFIELD3"
+  ],
+  "target_worktags": [
+    "Company",
+    "Ledger Account",
+    "Fund",
+    "Cost Center",
+    "Program",
+    "Grant",
+    "Gift",
+    "Project",
+    "Revenue Category",
+    "Spend Category",
+    "Location",
+    "Custom Worktag"
+  ],
+  "rules": [
+    {
+      "rule_id": "FIN-001",
+      "priority": 10,
+      "when": {
+        "chartfield": "BUSINESS_UNIT",
+        "condition": "any"
+      },
+      "then": {
+        "Company": "lookup bridge/xref/ps-to-workday-fin/business-unit-company-xref.json"
+      },
+      "rationale": "Every PS GL business unit resolves to exactly one Workday Company. Company is the balancing entity."
+    },
+    {
+      "rule_id": "FIN-002",
+      "priority": 20,
+      "when": {
+        "chartfield": "ACCOUNT",
+        "condition": "any"
+      },
+      "then": {
+        "Ledger Account": "lookup bridge/xref/ps-to-workday-fin/account-xref.json (wd_ledger_account)"
+      },
+      "rationale": "Natural account maps to a Workday Ledger Account through the HELIX account taxonomy."
+    },
+    {
+      "rule_id": "FIN-003",
+      "priority": 21,
+      "when": {
+        "chartfield": "ACCOUNT",
+        "condition": "account_type = revenue (range 4xxxx)"
+      },
+      "then": {
+        "Revenue Category": "lookup bridge/xref/ps-to-workday-fin/revenue-spend-category-xref.json"
+      },
+      "rationale": "Workday separates the ledger account from its revenue category. One PS revenue account often becomes a coarser ledger account plus a category worktag."
+    },
+    {
+      "rule_id": "FIN-004",
+      "priority": 22,
+      "when": {
+        "chartfield": "ACCOUNT",
+        "condition": "account_type = expenditure (range 5xxxx-8xxxx)"
+      },
+      "then": {
+        "Spend Category": "lookup bridge/xref/ps-to-workday-fin/revenue-spend-category-xref.json"
+      },
+      "rationale": "Expense detail moves from the account string into a Spend Category worktag."
+    },
+    {
+      "rule_id": "FIN-005",
+      "priority": 23,
+      "when": {
+        "chartfield": "ACCOUNT",
+        "condition": "account_type in (asset, liability, fund_balance)"
+      },
+      "then": {
+        "Revenue Category": "none",
+        "Spend Category": "none"
+      },
+      "rationale": "Balance-sheet accounts carry no revenue or spend category."
+    },
+    {
+      "rule_id": "FIN-006",
+      "priority": 30,
+      "when": {
+        "chartfield": "FUND_CODE",
+        "condition": "any"
+      },
+      "then": {
+        "Fund": "lookup bridge/xref/ps-to-workday-fin/fund-xref.json"
+      },
+      "rationale": "Fund maps directly to the Workday Fund worktag; restriction class travels with it (helix/fund-type)."
+    },
+    {
+      "rule_id": "FIN-007",
+      "priority": 31,
+      "when": {
+        "chartfield": "FUND_CODE",
+        "condition": "helix fund-type in (endowment, quasi_endowment, temporarily_restricted, permanently_restricted) AND gift-funded"
+      },
+      "then": {
+        "Gift": "derive from fund + donor designation"
+      },
+      "rationale": "Restricted gift funds need a Gift worktag in Workday to track donor intent and stewardship."
+    },
+    {
+      "rule_id": "FIN-008",
+      "priority": 40,
+      "when": {
+        "chartfield": "DEPTID",
+        "condition": "any"
+      },
+      "then": {
+        "Cost Center": "lookup bridge/xref/ps-to-workday-fin/department-xref.json"
+      },
+      "rationale": "DEPTID becomes the Cost Center. Supervisory Organization is built separately from the HCM REPORTS_TO tree (see bridge/xref/ps-to-workday-hr/position-xref.json)."
+    },
+    {
+      "rule_id": "FIN-009",
+      "priority": 50,
+      "when": {
+        "chartfield": "PROGRAM_CODE",
+        "condition": "populated"
+      },
+      "then": {
+        "Program": "lookup bridge/xref/ps-to-workday-fin/program-xref.json"
+      },
+      "rationale": "Program carries NACUBO/IPEDS functional classification (instruction, research, public service, academic support, and so on)."
+    },
+    {
+      "rule_id": "FIN-010",
+      "priority": 51,
+      "when": {
+        "chartfield": "CLASS_FLD",
+        "condition": "populated AND PROGRAM_CODE empty"
+      },
+      "then": {
+        "Program": "lookup bridge/xref/ps-to-workday-fin/program-xref.json using CLASS_FLD"
+      },
+      "rationale": "Many institutions store functional class in CLASS_FLD instead of PROGRAM_CODE. VALIDATE which one your chart uses."
+    },
+    {
+      "rule_id": "FIN-011",
+      "priority": 60,
+      "when": {
+        "chartfield": "PROJECT_ID",
+        "condition": "populated AND linked to a GM award"
+      },
+      "then": {
+        "Grant": "lookup bridge/xref/ps-to-workday-fin/project-grant-xref.json",
+        "Fund": "sponsored fund per award"
+      },
+      "rationale": "Sponsored projects become Grant worktags; the award, not the project, is the Workday anchor."
+    },
+    {
+      "rule_id": "FIN-012",
+      "priority": 61,
+      "when": {
+        "chartfield": "PROJECT_ID",
+        "condition": "populated AND capital project (no award)"
+      },
+      "then": {
+        "Project": "lookup bridge/xref/ps-to-workday-fin/project-grant-xref.json"
+      },
+      "rationale": "Capital and internal projects map to the Workday Project worktag."
+    },
+    {
+      "rule_id": "FIN-013",
+      "priority": 62,
+      "when": {
+        "chartfield": "PROJECT_ID",
+        "condition": "populated AND gift-funded program"
+      },
+      "then": {
+        "Gift": "lookup bridge/xref/ps-to-workday-fin/project-grant-xref.json"
+      },
+      "rationale": "Gift-funded initiatives tracked as PS projects map to Gift worktags."
+    },
+    {
+      "rule_id": "FIN-014",
+      "priority": 70,
+      "when": {
+        "chartfield": "OPERATING_UNIT",
+        "condition": "populated"
+      },
+      "then": {
+        "Location": "map to Workday Location or custom worktag"
+      },
+      "rationale": "Operating unit usually means campus or site. VALIDATE: some institutions use it for other purposes."
+    },
+    {
+      "rule_id": "FIN-015",
+      "priority": 71,
+      "when": {
+        "chartfield": "PRODUCT",
+        "condition": "populated"
+      },
+      "then": {
+        "Custom Worktag": "institution-defined"
+      },
+      "rationale": "Rarely used in higher ed. Map to a custom organization only if reporting depends on it."
+    },
+    {
+      "rule_id": "FIN-016",
+      "priority": 72,
+      "when": {
+        "chartfield": "CHARTFIELD1-3",
+        "condition": "populated"
+      },
+      "then": {
+        "Custom Worktag": "institution-defined"
+      },
+      "rationale": "Institution-specific chartfields become Workday custom organizations or custom worktags. Inventory usage first; many are retired at cutover."
+    },
+    {
+      "rule_id": "FIN-017",
+      "priority": 73,
+      "when": {
+        "chartfield": "BUDGET_REF",
+        "condition": "populated"
+      },
+      "then": {
+        "Budget Structure": "Workday budget structure / plan year"
+      },
+      "rationale": "Budget reference is a budget-period concept, not a worktag."
+    },
+    {
+      "rule_id": "FIN-018",
+      "priority": 80,
+      "when": {
+        "chartfield": "BUSINESS_UNIT + AFFILIATE",
+        "condition": "interunit or intercompany entry"
+      },
+      "then": {
+        "Company": "both sides",
+        "Intercompany": "Workday intercompany rules generate due-to/due-from"
+      },
+      "rationale": "Do not convert PS interunit due-to/due-from lines as ordinary journals. Let Workday intercompany processing generate them."
+    },
+    {
+      "rule_id": "FIN-019",
+      "priority": 85,
+      "when": {
+        "chartfield": "STATISTICS_CODE",
+        "condition": "statistical account"
+      },
+      "then": {
+        "Statistical": "Workday statistical journal / statistic definition"
+      },
+      "rationale": "Statistical amounts (FTE, square feet) load as statistics, not currency."
+    },
+    {
+      "rule_id": "FIN-020",
+      "priority": 90,
+      "when": {
+        "chartfield": "ACCOUNT",
+        "condition": "no xref match"
+      },
+      "then": {
+        "Ledger Account": "suspense ledger account",
+        "Cost Center": "suspense cost center",
+        "queue": "unmapped_error_queue"
+      },
+      "rationale": "Never drop an unmapped line. Park it in suspense and route it to the Data Steward."
+    }
+  ],
+  "precedence_and_conflicts": [
+    "Company (FIN-001) and Ledger Account (FIN-002) are set first and are immutable for the line.",
+    "Grant (FIN-011) takes precedence over Project (FIN-012) and Gift (FIN-013) when a PROJECT_ID links to a sponsored award.",
+    "If both PROGRAM_CODE and CLASS_FLD are populated, PROGRAM_CODE wins unless the institution sets use_class_fld_for_program = true.",
+    "A Gift worktag from FIN-007 (fund-based) and FIN-013 (project-based) must agree; if they differ, route to the error queue."
+  ],
+  "defaults_and_fallbacks": {
+    "Cost Center": "Use the business unit default cost center only for balance-sheet lines; P&L lines without DEPTID go to suspense.",
+    "Program": "Balance-sheet lines carry no Program. P&L lines without a program default to institutional_support only if the Data Steward approves.",
+    "Fund": "No default. Every line must carry a Fund in a fund-accounting tenant."
+  },
+  "unmapped_handling": {
+    "suspense_ledger_account": "VALIDATE: e.g. 9999 Conversion Suspense",
+    "suspense_cost_center": "VALIDATE: e.g. CC_CONV_SUSPENSE",
+    "error_queue": "unmapped_error_queue (source line id, failing chartfield, value, rule_id)",
+    "owner": "Data Steward, Financial Operations (govern/roles.json)"
+  },
+  "validation_checks": [
+    "Every journal line resolves Company and Ledger Account.",
+    "Every P&L line resolves Fund, Cost Center, and Program.",
+    "Revenue lines carry a Revenue Category; expense lines carry a Spend Category.",
+    "Sponsored lines carry a Grant that is active for the line date.",
+    "Debits equal credits per Company per journal after conversion.",
+    "Converted trial balance ties to PS by Company, Ledger Account, Fund, and period (templates/ps-to-workday/reconciliation/trial_balance_tieout.sql)."
+  ],
+  "examples": [
+    {
+      "name": "Tuition revenue",
+      "input": {
+        "BUSINESS_UNIT": "UNIV1",
+        "ACCOUNT": "40100",
+        "FUND_CODE": "10000",
+        "DEPTID": "10200",
+        "PROGRAM_CODE": "INSTR"
+      },
+      "output": {
+        "Company": "Main University",
+        "Ledger Account": "4010 Tuition and Fees",
+        "Revenue Category": "Undergraduate Tuition",
+        "Fund": "Unrestricted Operating",
+        "Cost Center": "CC10200",
+        "Program": "Instruction"
+      },
+      "rules_applied": [
+        "FIN-001",
+        "FIN-002",
+        "FIN-003",
+        "FIN-006",
+        "FIN-008",
+        "FIN-009"
+      ]
+    },
+    {
+      "name": "NSF grant salary",
+      "input": {
+        "BUSINESS_UNIT": "UNIV1",
+        "ACCOUNT": "51100",
+        "FUND_CODE": "25000",
+        "DEPTID": "30410",
+        "PROGRAM_CODE": "RSRCH",
+        "PROJECT_ID": "NSF24-0012"
+      },
+      "output": {
+        "Company": "Main University",
+        "Ledger Account": "5110 Salaries Faculty",
+        "Spend Category": "Faculty Salary",
+        "Fund": "Restricted Sponsored Federal",
+        "Cost Center": "CC30410",
+        "Program": "Research",
+        "Grant": "GR-NSF24-0012"
+      },
+      "rules_applied": [
+        "FIN-001",
+        "FIN-002",
+        "FIN-004",
+        "FIN-006",
+        "FIN-008",
+        "FIN-009",
+        "FIN-011"
+      ]
+    },
+    {
+      "name": "Endowed scholarship expense",
+      "input": {
+        "BUSINESS_UNIT": "UNIV1",
+        "ACCOUNT": "71500",
+        "FUND_CODE": "60125",
+        "DEPTID": "20100",
+        "PROGRAM_CODE": "SCHOL"
+      },
+      "output": {
+        "Company": "Main University",
+        "Ledger Account": "7150 Scholarships",
+        "Spend Category": "Institutional Scholarship",
+        "Fund": "Endowment Spendable",
+        "Gift": "GIFT-60125 Smith Scholarship",
+        "Cost Center": "CC20100",
+        "Program": "Scholarships and Fellowships"
+      },
+      "rules_applied": [
+        "FIN-001",
+        "FIN-002",
+        "FIN-004",
+        "FIN-006",
+        "FIN-007",
+        "FIN-008",
+        "FIN-009"
+      ]
+    },
+    {
+      "name": "Capital project",
+      "input": {
+        "BUSINESS_UNIT": "UNIV1",
+        "ACCOUNT": "17200",
+        "FUND_CODE": "80000",
+        "PROJECT_ID": "CAP-SCI-BLDG"
+      },
+      "output": {
+        "Company": "Main University",
+        "Ledger Account": "1720 Construction in Progress",
+        "Fund": "Plant",
+        "Project": "PRJ Science Building"
+      },
+      "rules_applied": [
+        "FIN-001",
+        "FIN-002",
+        "FIN-005",
+        "FIN-006",
+        "FIN-012"
+      ]
+    },
+    {
+      "name": "Unmapped account",
+      "input": {
+        "BUSINESS_UNIT": "UNIV1",
+        "ACCOUNT": "59999",
+        "FUND_CODE": "10000",
+        "DEPTID": "10200"
+      },
+      "output": {
+        "Company": "Main University",
+        "Ledger Account": "Conversion Suspense",
+        "Cost Center": "CC_CONV_SUSPENSE",
+        "queue": "unmapped_error_queue"
+      },
+      "rules_applied": [
+        "FIN-001",
+        "FIN-020"
+      ]
+    }
+  ],
+  "hcm_field_rules": [
+    {
+      "rule_id": "HCM-001",
+      "when": "PS JOB row with ACTION in (HIR, REH)",
+      "then": "Workday Hire business process (REH as Rehire)",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-002",
+      "when": "PS JOB row with ACTION in (XFR, PRO, DEM, POS)",
+      "then": "Workday Change Job",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-003",
+      "when": "PS JOB row with ACTION = PAY",
+      "then": "Workday Request Compensation Change",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-004",
+      "when": "PS JOB row with ACTION in (LOA, PLA) / RFL",
+      "then": "Place Worker on Leave / Return from Leave",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-005",
+      "when": "PS JOB row with ACTION in (TER, RET)",
+      "then": "Workday Terminate (retirement reason for RET)",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-006",
+      "when": "PS JOB row with ACTION = DTA and no field change a Workday process cares about",
+      "then": "Collapse into the prior event or drop; review volume early",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-action-xref.json"
+    },
+    {
+      "rule_id": "HCM-007",
+      "when": "JOBCODE",
+      "then": "Workday Job Profile (and Job Family)",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-code-to-profile-xref.json"
+    },
+    {
+      "rule_id": "HCM-008",
+      "when": "DEPTID on JOB",
+      "then": "Cost Center assignment; Supervisory Organization from REPORTS_TO",
+      "lookup": "bridge/xref/ps-to-workday-fin/department-xref.json and bridge/xref/ps-to-workday-hr/position-xref.json"
+    },
+    {
+      "rule_id": "HCM-009",
+      "when": "SAL_ADMIN_PLAN + GRADE + STEP",
+      "then": "Compensation Grade, Grade Profile, Step",
+      "lookup": "bridge/xref/ps-to-workday-hr/job-code-to-profile-xref.json"
+    },
+    {
+      "rule_id": "HCM-010",
+      "when": "EMPLID",
+      "then": "Seed Workday Universal ID from EMPLID so the same person stays one person in Workday Student",
+      "lookup": "bridge/xref/ps-to-workday-sis/identifier-xref.json"
+    }
+  ],
+  "student_field_rules": [
+    {
+      "rule_id": "STU-001",
+      "when": "ACAD_CAREER",
+      "then": "Workday Academic Level",
+      "lookup": "bridge/xref/ps-to-workday-sis/academic-career-level-xref.json"
+    },
+    {
+      "rule_id": "STU-002",
+      "when": "ACAD_PROG + ACAD_PLAN + ACAD_SUB_PLAN",
+      "then": "Program of Study plus Concentration",
+      "lookup": "bridge/xref/ps-to-workday-sis/program-plan-xref.json"
+    },
+    {
+      "rule_id": "STU-003",
+      "when": "STRM + SESSION_CODE",
+      "then": "Academic Period (child periods for sessions)",
+      "lookup": "bridge/xref/ps-to-workday-sis/term-period-xref.json"
+    },
+    {
+      "rule_id": "STU-004",
+      "when": "STDNT_ENRL_STATUS",
+      "then": "Student Course Registration status",
+      "lookup": "bridge/xref/ps-to-workday-sis/enrollment-status-xref.json"
+    },
+    {
+      "rule_id": "STU-005",
+      "when": "GRADING_BASIS",
+      "then": "Grading Basis",
+      "lookup": "bridge/xref/ps-to-workday-sis/grading-basis-xref.json"
+    },
+    {
+      "rule_id": "STU-006",
+      "when": "SRVC_IND_CD",
+      "then": "Student Hold Type",
+      "lookup": "bridge/xref/ps-to-workday-sis/service-indicator-hold-xref.json"
+    },
+    {
+      "rule_id": "STU-007",
+      "when": "FERPA flag / directory restriction",
+      "then": "Carry over as a Workday FERPA restriction before any other student data is exposed; zero misses allowed",
+      "lookup": "govern/ferpa-disclosure-framework.json"
+    }
+  ]
+}

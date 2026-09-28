@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+2252,Spring 2025,TERM_TBL.STRM,semester,helix/period-type,Spring 2025,Parent academic period,Academic Period (Academic Period Type: Semester),VALIDATE: STRM numbering convention.
+2252 / 1,Spring 2025 regular session,SESSION_TBL.SESSION_CODE = 1,session,helix/period-type,Spring 2025 Full Term,Child period for the regular session,Academic Period (child of Spring 2025),"If the regular session covers the full term, some tenants skip the child period. VALIDATE."
+2254,Summer 2025,TERM_TBL.STRM,semester,helix/period-type,Summer 2025,Parent academic period,Academic Period (Academic Period Type: Summer),Summer is usually a container for multiple sessions.
+2254 / SS1,Summer Session 1,SESSION_TBL.SESSION_CODE,session,helix/period-type,Summer 2025 Session 1,Child period,Academic Period (child of Summer 2025),"Census, drop, and refund dates live on the child period."
+2254 / SS2,Summer Session 2,SESSION_TBL.SESSION_CODE,session,helix/period-type,Summer 2025 Session 2,Child period,Academic Period (child of Summer 2025),
+2258,Fall 2025,TERM_TBL.STRM,semester,helix/period-type,Fall 2025,Parent academic period,Academic Period (Academic Period Type: Semester),
+2258 / 8W1,Fall first 8 weeks,SESSION_TBL.SESSION_CODE,mini_term,helix/period-type,Fall 2025 First 8 Weeks,Accelerated child period,Academic Period (child of Fall 2025),Accelerated online programs lean heavily on these.
+2258 / 8W2,Fall second 8 weeks,SESSION_TBL.SESSION_CODE,mini_term,helix/period-type,Fall 2025 Second 8 Weeks,Accelerated child period,Academic Period (child of Fall 2025),
+2261,Winter Intersession / J-Term,TERM_TBL.STRM,mini_term,helix/period-type,Winter 2026 Intersession,Short standalone period,Academic Period,Decide if J-Term is its own period or a child of Spring. Aid and billing rules drive the choice.
+2256,Fall Quarter (quarter school),TERM_TBL.STRM,quarter,helix/period-type,Fall Quarter 2025,Parent academic period,Academic Period (Academic Period Type: Quarter),Quarter institutions: one period per quarter.
+2025,Aid / academic year 2025-2026,ACAD_YEAR / AID_YEAR,academic_year,helix/period-type,2025-2026 Academic Year,Groups periods for aid and reporting,Academic Year / Academic Calendar,The Academic Calendar ties periods to a level; academic year groups them for aid and IPEDS.
+LAW 2258,Law Fall 2025 (separate calendar),TERM_TBL.STRM (ACAD_CAREER = LAW),semester,helix/period-type,Law Fall 2025,Period on the Law academic calendar,Academic Period (Law Academic Calendar),"PS keys terms by career; Workday keys periods to an Academic Calendar. Build one calendar per distinct schedule, not one per career."

@@ -1,0 +1,162 @@
+{
+  "title": "HELIX XREF: Financial Aid Item Types \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Financial Aid Item Type",
+  "description": "Maps PeopleSoft Financial Aid item types (ITEM_TYPE_FA with FIN_AID_TYPE) to helix/award-type and Workday Student financial aid award types and funds. PeopleSoft ITEM_TYPE values are 12-digit, institution-defined codes; ps_code shows the fund they represent. GLBA: award, loan, and ISIR data are GLBA-covered customer information; convert through restricted pipelines only.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "PELL",
+      "ps_description": "Federal Pell Grant",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Grant)",
+      "helix_code": "grant",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Federal Pell Grant",
+      "wd_description": "Federal need-based grant",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "VALIDATE: ITEM_TYPE value is local. Pell LEU history comes from NSLDS, not PS."
+    },
+    {
+      "ps_code": "SEOG",
+      "ps_description": "Federal SEOG",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Grant)",
+      "helix_code": "grant",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "FSEOG",
+      "wd_description": "Supplemental grant",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "Institutional match share needs a separate fund source."
+    },
+    {
+      "ps_code": "DLSUB",
+      "ps_description": "Direct Subsidized Loan",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Loan)",
+      "helix_code": "loan_subsidized",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Direct Subsidized Loan",
+      "wd_description": "Federal subsidized loan",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "COD origination IDs must carry over for in-flight award years."
+    },
+    {
+      "ps_code": "DLUNS",
+      "ps_description": "Direct Unsubsidized Loan",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Loan)",
+      "helix_code": "loan_unsubsidized",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Direct Unsubsidized Loan",
+      "wd_description": "Federal unsubsidized loan",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": ""
+    },
+    {
+      "ps_code": "DLPLUS",
+      "ps_description": "Direct Parent PLUS",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Loan)",
+      "helix_code": "loan_plus",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Parent PLUS Loan",
+      "wd_description": "Parent borrower loan",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "Borrower is the parent; keep parent identity linked but separate from the student."
+    },
+    {
+      "ps_code": "GPLUS",
+      "ps_description": "Direct Grad PLUS",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Loan)",
+      "helix_code": "loan_plus",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Grad PLUS Loan",
+      "wd_description": "Graduate borrower loan",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": ""
+    },
+    {
+      "ps_code": "FWS",
+      "ps_description": "Federal Work-Study",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Work Study)",
+      "helix_code": "work_study",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Federal Work-Study",
+      "wd_description": "Earned through employment",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "Earnings come from HCM payroll; the award lives in Student. Reconcile both sides."
+    },
+    {
+      "ps_code": "INSTGR",
+      "ps_description": "Institutional need grant",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Grant)",
+      "helix_code": "grant",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Institutional Grant",
+      "wd_description": "Institution-funded grant",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "Map the funding FIN fund so the aid expense posts to the right Workday Fund and Gift worktags."
+    },
+    {
+      "ps_code": "MERIT",
+      "ps_description": "Merit scholarship",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Scholarship)",
+      "helix_code": "scholarship",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Merit Scholarship",
+      "wd_description": "Merit-based award",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": "Endowed scholarships link to the donor Gift worktag."
+    },
+    {
+      "ps_code": "TUITWV",
+      "ps_description": "Tuition waiver / remission",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Waiver)",
+      "helix_code": "waiver",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Tuition Waiver",
+      "wd_description": "Tuition remission",
+      "wd_object": "Financial Aid Award Type (or Student Sponsor)",
+      "notes": "VALIDATE: employee and dependent remission may be modeled as a sponsor or a benefit instead of aid."
+    },
+    {
+      "ps_code": "PRIVLN",
+      "ps_description": "Private / alternative loan",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE (FIN_AID_TYPE = Loan)",
+      "helix_code": "loan_private",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Private Loan",
+      "wd_description": "Non-federal lender loan",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": ""
+    },
+    {
+      "ps_code": "GA",
+      "ps_description": "Graduate assistantship tuition",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE",
+      "helix_code": "assistantship",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Graduate Assistantship",
+      "wd_description": "Tuition benefit for GA",
+      "wd_object": "Financial Aid Award Type / Student Sponsor",
+      "notes": "Stipend pays through HCM; tuition benefit through Student."
+    },
+    {
+      "ps_code": "FELLOW",
+      "ps_description": "Fellowship",
+      "ps_source": "ITEM_TYPE_FA.ITEM_TYPE",
+      "helix_code": "fellowship",
+      "helix_terminology": "helix/award-type",
+      "wd_value": "Fellowship",
+      "wd_description": "Graduate fellowship",
+      "wd_object": "Financial Aid Award Type / Fund",
+      "notes": ""
+    }
+  ]
+}

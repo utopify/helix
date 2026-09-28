@@ -1,0 +1,81 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Campaign",
+  "source_system": "banner",
+  "module": "Advancement",
+  "target_resource": "Campaign",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "AFBCAMP",
+      "description": "Campaign Base. Campaign code, title, type, goal, start/end dates, status."
+    },
+    {
+      "table": "AFRCDES",
+      "description": "Campaign Designation. Designations/priorities associated with the campaign."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + AFBCAMP_CAMP_CODE."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Institutional HELIX registration."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "AFBCAMP_TITLE",
+      "transformation": "Campaign title."
+    },
+    {
+      "helix_attribute": "campaign_type",
+      "source": "AFBCAMP_CAMP_TYPE",
+      "transformation": "Campaign type (comprehensive/annual/capital). FLAG: confirm type column."
+    },
+    {
+      "helix_attribute": "goal_amount",
+      "source": "AFBCAMP_GOAL_AMT",
+      "transformation": "Campaign goal amount."
+    },
+    {
+      "helix_attribute": "raised_amount",
+      "source": "Derived from AGBGIFT/APRCFAE",
+      "transformation": "Sum of gifts credited to the campaign."
+    },
+    {
+      "helix_attribute": "donor_count",
+      "source": "Derived",
+      "transformation": "Distinct donor PIDMs credited to the campaign."
+    },
+    {
+      "helix_attribute": "gift_count",
+      "source": "Derived",
+      "transformation": "Count of gifts credited to the campaign."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "AFBCAMP_START_DATE",
+      "transformation": "Campaign start date."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "AFBCAMP_END_DATE",
+      "transformation": "Campaign end date."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "AFBCAMP_STATUS_IND",
+      "transformation": "Campaign status (active/closed). FLAG: confirm status column."
+    },
+    {
+      "helix_attribute": "priorities",
+      "source": "AFRCDES_DESG_CODE",
+      "transformation": "Designations/priorities under the campaign."
+    }
+  ]
+}

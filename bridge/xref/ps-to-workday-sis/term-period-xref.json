@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Term / Session to Academic Period \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Term / Session",
+  "description": "Maps PeopleSoft STRM (TERM_TBL) and SESSION_CODE (SESSION_TBL) to Workday Academic Periods. Guidance: a PS term becomes a parent Academic Period, and each PS session under it becomes a child Academic Period. Common 4-digit STRM convention is century digit + 2-digit year + term digit (for example 2258 = Fall 2025), but the convention is institution defined.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "2252",
+      "ps_description": "Spring 2025",
+      "ps_source": "TERM_TBL.STRM",
+      "helix_code": "semester",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Spring 2025",
+      "wd_description": "Parent academic period",
+      "wd_object": "Academic Period (Academic Period Type: Semester)",
+      "notes": "VALIDATE: STRM numbering convention."
+    },
+    {
+      "ps_code": "2252 / 1",
+      "ps_description": "Spring 2025 regular session",
+      "ps_source": "SESSION_TBL.SESSION_CODE = 1",
+      "helix_code": "session",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Spring 2025 Full Term",
+      "wd_description": "Child period for the regular session",
+      "wd_object": "Academic Period (child of Spring 2025)",
+      "notes": "If the regular session covers the full term, some tenants skip the child period. VALIDATE."
+    },
+    {
+      "ps_code": "2254",
+      "ps_description": "Summer 2025",
+      "ps_source": "TERM_TBL.STRM",
+      "helix_code": "semester",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Summer 2025",
+      "wd_description": "Parent academic period",
+      "wd_object": "Academic Period (Academic Period Type: Summer)",
+      "notes": "Summer is usually a container for multiple sessions."
+    },
+    {
+      "ps_code": "2254 / SS1",
+      "ps_description": "Summer Session 1",
+      "ps_source": "SESSION_TBL.SESSION_CODE",
+      "helix_code": "session",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Summer 2025 Session 1",
+      "wd_description": "Child period",
+      "wd_object": "Academic Period (child of Summer 2025)",
+      "notes": "Census, drop, and refund dates live on the child period."
+    },
+    {
+      "ps_code": "2254 / SS2",
+      "ps_description": "Summer Session 2",
+      "ps_source": "SESSION_TBL.SESSION_CODE",
+      "helix_code": "session",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Summer 2025 Session 2",
+      "wd_description": "Child period",
+      "wd_object": "Academic Period (child of Summer 2025)",
+      "notes": ""
+    },
+    {
+      "ps_code": "2258",
+      "ps_description": "Fall 2025",
+      "ps_source": "TERM_TBL.STRM",
+      "helix_code": "semester",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Fall 2025",
+      "wd_description": "Parent academic period",
+      "wd_object": "Academic Period (Academic Period Type: Semester)",
+      "notes": ""
+    },
+    {
+      "ps_code": "2258 / 8W1",
+      "ps_description": "Fall first 8 weeks",
+      "ps_source": "SESSION_TBL.SESSION_CODE",
+      "helix_code": "mini_term",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Fall 2025 First 8 Weeks",
+      "wd_description": "Accelerated child period",
+      "wd_object": "Academic Period (child of Fall 2025)",
+      "notes": "Accelerated online programs lean heavily on these."
+    },
+    {
+      "ps_code": "2258 / 8W2",
+      "ps_description": "Fall second 8 weeks",
+      "ps_source": "SESSION_TBL.SESSION_CODE",
+      "helix_code": "mini_term",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Fall 2025 Second 8 Weeks",
+      "wd_description": "Accelerated child period",
+      "wd_object": "Academic Period (child of Fall 2025)",
+      "notes": ""
+    },
+    {
+      "ps_code": "2261",
+      "ps_description": "Winter Intersession / J-Term",
+      "ps_source": "TERM_TBL.STRM",
+      "helix_code": "mini_term",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Winter 2026 Intersession",
+      "wd_description": "Short standalone period",
+      "wd_object": "Academic Period",
+      "notes": "Decide if J-Term is its own period or a child of Spring. Aid and billing rules drive the choice."
+    },
+    {
+      "ps_code": "2256",
+      "ps_description": "Fall Quarter (quarter school)",
+      "ps_source": "TERM_TBL.STRM",
+      "helix_code": "quarter",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Fall Quarter 2025",
+      "wd_description": "Parent academic period",
+      "wd_object": "Academic Period (Academic Period Type: Quarter)",
+      "notes": "Quarter institutions: one period per quarter."
+    },
+    {
+      "ps_code": "2025",
+      "ps_description": "Aid / academic year 2025-2026",
+      "ps_source": "ACAD_YEAR / AID_YEAR",
+      "helix_code": "academic_year",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "2025-2026 Academic Year",
+      "wd_description": "Groups periods for aid and reporting",
+      "wd_object": "Academic Year / Academic Calendar",
+      "notes": "The Academic Calendar ties periods to a level; academic year groups them for aid and IPEDS."
+    },
+    {
+      "ps_code": "LAW 2258",
+      "ps_description": "Law Fall 2025 (separate calendar)",
+      "ps_source": "TERM_TBL.STRM (ACAD_CAREER = LAW)",
+      "helix_code": "semester",
+      "helix_terminology": "helix/period-type",
+      "wd_value": "Law Fall 2025",
+      "wd_description": "Period on the Law academic calendar",
+      "wd_object": "Academic Period (Law Academic Calendar)",
+      "notes": "PS keys terms by career; Workday keys periods to an Academic Calendar. Build one calendar per distinct schedule, not one per career."
+    }
+  ]
+}

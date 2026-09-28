@@ -1,0 +1,14 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+P,In Person,CLASS_TBL.INSTRUCTION_MODE,in_person,helix/delivery-mode,In Person,Face-to-face,Delivery Mode,INSTRUCTION_MODE values are configurable. VALIDATE codes.
+OL,Online (asynchronous),CLASS_TBL.INSTRUCTION_MODE,online_asynchronous,helix/delivery-mode,Online,"Fully online, no set meeting time",Delivery Mode,Distance education reporting (IPEDS) depends on this split.
+OS,Online synchronous,CLASS_TBL.INSTRUCTION_MODE,online_synchronous,helix/delivery-mode,Online Synchronous,Online with scheduled meetings,Delivery Mode,VALIDATE: institution-defined code.
+HY,Hybrid,CLASS_TBL.INSTRUCTION_MODE,hybrid,helix/delivery-mode,Hybrid,Mix of in person and online,Delivery Mode,
+HF,HyFlex,CLASS_TBL.INSTRUCTION_MODE,hyflex,helix/delivery-mode,HyFlex,Student chooses modality,Delivery Mode,VALIDATE: institution-defined code.
+CR,Correspondence,CLASS_TBL.INSTRUCTION_MODE,correspondence,helix/delivery-mode,Correspondence,Correspondence course,Delivery Mode,Federal aid treats correspondence differently from online; keep it distinct.
+LEC,Lecture component,CRSE_COMPONENT.SSR_COMPONENT,,,Lecture,Instructional format,Instructional Format,"Structural, not a delivery mode."
+LAB,Laboratory component,CRSE_COMPONENT.SSR_COMPONENT,,,Lab,Instructional format,Instructional Format,Linked lecture and lab sections become linked Course Sections.
+DIS,Discussion / recitation,CRSE_COMPONENT.SSR_COMPONENT,,,Discussion,Instructional format,Instructional Format,
+SEM,Seminar,CRSE_COMPONENT.SSR_COMPONENT,,,Seminar,Instructional format,Instructional Format,
+IND,Independent study,CRSE_COMPONENT.SSR_COMPONENT,independent_study,helix/delivery-mode,Independent Study,Individually arranged,Instructional Format + Delivery Mode,
+CLN,Clinical,CRSE_COMPONENT.SSR_COMPONENT,clinical,helix/delivery-mode,Clinical,Clinical placement,Instructional Format + Delivery Mode,
+INT,Internship / field,CRSE_COMPONENT.SSR_COMPONENT,internship,helix/delivery-mode,Internship,Work-based learning,Instructional Format + Delivery Mode,VALIDATE: FLD or PRA may be used instead of INT.

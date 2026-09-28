@@ -1,0 +1,184 @@
+{
+  "title": "HELIX XREF: Job Code to Job Profile — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Job Code / Job Profile / Compensation Grade",
+  "description": "Structural crosswalk, not an exhaustive value list. PeopleSoft JOBCODE (PS_JOBCODE_TBL) with SAL_ADMIN_PLAN, GRADE, STEP and JOB_FAMILY becomes a Workday Job Profile in a Job Family, with Compensation Grade / Grade Profile / Step. Representative higher-ed rows are shown; faculty rows use helix/faculty-rank, staff rows use helix/worker-type. Rule: one PS job code becomes one Job Profile; SAL_ADMIN_PLAN + GRADE becomes a Compensation Grade (Grade Profile when the range differs by location or union); STEP becomes a Compensation Step.",
+  "mappings": [
+    {
+      "ps_code": "FAC100",
+      "ps_description": "Professor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE + JOB_FAMILY + SAL_ADMIN_PLAN",
+      "helix_code": "full_professor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Professor",
+      "wd_description": "Faculty, full professor",
+      "wd_object": "Job Profile + Job Family (Faculty) + Academic Rank on Academic Appointment",
+      "notes": "Rank belongs on the Workday Academic Appointment, not only the job profile. Tenure status (helix/tenure-status: tenured) goes on the appointment track. Example job code values are illustrative."
+    },
+    {
+      "ps_code": "FAC200",
+      "ps_description": "Associate Professor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "associate_professor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Associate Professor",
+      "wd_description": "Faculty, associate",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": "Tenure status often tenured; some are pre_tenure. Load from PS tenure data (PS_TENURE_DATA / custom)."
+    },
+    {
+      "ps_code": "FAC300",
+      "ps_description": "Assistant Professor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "assistant_professor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Assistant Professor",
+      "wd_description": "Faculty, assistant (tenure track)",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": "Carry tenure clock start and review dates to the appointment. Tenure status pre_tenure."
+    },
+    {
+      "ps_code": "FAC400",
+      "ps_description": "Lecturer",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "lecturer",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Lecturer",
+      "wd_description": "Non-tenure-track teaching faculty",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": "Tenure status non_tenure_track."
+    },
+    {
+      "ps_code": "FAC410",
+      "ps_description": "Senior Lecturer",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "senior_lecturer",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Senior Lecturer",
+      "wd_description": "Senior non-tenure-track",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": ""
+    },
+    {
+      "ps_code": "FAC500",
+      "ps_description": "Clinical Professor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "clinical_professor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Clinical Professor",
+      "wd_description": "Clinical faculty",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": ""
+    },
+    {
+      "ps_code": "FAC600",
+      "ps_description": "Research Professor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "research_professor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Research Professor",
+      "wd_description": "Research faculty",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": "Often fully grant funded; costing allocation carries Grant worktags."
+    },
+    {
+      "ps_code": "FAC900",
+      "ps_description": "Adjunct Instructor",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "instructor",
+      "helix_terminology": "helix/faculty-rank",
+      "wd_value": "Job Profile: Adjunct Faculty",
+      "wd_description": "Part-time per-course faculty",
+      "wd_object": "Job Profile + Academic Appointment",
+      "notes": "Worker type adjunct (see worker-type-xref); pay via per_course frequency."
+    },
+    {
+      "ps_code": "ADM100",
+      "ps_description": "Dean",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "executive_admin",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Profile: Dean",
+      "wd_description": "Academic administrator",
+      "wd_object": "Job Profile (Management) + Additional Job or Academic Appointment",
+      "notes": "A dean is often a professor (primary appointment) plus an administrative job. Model as additional job or administrative academic appointment. helix_code from helix/eeo-category."
+    },
+    {
+      "ps_code": "ADM200",
+      "ps_description": "Department Chair",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE or ADDL_PAY",
+      "helix_code": "executive_admin",
+      "helix_terminology": "helix/eeo-category",
+      "wd_value": "Job Profile: Department Chair (or Allowance)",
+      "wd_description": "Chair appointment",
+      "wd_object": "Additional Job or Allowance Plan",
+      "notes": "Many institutions pay chairs as a stipend on the faculty job. Decide job vs allowance before converting. helix_code from helix/eeo-category."
+    },
+    {
+      "ps_code": "STF200",
+      "ps_description": "Administrative Assistant II",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE + SAL_ADMIN_PLAN/GRADE",
+      "helix_code": "regular",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: Administrative Assistant II",
+      "wd_description": "Staff, clerical",
+      "wd_object": "Job Profile + Compensation Grade",
+      "notes": "GRADE maps to Compensation Grade; if union scale, STEP maps to Compensation Step."
+    },
+    {
+      "ps_code": "STF400",
+      "ps_description": "IT Analyst II",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE + SAL_ADMIN_PLAN/GRADE",
+      "helix_code": "regular",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: IT Analyst II",
+      "wd_description": "Staff, professional",
+      "wd_object": "Job Profile + Compensation Grade",
+      "notes": ""
+    },
+    {
+      "ps_code": "STF700",
+      "ps_description": "Facilities Technician",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE + UNION_CD + STEP",
+      "helix_code": "regular",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: Facilities Technician",
+      "wd_description": "Staff, skilled crafts",
+      "wd_object": "Job Profile + Compensation Grade Profile + Step",
+      "notes": "Union step schedules usually become Grade Profiles with Steps. VALIDATE: union codes."
+    },
+    {
+      "ps_code": "GRD100",
+      "ps_description": "Graduate Assistant",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "graduate_assistant",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: Graduate Assistant",
+      "wd_description": "GA/TA/RA",
+      "wd_object": "Job Profile",
+      "notes": "Stipend plan (see compensation-xref)."
+    },
+    {
+      "ps_code": "STU100",
+      "ps_description": "Student Worker",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "student_worker",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: Student Assistant",
+      "wd_description": "Hourly student",
+      "wd_object": "Job Profile",
+      "notes": "FWS funding is a costing allocation, not a job profile distinction."
+    },
+    {
+      "ps_code": "PDC100",
+      "ps_description": "Postdoctoral Scholar",
+      "ps_source": "PS_JOBCODE_TBL.JOBCODE",
+      "helix_code": "postdoc",
+      "helix_terminology": "helix/worker-type",
+      "wd_value": "Job Profile: Postdoctoral Scholar",
+      "wd_description": "Postdoc",
+      "wd_object": "Job Profile",
+      "notes": "NIH salary minimums often tracked as grade range."
+    }
+  ]
+}

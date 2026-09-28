@@ -1,0 +1,9 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+UNIV1,Main university,BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-PRIMARY,,Company: University,Primary legal entity,Company,"Most universities land one primary Company. Campuses usually become Cost Center or Region hierarchy, not Companies."
+CAMP2,Branch campus (same legal entity),BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-DIVISION,,Region: Branch Campus,Campus within the same entity,Region or Cost Center Hierarchy,Do not create a Company for a campus unless it files separately.
+MED01,School of Medicine (separate ledger),BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-DIVISION,,Company: University (Medicine hierarchy),Division of the primary entity,Company Hierarchy / Cost Center Hierarchy,"VALIDATE: if Medicine is a separate legal entity or practice plan, it becomes its own Company."
+FDN01,University foundation,BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-AFFILIATE,,Company: Foundation,Separate 501(c)(3) affiliate,Company,Separate Company with intercompany rules to the university.
+RSF01,Research foundation,BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-AFFILIATE,,Company: Research Foundation,Separate research entity,Company,
+HOSP1,Academic medical center / hospital,BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-AFFILIATE,,Company: Health System,Separate health system entity,Company,Often out of scope for the university Workday tenant. VALIDATE.
+ELIM1,Elimination business unit,BUS_UNIT_TBL_GL.BUSINESS_UNIT,ENT-ELIMINATION,,Company: Eliminations,Consolidation eliminations,Company (elimination) + Company Hierarchy,Workday handles intercompany eliminations through intercompany rules and a consolidation hierarchy.
+CONS1,Consolidation roll-up,BUS_UNIT_TBL_GL.BUSINESS_UNIT / TREE,ENT-CONSOLIDATION,,Company Hierarchy: Consolidated,Top of reporting roll-up,Company Hierarchy,"Roll-ups are hierarchies, not Companies."

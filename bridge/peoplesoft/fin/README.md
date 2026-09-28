@@ -13,3 +13,7 @@
 - Contracts (PS_CNTRCT_HDR, PS_CNTRCT_LINE + 2 more)
 - Cost Center / Department (PS_DEPT_TBL, PSTREENODE, PS_COMPANY_TBL)
 - Fund (PS_FUND_TBL, PSTREENODE, PS_FUND_TYPE_TBL)
+
+## Workday crosswalk
+
+Direct PeopleSoft to Workday value lookups for this module live in `../../xref/ps-to-workday-fin/`. *(v0.6.0)*

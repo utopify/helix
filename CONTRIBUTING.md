@@ -92,11 +92,17 @@ helix/
 ├── connect/               ← OpenAPI 3.1 API spec
 ├── govern/                ← Governance roles, rules, maturity model, domains
 ├── bridge/
-│   ├── banner/            ← Ellucian Banner mappings
-│   ├── peoplesoft/        ← Oracle PeopleSoft mappings
-│   ├── workday/           ← Workday Student mappings
-│   └── colleague/         ← Ellucian Colleague mappings
+│   ├── banner/            ← Ellucian Banner mappings (SIS, HR, Finance, Advancement, Financial Aid)
+│   ├── banner-saas/       ← Reverse bridge: HELIX to Banner SaaS (Ethos)
+│   ├── peoplesoft/        ← Oracle PeopleSoft mappings (CS, FIN, HCM)
+│   ├── workday/           ← Workday mappings (Student, FIN, HCM)
+│   ├── colleague/         ← Ellucian Colleague mappings
+│   └── xref/              ← PeopleSoft to Workday crosswalks (HR, FIN, SIS)
+├── templates/             ← dbt starter, reconciliation, PeopleSoft to Workday toolkit
+├── agents/                ← Downloadable AI agent templates
 └── docs/                  ← Comprehensive documentation
+
+**Crosswalk contributions are especially welcome.** If your institution has validated a PeopleSoft to Workday value (the rows marked VALIDATE in `bridge/xref/`), a pull request confirming or correcting it helps every institution on the same path.
 ```
 
 ## Code of Conduct

@@ -1,0 +1,107 @@
+{
+  "title": "HELIX XREF: Business Unit to Company \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Business Unit / Company",
+  "description": "Maps PeopleSoft GL business units to Workday Companies and the Company Hierarchy. helix_code values are HELIX FIN entity-role codes (same custom-code style as account-xref); they are not bound to a terminology file.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "UNIV1",
+      "ps_description": "Main university",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-PRIMARY",
+      "helix_terminology": "",
+      "wd_value": "Company: University",
+      "wd_description": "Primary legal entity",
+      "wd_object": "Company",
+      "notes": "Most universities land one primary Company. Campuses usually become Cost Center or Region hierarchy, not Companies."
+    },
+    {
+      "ps_code": "CAMP2",
+      "ps_description": "Branch campus (same legal entity)",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-DIVISION",
+      "helix_terminology": "",
+      "wd_value": "Region: Branch Campus",
+      "wd_description": "Campus within the same entity",
+      "wd_object": "Region or Cost Center Hierarchy",
+      "notes": "Do not create a Company for a campus unless it files separately."
+    },
+    {
+      "ps_code": "MED01",
+      "ps_description": "School of Medicine (separate ledger)",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-DIVISION",
+      "helix_terminology": "",
+      "wd_value": "Company: University (Medicine hierarchy)",
+      "wd_description": "Division of the primary entity",
+      "wd_object": "Company Hierarchy / Cost Center Hierarchy",
+      "notes": "VALIDATE: if Medicine is a separate legal entity or practice plan, it becomes its own Company."
+    },
+    {
+      "ps_code": "FDN01",
+      "ps_description": "University foundation",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-AFFILIATE",
+      "helix_terminology": "",
+      "wd_value": "Company: Foundation",
+      "wd_description": "Separate 501(c)(3) affiliate",
+      "wd_object": "Company",
+      "notes": "Separate Company with intercompany rules to the university."
+    },
+    {
+      "ps_code": "RSF01",
+      "ps_description": "Research foundation",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-AFFILIATE",
+      "helix_terminology": "",
+      "wd_value": "Company: Research Foundation",
+      "wd_description": "Separate research entity",
+      "wd_object": "Company",
+      "notes": ""
+    },
+    {
+      "ps_code": "HOSP1",
+      "ps_description": "Academic medical center / hospital",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-AFFILIATE",
+      "helix_terminology": "",
+      "wd_value": "Company: Health System",
+      "wd_description": "Separate health system entity",
+      "wd_object": "Company",
+      "notes": "Often out of scope for the university Workday tenant. VALIDATE."
+    },
+    {
+      "ps_code": "ELIM1",
+      "ps_description": "Elimination business unit",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT",
+      "helix_code": "ENT-ELIMINATION",
+      "helix_terminology": "",
+      "wd_value": "Company: Eliminations",
+      "wd_description": "Consolidation eliminations",
+      "wd_object": "Company (elimination) + Company Hierarchy",
+      "notes": "Workday handles intercompany eliminations through intercompany rules and a consolidation hierarchy."
+    },
+    {
+      "ps_code": "CONS1",
+      "ps_description": "Consolidation roll-up",
+      "ps_source": "BUS_UNIT_TBL_GL.BUSINESS_UNIT / TREE",
+      "helix_code": "ENT-CONSOLIDATION",
+      "helix_terminology": "",
+      "wd_value": "Company Hierarchy: Consolidated",
+      "wd_description": "Top of reporting roll-up",
+      "wd_object": "Company Hierarchy",
+      "notes": "Roll-ups are hierarchies, not Companies."
+    }
+  ]
+}

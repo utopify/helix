@@ -1,0 +1,141 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 GLTransaction",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "GLTransaction",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FGBTRND",
+      "description": "Transaction Detail. Posted GL transaction detail lines (debits/credits) by FOAPAL."
+    },
+    {
+      "table": "FGBTRNH",
+      "description": "Transaction Header. Journal document header \u2014 document code, rule class, transaction date, description."
+    },
+    {
+      "table": "FGBJVCD",
+      "description": "Journal Voucher document. Journal voucher header/detail for manual entries."
+    },
+    {
+      "table": "FTVACCT",
+      "description": "Account Code validation. Chart of accounts natural account codes and types."
+    },
+    {
+      "table": "FTVFUND",
+      "description": "Fund Code validation. Fund codes in the FOAPAL fund element."
+    },
+    {
+      "table": "FTVORGN",
+      "description": "Organization Code validation. Org codes in the FOAPAL organization element."
+    },
+    {
+      "table": "FTVPROG",
+      "description": "Program Code validation. Program codes in the FOAPAL program element."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FGBTRND document code + sequence."
+    },
+    {
+      "helix_attribute": "transaction_id",
+      "source": "FGBTRND_DOC_CODE + FGBTRND_SEQ_NUM",
+      "transformation": "Concatenate document code and sequence number."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "FGBTRND_COAS_CODE",
+      "transformation": "Chart of Accounts code (COA) acts as the business unit / entity."
+    },
+    {
+      "helix_attribute": "journal_id",
+      "source": "FGBTRNH_DOC_CODE",
+      "transformation": "Banner document code (journal document reference)."
+    },
+    {
+      "helix_attribute": "journal_date",
+      "source": "FGBTRND_TRANS_DATE",
+      "transformation": "Transaction/posting date."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "FGBTRND_FSYR_CODE",
+      "transformation": "Fiscal year code."
+    },
+    {
+      "helix_attribute": "accounting_period",
+      "source": "FGBTRND_PERIOD",
+      "transformation": "Accounting period (01-14)."
+    },
+    {
+      "helix_attribute": "account",
+      "source": "FGBTRND_ACCT_CODE",
+      "transformation": "FOAPAL account element. Decode via FTVACCT."
+    },
+    {
+      "helix_attribute": "account_description",
+      "source": "FTVACCT_TITLE",
+      "transformation": "Account title from FTVACCT (join on ACCT_CODE)."
+    },
+    {
+      "helix_attribute": "account_type",
+      "source": "FTVACCT_ATYP_CODE",
+      "transformation": "Account type code from FTVACCT. Bind to helix/account-type."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "FGBTRND_FUND_CODE",
+      "transformation": "FOAPAL fund element. Decode via FTVFUND."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "FGBTRND_ORGN_CODE",
+      "transformation": "FOAPAL organization element. Decode via FTVORGN."
+    },
+    {
+      "helix_attribute": "program_code",
+      "source": "FGBTRND_PROG_CODE",
+      "transformation": "FOAPAL program element. Decode via FTVPROG."
+    },
+    {
+      "helix_attribute": "project_id",
+      "source": "FGBTRND_PROJ_CODE",
+      "transformation": "FOAPAL project/location element if used (may be null)."
+    },
+    {
+      "helix_attribute": "amount",
+      "source": "FGBTRND_AMT",
+      "transformation": "Transaction amount."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "Configuration",
+      "transformation": "ISO 4217 code; Banner base currency (typically USD)."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "FGBTRND_DESC",
+      "transformation": "Transaction description."
+    },
+    {
+      "helix_attribute": "journal_source",
+      "source": "FGBTRND_RUCL_CODE",
+      "transformation": "Rule class code identifies the transaction source/type."
+    },
+    {
+      "helix_attribute": "journal_status",
+      "source": "FGBTRNH_STATUS_IND",
+      "transformation": "Document status (posted, incomplete). FLAG: exact status column may vary by version."
+    },
+    {
+      "helix_attribute": "ledger",
+      "source": "Derived",
+      "transformation": "Operating ledger (OPAL) vs general ledger (GENL) derived from rule class."
+    }
+  ]
+}

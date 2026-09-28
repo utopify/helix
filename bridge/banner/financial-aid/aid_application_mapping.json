@@ -1,0 +1,171 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 AidApplication",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "AidApplication",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RCRAPP1",
+      "description": "Applicant Application Part 1. FAFSA/ISIR core \u2014 dependency, household, key EFC/SAI fields."
+    },
+    {
+      "table": "RCRAPP2",
+      "description": "Applicant Application Part 2. Additional FAFSA/ISIR data (income, assets)."
+    },
+    {
+      "table": "RCRAPP3",
+      "description": "Applicant Application Part 3. Additional FAFSA/ISIR data."
+    },
+    {
+      "table": "RCRAPP4",
+      "description": "Applicant Application Part 4. Additional FAFSA/ISIR data."
+    },
+    {
+      "table": "RCRESAR",
+      "description": "Electronic SAR/ISIR results. SAI/EFC, comment codes, C-flags, verification flag, reject codes."
+    },
+    {
+      "table": "RORSTAT",
+      "description": "Applicant Status by Aid Year. Overall aid status, verification, SAP, budget, dependency."
+    },
+    {
+      "table": "RCRLDS4",
+      "description": "NSLDS data. NSLDS match/history flags. FLAG: confirm NSLDS table name."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + RORSTAT_PIDM + AIDY."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RORSTAT_PIDM",
+      "transformation": "Applicant PIDM -> HELIX Student."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RORSTAT_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "application_type",
+      "source": "Derived",
+      "transformation": "fafsa (RCRESAR present) vs institutional. Bind to application source."
+    },
+    {
+      "helix_attribute": "aid_application_status",
+      "source": "RORSTAT_APPL_COMP_IND",
+      "transformation": "Application completeness status. Bind to helix/aid-application-status."
+    },
+    {
+      "helix_attribute": "submission_date",
+      "source": "RCRESAR_RECEIPT_DATE",
+      "transformation": "ISIR/SAR receipt date."
+    },
+    {
+      "helix_attribute": "sai",
+      "source": "RCRESAR_PRIMARY_EFC (SAI)",
+      "transformation": "Student Aid Index (post-2024 FAFSA Simplification; field carries SAI). Integer, may be negative."
+    },
+    {
+      "helix_attribute": "efc_legacy",
+      "source": "RCRESAR_PRIMARY_EFC",
+      "transformation": "Legacy EFC for pre-2024-25 records."
+    },
+    {
+      "helix_attribute": "dependency_status",
+      "source": "RORSTAT_DEPEND_STATUS / RCRESAR_DEPENDENCY",
+      "transformation": "Dependent/independent. Bind to helix/dependency-status."
+    },
+    {
+      "helix_attribute": "dependency_override_flag",
+      "source": "RCRESAR_DEPENDENCY_OVERRIDE",
+      "transformation": "Dependency override indicator."
+    },
+    {
+      "helix_attribute": "pell_eligible_flag",
+      "source": "Derived from SAI",
+      "transformation": "Pell eligibility derived from SAI and enrollment."
+    },
+    {
+      "helix_attribute": "pell_lifetime_eligibility_used",
+      "source": "RCRLDS4_PELL_LEU_PCT",
+      "transformation": "Pell LEU percentage from NSLDS. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "verification_selected_flag",
+      "source": "RCRESAR_VERIF_SELECT_IND",
+      "transformation": "Verification selection flag from ISIR."
+    },
+    {
+      "helix_attribute": "verification_tracking_group",
+      "source": "RCRESAR_VERIF_TRACKING_GRP",
+      "transformation": "Verification tracking group (V1/V4/V5). FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "isir_transaction_number",
+      "source": "RCRESAR_TRANS_NO",
+      "transformation": "ISIR transaction number."
+    },
+    {
+      "helix_attribute": "isir_received_date",
+      "source": "RCRESAR_RECEIPT_DATE",
+      "transformation": "ISIR received date."
+    },
+    {
+      "helix_attribute": "comment_codes",
+      "source": "RCRESAR_COMMENT_CODES",
+      "transformation": "ISIR comment codes (multi-valued)."
+    },
+    {
+      "helix_attribute": "c_flags",
+      "source": "RCRESAR_REJECT_CODES",
+      "transformation": "Reject/C-flag codes."
+    },
+    {
+      "helix_attribute": "nslds_match_flags",
+      "source": "RCRLDS4 flags",
+      "transformation": "NSLDS post-screening match flags."
+    },
+    {
+      "helix_attribute": "professional_judgment_flag",
+      "source": "RORSTAT_PJ_IND",
+      "transformation": "Professional judgment indicator."
+    },
+    {
+      "helix_attribute": "expected_enrollment_status",
+      "source": "RORSTAT_ENROLL_IND",
+      "transformation": "Expected enrollment intensity."
+    },
+    {
+      "helix_attribute": "citizenship_status",
+      "source": "RCRESAR_CITIZEN_IND",
+      "transformation": "Eligibility citizenship category."
+    },
+    {
+      "helix_attribute": "sar_received_flag",
+      "source": "RCRESAR presence",
+      "transformation": "SAR/ISIR received."
+    },
+    {
+      "helix_attribute": "fafsa_signature_flag",
+      "source": "RCRESAR_SIGNED_IND",
+      "transformation": "Signature flag. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "homeless_youth_flag",
+      "source": "RCRESAR_HOMELESS_IND",
+      "transformation": "Homeless youth determination."
+    },
+    {
+      "helix_attribute": "foster_care_flag",
+      "source": "RCRESAR_FOSTER_IND",
+      "transformation": "Foster care indicator. FLAG: confirm column."
+    }
+  ]
+}

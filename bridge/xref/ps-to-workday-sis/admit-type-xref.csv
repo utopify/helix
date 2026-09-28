@@ -1,0 +1,16 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+FYR,First-year freshman,ADM_APPL_PROG.ADMIT_TYPE,first_time_freshman,helix/student-type,First Year,First-time student,Student Application (Applicant Type),VALIDATE: ADMIT_TYPE codes are institution defined.
+TRN,Transfer,ADM_APPL_PROG.ADMIT_TYPE,transfer,helix/student-type,Transfer,Prior college credit,Student Application (Applicant Type),Triggers transfer credit evaluation.
+RDM,Readmit,ADM_APPL_PROG.ADMIT_TYPE,readmit,helix/student-type,Readmit,Returning after separation,Student Application (Applicant Type),Readmits reuse the existing Workday person and Universal ID.
+VIS,Visiting / transient,ADM_APPL_PROG.ADMIT_TYPE,transient,helix/student-type,Visiting,Enrolled elsewhere,Student Application (Applicant Type),
+HSD,High school dual enrollment,ADM_APPL_PROG.ADMIT_TYPE,dual_enrollment,helix/student-type,Dual Enrollment,High school student,Student Application (Applicant Type),Minors: check guardian and FERPA handling.
+NDG,Non-degree,ADM_APPL_PROG.ADMIT_TYPE,non_degree,helix/student-type,Non-Degree,Non-degree seeking,Student Application (Applicant Type),
+PBC,Post-baccalaureate,ADM_APPL_PROG.ADMIT_TYPE,post_baccalaureate,helix/student-type,Post-Baccalaureate,Holds a bachelor degree,Student Application (Applicant Type),
+APPL,Application received,ADM_APPL_PROG.PROG_ACTION,submitted,helix/admission-status,Submitted,Application submitted,Student Application (status),
+ADMT,Admit,ADM_APPL_PROG.PROG_ACTION,admitted,helix/admission-status,Admit,Admit decision,Admission Decision,
+COND,Conditional admit,ADM_APPL_PROG.PROG_ACTION + PROG_REASON,conditionally_admitted,helix/admission-status,Conditional Admit,Admit with conditions,Admission Decision (with conditions),VALIDATE: often ADMT with a PROG_REASON rather than a separate action.
+DENY,Deny,ADM_APPL_PROG.PROG_ACTION,denied,helix/admission-status,Deny,Denied,Admission Decision,
+WAIT,Waitlist,ADM_APPL_PROG.PROG_ACTION,waitlisted,helix/admission-status,Waitlist,Waitlisted,Admission Decision,VALIDATE: institution-defined action.
+DEFR,Defer,ADM_APPL_PROG.PROG_ACTION,deferred,helix/admission-status,Defer,Decision or entry deferred,Admission Decision / Deferral,
+WADM,Withdrawn after admit,ADM_APPL_PROG.PROG_ACTION,withdrawn,helix/admission-status,Withdrawn,Admit declined or withdrawn,Student Application (status),
+PROSPECT,Prospect (Recruiting),ADM_PRSPCT_CAR / SCC_ prospect records,prospective,helix/student-status,Prospect,Pre-application prospect,Student Prospect (Student Recruitment),"Many institutions keep prospects in the CRM (Slate, Salesforce) and do not convert them."

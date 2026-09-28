@@ -1,0 +1,162 @@
+{
+  "title": "HELIX XREF: Program Status / Program Action \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Program Status",
+  "description": "Maps PeopleSoft ACAD_PROG.PROG_STATUS and PROG_ACTION (effective dated) to Workday Program of Study Record status and student status events. As with HCM JOB rows, each PS program action row is a lifecycle event; convert the current state for active students and summarize history.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "AP / APPL",
+      "ps_description": "Applicant",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "applicant",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Applicant",
+      "wd_description": "Application in progress",
+      "wd_object": "Admissions Application (not a Program of Study Record yet)",
+      "notes": "Open applications for the next intake load into Workday Admissions."
+    },
+    {
+      "ps_code": "AD / ADMT",
+      "ps_description": "Admitted",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "admitted",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Admitted",
+      "wd_description": "Admit decision, not matriculated",
+      "wd_object": "Admission Decision",
+      "notes": ""
+    },
+    {
+      "ps_code": "PM / DEIN",
+      "ps_description": "Pre-matriculated (deposit / intent)",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "admitted",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Admitted (Confirmed)",
+      "wd_description": "Intent to enroll confirmed",
+      "wd_object": "Admission Decision / Student Confirmation",
+      "notes": "VALIDATE: DEIN is an institution-defined action in many implementations."
+    },
+    {
+      "ps_code": "AC / MATR",
+      "ps_description": "Active, matriculated",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "enrolled",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Active",
+      "wd_description": "Matriculated into the program",
+      "wd_object": "Program of Study Record (Matriculate Student event)",
+      "notes": "Matriculation creates the Program of Study Record. VALIDATE event name."
+    },
+    {
+      "ps_code": "AC / DATA",
+      "ps_description": "Active, data change",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "enrolled",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Active",
+      "wd_description": "No lifecycle change",
+      "wd_object": "Program of Study Record",
+      "notes": "DATA rows are corrections, not events. Collapse into the current state."
+    },
+    {
+      "ps_code": "AC / RLOA",
+      "ps_description": "Returned from leave",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "enrolled",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Active",
+      "wd_description": "Return from leave of absence",
+      "wd_object": "Program of Study Record (return event)",
+      "notes": ""
+    },
+    {
+      "ps_code": "LA / LEAV",
+      "ps_description": "Leave of absence",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "leave_of_absence",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "On Leave",
+      "wd_description": "Approved leave",
+      "wd_object": "Student Leave of Absence",
+      "notes": "Carry expected return period."
+    },
+    {
+      "ps_code": "DC / DISC",
+      "ps_description": "Discontinued (withdrew)",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Withdrawn / Inactive",
+      "wd_description": "Left the program",
+      "wd_object": "Program of Study Record (withdraw event)",
+      "notes": ""
+    },
+    {
+      "ps_code": "DC / DISM",
+      "ps_description": "Dismissed",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Dismissed",
+      "wd_description": "Academic or conduct dismissal",
+      "wd_object": "Program of Study Record + Student Hold",
+      "notes": "HELIX has no dismissed status. Use withdrawn plus a disciplinary/academic hold and keep the reason code."
+    },
+    {
+      "ps_code": "SP / SPND",
+      "ps_description": "Suspended",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Suspended",
+      "wd_description": "Temporary separation",
+      "wd_object": "Program of Study Record + Student Hold",
+      "notes": "VALIDATE: some institutions keep suspended students active with a registration hold."
+    },
+    {
+      "ps_code": "CM / COMP",
+      "ps_description": "Completed program",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "graduated",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Completed",
+      "wd_description": "Degree conferred",
+      "wd_object": "Program of Study Record (Completed) + Student Award",
+      "notes": "Conferred degrees also load as awards/credentials for the transcript."
+    },
+    {
+      "ps_code": "DE / DEC",
+      "ps_description": "Deceased",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "deceased",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Deceased",
+      "wd_description": "Deceased student",
+      "wd_object": "Person (deceased) + Program of Study Record",
+      "notes": "Coordinate with HCM and Advancement so the deceased flag is set once on the person."
+    },
+    {
+      "ps_code": "CN / WAPP",
+      "ps_description": "Cancelled / withdrew application",
+      "ps_source": "ACAD_PROG.PROG_STATUS + PROG_ACTION",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/student-status",
+      "wd_value": "Application Withdrawn",
+      "wd_description": "Applicant withdrew",
+      "wd_object": "Admissions Application",
+      "notes": "Historic cancelled applications usually stay in the archive."
+    }
+  ]
+}

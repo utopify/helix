@@ -1,0 +1,140 @@
+{
+  "title": "HELIX XREF: Employment Status — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Employment Status",
+  "description": "Maps PeopleSoft HR_STATUS and EMPL_STATUS on the current PS_JOB row to Workday worker status (Active, On Leave, Terminated) through helix/employment-status.",
+  "mappings": [
+    {
+      "ps_code": "A",
+      "ps_description": "Active",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active",
+      "wd_description": "Active worker",
+      "wd_object": "Worker.Employment_Status (Active)",
+      "notes": "HR_STATUS = A."
+    },
+    {
+      "ps_code": "P",
+      "ps_description": "Leave With Pay",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "leave_of_absence",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active / On Leave (paid)",
+      "wd_description": "Worker on paid leave",
+      "wd_object": "Leave of Absence event + Leave Type",
+      "notes": "Converted as Active worker with an open Place Worker on Leave event. Paid vs unpaid is driven by Leave Type."
+    },
+    {
+      "ps_code": "L",
+      "ps_description": "Leave of Absence (unpaid)",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "leave_of_absence",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active / On Leave (unpaid)",
+      "wd_description": "Worker on unpaid leave",
+      "wd_object": "Leave of Absence event + Leave Type",
+      "notes": "Load open leaves as in-progress Leave events with Estimated Last Day of Leave."
+    },
+    {
+      "ps_code": "S",
+      "ps_description": "Suspended",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "suspended",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active / On Leave (Suspension)",
+      "wd_description": "Suspension",
+      "wd_object": "Leave of Absence Type (Suspension)",
+      "notes": "Workday has no native Suspended status; model as a Leave Type. VALIDATE: tenant leave type name."
+    },
+    {
+      "ps_code": "W",
+      "ps_description": "Short Work Break",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "inactive",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active / On Leave (Seasonal Break)",
+      "wd_description": "Seasonal or academic break",
+      "wd_object": "Leave of Absence Type or Fixed Term end",
+      "notes": "Common for 9-month staff and student workers between terms. Decide leave vs fixed-term rehire pattern."
+    },
+    {
+      "ps_code": "Z",
+      "ps_description": "Furlough (institution-defined)",
+      "ps_source": "PS_JOB.EMPL_STATUS + ACTION_REASON",
+      "helix_code": "furloughed",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Active / On Leave (Furlough)",
+      "wd_description": "Institution-initiated furlough",
+      "wd_object": "Leave of Absence Type (Furlough)",
+      "notes": "Some institutions use L with a furlough ACTION_REASON instead. VALIDATE: local status code."
+    },
+    {
+      "ps_code": "T",
+      "ps_description": "Terminated",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "terminated",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated",
+      "wd_description": "Terminated worker",
+      "wd_object": "Terminate Employee business process + Termination Reason",
+      "notes": "Termination reason comes from PS_JOB.ACTION_REASON on the TER row."
+    },
+    {
+      "ps_code": "U",
+      "ps_description": "Terminated With Pay",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "terminated",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated",
+      "wd_description": "Terminated, final pay pending",
+      "wd_object": "Terminate Employee business process",
+      "notes": "Pay-through date drives final payroll; load Pay Through Date."
+    },
+    {
+      "ps_code": "V",
+      "ps_description": "Terminated Pension Pay Out",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "terminated",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated",
+      "wd_description": "Terminated, pension payout",
+      "wd_object": "Terminate Employee business process",
+      "notes": "Pension payout handled outside Workday HCM in most institutions."
+    },
+    {
+      "ps_code": "R",
+      "ps_description": "Retired",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "retired",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated (Retirement reason)",
+      "wd_description": "Retired",
+      "wd_object": "Terminate Employee + Termination Reason = Retirement",
+      "notes": "Workday treats retirement as a termination reason, not a status. Set Retirement Date."
+    },
+    {
+      "ps_code": "Q",
+      "ps_description": "Retired With Pay",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "retired",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated (Retirement reason)",
+      "wd_description": "Retired, pay continuing",
+      "wd_object": "Terminate Employee + Retirement reason",
+      "notes": "Rehired retirees need a new Hire event with a retiree rehire flag."
+    },
+    {
+      "ps_code": "D",
+      "ps_description": "Deceased",
+      "ps_source": "PS_JOB.EMPL_STATUS",
+      "helix_code": "deceased",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminated (Death reason)",
+      "wd_description": "Deceased",
+      "wd_object": "Terminate Employee + Termination Reason = Death",
+      "notes": "Triggers survivor benefits and estate W-2 handling."
+    }
+  ]
+}

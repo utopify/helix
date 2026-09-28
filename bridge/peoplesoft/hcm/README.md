@@ -14,3 +14,7 @@
 - Job Classification / Faculty (PS_JOBCODE_TBL, PS_JOB_FAMILY_TBL + 3 more)
 - Learning (PS_TRAINING, PS_TRAINING_TBL, PS_TRN_ASSIGN, PS_TRN_COMPLETION)
 - Position Budget (PS_POS_BUDGET, PS_POS_DIST, PS_POSITION_DATA + 1 more)
+
+## Workday crosswalk
+
+Direct PeopleSoft to Workday value lookups for this module live in `../../xref/ps-to-workday-hr/`. *(v0.6.0)*

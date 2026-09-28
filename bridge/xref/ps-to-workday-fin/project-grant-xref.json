@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Project / Award to Grant, Project, Gift \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Project / Award",
+  "description": "Maps PeopleSoft Project Costing (PROJECT_ID), Grants (GM_AWARD / CONTRACT_NUM), and Contracts to Workday Grant, Project, and Gift worktags, and award status to helix/grant-status. The core rule: PS uses PROJECT_ID for almost everything; Workday separates sponsored awards (Grant), capital and internal efforts (Project), and donor restrictions (Gift).",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "SPON-FED",
+      "ps_description": "Federal sponsored project",
+      "ps_source": "PROJECT.PROJECT_ID (PROJECT_TYPE = sponsored, fund federal)",
+      "helix_code": "grant_sponsored",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Grant worktag + Award",
+      "wd_description": "Sponsored research or training",
+      "wd_object": "Grant / Award",
+      "notes": "One PS award with many projects often becomes one Workday Award with many Grants."
+    },
+    {
+      "ps_code": "SPON-PRIV",
+      "ps_description": "Private sponsor / foundation grant",
+      "ps_source": "PROJECT.PROJECT_ID",
+      "helix_code": "grant_sponsored",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Grant worktag + Award",
+      "wd_description": "Non-federal sponsor",
+      "wd_object": "Grant / Award",
+      "notes": ""
+    },
+    {
+      "ps_code": "CAPITAL",
+      "ps_description": "Capital construction project",
+      "ps_source": "PROJECT.PROJECT_ID (PROJECT_TYPE = capital)",
+      "helix_code": "plant",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Project worktag",
+      "wd_description": "Capital project",
+      "wd_object": "Project (+ Business Asset on completion)",
+      "notes": "Construction in progress settles to Business Assets."
+    },
+    {
+      "ps_code": "INTERNAL",
+      "ps_description": "Internal / departmental project",
+      "ps_source": "PROJECT.PROJECT_ID",
+      "helix_code": "designated",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Project or Program worktag",
+      "wd_description": "Internally funded effort",
+      "wd_object": "Project (or Program)",
+      "notes": "Many institutions retire low-value internal projects and use Program instead."
+    },
+    {
+      "ps_code": "GIFT-RESTR",
+      "ps_description": "Restricted gift account",
+      "ps_source": "PROJECT.PROJECT_ID or FUND_CODE",
+      "helix_code": "current_restricted",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Gift worktag",
+      "wd_description": "Donor-restricted expendable",
+      "wd_object": "Gift",
+      "notes": "Donor intent lives on the Gift; the Fund carries the restriction class."
+    },
+    {
+      "ps_code": "ENDOW",
+      "ps_description": "Endowment",
+      "ps_source": "PROJECT.PROJECT_ID or FUND_CODE",
+      "helix_code": "endowment",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Gift worktag (endowed) + Fund",
+      "wd_description": "Endowed principal and payout",
+      "wd_object": "Gift + Fund",
+      "notes": "Keep corpus and spendable payout on separate Gifts or Funds."
+    },
+    {
+      "ps_code": "A",
+      "ps_description": "Award active",
+      "ps_source": "GM_AWARD.AWARD_STATUS",
+      "helix_code": "active",
+      "helix_terminology": "helix/grant-status",
+      "wd_value": "Active",
+      "wd_description": "Open for spending",
+      "wd_object": "Award (Award Status)",
+      "notes": "VALIDATE: PS award status values."
+    },
+    {
+      "ps_code": "P",
+      "ps_description": "Award pending / proposal",
+      "ps_source": "GM_PROPOSAL.PROPOSAL_STATUS",
+      "helix_code": "pending",
+      "helix_terminology": "helix/grant-status",
+      "wd_value": "Proposal Submitted",
+      "wd_description": "Awaiting sponsor decision",
+      "wd_object": "Award Proposal",
+      "notes": "Workday Grants may manage proposals if pre-award is in scope."
+    },
+    {
+      "ps_code": "NCE",
+      "ps_description": "No-cost extension",
+      "ps_source": "GM_AWARD end date change",
+      "helix_code": "no_cost_extension",
+      "helix_terminology": "helix/grant-status",
+      "wd_value": "Active (extended)",
+      "wd_description": "End date extended, no new money",
+      "wd_object": "Award (amendment)",
+      "notes": "Carry amendment history if audits need it."
+    },
+    {
+      "ps_code": "C",
+      "ps_description": "Award closed",
+      "ps_source": "GM_AWARD.AWARD_STATUS",
+      "helix_code": "closed",
+      "helix_terminology": "helix/grant-status",
+      "wd_value": "Closed",
+      "wd_description": "Closed out",
+      "wd_object": "Award (Award Status)",
+      "notes": "Closed awards usually convert as history only, not as open Grants."
+    },
+    {
+      "ps_code": "CONTRACT",
+      "ps_description": "Customer contract (billing)",
+      "ps_source": "CA_CONTR_HDR.CONTRACT_NUM",
+      "helix_code": "grant_sponsored",
+      "helix_terminology": "helix/fund-type",
+      "wd_value": "Award Contract / Customer Contract",
+      "wd_description": "Billing arrangement",
+      "wd_object": "Award (Customer Contract)",
+      "notes": "PS Contracts drives sponsor billing; Workday links billing to the Award. VALIDATE billing model."
+    },
+    {
+      "ps_code": "SUBREC",
+      "ps_description": "Outgoing subaward",
+      "ps_source": "GM_AWARD / PO for subrecipient",
+      "helix_code": "subaward_pending",
+      "helix_terminology": "helix/grant-status",
+      "wd_value": "Subaward (Supplier Contract)",
+      "wd_description": "Subrecipient agreement",
+      "wd_object": "Supplier Contract linked to Grant",
+      "notes": "Subaward POs become Supplier Contracts with the Grant worktag."
+    }
+  ]
+}

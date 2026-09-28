@@ -1,0 +1,118 @@
+{
+  "title": "HELIX XREF: Class Enrollment Status \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Enrollment Status",
+  "description": "Maps PeopleSoft STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON to Workday Student Course Registration status through helix/enrollment-status.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "E / ENRL",
+      "ps_description": "Enrolled",
+      "ps_source": "STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON",
+      "helix_code": "enrolled",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Registered",
+      "wd_description": "Active registration",
+      "wd_object": "Student Course Registration (status)",
+      "notes": "VALIDATE: exact Workday status label."
+    },
+    {
+      "ps_code": "E / EWAT",
+      "ps_description": "Enrolled from waitlist",
+      "ps_source": "STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON",
+      "helix_code": "enrolled",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Registered",
+      "wd_description": "Registered after waitlist promotion",
+      "wd_object": "Student Course Registration",
+      "notes": "Waitlist history is usually not converted."
+    },
+    {
+      "ps_code": "W / WAIT",
+      "ps_description": "Waitlisted",
+      "ps_source": "STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON",
+      "helix_code": "waitlisted",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Waitlisted",
+      "wd_description": "On section waitlist",
+      "wd_object": "Student Course Registration Waitlist",
+      "notes": "Convert only for future periods open at cutover."
+    },
+    {
+      "ps_code": "D / DROP",
+      "ps_description": "Dropped (before record date)",
+      "ps_source": "STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON",
+      "helix_code": "dropped",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Dropped",
+      "wd_description": "Removed with no transcript entry",
+      "wd_object": "Student Course Registration (status)",
+      "notes": "Historic drops often stay in the archive, not in Workday."
+    },
+    {
+      "ps_code": "D / WDRW",
+      "ps_description": "Withdrew (after record date, W grade)",
+      "ps_source": "STDNT_ENRL.STDNT_ENRL_STATUS + ENRL_STATUS_REASON",
+      "helix_code": "withdrawn",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Withdrawn",
+      "wd_description": "Withdrawal with W on transcript",
+      "wd_object": "Student Course Registration (status)",
+      "notes": "Must convert: it appears on the transcript and affects SAP pace."
+    },
+    {
+      "ps_code": "E + CRSE_GRADE_OFF",
+      "ps_description": "Enrolled with official grade",
+      "ps_source": "STDNT_ENRL.CRSE_GRADE_OFF",
+      "helix_code": "completed",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Completed (Grade Posted)",
+      "wd_description": "Registration with final grade",
+      "wd_object": "Student Course Registration + Student Grade",
+      "notes": "Historic completed registrations are the core of academic history conversion."
+    },
+    {
+      "ps_code": "E + grade I",
+      "ps_description": "Incomplete",
+      "ps_source": "STDNT_ENRL.CRSE_GRADE_OFF = I",
+      "helix_code": "incomplete",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Registered (Incomplete Grade)",
+      "wd_description": "Incomplete awaiting final grade",
+      "wd_object": "Student Grade (Incomplete)",
+      "notes": "Carry incomplete lapse dates so the Workday process can finalize them."
+    },
+    {
+      "ps_code": "E + GRADING_BASIS AUD",
+      "ps_description": "Auditing",
+      "ps_source": "STDNT_ENRL.GRADING_BASIS_ENRL = AUD",
+      "helix_code": "auditing",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Registered (Audit)",
+      "wd_description": "Audit registration",
+      "wd_object": "Student Course Registration (Grading Basis: Audit)",
+      "notes": ""
+    },
+    {
+      "ps_code": "E (pre-census)",
+      "ps_description": "Enrolled, before census",
+      "ps_source": "STDNT_ENRL + census date",
+      "helix_code": "registered",
+      "helix_terminology": "helix/enrollment-status",
+      "wd_value": "Registered",
+      "wd_description": "Registration before census",
+      "wd_object": "Student Course Registration",
+      "notes": "HELIX distinguishes registered (pre-census) from enrolled (post-census). Workday does not store a separate status; derive from census date."
+    }
+  ]
+}

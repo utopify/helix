@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX Program \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "Program",
+  "ethos_resource": "academic-programs",
+  "api_method": "Ethos Integration API (often config-governed)",
+  "version": "0.1",
+  "write_model": "POST/PUT /api/academic-programs with resolved GUIDs (academic-level, degree, disciplines, owning units). Coordinate with curriculum governance; treat as configuration rather than routine write-back.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to academic-programs GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "code",
+      "ethos_field": "academic-programs.code",
+      "transformation": "Program code (Banner SMRPRLE / program of study code).",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "name",
+      "ethos_field": "academic-programs.title",
+      "transformation": "Program title.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "degree_level",
+      "ethos_field": "academic-programs.academicLevel.id (GUID)",
+      "transformation": "Map helix/degree-level to academic-levels GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "degree_awarded",
+      "ethos_field": "academic-programs.degree.id (GUID)",
+      "transformation": "Reference academic-credentials/degrees GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "cip_code",
+      "ethos_field": "academic-programs.programMajors[] / disciplines[].id (GUID)",
+      "transformation": "Map CIP via academic-disciplines GUID.",
+      "notes": "FLAG: CIP linkage via disciplines varies by version."
+    },
+    {
+      "helix_attribute": "academic_org_ref",
+      "ethos_field": "academic-programs.owningInstitutionUnits[].institutionUnit.id (GUID)",
+      "transformation": "Owning college/department GUID.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "academic-programs are curriculum-governed reference data; writes coordinate with catalog/curriculum management.",
+    "Degree, academic-level, and discipline references require GUID resolution.",
+    "Many tenants treat academic-programs as read-mostly via Ethos; establishing a program may require Banner curriculum setup."
+  ]
+}

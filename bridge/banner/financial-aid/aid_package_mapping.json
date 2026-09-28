@@ -1,0 +1,159 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 AidPackage",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "AidPackage",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RORSTAT",
+      "description": "Applicant Status. Budget (COA), need, packaging status by aid year."
+    },
+    {
+      "table": "RBRCOMP",
+      "description": "Applicant Budget Components. COA component breakdown (tuition, room/board, books, transportation, personal)."
+    },
+    {
+      "table": "RPRATRM",
+      "description": "Award by Term. Term-level offered amounts feeding package totals."
+    },
+    {
+      "table": "RNRNA05",
+      "description": "Need Analysis result. Need analysis output. FLAG: need-analysis table suffix varies (RNRNAxx); confirm."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + RORSTAT_PIDM + AIDY."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RORSTAT_PIDM",
+      "transformation": "Applicant PIDM."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "RORSTAT_PIDM + AIDY",
+      "transformation": "Link to AidApplication for the same PIDM + aid year."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RORSTAT_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "RPRATRM_TERM_CODE",
+      "transformation": "Term if packaging is term-specific."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_total",
+      "source": "RORSTAT_BUDGET_AMT",
+      "transformation": "Total COA budget."
+    },
+    {
+      "helix_attribute": "coa_tuition_fees",
+      "source": "RBRCOMP (tuition component)",
+      "transformation": "Tuition/fees COA component."
+    },
+    {
+      "helix_attribute": "coa_room_board",
+      "source": "RBRCOMP (room/board component)",
+      "transformation": "Room and board component."
+    },
+    {
+      "helix_attribute": "coa_books_supplies",
+      "source": "RBRCOMP (books component)",
+      "transformation": "Books and supplies component."
+    },
+    {
+      "helix_attribute": "coa_transportation",
+      "source": "RBRCOMP (transportation component)",
+      "transformation": "Transportation component."
+    },
+    {
+      "helix_attribute": "coa_personal",
+      "source": "RBRCOMP (personal component)",
+      "transformation": "Personal expenses component."
+    },
+    {
+      "helix_attribute": "coa_loan_fees",
+      "source": "RBRCOMP (loan fee component)",
+      "transformation": "Loan fee component if budgeted."
+    },
+    {
+      "helix_attribute": "coa_other",
+      "source": "RBRCOMP (other components)",
+      "transformation": "Other COA components."
+    },
+    {
+      "helix_attribute": "sai",
+      "source": "RCRESAR_PRIMARY_EFC (SAI)",
+      "transformation": "SAI used for packaging."
+    },
+    {
+      "helix_attribute": "need",
+      "source": "Derived",
+      "transformation": "COA minus SAI."
+    },
+    {
+      "helix_attribute": "total_aid_offered",
+      "source": "SUM(RPRAWRD_OFFER_AMT)",
+      "transformation": "Total offered aid."
+    },
+    {
+      "helix_attribute": "total_grant_aid",
+      "source": "SUM offered where fund type = grant",
+      "transformation": "Grant/gift aid total."
+    },
+    {
+      "helix_attribute": "total_self_help",
+      "source": "SUM offered where fund type in (loan, work)",
+      "transformation": "Self-help total."
+    },
+    {
+      "helix_attribute": "unmet_need",
+      "source": "Derived",
+      "transformation": "Need minus total aid offered."
+    },
+    {
+      "helix_attribute": "packaging_status",
+      "source": "RORSTAT_PCKG_IND",
+      "transformation": "Packaging status. Bind to a packaging status. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "packaging_date",
+      "source": "RORSTAT_PCKG_DATE",
+      "transformation": "Packaging date. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "professional_judgment_applied_flag",
+      "source": "RORSTAT_PJ_IND",
+      "transformation": "PJ applied indicator."
+    },
+    {
+      "helix_attribute": "pj_reason",
+      "source": "RORSTAT / free-text",
+      "transformation": "PJ justification if recorded."
+    },
+    {
+      "helix_attribute": "pj_adjustment_amount",
+      "source": "Derived",
+      "transformation": "PJ adjustment amount."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_adjusted_flag",
+      "source": "RORSTAT_BUDGET_OVERRIDE_IND",
+      "transformation": "COA adjusted/override indicator. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "enrollment_intensity_assumed",
+      "source": "RORSTAT_ENROLL_IND",
+      "transformation": "Assumed enrollment intensity for packaging."
+    }
+  ]
+}

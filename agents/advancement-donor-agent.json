@@ -1,7 +1,7 @@
 {
   "$schema": "https://helixedu.org/agents/agent-template-schema.json",
   "template_version": "1.0",
-  "helix_version": "0.4.0",
+  "helix_version": "0.6.0",
   "metadata": {
     "id": "helix-agent-advancement",
     "name": "HELIX Advancement & Donor Engagement Agent",

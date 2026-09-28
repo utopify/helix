@@ -1,11 +1,20 @@
 # HELIX Agents
 
-5 downloadable AI assistant templates. Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
+7 downloadable AI assistant templates. Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
 
-- **helix-migration-companion.json** — The unified entry point. Interactive 9-option menu guiding users through migrations, governance, analytics, and compliance.
-- **ps-to-workday-fin-agent.json** — Specialist: PeopleSoft FIN to Workday FIN migration
-- **enrollment-analytics-agent.json** — Specialist: Enrollment funnel, melt prediction, marketing ROI
-- **advancement-donor-agent.json** — Specialist: Donor engagement, prospect pipeline, stewardship
-- **banner-to-lakehouse-agent.json** — Specialist: Banner to data lake migration
+**Start here**
+- **helix-migration-companion.json** — The unified entry point. Interactive menu guiding users through migrations, governance, analytics, and compliance, and routing to the right specialist.
+
+**PeopleSoft to Workday (the cornerstone path)**
+- **ps-to-workday-hcm-agent.json** — PeopleSoft HCM to Workday HCM: JOB rows to business processes, EMPLID to Universal ID, job profiles, comp, payroll parallel, benefits, absence. *New in v0.6.0*
+- **ps-to-workday-fin-agent.json** — PeopleSoft FSCM to Workday Financial Management: chartfields to worktags, fund accounting, GLBA
+- **ps-to-workday-sis-agent.json** — PeopleSoft Campus Solutions to Workday Student: identity, program of study, academic history, FERPA carryover. *New in v0.6.0*
+
+**Other specialists**
+- **banner-to-lakehouse-agent.json** — Banner to data lake migration
+- **enrollment-analytics-agent.json** — Enrollment funnel, melt prediction, marketing ROI
+- **advancement-donor-agent.json** — Donor engagement, prospect pipeline, stewardship
+
+The three PeopleSoft to Workday agents share one knowledge set: `docs/ps-to-workday-migration.md`, `bridge/xref/ps-to-workday-{hr,fin,sis}/`, `templates/ps-to-workday/`, and the PeopleSoft and Workday bridges.
 
 Setup: Copy the `system_prompt` field into your platform's instructions. Upload HELIX files as knowledge.

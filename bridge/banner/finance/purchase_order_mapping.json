@@ -1,0 +1,120 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 PurchaseOrder",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "PurchaseOrder",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FPBPOHD",
+      "description": "Purchase Order Header. PO document \u2014 vendor, order date, status, totals."
+    },
+    {
+      "table": "FPBPODT",
+      "description": "Purchase Order Commodity/Detail. Line items with commodity, quantity, unit price, FOAPAL distribution."
+    },
+    {
+      "table": "FTVVEND",
+      "description": "Vendor validation/master."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FPBPOHD_CODE."
+    },
+    {
+      "helix_attribute": "po_id",
+      "source": "FPBPOHD_CODE",
+      "transformation": "Purchase order document code."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "FPBPOHD_COAS_CODE",
+      "transformation": "Chart of Accounts code."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "FPBPOHD_VEND_PIDM",
+      "transformation": "Vendor PIDM."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "SPRIDEN / FTVVEND",
+      "transformation": "Vendor name via PIDM."
+    },
+    {
+      "helix_attribute": "po_date",
+      "source": "FPBPOHD_ORDER_DATE",
+      "transformation": "PO order date."
+    },
+    {
+      "helix_attribute": "po_status",
+      "source": "FPBPOHD_COMPLETE_IND / FPBPOHD_APPROV_IND / FPBPOHD_CANCEL_IND",
+      "transformation": "Status indicators. Bind to helix/purchase-order-status."
+    },
+    {
+      "helix_attribute": "total_amount",
+      "source": "FPBPOHD_ITOTAL",
+      "transformation": "PO total amount. FLAG: exact total column (ITOTAL vs computed) varies."
+    },
+    {
+      "helix_attribute": "line_description",
+      "source": "FPBPODT_COMM_DESC",
+      "transformation": "Commodity description on the line."
+    },
+    {
+      "helix_attribute": "line_quantity",
+      "source": "FPBPODT_QUANTITY",
+      "transformation": "Quantity ordered."
+    },
+    {
+      "helix_attribute": "line_unit_price",
+      "source": "FPBPODT_UNIT_PRICE",
+      "transformation": "Unit price."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "FPBPODT_EXTENDED_AMT",
+      "transformation": "Extended (line) amount."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "FPBPODT_ACCT_CODE",
+      "transformation": "Derived from natural account."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "FPBPODT_ACCT_CODE",
+      "transformation": "FOAPAL account on the line (accounting distribution FPRACCT if separate). FLAG: PO accounting distribution may live in a separate table in some versions."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "FPBPODT_FUND_CODE",
+      "transformation": "FOAPAL fund on the line."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "FPBPODT_ORGN_CODE",
+      "transformation": "FOAPAL organization on the line."
+    },
+    {
+      "helix_attribute": "requisition_ref",
+      "source": "FPBPOHD_REQ_CODE",
+      "transformation": "Source requisition document code, if PO created from a requisition."
+    },
+    {
+      "helix_attribute": "contract_ref",
+      "source": "Configuration/None",
+      "transformation": "Banner does not natively link PO to a contract record; map if a local contract module is used."
+    },
+    {
+      "helix_attribute": "buyer",
+      "source": "FPBPOHD_BUYER_CODE",
+      "transformation": "Buyer code."
+    }
+  ]
+}

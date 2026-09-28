@@ -1,0 +1,173 @@
+{
+  "title": "HELIX XREF: Job Action — PeopleSoft Effective-Dated Rows → HELIX → Workday Business Processes",
+  "version": "0.1",
+  "dimension": "Job Action / Business Process Event",
+  "description": "Maps PeopleSoft PS_JOB ACTION and ACTION_REASON to the Workday business process that should be generated during history conversion. helix_code is the HELIX employment state after the event (helix/employment-status); no separate lifecycle-event terminology exists yet. Core principle: PeopleSoft stores state as effective-dated rows; Workday stores change as business process events. One PS row may become several Workday events, and several PS rows may collapse into one.",
+  "mappings": [
+    {
+      "ps_code": "HIR",
+      "ps_description": "Hire",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Hire Employee",
+      "wd_description": "Hire",
+      "wd_object": "Hire Employee business process",
+      "notes": "First JOB row (EFFSEQ 0). Load as Hire; Worker ID seeded from EMPLID."
+    },
+    {
+      "ps_code": "REH",
+      "ps_description": "Rehire",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Hire Employee (Rehire)",
+      "wd_description": "Rehire",
+      "wd_object": "Hire Employee business process (rehire)",
+      "notes": "Workday links to the prior Worker record; do not create a new person. Match on EMPLID / Universal ID."
+    },
+    {
+      "ps_code": "ADL",
+      "ps_description": "Additional Job",
+      "ps_source": "PS_JOB.ACTION + EMPL_RCD > 0",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Add Additional Job",
+      "wd_description": "Concurrent job",
+      "wd_object": "Add Additional Job business process",
+      "notes": "Each PS EMPL_RCD beyond 0 becomes an additional job on the same Worker. Common for faculty with admin appointments."
+    },
+    {
+      "ps_code": "XFR",
+      "ps_description": "Transfer",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Change Job",
+      "wd_description": "Transfer",
+      "wd_object": "Change Job business process",
+      "notes": "A transfer row that also changes pay should become Change Job plus a Request Compensation Change, or a single Change Job with comp included."
+    },
+    {
+      "ps_code": "PRO",
+      "ps_description": "Promotion",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Change Job (Promotion reason)",
+      "wd_description": "Promotion",
+      "wd_object": "Change Job business process",
+      "notes": "For faculty rank promotion (Asst to Assoc), also update the Academic Appointment track and tenure status."
+    },
+    {
+      "ps_code": "DEM",
+      "ps_description": "Demotion",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Change Job (Demotion reason)",
+      "wd_description": "Demotion",
+      "wd_object": "Change Job business process",
+      "notes": ""
+    },
+    {
+      "ps_code": "PAY",
+      "ps_description": "Pay Rate Change",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Request Compensation Change",
+      "wd_description": "Compensation change",
+      "wd_object": "Request Compensation Change business process",
+      "notes": "Annual merit cycles in PS produce thousands of PAY rows on one date; load via Workday comp EIB rather than one event each."
+    },
+    {
+      "ps_code": "DTA",
+      "ps_description": "Data Change",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Change Job or Edit Position (or no event)",
+      "wd_description": "Data correction",
+      "wd_object": "Change Job / Edit Position",
+      "notes": "Many DTA rows are corrections. Rows that change nothing Workday tracks should collapse or be skipped. VALIDATE: review DTA volume before converting."
+    },
+    {
+      "ps_code": "LOA",
+      "ps_description": "Leave of Absence",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "leave_of_absence",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Place Worker on Leave",
+      "wd_description": "Start leave",
+      "wd_object": "Place Worker on Leave business process",
+      "notes": "Pair each LOA with its RFL row to create a single leave with first and last day."
+    },
+    {
+      "ps_code": "PLA",
+      "ps_description": "Paid Leave of Absence",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "leave_of_absence",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Place Worker on Leave (paid leave type)",
+      "wd_description": "Start paid leave",
+      "wd_object": "Place Worker on Leave business process",
+      "notes": ""
+    },
+    {
+      "ps_code": "RFL",
+      "ps_description": "Return From Leave",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "active",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Return Worker from Leave",
+      "wd_description": "End leave",
+      "wd_object": "Return Worker from Leave business process",
+      "notes": "Not a standalone event if the LOA pair is converted together."
+    },
+    {
+      "ps_code": "SUS",
+      "ps_description": "Suspension",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "suspended",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Place Worker on Leave (Suspension type)",
+      "wd_description": "Suspension",
+      "wd_object": "Place Worker on Leave business process",
+      "notes": "VALIDATE: suspension leave type exists in tenant."
+    },
+    {
+      "ps_code": "TER",
+      "ps_description": "Termination",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "terminated",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminate Employee",
+      "wd_description": "Termination",
+      "wd_object": "Terminate Employee business process",
+      "notes": "ACTION_REASON becomes the Termination Reason (map PS reason codes to Workday Primary Reason)."
+    },
+    {
+      "ps_code": "RET",
+      "ps_description": "Retirement",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "retired",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminate Employee (Retirement)",
+      "wd_description": "Retirement",
+      "wd_object": "Terminate Employee business process",
+      "notes": ""
+    },
+    {
+      "ps_code": "TWP",
+      "ps_description": "Terminated With Pay",
+      "ps_source": "PS_JOB.ACTION",
+      "helix_code": "terminated",
+      "helix_terminology": "helix/employment-status",
+      "wd_value": "Terminate Employee (pay through date)",
+      "wd_description": "Termination with pay",
+      "wd_object": "Terminate Employee business process",
+      "notes": "Set Pay Through Date to the final paid date."
+    }
+  ]
+}

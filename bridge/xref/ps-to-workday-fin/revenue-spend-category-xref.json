@@ -1,0 +1,195 @@
+{
+  "title": "HELIX XREF: Account Range to Revenue / Spend Category \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Account / Revenue Category / Spend Category",
+  "description": "Shows how one PeopleSoft ACCOUNT splits into a Workday Ledger Account plus a Revenue Category or Spend Category worktag. PeopleSoft carries detail in the account value; Workday keeps ledger accounts summarized and moves the detail to category worktags. Account ranges are representative.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "40000-40999",
+      "ps_description": "Tuition revenue",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4010 + Revenue Category: Tuition",
+      "wd_description": "Tuition and fees",
+      "wd_object": "Ledger Account + Revenue Category",
+      "notes": "Tuition posts from Workday Student Financials; the category drives IPEDS tuition lines."
+    },
+    {
+      "ps_code": "41000-41999",
+      "ps_description": "Student fees",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4020 + Revenue Category: Student Fees",
+      "wd_description": "Mandatory and course fees",
+      "wd_object": "Ledger Account + Revenue Category",
+      "notes": ""
+    },
+    {
+      "ps_code": "43000-43999",
+      "ps_description": "Government appropriations",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4050 + Revenue Category: State Appropriation",
+      "wd_description": "State and local appropriation",
+      "wd_object": "Ledger Account + Revenue Category",
+      "notes": "Public institutions only."
+    },
+    {
+      "ps_code": "44000-44999",
+      "ps_description": "Gifts and contributions",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4400 + Revenue Category: Gifts + Gift worktag",
+      "wd_description": "Contribution revenue",
+      "wd_object": "Ledger Account + Revenue Category + Gift",
+      "notes": "The donor designation becomes the Gift worktag."
+    },
+    {
+      "ps_code": "45000-45999",
+      "ps_description": "Grants and contracts",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4060 + Revenue Category: Federal Grants + Grant worktag",
+      "wd_description": "Sponsored revenue",
+      "wd_object": "Ledger Account + Revenue Category + Grant",
+      "notes": "Split federal, state, private by Revenue Category rather than separate accounts."
+    },
+    {
+      "ps_code": "46000-46999",
+      "ps_description": "Investment income",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4600 + Revenue Category: Investment Income",
+      "wd_description": "Endowment and investment return",
+      "wd_object": "Ledger Account + Revenue Category",
+      "notes": ""
+    },
+    {
+      "ps_code": "47000-47999",
+      "ps_description": "Auxiliary sales",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "revenue",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 4700 + Revenue Category: Auxiliary",
+      "wd_description": "Housing, dining, bookstore",
+      "wd_object": "Ledger Account + Revenue Category",
+      "notes": ""
+    },
+    {
+      "ps_code": "50000-51999",
+      "ps_description": "Salaries and wages",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 6000 series (from payroll)",
+      "wd_description": "Compensation expense",
+      "wd_object": "Ledger Account (Pay Component posting rules)",
+      "notes": "Salaries post from Workday Payroll through posting rules, not Spend Categories."
+    },
+    {
+      "ps_code": "52000-52999",
+      "ps_description": "Benefits",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 6500 (from payroll)",
+      "wd_description": "Fringe benefits",
+      "wd_object": "Ledger Account (payroll posting)",
+      "notes": "Fringe rates on grants must match the negotiated rate agreement."
+    },
+    {
+      "ps_code": "53000-53999",
+      "ps_description": "Supplies",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7100 + Spend Category: Office / Lab Supplies",
+      "wd_description": "Consumable supplies",
+      "wd_object": "Ledger Account + Spend Category",
+      "notes": "Spend Categories also drive procurement and allowable-cost rules."
+    },
+    {
+      "ps_code": "54000-54999",
+      "ps_description": "Travel",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7200 + Spend Category: Domestic / Foreign Travel",
+      "wd_description": "Travel expense",
+      "wd_object": "Ledger Account + Spend Category (Expense Item)",
+      "notes": "Foreign travel on federal grants needs its own category for Fly America checks."
+    },
+    {
+      "ps_code": "55000-55999",
+      "ps_description": "Equipment",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7300 / 1500 + Spend Category: Capital Equipment",
+      "wd_description": "Equipment below or above threshold",
+      "wd_object": "Ledger Account + Spend Category (capitalizable)",
+      "notes": "Capitalizable categories route to Business Assets."
+    },
+    {
+      "ps_code": "56000-56999",
+      "ps_description": "Professional services",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7400 + Spend Category: Consulting Services",
+      "wd_description": "Contracted services",
+      "wd_object": "Ledger Account + Spend Category",
+      "notes": ""
+    },
+    {
+      "ps_code": "57000-57999",
+      "ps_description": "Subawards",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7500 + Spend Category: Subaward (first 25K) / Subaward (over 25K)",
+      "wd_description": "Sponsored subrecipient costs",
+      "wd_object": "Ledger Account + Spend Category",
+      "notes": "Two categories keep the MTDC base correct for F&A."
+    },
+    {
+      "ps_code": "58000-58999",
+      "ps_description": "Scholarships and fellowships",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "expenditure",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 7800 + Spend Category: Student Aid",
+      "wd_description": "Student aid expense",
+      "wd_object": "Ledger Account + Spend Category",
+      "notes": "Institutional aid posts from Workday Student financial aid."
+    },
+    {
+      "ps_code": "10000-19999",
+      "ps_description": "Assets (balance sheet)",
+      "ps_source": "GL_ACCOUNT_TBL.ACCOUNT",
+      "helix_code": "asset",
+      "helix_terminology": "helix/account-type",
+      "wd_value": "Ledger 1000 series (no category)",
+      "wd_description": "Balance sheet accounts",
+      "wd_object": "Ledger Account",
+      "notes": "Balance sheet accounts generally do not take Revenue or Spend Categories."
+    }
+  ]
+}

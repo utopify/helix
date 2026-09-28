@@ -1,0 +1,16 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+HIR,Hire,PS_JOB.ACTION,active,helix/employment-status,Hire Employee,Hire,Hire Employee business process,First JOB row (EFFSEQ 0). Load as Hire; Worker ID seeded from EMPLID.
+REH,Rehire,PS_JOB.ACTION,active,helix/employment-status,Hire Employee (Rehire),Rehire,Hire Employee business process (rehire),Workday links to the prior Worker record; do not create a new person. Match on EMPLID / Universal ID.
+ADL,Additional Job,PS_JOB.ACTION + EMPL_RCD > 0,active,helix/employment-status,Add Additional Job,Concurrent job,Add Additional Job business process,Each PS EMPL_RCD beyond 0 becomes an additional job on the same Worker. Common for faculty with admin appointments.
+XFR,Transfer,PS_JOB.ACTION,active,helix/employment-status,Change Job,Transfer,Change Job business process,"A transfer row that also changes pay should become Change Job plus a Request Compensation Change, or a single Change Job with comp included."
+PRO,Promotion,PS_JOB.ACTION,active,helix/employment-status,Change Job (Promotion reason),Promotion,Change Job business process,"For faculty rank promotion (Asst to Assoc), also update the Academic Appointment track and tenure status."
+DEM,Demotion,PS_JOB.ACTION,active,helix/employment-status,Change Job (Demotion reason),Demotion,Change Job business process,
+PAY,Pay Rate Change,PS_JOB.ACTION,active,helix/employment-status,Request Compensation Change,Compensation change,Request Compensation Change business process,Annual merit cycles in PS produce thousands of PAY rows on one date; load via Workday comp EIB rather than one event each.
+DTA,Data Change,PS_JOB.ACTION,active,helix/employment-status,Change Job or Edit Position (or no event),Data correction,Change Job / Edit Position,Many DTA rows are corrections. Rows that change nothing Workday tracks should collapse or be skipped. VALIDATE: review DTA volume before converting.
+LOA,Leave of Absence,PS_JOB.ACTION,leave_of_absence,helix/employment-status,Place Worker on Leave,Start leave,Place Worker on Leave business process,Pair each LOA with its RFL row to create a single leave with first and last day.
+PLA,Paid Leave of Absence,PS_JOB.ACTION,leave_of_absence,helix/employment-status,Place Worker on Leave (paid leave type),Start paid leave,Place Worker on Leave business process,
+RFL,Return From Leave,PS_JOB.ACTION,active,helix/employment-status,Return Worker from Leave,End leave,Return Worker from Leave business process,Not a standalone event if the LOA pair is converted together.
+SUS,Suspension,PS_JOB.ACTION,suspended,helix/employment-status,Place Worker on Leave (Suspension type),Suspension,Place Worker on Leave business process,VALIDATE: suspension leave type exists in tenant.
+TER,Termination,PS_JOB.ACTION,terminated,helix/employment-status,Terminate Employee,Termination,Terminate Employee business process,ACTION_REASON becomes the Termination Reason (map PS reason codes to Workday Primary Reason).
+RET,Retirement,PS_JOB.ACTION,retired,helix/employment-status,Terminate Employee (Retirement),Retirement,Terminate Employee business process,
+TWP,Terminated With Pay,PS_JOB.ACTION,terminated,helix/employment-status,Terminate Employee (pay through date),Termination with pay,Terminate Employee business process,Set Pay Through Date to the final paid date.

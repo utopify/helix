@@ -1,0 +1,162 @@
+{
+  "title": "HELIX XREF: Instruction Mode and Component \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Instruction Mode / Component",
+  "description": "Maps PeopleSoft CLASS_TBL.INSTRUCTION_MODE to Workday Delivery Mode (helix/delivery-mode) and SSR_COMPONENT to Workday Instructional Format. Components such as LEC or LAB are structural and do not carry a delivery mode, so their helix_code is blank.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "P",
+      "ps_description": "In Person",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "in_person",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "In Person",
+      "wd_description": "Face-to-face",
+      "wd_object": "Delivery Mode",
+      "notes": "INSTRUCTION_MODE values are configurable. VALIDATE codes."
+    },
+    {
+      "ps_code": "OL",
+      "ps_description": "Online (asynchronous)",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "online_asynchronous",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Online",
+      "wd_description": "Fully online, no set meeting time",
+      "wd_object": "Delivery Mode",
+      "notes": "Distance education reporting (IPEDS) depends on this split."
+    },
+    {
+      "ps_code": "OS",
+      "ps_description": "Online synchronous",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "online_synchronous",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Online Synchronous",
+      "wd_description": "Online with scheduled meetings",
+      "wd_object": "Delivery Mode",
+      "notes": "VALIDATE: institution-defined code."
+    },
+    {
+      "ps_code": "HY",
+      "ps_description": "Hybrid",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "hybrid",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Hybrid",
+      "wd_description": "Mix of in person and online",
+      "wd_object": "Delivery Mode",
+      "notes": ""
+    },
+    {
+      "ps_code": "HF",
+      "ps_description": "HyFlex",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "hyflex",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "HyFlex",
+      "wd_description": "Student chooses modality",
+      "wd_object": "Delivery Mode",
+      "notes": "VALIDATE: institution-defined code."
+    },
+    {
+      "ps_code": "CR",
+      "ps_description": "Correspondence",
+      "ps_source": "CLASS_TBL.INSTRUCTION_MODE",
+      "helix_code": "correspondence",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Correspondence",
+      "wd_description": "Correspondence course",
+      "wd_object": "Delivery Mode",
+      "notes": "Federal aid treats correspondence differently from online; keep it distinct."
+    },
+    {
+      "ps_code": "LEC",
+      "ps_description": "Lecture component",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "",
+      "helix_terminology": "",
+      "wd_value": "Lecture",
+      "wd_description": "Instructional format",
+      "wd_object": "Instructional Format",
+      "notes": "Structural, not a delivery mode."
+    },
+    {
+      "ps_code": "LAB",
+      "ps_description": "Laboratory component",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "",
+      "helix_terminology": "",
+      "wd_value": "Lab",
+      "wd_description": "Instructional format",
+      "wd_object": "Instructional Format",
+      "notes": "Linked lecture and lab sections become linked Course Sections."
+    },
+    {
+      "ps_code": "DIS",
+      "ps_description": "Discussion / recitation",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "",
+      "helix_terminology": "",
+      "wd_value": "Discussion",
+      "wd_description": "Instructional format",
+      "wd_object": "Instructional Format",
+      "notes": ""
+    },
+    {
+      "ps_code": "SEM",
+      "ps_description": "Seminar",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "",
+      "helix_terminology": "",
+      "wd_value": "Seminar",
+      "wd_description": "Instructional format",
+      "wd_object": "Instructional Format",
+      "notes": ""
+    },
+    {
+      "ps_code": "IND",
+      "ps_description": "Independent study",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "independent_study",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Independent Study",
+      "wd_description": "Individually arranged",
+      "wd_object": "Instructional Format + Delivery Mode",
+      "notes": ""
+    },
+    {
+      "ps_code": "CLN",
+      "ps_description": "Clinical",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "clinical",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Clinical",
+      "wd_description": "Clinical placement",
+      "wd_object": "Instructional Format + Delivery Mode",
+      "notes": ""
+    },
+    {
+      "ps_code": "INT",
+      "ps_description": "Internship / field",
+      "ps_source": "CRSE_COMPONENT.SSR_COMPONENT",
+      "helix_code": "internship",
+      "helix_terminology": "helix/delivery-mode",
+      "wd_value": "Internship",
+      "wd_description": "Work-based learning",
+      "wd_object": "Instructional Format + Delivery Mode",
+      "notes": "VALIDATE: FLD or PRA may be used instead of INT."
+    }
+  ]
+}

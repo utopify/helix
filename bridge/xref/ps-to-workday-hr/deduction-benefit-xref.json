@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Benefits and Deductions — PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Benefit Plan Type / Deduction",
+  "description": "Maps PeopleSoft benefit PLAN_TYPE codes (PS_BEN_PROG_PARTIC, PS_HEALTH_BENEFIT, PS_LIFE_ADD_BEN, PS_SAVINGS_PLAN, PS_FSA_BENEFIT) and deduction codes (DEDCD) to Workday Benefit Plan types and payroll Deductions through helix/benefit-plan-type.",
+  "mappings": [
+    {
+      "ps_code": "10",
+      "ps_description": "Medical",
+      "ps_source": "PS_HEALTH_BENEFIT.PLAN_TYPE",
+      "helix_code": "medical",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Health Care Plan (Medical)",
+      "wd_description": "Medical coverage",
+      "wd_object": "Health Care Coverage Plan + Deduction",
+      "notes": "Coverage level (EE, EE+SP, FAM) maps to Workday Coverage Target. Dependents convert separately."
+    },
+    {
+      "ps_code": "11",
+      "ps_description": "Dental",
+      "ps_source": "PS_HEALTH_BENEFIT.PLAN_TYPE",
+      "helix_code": "dental",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Health Care Plan (Dental)",
+      "wd_description": "Dental coverage",
+      "wd_object": "Health Care Coverage Plan + Deduction",
+      "notes": ""
+    },
+    {
+      "ps_code": "14",
+      "ps_description": "Vision",
+      "ps_source": "PS_HEALTH_BENEFIT.PLAN_TYPE",
+      "helix_code": "vision",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Health Care Plan (Vision)",
+      "wd_description": "Vision coverage",
+      "wd_object": "Health Care Coverage Plan + Deduction",
+      "notes": ""
+    },
+    {
+      "ps_code": "20",
+      "ps_description": "Basic Life",
+      "ps_source": "PS_LIFE_ADD_BEN.PLAN_TYPE",
+      "helix_code": "life_insurance",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Insurance Plan (Life)",
+      "wd_description": "Life insurance",
+      "wd_object": "Insurance Coverage Plan",
+      "notes": "Supplemental life (21-2x) also maps here with a different plan. Beneficiaries convert separately."
+    },
+    {
+      "ps_code": "30",
+      "ps_description": "Short-Term Disability",
+      "ps_source": "PS_DISABILITY_BEN.PLAN_TYPE",
+      "helix_code": "disability_short_term",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Insurance Plan (STD)",
+      "wd_description": "Short-term disability",
+      "wd_object": "Insurance Coverage Plan",
+      "notes": ""
+    },
+    {
+      "ps_code": "31",
+      "ps_description": "Long-Term Disability",
+      "ps_source": "PS_DISABILITY_BEN.PLAN_TYPE",
+      "helix_code": "disability_long_term",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Insurance Plan (LTD)",
+      "wd_description": "Long-term disability",
+      "wd_object": "Insurance Coverage Plan",
+      "notes": ""
+    },
+    {
+      "ps_code": "40",
+      "ps_description": "403(b) Savings",
+      "ps_source": "PS_SAVINGS_PLAN.PLAN_TYPE",
+      "helix_code": "retirement_403b",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Retirement Savings Plan (403b)",
+      "wd_description": "403(b) contribution",
+      "wd_object": "Retirement Savings Plan + Deduction",
+      "notes": "Employer match rules move into Workday benefit plan setup. TIAA/Fidelity vendor feeds must be rebuilt."
+    },
+    {
+      "ps_code": "4x (457)",
+      "ps_description": "457(b) Deferred Comp",
+      "ps_source": "PS_SAVINGS_PLAN.PLAN_TYPE",
+      "helix_code": "retirement_457b",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Retirement Savings Plan (457b)",
+      "wd_description": "457(b) contribution",
+      "wd_object": "Retirement Savings Plan + Deduction",
+      "notes": "VALIDATE: plan type number used locally (commonly 41-49)."
+    },
+    {
+      "ps_code": "4x (DB)",
+      "ps_description": "State Pension / Defined Benefit",
+      "ps_source": "PS_PENSION_PLAN / custom DEDCD",
+      "helix_code": "retirement_pension",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Retirement Plan (Defined Benefit) or Deduction",
+      "wd_description": "State retirement system",
+      "wd_object": "Deduction (pre-tax) + Retirement Plan",
+      "notes": "Public institutions often model state pension as a deduction only. VALIDATE: local plan type."
+    },
+    {
+      "ps_code": "50",
+      "ps_description": "Flexible Spending Account",
+      "ps_source": "PS_FSA_BENEFIT.PLAN_TYPE",
+      "helix_code": "fsa",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Spending Account Plan (FSA)",
+      "wd_description": "Health or dependent care FSA",
+      "wd_object": "Spending Account Plan + Deduction",
+      "notes": "Split health FSA (50) vs dependent care (51) into separate Workday plans."
+    },
+    {
+      "ps_code": "HSA",
+      "ps_description": "Health Savings Account",
+      "ps_source": "PS_SAVINGS_PLAN or custom DEDCD",
+      "helix_code": "hsa",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Spending Account Plan (HSA)",
+      "wd_description": "HSA",
+      "wd_object": "Spending Account Plan + Deduction",
+      "notes": "VALIDATE: PS has no single delivered HSA plan type; often a savings plan or DEDCD."
+    },
+    {
+      "ps_code": "TUI",
+      "ps_description": "Tuition Waiver / Remission",
+      "ps_source": "Custom DEDCD or benefit program",
+      "helix_code": "tuition_waiver",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Additional Benefits Plan (Tuition)",
+      "wd_description": "Employee or dependent tuition benefit",
+      "wd_object": "Additional Benefits Plan",
+      "notes": "Taxable portion above IRS 127 limit needs an imputed income earning. VALIDATE: custom code."
+    },
+    {
+      "ps_code": "EAP",
+      "ps_description": "Employee Assistance Program",
+      "ps_source": "Custom benefit program",
+      "helix_code": "eap",
+      "helix_terminology": "helix/benefit-plan-type",
+      "wd_value": "Additional Benefits Plan (EAP)",
+      "wd_description": "EAP",
+      "wd_object": "Additional Benefits Plan",
+      "notes": "Usually no deduction. VALIDATE: may not exist in PS."
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "title": "HELIX XREF: Grading Basis \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Grading Basis",
+  "description": "Maps PeopleSoft GRADING_BASIS to Workday Grading Basis (and the Grading Scheme that supplies the allowed grades).",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "GRD",
+      "ps_description": "Graded",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "standard",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Graded",
+      "wd_description": "Letter-graded",
+      "wd_object": "Grading Basis",
+      "notes": "Pair with a Grading Scheme (A-F with plus/minus) that mirrors the PS GRADING_SCHEME."
+    },
+    {
+      "ps_code": "OPT",
+      "ps_description": "Student option",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "standard",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Graded (Student Option)",
+      "wd_description": "Student may elect P/NP",
+      "wd_object": "Grading Basis (student-elected)",
+      "notes": "VALIDATE: some tenants model student option as allowed grading bases on the course section."
+    },
+    {
+      "ps_code": "PNP",
+      "ps_description": "Pass / No Pass",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "pass_fail",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Pass/Fail",
+      "wd_description": "Pass or no credit",
+      "wd_object": "Grading Basis",
+      "notes": ""
+    },
+    {
+      "ps_code": "CNC",
+      "ps_description": "Credit / No Credit",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "pass_fail",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Credit/No Credit",
+      "wd_description": "Credit or no credit",
+      "wd_object": "Grading Basis",
+      "notes": "Keep separate from PNP if transcripts label them differently."
+    },
+    {
+      "ps_code": "SUS",
+      "ps_description": "Satisfactory / Unsatisfactory",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "satisfactory_unsatisfactory",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Satisfactory/Unsatisfactory",
+      "wd_description": "S/U",
+      "wd_object": "Grading Basis",
+      "notes": "Common for graduate research and thesis credits."
+    },
+    {
+      "ps_code": "AUD",
+      "ps_description": "Audit",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "audit",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Audit",
+      "wd_description": "No credit, attendance only",
+      "wd_object": "Grading Basis",
+      "notes": ""
+    },
+    {
+      "ps_code": "NON",
+      "ps_description": "Non-graded",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "other",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Non-Graded",
+      "wd_description": "No grade issued",
+      "wd_object": "Grading Basis",
+      "notes": "Used for zero-credit labs or recitations."
+    },
+    {
+      "ps_code": "TRN",
+      "ps_description": "Transfer",
+      "ps_source": "GRADE_BASIS_TBL.GRADING_BASIS",
+      "helix_code": "other",
+      "helix_terminology": "helix/grade-mode",
+      "wd_value": "Transfer",
+      "wd_description": "Transfer credit basis",
+      "wd_object": "Grading Basis (Transfer)",
+      "notes": "Transfer credit usually converts through the Workday external/transfer credit load, not registrations."
+    }
+  ]
+}

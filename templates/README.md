@@ -4,6 +4,13 @@ Ready-to-use project templates and query libraries for implementing HELIX.
 
 ## Contents
 
+### `ps-to-workday/` — PeopleSoft to Workday Toolkit (22 files) *New in v0.6.0*
+
+The executable half of the HELIX cornerstone path:
+- **`worktag-conversion-rules.json`**: 20 chartfield to worktag rules with precedence, fallbacks, suspense handling, and 5 worked examples, plus 10 HCM field rules and 7 Student field rules
+- **`reconciliation/`**: 18 PS to Workday tie-outs (6 FIN, 6 HCM, 6 Student) with run order, tolerances, parallel-run cadence, and sign-off roles. Includes payroll parallel compare, GPA recompute, and a zero-miss FERPA restriction carryover gate.
+
+
 ### `dbt/` — dbt Starter Project (27 files)
 
 A complete dbt project implementing the HELIX medallion architecture:

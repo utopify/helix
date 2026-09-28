@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Service Indicators to Student Holds \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Service Indicator / Hold",
+  "description": "Maps PeopleSoft negative service indicators (SRVC_IND_DATA.SRVC_IND_CD with reason codes) to Workday Student Hold Types. Service indicator codes are institution defined; the rows are common patterns. PS positive service indicators (for example honors or athlete flags) are not holds and should map to Student Cohorts or tags instead.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "FIN",
+      "ps_description": "Bursar / past-due balance",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "financial",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Financial Hold",
+      "wd_description": "Unpaid balance",
+      "wd_object": "Student Hold Type",
+      "notes": "Restrictions (registration, transcript, diploma) move from PS SRVC_IMPACT to the Hold Type's affected actions."
+    },
+    {
+      "ps_code": "REG",
+      "ps_description": "Registrar hold",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "registration",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Registration Hold",
+      "wd_description": "Blocks registration",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "ADV",
+      "ps_description": "Advising required",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "academic",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Advising Hold",
+      "wd_description": "Must meet advisor",
+      "wd_object": "Student Hold Type",
+      "notes": "Often term specific. Convert only active holds."
+    },
+    {
+      "ps_code": "ACP",
+      "ps_description": "Academic probation",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "academic",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Academic Standing Hold",
+      "wd_description": "Probation or standing issue",
+      "wd_object": "Student Hold Type",
+      "notes": "Academic standing itself converts as standing history, the hold is separate."
+    },
+    {
+      "ps_code": "CND",
+      "ps_description": "Student conduct",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "disciplinary",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Conduct Hold",
+      "wd_description": "Conduct office hold",
+      "wd_object": "Student Hold Type",
+      "notes": "Restricted reason detail. Do not expose conduct reasons broadly."
+    },
+    {
+      "ps_code": "TRN",
+      "ps_description": "Transcript hold",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "transcript",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Transcript Hold",
+      "wd_description": "Blocks official transcripts",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "GRD",
+      "ps_description": "Graduation hold",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "graduation",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Diploma Hold",
+      "wd_description": "Blocks conferral or diploma",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "LIB",
+      "ps_description": "Library fines",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "library",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Library Hold",
+      "wd_description": "Outstanding library items",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "IMM",
+      "ps_description": "Immunization",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "health_compliance",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Immunization Hold",
+      "wd_description": "Missing immunization records",
+      "wd_object": "Student Hold Type",
+      "notes": "Health detail stays in the health system; only the hold converts."
+    },
+    {
+      "ps_code": "ADM",
+      "ps_description": "Missing admission documents",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "admissions",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Admissions Documents Hold",
+      "wd_description": "Final transcript or documents missing",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "ISS",
+      "ps_description": "International student services",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "international",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "International Hold",
+      "wd_description": "SEVIS or check-in requirement",
+      "wd_object": "Student Hold Type",
+      "notes": ""
+    },
+    {
+      "ps_code": "PRK",
+      "ps_description": "Parking citations",
+      "ps_source": "SRVC_IND_DATA.SRVC_IND_CD",
+      "helix_code": "parking",
+      "helix_terminology": "helix/hold-type",
+      "wd_value": "Parking Hold",
+      "wd_description": "Unpaid parking fines",
+      "wd_object": "Student Hold Type",
+      "notes": "VALIDATE: some institutions retire parking holds at migration."
+    }
+  ]
+}

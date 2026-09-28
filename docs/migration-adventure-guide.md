@@ -8,6 +8,10 @@
 
 ## 🧭 START HERE: What's Your Migration?
 
+> **Moving PeopleSoft to Workday?** That is the HELIX cornerstone path, with direct crosswalks, conversion rules, a reconciliation pack, and a specialist agent for every module. Jump to [Chapter 7: PeopleSoft to Workday, The Cornerstone Path](#chapter-7-peoplesoft-to-workday-the-cornerstone-path).
+>
+> **Moving Banner on-prem to Banner SaaS?** Jump to [Chapter 8: Banner On-Prem to Banner SaaS](#chapter-8-banner-on-prem-to-banner-saas).
+
 ### Step 1: What system are you migrating FROM?
 
 - **PeopleSoft Campus Solutions** → Go to [Chapter 1: PeopleSoft CS](#chapter-1-peoplesoft-campus-solutions)
@@ -16,11 +20,13 @@
 - **Ellucian Banner** → Go to [Chapter 4: Banner](#chapter-4-ellucian-banner)
 - **Ellucian Colleague** → Go to [Chapter 5: Colleague](#chapter-5-ellucian-colleague)
 - **Workday Student** → Go to [Chapter 6: Workday Student](#chapter-6-workday-student)
+- **PeopleSoft (any module) moving to Workday** → Go to [Chapter 7: The Cornerstone Path](#chapter-7-peoplesoft-to-workday-the-cornerstone-path)
+- **Banner on-prem or Oracle-on-EC2 moving to Banner SaaS** → Go to [Chapter 8: Banner On-Prem to Banner SaaS](#chapter-8-banner-on-prem-to-banner-saas)
 
 ### Step 2: What's your TARGET?
 
 - **Data Lake / Lakehouse** → Your HELIX Bridge mapping IS the migration plan. Map source → HELIX Core → Iceberg/Parquet.
-- **Another ERP** (e.g., PeopleSoft → Workday) → Use HELIX as the intermediate foundational model. Map source → HELIX Core, then HELIX Core → target. Both Bridge mappings are already built.
+- **Another ERP** (e.g., PeopleSoft → Workday) → Use HELIX as the intermediate foundational model. Map source → HELIX Core, then HELIX Core → target. Both Bridge mappings are already built. For PeopleSoft to Workday you can skip the double hop entirely: the direct crosswalks in `bridge/xref/ps-to-workday-{fin,hr,sis}/` give you PS code → HELIX code → Workday value in one lookup.
 - **Analytics Platform** (QuickSight, Tableau, Power BI) → Land in HELIX Core shape in your lake. The consistent schema means your dashboards work regardless of source.
 - **AI/ML Models** → HELIX Core resources are your feature store input. Train once, apply across institutions.
 
@@ -300,19 +306,22 @@ If migrating to **Workday HCM**, PS_JOB maps to Workday's Worker + Job Profile +
 
 ## Chapter 4: Ellucian Banner
 
-**You're migrating FROM Ellucian Banner.**
+**You're migrating FROM Ellucian Banner.** As of v0.5.0 the Banner Bridge covers 31 mappings across five modules.
 
-| HELIX Resource | Mapping File | Key Banner Tables |
-|---------------|-------------|-------------------|
-| Student | `bridge/banner/student_mapping.json` | SPRIDEN, SPBPERS, SGBSTDN |
-| Enrollment | `bridge/banner/enrollment_mapping.json` | SFRSTCR, SHRTCKN, SSBSECT |
-| AcademicPeriod | `bridge/banner/academic_period_mapping.json` | STVTERM, SOBPTRM |
+| Module | Folder | Mappings | Key Banner Tables |
+|--------|--------|---------:|-------------------|
+| Student (SIS) | `bridge/banner/sis/` | 11 | SPRIDEN, SPBPERS, SGBSTDN, SFRSTCR, SHRTCKN, SSBSECT, STVTERM |
+| Human Resources | `bridge/banner/hr/` | 2 | NBBPOSN, NBRBJOB, PEBEMPL |
+| Finance | `bridge/banner/finance/` | 7 | FGBTRND, FGBTRNH, FGBBALC, FTVFUND, FTVORGN, FABINVH, FPBPOHD, FRBGRNT |
+| Advancement | `bridge/banner/advancement/` | 4 | APBCONS, AGBGIFT, AGBPLDG, AFBCAMP, APRCONT |
+| Financial Aid | `bridge/banner/financial-aid/` | 7 | RPRAWRD, RCRESAR, RORSTAT, RRRAREQ, RPRADSB, RPRLORG |
 
-**Migration to PeopleSoft?** Use the Banner Bridge (source) → HELIX Core → PeopleSoft Bridge (target, reversed).
+Extracting from a self-managed Oracle database? Start with [`bridge/banner/ONPREM_EXTRACTION.md`](../bridge/banner/ONPREM_EXTRACTION.md) for PIDM joins, STV decode, effective-term dating, and CDC options.
+
+**Migration to Banner SaaS?** See [Chapter 8](#chapter-8-banner-on-prem-to-banner-saas).
 **Migration to Workday?** Banner Bridge → HELIX Core → Workday Bridge.
+**Migration to PeopleSoft?** Banner Bridge → HELIX Core → PeopleSoft Bridge (reversed).
 **Migration to data lake?** Banner Bridge → HELIX Core → Iceberg/Parquet.
-
-*Additional Banner resource mappings (Course, Program, FinAid, etc.) are planned. Contributions welcome.*
 
 ---
 
@@ -350,18 +359,129 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 
 ---
 
+## Chapter 7: PeopleSoft to Workday, The Cornerstone Path
+
+**You're moving PeopleSoft to Workday.** This is the most common large ERP move in higher ed, and it is the path HELIX is built around. You code the mapping once against HELIX, then look up the Workday side directly.
+
+### Which track are you on?
+
+- **HCM only** → Go to [§7.1 HCM](#71-hcm-peoplesoft-hcm-to-workday-hcm)
+- **Financials only** → Go to [§7.2 Financials](#72-financials-peoplesoft-fscm-to-workday-financial-management)
+- **Student only** → Go to [§7.3 Student](#73-student-campus-solutions-to-workday-student)
+- **All three** → Read the full [PeopleSoft to Workday Cornerstone Guide](ps-to-workday-migration.md) first. Most institutions land HCM and Financials together, then Student in a later wave. Either way, identity comes first: seed the Workday Universal ID from EMPLID so one person stays one person across Workday HCM and Workday Student (`bridge/xref/ps-to-workday-sis/identifier-xref.json`).
+
+### Your toolkit for every track
+
+| You need | Use |
+|----------|-----|
+| The narrative and cutover plan | [`docs/ps-to-workday-migration.md`](ps-to-workday-migration.md) (T-90 to T+30 checklist, worked examples) |
+| Field-level mapping | `bridge/peoplesoft/{hcm,fin,cs}/` and `bridge/workday/{hr,fin,sis}/` |
+| Direct code lookups | `bridge/xref/ps-to-workday-hr/`, `ps-to-workday-fin/`, `ps-to-workday-sis/` |
+| Chartfield and field conversion logic | [`templates/ps-to-workday/worktag-conversion-rules.json`](../templates/ps-to-workday/worktag-conversion-rules.json) |
+| Proof it worked | [`templates/ps-to-workday/reconciliation/`](../templates/ps-to-workday/reconciliation/) (18 tie-outs) |
+| A guide at your side | `agents/ps-to-workday-hcm-agent.json`, `ps-to-workday-fin-agent.json`, `ps-to-workday-sis-agent.json` |
+
+### §7.1 HCM: PeopleSoft HCM to Workday HCM
+
+The big idea: PeopleSoft stores history as effective-dated JOB rows; Workday stores it as business process events. Every JOB action becomes (or merges into) a Hire, Change Job, Compensation Change, Leave, or Terminate event.
+
+| Step | File |
+|------|------|
+| Worker types, statuses | `ps-to-workday-hr/worker-type-xref.json`, `employment-status-xref.json` |
+| JOB actions to business processes | `ps-to-workday-hr/job-action-xref.json` |
+| Job codes to Job Profiles, grades, steps | `ps-to-workday-hr/job-code-to-profile-xref.json` |
+| Positions and supervisory orgs | `ps-to-workday-hr/position-xref.json` (decide Position vs Job Management early) |
+| Pay, benefits, time off | `compensation-xref.json`, `pay-frequency-xref.json`, `deduction-benefit-xref.json`, `absence-type-xref.json` |
+| FLSA, EEO, IPEDS | `flsa-eeo-xref.json` |
+| Prove it | `headcount_tieout.sql`, `position_count_tieout.sql`, `compensation_total_tieout.sql`, `benefit_enrollment_tieout.sql`, `leave_balance_tieout.sql`, `payroll_parallel_compare.sql` |
+
+Agent: **PeopleSoft HCM to Workday HCM** (`agents/ps-to-workday-hcm-agent.json`).
+
+### §7.2 Financials: PeopleSoft FSCM to Workday Financial Management
+
+The big idea: the PeopleSoft chartfield string splits into a Workday Ledger Account plus worktags. Revenue and expense detail moves out of the account and into Revenue and Spend Categories.
+
+| Step | File |
+|------|------|
+| Business units to Companies | `ps-to-workday-fin/business-unit-company-xref.json` |
+| Accounts to Ledger Accounts and categories | `account-xref.json`, `revenue-spend-category-xref.json` |
+| Funds, departments, programs | `fund-xref.json`, `department-xref.json`, `program-xref.json` |
+| Projects to Grants, Projects, Gifts | `project-grant-xref.json` |
+| Vendors to Suppliers | `vendor-supplier-xref.json` |
+| Conversion logic | `templates/ps-to-workday/worktag-conversion-rules.json` (20 rules, 5 worked examples) |
+| Prove it | `worktag_completeness_check.sql`, `trial_balance_tieout.sql`, `fund_balance_tieout.sql`, `open_ap_tieout.sql`, `open_po_encumbrance_tieout.sql`, `grant_budget_to_actual_tieout.sql` |
+
+Agent: **PeopleSoft Financials to Workday Financial Management** (`agents/ps-to-workday-fin-agent.json`). See also `core/examples/02-chart-of-accounts-xref-peoplesoft-workday.md`.
+
+### §7.3 Student: Campus Solutions to Workday Student
+
+The big idea: the PeopleSoft career, program, and plan stack collapses into Workday Academic Level, Program of Study, and Concentration. Historical academic records are the hardest decision: what converts as structured data and what stays as an archived transcript.
+
+| Step | File |
+|------|------|
+| Identity (do this first) | `ps-to-workday-sis/identifier-xref.json` |
+| Careers, programs, plans | `academic-career-level-xref.json`, `program-plan-xref.json`, `program-status-xref.json` |
+| Terms and sessions | `term-period-xref.json` |
+| Enrollment and grading | `enrollment-status-xref.json`, `grading-basis-xref.json`, `instruction-mode-xref.json` |
+| Admissions, holds, aid | `admit-type-xref.json`, `service-indicator-hold-xref.json`, `fin-aid-item-type-xref.json` |
+| Prove it | `ferpa_restriction_carryover_check.sql` (hard gate), `active_student_tieout.sql`, `program_of_study_tieout.sql`, `enrollment_credit_tieout.sql`, `gpa_recompute_check.sql`, `student_account_balance_tieout.sql` |
+
+Agent: **PeopleSoft Campus Solutions to Workday Student** (`agents/ps-to-workday-sis-agent.json`).
+
+**Before you load:** every value marked VALIDATE in the crosswalks differs by institution or Workday tenant. Confirm them against your configuration workbook before mock 1.
+
+---
+
+## Chapter 8: Banner On-Prem to Banner SaaS
+
+**You're moving Banner from a self-managed Oracle database (on-prem or Oracle-on-EC2) to Banner SaaS (Ellucian Platform).** The hard part is not the data. It is that Banner SaaS has no direct database access, so every integration, view, stored procedure, and SQL script that touched Oracle has to be rebuilt against governed APIs.
+
+### The path
+
+```
+Banner Oracle (on-prem / EC2)
+      |   direct SQL, PIDM joins, STV decode
+      v
+bridge/banner/  (31 mappings)  --->  HELIX Core (canonical)
+                                          |
+                                          v
+                              bridge/banner-saas/  (8 reverse mappings)
+                                          |
+                                          v
+                  Ethos Integration API / BIA / Data Connect  --->  Banner SaaS
+```
+
+| Step | What to do | File |
+|------|-----------|------|
+| 1. Inventory | List every integration that touches Oracle: SQL jobs, views, stored procedures, Boomi or middleware jobs, file extracts. Each one needs a SaaS-supported replacement. | `bridge/banner-saas/WRITEBACK_PATTERNS.md` |
+| 2. Extract | Pull from a standby or replica, carry PIDM and raw codes into bronze. | `bridge/banner/ONPREM_EXTRACTION.md` |
+| 3. Canonicalize | Map Banner tables to HELIX Core. | `bridge/banner/{sis,hr,finance,advancement,financial-aid}/` |
+| 4. Write back | Push HELIX resources to Banner SaaS through Ethos, keyed by GUID, in dependency order (persons, then students, then registrations). | `bridge/banner-saas/*_reverse_mapping.json` |
+| 5. Land analytics | Decide where SaaS data lands for reporting. | `docs/banner-saas-landing-architecture.md` |
+
+### Where does the data land?
+
+- **Writes into Banner SaaS:** only through Ethos Integration API, Banner Integration API, or Data Connect. Storage is never a write target.
+- **Operational reads and near-real-time sync:** Data Connect into PostgreSQL (for example Amazon RDS for PostgreSQL) as staging.
+- **Analytics and the HELIX lakehouse:** Amazon S3 Tables (managed Apache Iceberg) for bronze, silver, and gold.
+
+Validate Ethos and Data Connect entitlements against your Ellucian license before you design around them. The Ethos field names in `bridge/banner-saas/` flagged VALIDATE vary by API version.
+
+---
+
 ## Cross-Reference: Module-by-Module Migration Paths
 
 ### I'm migrating my SIS (Student module)
 
 | From → To | Path |
 |-----------|------|
-| PeopleSoft CS → Workday Student | `bridge/peoplesoft/cs/` → HELIX Core → `bridge/workday/` (reversed) |
+| PeopleSoft CS → Workday Student | `bridge/peoplesoft/cs/` → HELIX Core → `bridge/workday/sis/`, direct lookups in `bridge/xref/ps-to-workday-sis/`. See [Chapter 7](#chapter-7-peoplesoft-to-workday-the-cornerstone-path) |
 | PeopleSoft CS → Banner | `bridge/peoplesoft/cs/` → HELIX Core → `bridge/banner/` (reversed) |
 | PeopleSoft CS → Data Lake | `bridge/peoplesoft/cs/` → HELIX Core → Iceberg/Parquet |
 | Banner → Workday Student | `bridge/banner/` → HELIX Core → `bridge/workday/` (reversed) |
 | Banner → PeopleSoft CS | `bridge/banner/` → HELIX Core → `bridge/peoplesoft/cs/` (reversed) |
 | Banner → Data Lake | `bridge/banner/` → HELIX Core → Iceberg/Parquet |
+| Banner on-prem → Banner SaaS | `bridge/banner/` → HELIX Core → `bridge/banner-saas/` (Ethos write-back). See [Chapter 8](#chapter-8-banner-on-prem-to-banner-saas) |
 | Colleague → Workday Student | `bridge/colleague/` → HELIX Core → `bridge/workday/` (reversed) |
 | Colleague → Data Lake | `bridge/colleague/` → HELIX Core → Iceberg/Parquet |
 | Workday → Data Lake | `bridge/workday/` → HELIX Core → Iceberg/Parquet |
@@ -370,14 +490,15 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 
 | From → To | Path |
 |-----------|------|
-| PeopleSoft FSCM → Workday Financials | `bridge/peoplesoft/fin/` → HELIX Core → Workday worktag mapping |
+| PeopleSoft FSCM → Workday Financials | `bridge/peoplesoft/fin/` → HELIX Core → `bridge/workday/fin/`, with `bridge/xref/ps-to-workday-fin/` and `templates/ps-to-workday/worktag-conversion-rules.json` |
+| Banner Finance → Data Lake | `bridge/banner/finance/` → HELIX Core → Iceberg/Parquet |
 | PeopleSoft FSCM → Data Lake | `bridge/peoplesoft/fin/` → HELIX Core → Iceberg/Parquet |
 
 ### I'm migrating my HR
 
 | From → To | Path |
 |-----------|------|
-| PeopleSoft HCM → Workday HCM | `bridge/peoplesoft/hcm/` → HELIX Core → Workday Worker objects |
+| PeopleSoft HCM → Workday HCM | `bridge/peoplesoft/hcm/` → HELIX Core → `bridge/workday/hr/`, direct lookups in `bridge/xref/ps-to-workday-hr/` |
 | PeopleSoft HCM → Data Lake | `bridge/peoplesoft/hcm/` → HELIX Core → Iceberg/Parquet |
 
 ---
@@ -392,5 +513,5 @@ HELIX Bridge currently covers Banner, PeopleSoft, Workday, and Colleague. If you
 
 ---
 
-*HELIX Migration Adventure Guide v0.1 — August 2026*
+*HELIX Migration Adventure Guide v0.6.0, September 2026*
 *Part of the [HELIX Open Framework](https://github.com/utopify/helix)*

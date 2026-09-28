@@ -1,0 +1,60 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX AcademicPeriod \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "AcademicPeriod",
+  "ethos_resource": "academic-periods",
+  "api_method": "Ethos Integration API (often read-only) / Banner configuration",
+  "version": "0.1",
+  "write_model": "GET for correlation is universally available; POST/PUT support varies. Prefer establishing terms via Banner configuration and using Ethos only to resolve GUIDs for downstream writes.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to academic-periods GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "code",
+      "ethos_field": "academic-periods.code",
+      "transformation": "Banner term code (YYYYMM), e.g., '202510'.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "name",
+      "ethos_field": "academic-periods.title",
+      "transformation": "Human-readable term name.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "start_date",
+      "ethos_field": "academic-periods.startOn",
+      "transformation": "ISO 8601.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "end_date",
+      "ethos_field": "academic-periods.endOn",
+      "transformation": "ISO 8601.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "period_type",
+      "ethos_field": "academic-periods.category",
+      "transformation": "Map helix/period-type to Ethos category (year/term/subterm).",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "parent_period_ref",
+      "ethos_field": "academic-periods.registration / reportingAcademicPeriod (GUID)",
+      "transformation": "Reference parent term GUID for subterms.",
+      "notes": "FLAG: parent linkage field name varies by Ethos version."
+    }
+  ],
+  "constraints": [
+    "academic-periods are reference data; typically configured in Banner and often read-only via Ethos on many tenants.",
+    "Writing periods may require Banner-side setup (STVTERM/SOBPTRM) rather than an Ethos POST \u2014 verify tenant capability. Treat as configuration, not routine write-back."
+  ]
+}

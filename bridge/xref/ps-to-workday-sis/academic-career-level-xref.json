@@ -1,0 +1,118 @@
+{
+  "title": "HELIX XREF: Academic Career to Academic Level \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Academic Career / Academic Level",
+  "description": "Maps PeopleSoft ACAD_CAREER to Workday Academic Level. Career is the PeopleSoft container for GPA, academic standing, and term activation; Workday Academic Level plays the same role.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "UGRD",
+      "ps_description": "Undergraduate",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "bachelors",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Undergraduate",
+      "wd_description": "Undergraduate academic level",
+      "wd_object": "Academic Level",
+      "notes": "UGRD usually spans associate and bachelor programs; degree level comes from the Program of Study, not the level."
+    },
+    {
+      "ps_code": "UGRD",
+      "ps_description": "Undergraduate (course level)",
+      "ps_source": "CRSE_OFFER.ACAD_CAREER",
+      "helix_code": "undergraduate_lower",
+      "helix_terminology": "helix/course-level",
+      "wd_value": "Undergraduate",
+      "wd_description": "Course academic level",
+      "wd_object": "Course Listing Academic Level",
+      "notes": "Course numbering (100-200 vs 300-400) decides lower vs upper; the career alone does not."
+    },
+    {
+      "ps_code": "GRAD",
+      "ps_description": "Graduate",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "masters",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Graduate",
+      "wd_description": "Graduate academic level",
+      "wd_object": "Academic Level",
+      "notes": "GRAD commonly holds master and research doctoral programs; split degree level by program."
+    },
+    {
+      "ps_code": "GRAD",
+      "ps_description": "Graduate (doctoral)",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "doctoral_research",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Graduate",
+      "wd_description": "Graduate academic level",
+      "wd_object": "Academic Level",
+      "notes": "Some institutions define a separate DOCT career. VALIDATE."
+    },
+    {
+      "ps_code": "LAW",
+      "ps_description": "Law School",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "professional",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Law",
+      "wd_description": "Professional level: JD, LLM",
+      "wd_object": "Academic Level",
+      "notes": "Law calendars and grading scales often differ; expect a separate Academic Calendar."
+    },
+    {
+      "ps_code": "MED",
+      "ps_description": "Medical School",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "doctoral_professional",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Medicine",
+      "wd_description": "Professional level: MD",
+      "wd_object": "Academic Level",
+      "notes": "Medical programs often run non-standard periods; VALIDATE period design."
+    },
+    {
+      "ps_code": "DENT",
+      "ps_description": "Dental School",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "doctoral_professional",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Dentistry",
+      "wd_description": "Professional level: DDS/DMD",
+      "wd_object": "Academic Level",
+      "notes": "VALIDATE: career code is institution defined."
+    },
+    {
+      "ps_code": "PHRM",
+      "ps_description": "Pharmacy",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "doctoral_professional",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Pharmacy",
+      "wd_description": "Professional level: PharmD",
+      "wd_object": "Academic Level",
+      "notes": "VALIDATE: career code is institution defined."
+    },
+    {
+      "ps_code": "NC",
+      "ps_description": "Non-Credit / Continuing Ed",
+      "ps_source": "ACAD_CAR_TBL.ACAD_CAREER",
+      "helix_code": "non_credit",
+      "helix_terminology": "helix/course-level",
+      "wd_value": "Non-Credit",
+      "wd_description": "Continuing education level",
+      "wd_object": "Academic Level",
+      "notes": "Decide early whether non-credit moves to Workday Student or stays in a separate CE platform."
+    }
+  ]
+}

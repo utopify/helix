@@ -1,0 +1,79 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX CourseSection \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "CourseSection",
+  "ethos_resource": "sections",
+  "api_method": "Ethos Integration API",
+  "version": "0.1",
+  "write_model": "POST/PUT /api/sections with course + academic-period GUIDs resolved. Meeting patterns and instructors are written via related resources after section creation.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Crosswalk to sections GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "course_ref",
+      "ethos_field": "sections.course.id (GUID)",
+      "transformation": "Resolve course GUID; section references course.",
+      "notes": "Course must exist first."
+    },
+    {
+      "helix_attribute": "section_number",
+      "ethos_field": "sections.number",
+      "transformation": "Section number.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "crn",
+      "ethos_field": "sections.code",
+      "transformation": "Banner CRN maps to sections.code.",
+      "notes": "FLAG: CRN-to-code mapping is conventional; verify per tenant."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "ethos_field": "sections.academicPeriod.id (GUID)",
+      "transformation": "Resolve term GUID.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "title",
+      "ethos_field": "sections.titles[].value",
+      "transformation": "Section title override.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "max_enrollment",
+      "ethos_field": "sections.maximumEnrollment",
+      "transformation": "Seat cap.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "ethos_field": "sections.credits[]",
+      "transformation": "Section credit hours (array; supports variable).",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "delivery_mode",
+      "ethos_field": "sections.instructionalPlatform / courseCategories",
+      "transformation": "Map helix/delivery-mode.",
+      "notes": "FLAG: instructional method modeling varies (instructional-methods GUID vs platform); verify."
+    },
+    {
+      "helix_attribute": "status",
+      "ethos_field": "sections.status.category",
+      "transformation": "open/closed/cancelled category.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "sections requires course + academic-period GUIDs to pre-exist.",
+    "Meeting times and instructor assignments are separate resources (instructional-events, section-instructors) \u2014 write them after the section.",
+    "Some section attributes are derived from the course and cannot be overridden at section level."
+  ]
+}

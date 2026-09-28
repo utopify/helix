@@ -1,0 +1,140 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Disbursement",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "Disbursement",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RPRADSB",
+      "description": "Applicant Disbursement. Scheduled and actual disbursements by fund/term \u2014 amounts, dates, hold, sequence."
+    },
+    {
+      "table": "RPRAWRD",
+      "description": "Applicant Award. Parent award referenced by the disbursement."
+    },
+    {
+      "table": "ROBINST",
+      "description": "Institution options / COD reporting flags. FLAG: confirm COD-tracking table."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PIDM + FUND + TERM + seq."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RPRADSB_PIDM",
+      "transformation": "Applicant PIDM."
+    },
+    {
+      "helix_attribute": "fin_aid_award_ref",
+      "source": "RPRADSB_PIDM + FUND + AIDY",
+      "transformation": "Link to FinAidAward."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "RPRADSB_TERM_CODE",
+      "transformation": "Term of disbursement."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RPRADSB_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "RFRBASE_LONG_NAME",
+      "transformation": "Fund title via fund code."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "RPRADSB_FUND_CODE",
+      "transformation": "Aid fund code."
+    },
+    {
+      "helix_attribute": "disbursement_status",
+      "source": "RPRADSB_DISB_IND",
+      "transformation": "Disbursement status. Bind to helix/disbursement-status."
+    },
+    {
+      "helix_attribute": "scheduled_date",
+      "source": "RPRADSB_SCHED_DISB_DATE",
+      "transformation": "Scheduled/memo disbursement date."
+    },
+    {
+      "helix_attribute": "actual_disbursement_date",
+      "source": "RPRADSB_DISB_DATE",
+      "transformation": "Actual disbursement date."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "RPRADSB_SCHED_AMT",
+      "transformation": "Scheduled/gross amount."
+    },
+    {
+      "helix_attribute": "net_amount",
+      "source": "RPRADSB_PAID_AMT",
+      "transformation": "Net/paid amount."
+    },
+    {
+      "helix_attribute": "fees_deducted",
+      "source": "Derived",
+      "transformation": "Gross minus net (origination fees for loans)."
+    },
+    {
+      "helix_attribute": "disbursement_number",
+      "source": "RPRADSB_DISB_NO",
+      "transformation": "Disbursement number (1st/2nd)."
+    },
+    {
+      "helix_attribute": "disbursement_sequence",
+      "source": "RPRADSB_SEQ_NO",
+      "transformation": "Disbursement sequence."
+    },
+    {
+      "helix_attribute": "hold_flag",
+      "source": "RPRADSB_HOLD_IND",
+      "transformation": "Disbursement hold indicator."
+    },
+    {
+      "helix_attribute": "hold_reason",
+      "source": "RPRADSB_HOLD_REASON",
+      "transformation": "Hold reason. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "refund_generated_flag",
+      "source": "Derived (TBRACCD credit balance)",
+      "transformation": "Refund/credit balance generated on the student account."
+    },
+    {
+      "helix_attribute": "refund_amount",
+      "source": "TBRACCD refund",
+      "transformation": "Refund amount from student account (TBRACCD)."
+    },
+    {
+      "helix_attribute": "refund_date",
+      "source": "TBRACCD date",
+      "transformation": "Refund date."
+    },
+    {
+      "helix_attribute": "cod_reported_flag",
+      "source": "RPRADSB_COD_IND",
+      "transformation": "Reported to COD. FLAG: confirm COD column."
+    },
+    {
+      "helix_attribute": "cod_response_date",
+      "source": "RPRADSB_COD_RESP_DATE",
+      "transformation": "COD response date."
+    },
+    {
+      "helix_attribute": "ledger_posted_flag",
+      "source": "Derived",
+      "transformation": "Posted to student AR ledger (TBRACCD)."
+    }
+  ]
+}

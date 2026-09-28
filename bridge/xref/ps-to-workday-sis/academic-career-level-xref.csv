@@ -1,0 +1,10 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+UGRD,Undergraduate,ACAD_CAR_TBL.ACAD_CAREER,bachelors,helix/degree-level,Undergraduate,Undergraduate academic level,Academic Level,"UGRD usually spans associate and bachelor programs; degree level comes from the Program of Study, not the level."
+UGRD,Undergraduate (course level),CRSE_OFFER.ACAD_CAREER,undergraduate_lower,helix/course-level,Undergraduate,Course academic level,Course Listing Academic Level,Course numbering (100-200 vs 300-400) decides lower vs upper; the career alone does not.
+GRAD,Graduate,ACAD_CAR_TBL.ACAD_CAREER,masters,helix/degree-level,Graduate,Graduate academic level,Academic Level,GRAD commonly holds master and research doctoral programs; split degree level by program.
+GRAD,Graduate (doctoral),ACAD_CAR_TBL.ACAD_CAREER,doctoral_research,helix/degree-level,Graduate,Graduate academic level,Academic Level,Some institutions define a separate DOCT career. VALIDATE.
+LAW,Law School,ACAD_CAR_TBL.ACAD_CAREER,professional,helix/degree-level,Law,"Professional level: JD, LLM",Academic Level,Law calendars and grading scales often differ; expect a separate Academic Calendar.
+MED,Medical School,ACAD_CAR_TBL.ACAD_CAREER,doctoral_professional,helix/degree-level,Medicine,Professional level: MD,Academic Level,Medical programs often run non-standard periods; VALIDATE period design.
+DENT,Dental School,ACAD_CAR_TBL.ACAD_CAREER,doctoral_professional,helix/degree-level,Dentistry,Professional level: DDS/DMD,Academic Level,VALIDATE: career code is institution defined.
+PHRM,Pharmacy,ACAD_CAR_TBL.ACAD_CAREER,doctoral_professional,helix/degree-level,Pharmacy,Professional level: PharmD,Academic Level,VALIDATE: career code is institution defined.
+NC,Non-Credit / Continuing Ed,ACAD_CAR_TBL.ACAD_CAREER,non_credit,helix/course-level,Non-Credit,Continuing education level,Academic Level,Decide early whether non-credit moves to Workday Student or stays in a separate CE platform.

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Budget",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "Budget",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FGBBALC",
+      "description": "Account Balances. Period balances by FOAPAL including budget, actual (YTD), encumbrance, and available balance."
+    },
+    {
+      "table": "FTVACCT",
+      "description": "Account Code validation. Natural account codes."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + COA + fund + org + account + fiscal_year."
+    },
+    {
+      "helix_attribute": "budget_id",
+      "source": "FGBBALC_COAS_CODE + FUND + ORGN + ACCT + FSYR",
+      "transformation": "Composite key of the FOAPAL + fiscal year."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "FGBBALC_COAS_CODE",
+      "transformation": "Chart of Accounts code."
+    },
+    {
+      "helix_attribute": "fiscal_year",
+      "source": "FGBBALC_FSYR_CODE",
+      "transformation": "Fiscal year code."
+    },
+    {
+      "helix_attribute": "account",
+      "source": "FGBBALC_ACCT_CODE",
+      "transformation": "Natural account. Decode via FTVACCT."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "FGBBALC_FUND_CODE",
+      "transformation": "Fund element."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "FGBBALC_ORGN_CODE",
+      "transformation": "Organization element."
+    },
+    {
+      "helix_attribute": "budget_amount",
+      "source": "FGBBALC_ABAL (adjusted budget)",
+      "transformation": "Adjusted budget balance. FLAG: Banner stores budget across OBAL/ABAL columns; validate which represents adjusted budget in your version."
+    },
+    {
+      "helix_attribute": "encumbered",
+      "source": "FGBBALC_ENCUMBRANCE",
+      "transformation": "Encumbrance balance."
+    },
+    {
+      "helix_attribute": "expended",
+      "source": "FGBBALC_YTD_ACTIVITY",
+      "transformation": "Year-to-date actual activity (expended)."
+    },
+    {
+      "helix_attribute": "available_balance",
+      "source": "Derived",
+      "transformation": "Adjusted budget minus expended minus encumbered."
+    },
+    {
+      "helix_attribute": "budget_status",
+      "source": "Derived",
+      "transformation": "Active/closed derived from fiscal year status. Bind to helix/budget-status."
+    }
+  ]
+}

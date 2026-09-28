@@ -1,0 +1,140 @@
+{
+  "title": "HELIX XREF: Program / Plan to Program of Study \u2014 PeopleSoft \u2192 HELIX \u2192 Workday",
+  "version": "0.1",
+  "dimension": "Academic Program / Plan / Sub-Plan",
+  "description": "Structural crosswalk. The PeopleSoft stack ACAD_PROG (program) > ACAD_PLAN (major, minor, certificate) > ACAD_SUB_PLAN (concentration) collapses into Workday Program of Study plus Concentration, with the owning school or college modeled as an Academic Unit. Rows are representative, not exhaustive.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "UGAS",
+      "ps_description": "Undergraduate Arts & Sciences (program)",
+      "ps_source": "ACAD_PROG_TBL.ACAD_PROG",
+      "helix_code": "",
+      "helix_terminology": "",
+      "wd_value": "College of Arts & Sciences",
+      "wd_description": "Owning academic organization",
+      "wd_object": "Academic Unit",
+      "notes": "The PS program usually becomes the Academic Unit (or its hierarchy) rather than a Program of Study."
+    },
+    {
+      "ps_code": "BIO-BS",
+      "ps_description": "Biology, BS (major plan)",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN (ACAD_PLAN_TYPE = MAJ)",
+      "helix_code": "bachelors",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Biology BS",
+      "wd_description": "Undergraduate Program of Study",
+      "wd_object": "Program of Study",
+      "notes": "Degree comes from ACAD_PLAN_TBL.DEGREE. One PS major plan = one Workday Program of Study."
+    },
+    {
+      "ps_code": "BIO-BS-MOLC",
+      "ps_description": "Molecular Biology (sub-plan)",
+      "ps_source": "ACAD_SUBPLN_TBL.ACAD_SUB_PLAN",
+      "helix_code": "bachelors",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Molecular Biology",
+      "wd_description": "Concentration within Biology BS",
+      "wd_object": "Concentration",
+      "notes": "Sub-plans map to Concentrations attached to the parent Program of Study."
+    },
+    {
+      "ps_code": "HIST-MIN",
+      "ps_description": "History Minor",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN (ACAD_PLAN_TYPE = MIN)",
+      "helix_code": "bachelors",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "History Minor",
+      "wd_description": "Minor program of study",
+      "wd_object": "Program of Study (Program of Study Type: Minor)",
+      "notes": "VALIDATE: tenants differ on modeling minors as Programs of Study versus a separate minor construct."
+    },
+    {
+      "ps_code": "PSY-BA / ECON-BA",
+      "ps_description": "Double major (two MAJ plans, one program)",
+      "ps_source": "ACAD_PLAN (two rows, same ACAD_PROG)",
+      "helix_code": "bachelors",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Two Programs of Study",
+      "wd_description": "Primary and secondary Program of Study",
+      "wd_object": "Program of Study (primary + additional)",
+      "notes": "PS PLAN_SEQUENCE sets primary; carry it to the Workday primary designation."
+    },
+    {
+      "ps_code": "DATA-UCRT",
+      "ps_description": "Data Analytics Undergraduate Certificate",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN (ACAD_PLAN_TYPE = CRT)",
+      "helix_code": "certificate_undergraduate",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Data Analytics Certificate",
+      "wd_description": "Credential-bearing certificate",
+      "wd_object": "Program of Study (Program of Study Type: Certificate)",
+      "notes": "Stand-alone certificates are their own Program of Study."
+    },
+    {
+      "ps_code": "UNDCL",
+      "ps_description": "Undeclared",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN",
+      "helix_code": "non_degree",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Undeclared (Arts & Sciences)",
+      "wd_description": "Exploratory placeholder",
+      "wd_object": "Program of Study",
+      "notes": "Keep a real Program of Study for undeclared students so advising and census counts work."
+    },
+    {
+      "ps_code": "CS-MS",
+      "ps_description": "Computer Science, MS",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN (ACAD_CAREER = GRAD)",
+      "helix_code": "masters",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Computer Science MS",
+      "wd_description": "Graduate Program of Study",
+      "wd_object": "Program of Study",
+      "notes": "Thesis and non-thesis tracks usually become Concentrations or Program of Study variants. VALIDATE."
+    },
+    {
+      "ps_code": "CHEM-PHD",
+      "ps_description": "Chemistry, PhD",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN (ACAD_CAREER = GRAD)",
+      "helix_code": "doctoral_research",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Chemistry PhD",
+      "wd_description": "Research doctorate Program of Study",
+      "wd_object": "Program of Study",
+      "notes": "Milestones (quals, candidacy) move to Workday student milestones, not the plan."
+    },
+    {
+      "ps_code": "CS-MS-BSMS",
+      "ps_description": "Accelerated BS/MS",
+      "ps_source": "Two ACAD_PROG stacks, UGRD + GRAD",
+      "helix_code": "masters",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Computer Science BS/MS",
+      "wd_description": "Linked programs across levels",
+      "wd_object": "Program of Study (two records, shared courses)",
+      "notes": "Shared-credit rules must be rebuilt as academic requirements. VALIDATE."
+    },
+    {
+      "ps_code": "NDEG",
+      "ps_description": "Non-degree seeking",
+      "ps_source": "ACAD_PLAN_TBL.ACAD_PLAN",
+      "helix_code": "non_degree",
+      "helix_terminology": "helix/degree-level",
+      "wd_value": "Non-Degree",
+      "wd_description": "Non-degree Program of Study",
+      "wd_object": "Program of Study",
+      "notes": "Needed for visiting, transient, and audit-only students."
+    }
+  ]
+}

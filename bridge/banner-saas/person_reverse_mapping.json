@@ -1,0 +1,116 @@
+{
+  "$schema": "https://helixedu.org/bridge/reverse-mapping-schema.json",
+  "title": "HELIX Bridge (Reverse): HELIX Person \u2192 Banner SaaS (Ethos)",
+  "source_system": "helix",
+  "target_system": "banner_saas",
+  "direction": "helix_to_saas",
+  "target_resource": "Person",
+  "ethos_resource": "persons",
+  "api_method": "Ethos Integration API",
+  "version": "0.1",
+  "write_model": "POST /api/persons to create (returns a new GUID) or PUT /api/persons/{guid} to update. Idempotency via external crosswalk keyed on Banner ID credential; search before create. Names, emails, phones are embedded arrays; addresses and validation values (race, ethnicity, gender identity) are GUID references.",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "ethos_field": "(crosswalk)",
+      "transformation": "Do NOT write helix_id into Ethos. Maintain an external crosswalk (helix_id <-> Ethos person GUID). On create, capture the returned GUID and store it.",
+      "notes": "Ethos identity is the GUID; helix_id stays in the HELIX crosswalk table."
+    },
+    {
+      "helix_attribute": "identifiers[].system='banner'",
+      "ethos_field": "persons.credentials[type=bannerId].value",
+      "transformation": "Map the visible Banner ID into the credentials array with credentialType 'Banner ID'.",
+      "notes": "Ethos 'persons' exposes credentials[] for Banner ID, Colleague Person ID, SSN, ELV, etc."
+    },
+    {
+      "helix_attribute": "name.family",
+      "ethos_field": "persons.names[type=legal].lastName",
+      "transformation": "Map to the legal name entry (names[].type.category='legal').",
+      "notes": "Ethos persons.names[] is typed (legal, birth, preferred, ...)."
+    },
+    {
+      "helix_attribute": "name.given",
+      "ethos_field": "persons.names[type=legal].firstName",
+      "transformation": "Legal first name.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "name.middle",
+      "ethos_field": "persons.names[type=legal].middleName",
+      "transformation": "Legal middle name.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "name.prefix",
+      "ethos_field": "persons.names[type=legal].title",
+      "transformation": "Name prefix/title.",
+      "notes": "FLAG: Ethos field name for prefix is 'title' in most persons schema versions \u2014 verify against tenant API version."
+    },
+    {
+      "helix_attribute": "name.suffix",
+      "ethos_field": "persons.names[type=legal].pedigree",
+      "transformation": "Name suffix.",
+      "notes": "FLAG: suffix commonly maps to 'pedigree' in Ethos persons; verify per API version."
+    },
+    {
+      "helix_attribute": "name.preferred_first",
+      "ethos_field": "persons.names[type=preferred].firstName",
+      "transformation": "Write a second names[] entry with type.category='preferred'.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "birth_date",
+      "ethos_field": "persons.dateOfBirth",
+      "transformation": "ISO 8601 date.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "gender",
+      "ethos_field": "persons.gender",
+      "transformation": "Map helix gender to Ethos gender enum (male/female/unknown).",
+      "notes": "Legal/administrative gender."
+    },
+    {
+      "helix_attribute": "gender_identity",
+      "ethos_field": "persons.genderIdentity (guid ref)",
+      "transformation": "Map helix/gender-identity to the tenant's gender-identities GUID.",
+      "notes": "FLAG: genderIdentity is a GUID reference to the gender-identities resource; requires lookup."
+    },
+    {
+      "helix_attribute": "ethnicity[]",
+      "ethos_field": "persons.races[].race (guid ref) + persons.ethnicity",
+      "transformation": "Map each helix/ethnicity code to a races[] GUID; Hispanic/Latino maps to persons.ethnicity (guid ref to ethnicities).",
+      "notes": "Races and ethnicity are GUID-referenced validation resources."
+    },
+    {
+      "helix_attribute": "contact.emails[]",
+      "ethos_field": "persons.emails[]",
+      "transformation": "Map address + type (institutional->school, personal->personal, work->work). Set preferred flag.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "contact.phones[]",
+      "ethos_field": "persons.phones[]",
+      "transformation": "Map number + type (mobile/home/work) + countryCallingCode. Set preferred.",
+      "notes": ""
+    },
+    {
+      "helix_attribute": "contact.addresses[]",
+      "ethos_field": "persons.addresses[] (via addresses resource GUID)",
+      "transformation": "Address is a separate Ethos 'addresses' resource; person references it. Create/resolve address GUID, then link with type + effective dates.",
+      "notes": "FLAG: in newer Ethos models addresses are a standalone resource referenced by GUID rather than embedded."
+    },
+    {
+      "helix_attribute": "meta.source_system",
+      "ethos_field": "(n/a)",
+      "transformation": "Not written; HELIX-side provenance only.",
+      "notes": ""
+    }
+  ],
+  "constraints": [
+    "persons is one of the few Ethos resources that supports direct create/update (POST/PUT). Most other operational records require business-process APIs.",
+    "SSN and other sensitive credentials require appropriate Ethos application scopes; may be restricted by tenant policy.",
+    "Duplicate prevention: search persons by credentials (Banner ID) or matchingRequests before POST to avoid creating duplicate GUIDs.",
+    "Race/ethnicity/gender-identity are GUID-referenced validation resources \u2014 resolve GUIDs from the tenant before writing."
+  ]
+}

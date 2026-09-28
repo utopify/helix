@@ -1,0 +1,155 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 LoanRecord",
+  "source_system": "banner",
+  "module": "Financial Aid",
+  "target_resource": "LoanRecord",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "RPRLORG",
+      "description": "Loan Origination. Direct Loan origination \u2014 loan type, period, MPN, counseling, amounts, rate, COD loan id."
+    },
+    {
+      "table": "RPRAWRD",
+      "description": "Applicant Award. Parent award for the loan fund."
+    },
+    {
+      "table": "RORLOAN",
+      "description": "Loan application/status. Loan-specific status. FLAG: confirm loan-status table name."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + PIDM + FUND + AIDY."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "RPRLORG_PIDM",
+      "transformation": "Applicant PIDM."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "RPRLORG_AIDY_CODE",
+      "transformation": "Aid year code."
+    },
+    {
+      "helix_attribute": "loan_type",
+      "source": "RPRLORG_LOAN_TYPE / RFRBASE_FTYP",
+      "transformation": "Loan type (sub/unsub/PLUS). Bind to helix/loan-type."
+    },
+    {
+      "helix_attribute": "loan_status",
+      "source": "RPRLORG_ORIG_IND / RORLOAN",
+      "transformation": "Loan origination/status. Bind to helix/loan-status."
+    },
+    {
+      "helix_attribute": "loan_period_start",
+      "source": "RPRLORG_PERIOD_START_DATE",
+      "transformation": "Loan period start."
+    },
+    {
+      "helix_attribute": "loan_period_end",
+      "source": "RPRLORG_PERIOD_END_DATE",
+      "transformation": "Loan period end."
+    },
+    {
+      "helix_attribute": "mpn_flag",
+      "source": "RPRLORG_MPN_IND",
+      "transformation": "MPN signed indicator."
+    },
+    {
+      "helix_attribute": "mpn_date",
+      "source": "RPRLORG_MPN_DATE",
+      "transformation": "MPN signed date. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "mpn_expiration_date",
+      "source": "RPRLORG_MPN_EXP_DATE",
+      "transformation": "MPN expiration date. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "entrance_counseling_flag",
+      "source": "RPRLORG_ENTR_COUNS_IND",
+      "transformation": "Entrance counseling completed."
+    },
+    {
+      "helix_attribute": "entrance_counseling_date",
+      "source": "RPRLORG_ENTR_COUNS_DATE",
+      "transformation": "Entrance counseling date."
+    },
+    {
+      "helix_attribute": "exit_counseling_flag",
+      "source": "RPRLORG_EXIT_COUNS_IND",
+      "transformation": "Exit counseling completed. FLAG: exit counseling often tracked separately."
+    },
+    {
+      "helix_attribute": "exit_counseling_date",
+      "source": "RPRLORG_EXIT_COUNS_DATE",
+      "transformation": "Exit counseling date."
+    },
+    {
+      "helix_attribute": "gross_loan_amount",
+      "source": "RPRLORG_GROSS_AMT",
+      "transformation": "Gross loan amount."
+    },
+    {
+      "helix_attribute": "net_loan_amount",
+      "source": "RPRLORG_NET_AMT",
+      "transformation": "Net loan amount after fees."
+    },
+    {
+      "helix_attribute": "origination_fee",
+      "source": "RPRLORG_ORIG_FEE_AMT",
+      "transformation": "Origination fee amount."
+    },
+    {
+      "helix_attribute": "interest_rate",
+      "source": "RPRLORG_INT_RATE",
+      "transformation": "Fixed interest rate."
+    },
+    {
+      "helix_attribute": "subsidized_flag",
+      "source": "Derived from loan type",
+      "transformation": "Subsidized indicator."
+    },
+    {
+      "helix_attribute": "loan_disbursement_count",
+      "source": "Derived from RPRADSB",
+      "transformation": "Count of scheduled disbursements."
+    },
+    {
+      "helix_attribute": "cod_loan_id",
+      "source": "RPRLORG_COD_LOAN_ID",
+      "transformation": "COD award/loan ID."
+    },
+    {
+      "helix_attribute": "servicer_name",
+      "source": "Configuration",
+      "transformation": "Loan servicer (not stored in Banner origination)."
+    },
+    {
+      "helix_attribute": "grade_level",
+      "source": "RPRLORG_GRADE_LEVEL",
+      "transformation": "Grade level for annual loan limits."
+    },
+    {
+      "helix_attribute": "dependency_at_origination",
+      "source": "RORSTAT_DEPEND_STATUS",
+      "transformation": "Dependency at origination."
+    },
+    {
+      "helix_attribute": "aggregate_loan_limit_check_flag",
+      "source": "Derived (NSLDS)",
+      "transformation": "Aggregate limit check via NSLDS."
+    },
+    {
+      "helix_attribute": "annual_loan_limit_check_flag",
+      "source": "Derived",
+      "transformation": "Annual limit check."
+    }
+  ]
+}
