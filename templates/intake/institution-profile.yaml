@@ -1,0 +1,75 @@
+# HELIX Institution Profile (machine-readable)
+# Step 1 of START_HERE.md. Mirrors institution-profile.md.
+# An AI assistant loaded with agents/helix-migration-companion.json can read this file
+# and recommend your first slice and next documents.
+
+helix_profile_version: "0.1"
+
+institution:
+  name: ""
+  control: ""            # public | private
+  student_headcount: null
+  employee_headcount: null
+  ipeds_unit_id: ""
+  fiscal_year_start: ""  # e.g. "07-01"
+  academic_calendar: ""  # semester | quarter | trimester | other
+
+goal:
+  path: ""               # A_lakehouse | B_peoplesoft_to_workday | C_banner_to_saas | D_governance
+  modules: []            # for B: [hcm, fin, student]
+  driver: ""
+  executive_sponsor: ""
+  first_result_target_date: ""
+
+source_systems:          # one entry per database or system, including reporting copies
+  - name: ""
+    erp: ""              # peoplesoft | banner | workday | colleague | other
+    module: ""           # campus_solutions | hcm | fscm | interaction_hub | epm | other
+    app_version: ""      # e.g. PeopleSoft CS 9.2, PeopleTools 8.61
+    database: ""         # e.g. Oracle 19c
+    hosting: ""          # on_prem | aws_ec2 | oci | saas | other
+    role: ""             # production | reporting_copy | standby | dev | archive
+    refresh: ""          # real_time | nightly | weekly | monthly | ad_hoc
+    access: ""           # jdbc | odbc | db_link | api | file_export
+    owner: ""
+
+existing_warehouse:
+  exists: null
+  platform: ""
+  fed_by: []
+  refresh: ""
+  official_reports: []
+  helix_relationship: "" # replace | sit_beside | feed
+
+identity:
+  person_ids: {}         # e.g. {campus_solutions: EMPLID, hcm: EMPLID}
+  shared_across_modules: null
+  ssn_locations: []
+  known_duplicate_issues: ""
+
+target_platform:
+  cloud: ""
+  engine: ""
+  orchestration: ""
+  transformation: ""
+  bi: ""
+
+governance:
+  ferpa_officer: ""
+  glba_qualified_individual: ""
+  classification_policy_exists: null
+  data_stewards: {}
+
+first_slice:
+  name: ""               # student_census | gl_fiscal_year | active_workforce | aid_year
+  helix_resources: []
+  window: ""
+  trusted_number: ""
+  signed_off_by: ""
+
+people:
+  project_lead: ""
+  data_engineers: []
+  functional_experts: {}
+
+constraints: []

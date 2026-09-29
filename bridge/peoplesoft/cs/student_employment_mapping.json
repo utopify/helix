@@ -1,0 +1,140 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → StudentEmployment",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "StudentEmployment",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_AWARDS",
+      "description": "Work-study award (FWS item type) offered and accepted."
+    },
+    {
+      "table": "PS_ITEM_TYPE_FA",
+      "description": "Identifies FWS and institutional work-study item types."
+    },
+    {
+      "table": "PS_JOB",
+      "description": "HCM job row for the student worker: department, supervisor, hourly rate, standard hours, dates."
+    },
+    {
+      "table": "PS_PAY_EARNINGS",
+      "description": "Earnings by pay period, summed for FWS earnings to date and YTD."
+    },
+    {
+      "table": "PeopleSoft work-study earnings records",
+      "description": "FA-side tracking of FWS earnings against the award. FLAG: confirm delivered or custom record names."
+    }
+  ],
+  "notes": "Student employment spans two PeopleSoft pillars. The award lives in Campus Solutions and the job and pay live in HCM, joined on EMPLID. Only map jobs funded by work-study or classified as student employment; ordinary student hires without aid funding belong in HELIX Employee alone.",
+  "privacy": "CONFIDENTIAL. This is a FERPA education record; access requires legitimate educational interest (99.31(a)(1)). Pay fields follow HR pay rules (ACM-SPECIAL-011).",
+  "workday_counterpart": "bridge/workday/sis/student_employment_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR + EMPL_RCD."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_AWARDS.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AWARDS.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "employment_type",
+      "source": "PS_ITEM_TYPE_FA item type / PS_JOB job code",
+      "transformation": "FWS item type -> federal_work_study; institutional work-study -> institutional_work_study; GA/TA/RA job codes -> the matching assistantship. Map through helix/employment-type-aid."
+    },
+    {
+      "helix_attribute": "fws_award_amount",
+      "source": "PS_STDNT_AWARDS.ACCEPT_AMOUNT (FWS)",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "fws_earnings_to_date",
+      "source": "SUM(PS_PAY_EARNINGS) for FWS-funded job in aid year",
+      "transformation": "Sum gross earnings charged to FWS in the award year."
+    },
+    {
+      "helix_attribute": "fws_remaining",
+      "source": "Derived",
+      "transformation": "award minus earnings to date. Stop scheduling hours at zero."
+    },
+    {
+      "helix_attribute": "community_service_flag",
+      "source": "Job code or department flag",
+      "transformation": "True for community service jobs (including reading tutor and family literacy)."
+    },
+    {
+      "helix_attribute": "community_service_percent",
+      "source": "Derived at institution level",
+      "transformation": "Share of FWS spent on community service. Institution must spend at least 7 percent."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "PS_JOB.JOBCODE description",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "employer_department",
+      "source": "PS_JOB.DEPTID",
+      "transformation": "Resolve to HELIX AcademicOrg or FinancialOrg."
+    },
+    {
+      "helix_attribute": "supervisor_ref",
+      "source": "PS_JOB.SUPERVISOR_ID or REPORTS_TO",
+      "transformation": "Resolve to HELIX Employee."
+    },
+    {
+      "helix_attribute": "hourly_rate",
+      "source": "PS_JOB.HOURLY_RT",
+      "transformation": "Decimal. Must be at least federal minimum wage."
+    },
+    {
+      "helix_attribute": "hours_per_week_max",
+      "source": "PS_JOB.STD_HOURS",
+      "transformation": "Decimal. Many schools cap at 20 during term."
+    },
+    {
+      "helix_attribute": "position_start_date",
+      "source": "PS_JOB.EFFDT of hire row",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "position_end_date",
+      "source": "PS_JOB termination row or expected end",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "earnings_ytd",
+      "source": "SUM(PS_PAY_EARNINGS) calendar YTD",
+      "transformation": "All sources, not only FWS."
+    },
+    {
+      "helix_attribute": "federal_share_percent",
+      "source": "FWS funding split",
+      "transformation": "Typically 75 (or 100 for eligible community service)."
+    },
+    {
+      "helix_attribute": "institutional_share_percent",
+      "source": "FWS funding split",
+      "transformation": "100 minus federal share."
+    },
+    {
+      "helix_attribute": "off_campus_flag",
+      "source": "Job location / employer",
+      "transformation": "True for off-campus agency jobs."
+    },
+    {
+      "helix_attribute": "job_placement_status",
+      "source": "Work-study placement tracking",
+      "transformation": "placed, seeking, not_placed, completed. Often not tracked; derive placed when a job row exists."
+    }
+  ]
+}

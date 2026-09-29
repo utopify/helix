@@ -30,7 +30,8 @@
         "mini_term",
         "academic_year",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/period-type."
     },
     "code": {
       "type": "string",

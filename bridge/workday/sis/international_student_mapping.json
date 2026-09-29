@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Student \u2192 InternationalStudent",
   "source_system": "workday",
   "module": "Student - International Student",
-  "target_resource": "InternationalStudent (planned)",
+  "target_resource": "InternationalStudent",
   "version": "0.1",
   "architecture_notes": "Workday Student tracks international student data (visa, SEVIS, I-20/DS-2019) either natively via International Student Information or through integration with a SEVIS-reporting tool (e.g., Sunapsis, Terra Dotta). Equivalent to PS_VISA_PERMIT_DATA + PS_SEVIS fields.",
   "source_objects": [

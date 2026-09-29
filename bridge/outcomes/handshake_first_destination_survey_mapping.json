@@ -1,0 +1,122 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Handshake First Destination Survey → FirstDestinationSurvey",
+  "source_system": "handshake",
+  "module": "Career Services - First Destination Survey",
+  "source_objects": [
+    {
+      "object": "First Destination Survey response",
+      "description": "One row per graduate per survey: status, outcome, employer, continuing education, and knowledge source."
+    },
+    {
+      "object": "Survey recipient list",
+      "description": "Graduates the survey was sent to, including non-responders. Needed for the knowledge rate."
+    }
+  ],
+  "notes": "Handshake carries the institutional student ID from SSO or the student data feed. Resolve that ID to HELIX Student in the restricted identity zone; never match on name and email alone without steward review. Outcomes follow NACE First-Destination Standards: the class includes graduates from July 1 to June 30, and outcomes are measured up to six months after graduation.",
+  "validate": "Column labels follow a typical Handshake First Destination Survey export; they change with survey configuration. VALIDATE against your own export. The same fields apply if your survey runs in Qualtrics, Symplicity, or GradLeaders.",
+  "target_resource": "FirstDestinationSurvey",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from student ID + survey ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Institutional student ID",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Institutional student ID",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Student ID + graduation date + program",
+      "transformation": "Resolve to the HELIX Degree the survey is about. Students with two degrees in one class get one survey per degree only if your office surveys that way."
+    },
+    {
+      "helix_attribute": "academic_year_graduated",
+      "source": "Graduation date",
+      "transformation": "NACE class year: July 1 to June 30. A May 2026 graduate is '2025-2026'."
+    },
+    {
+      "helix_attribute": "survey_cohort",
+      "source": "Survey name / graduation term",
+      "transformation": "For example 'Class of 2026' or 'May 2026'."
+    },
+    {
+      "helix_attribute": "survey_status",
+      "source": "Response status",
+      "transformation": "Not sent -> not_sent, Sent -> sent, Started -> in_progress, Submitted -> completed, Partial -> partial, no response by close -> no_response, Opted out -> opted_out."
+    },
+    {
+      "helix_attribute": "outcome_status",
+      "source": "Outcome",
+      "transformation": "Map the survey outcome label to helix/outcome-type: 'Working full-time' -> employed_full_time, 'Working part-time' -> employed_part_time, 'Continuing education' -> continuing_education, 'Military' -> military_service, 'Volunteering' -> volunteer_service, 'Still looking' -> seeking_employment, 'Seeking continuing education' -> seeking_continuing_education, 'Not seeking' -> not_seeking, 'Self-employed' -> self_employed, 'Freelance or contract' -> freelance_contract, 'Fellowship' -> postgrad_fellowship. Anything else -> unknown."
+    },
+    {
+      "helix_attribute": "survey_sent_date",
+      "source": "Invite date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "survey_completed_date",
+      "source": "Submitted date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "response_method",
+      "source": "Knowledge source",
+      "transformation": "Survey -> survey; Phone -> phone; LinkedIn -> linkedin; National Student Clearinghouse -> nsc; Faculty or staff report -> faculty_report; Employer -> other."
+    },
+    {
+      "helix_attribute": "knowledge_rate_included_flag",
+      "source": "Derived",
+      "transformation": "true when an outcome is known from any NACE-accepted source, including those not from the survey itself."
+    },
+    {
+      "helix_attribute": "months_since_graduation",
+      "source": "Derived",
+      "transformation": "Whole months from graduation date to the date the outcome was recorded. NACE counts outcomes known within six months."
+    },
+    {
+      "helix_attribute": "primary_outcome",
+      "source": "Outcome",
+      "transformation": "The survey's own label, kept as written for audit."
+    },
+    {
+      "helix_attribute": "seeking_employment_flag",
+      "source": "Derived",
+      "transformation": "outcome_status = seeking_employment."
+    },
+    {
+      "helix_attribute": "seeking_continuing_ed_flag",
+      "source": "Derived",
+      "transformation": "outcome_status = seeking_continuing_education."
+    },
+    {
+      "helix_attribute": "not_seeking_flag",
+      "source": "Derived",
+      "transformation": "outcome_status = not_seeking."
+    },
+    {
+      "helix_attribute": "military_service_flag",
+      "source": "Derived",
+      "transformation": "outcome_status = military_service."
+    },
+    {
+      "helix_attribute": "volunteer_service_flag",
+      "source": "Derived",
+      "transformation": "outcome_status = volunteer_service."
+    },
+    {
+      "helix_attribute": "data_source_verified_flag",
+      "source": "Derived",
+      "transformation": "true when the knowledge source is anything other than self-report (LinkedIn, NSC, employer, faculty)."
+    }
+  ]
+}

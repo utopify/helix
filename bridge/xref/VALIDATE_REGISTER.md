@@ -1,6 +1,6 @@
 # PeopleSoft to Workday VALIDATE Register
 
-66 crosswalk rows are marked VALIDATE. The value is realistic and commonly documented, but it differs by institution, PeopleSoft configuration, or Workday tenant. Confirm each one against your configuration workbook before mock load 1, then open a pull request if your institution can confirm or correct it.
+83 crosswalk rows are marked VALIDATE. The value is realistic and commonly documented, but it differs by institution, PeopleSoft configuration, or Workday tenant. Confirm each one against your configuration workbook before mock load 1, then open a pull request if your institution can confirm or correct it.
 
 | Module | Crosswalk | PS value | What to confirm |
 |---|---|---|---|
@@ -70,5 +70,22 @@
 | SIS | `service-indicator-hold-xref` | PRK | VALIDATE: some institutions retire parking holds at migration. |
 | SIS | `term-period-xref` | 2252 | VALIDATE: STRM numbering convention. |
 | SIS | `term-period-xref` | 2252 / 1 | If the regular session covers the full term, some tenants skip the child period. VALIDATE. |
+| Student | `sap-status-xref` | MEET | VALIDATE: local code (MEET, GOOD, SAT are common). |
+| Student | `sap-status-xref` | WARN | Only valid for schools that evaluate every payment period (34 CFR 668.34). VALIDATE: local code. |
+| Student | `sap-status-xref` | PROB | Probation only follows an approved appeal. VALIDATE: local code. |
+| Student | `sap-status-xref` | PLAN | Load the plan as a Workday Academic Plan so later evaluations check plan progress, not the standard. VALIDATE: local code. |
+| Student | `sap-status-xref` | SUSP | Hard stop for disbursement. Part of the SAP carryover gate. VALIDATE: local code. |
+| Student | `sap-status-xref` | MAXT | Keep the reason. Maximum timeframe suspensions can't be cured by grades alone. VALIDATE: local code. |
+| Student | `verification-status-xref` | Checklist Initiated | VALIDATE: checklist item status codes are local. |
+| Student | `verification-status-xref` | All items Received | VALIDATE: local code. |
+| Student | `verification-status-xref` | Under Review | VALIDATE: local code. |
+| Student | `verification-status-xref` | Not Completed | No Pell or campus-based aid. VALIDATE: local code. |
+| Student | `loan-type-xref` | DLSUB | Undergraduates only. Subsidized usage limit history comes from NSLDS. VALIDATE: local code. |
+| Student | `loan-type-xref` | DLUNS | VALIDATE: local code. |
+| Student | `loan-type-xref` | DLPLS | Borrower is the parent. Map the parent as a separate HELIX Person; don't overwrite student identity. VALIDATE: local code. |
+| Student | `loan-type-xref` | DLGPL | VALIDATE: local code, and check current federal eligibility rules for new Grad PLUS borrowers. |
+| Student | `loan-type-xref` | ALT | Needs self-certification tracking. VALIDATE: local item types (often one per lender). |
+| Student | `loan-type-xref` | INST | Servicing usually lives in Student Financials or a third party. VALIDATE: local code. |
+| Student | `disbursement-status-xref` | Authorized | VALIDATE: authorization logic differs by release. |
 
-*Generated for HELIX v0.6.0, September 2026*
+*Updated for HELIX v0.8.0, September 2026*

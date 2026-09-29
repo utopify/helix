@@ -1,0 +1,162 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → LoanRecord",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "LoanRecord",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_LOAN_ORIGNATN, PS_STDNT_AWARDS, PS_ITEM_TYPE_FA. Attribute names match bridge/peoplesoft/cs/loan_record_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Direct Loan Record",
+      "description": "Loan origination: loan type, period, amounts, COD loan ID, status."
+    },
+    {
+      "object": "Master Promissory Note",
+      "description": "MPN status and expiration from COD."
+    },
+    {
+      "object": "Loan Counseling",
+      "description": "Entrance and exit counseling completion."
+    },
+    {
+      "object": "Financial Aid Disbursement",
+      "description": "Loan disbursements."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/loan_record_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Direct Loan Record.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Direct Loan Record.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Direct Loan Record.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "loan_type",
+      "source": "Direct Loan Record.Loan_Type",
+      "transformation": "Map through loan-type-xref."
+    },
+    {
+      "helix_attribute": "loan_status",
+      "source": "Direct Loan Record.Status",
+      "transformation": "Map through helix/loan-status."
+    },
+    {
+      "helix_attribute": "loan_period_start",
+      "source": "Direct Loan Record.Loan_Period_Start",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "loan_period_end",
+      "source": "Direct Loan Record.Loan_Period_End",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "mpn_flag",
+      "source": "Master Promissory Note.Status",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "mpn_date",
+      "source": "Master Promissory Note.Signed_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "mpn_expiration_date",
+      "source": "Master Promissory Note.Expiration_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "entrance_counseling_flag",
+      "source": "Loan Counseling (entrance)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "entrance_counseling_date",
+      "source": "Loan Counseling.Completed_Date (entrance)",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "exit_counseling_flag",
+      "source": "Loan Counseling (exit)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "exit_counseling_date",
+      "source": "Loan Counseling.Completed_Date (exit)",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "gross_loan_amount",
+      "source": "Direct Loan Record.Gross_Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "net_loan_amount",
+      "source": "Direct Loan Record.Net_Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "origination_fee",
+      "source": "Direct Loan Record.Fee_Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "interest_rate",
+      "source": "Not stored by Workday",
+      "transformation": "Same reference table."
+    },
+    {
+      "helix_attribute": "subsidized_flag",
+      "source": "Derived",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "loan_disbursement_count",
+      "source": "COUNT(Financial Aid Disbursement for the loan)",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "cod_loan_id",
+      "source": "Direct Loan Record.COD_Loan_ID",
+      "transformation": "Carry unchanged. Restricted."
+    },
+    {
+      "helix_attribute": "servicer_name",
+      "source": "Not stored",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "grade_level",
+      "source": "Direct Loan Record.Grade_Level",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "dependency_at_origination",
+      "source": "Direct Loan Record.Dependency_Status",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "aggregate_loan_limit_check_flag",
+      "source": "Direct Loan Record (limit validation)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "annual_loan_limit_check_flag",
+      "source": "Direct Loan Record (limit validation)",
+      "transformation": "Boolean."
+    }
+  ]
+}

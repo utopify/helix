@@ -4,7 +4,7 @@
 
 ---
 
-## The Problem — In One Sentence
+## The Problem in One Sentence
 
 Every university rebuilds the same data integrations from scratch, at a cost of millions, because there is no shared standard for how higher education data should be structured.
 
@@ -12,7 +12,7 @@ Every university rebuilds the same data integrations from scratch, at a cost of 
 
 HELIX is a free, open framework that gives every university a common data language. Think of it as a shared blueprint: when every institution describes a "student," an "enrollment," or a "financial aid award" the same way, the cost of integrating systems drops dramatically.
 
-**HELIX is not software.** It's a standard — like the electrical code for buildings. Architects and contractors follow the code; they build whatever they want on top of it.
+**HELIX is not software.** It's a standard, like the electrical code for buildings. Architects and contractors follow the code; they build whatever they want on top of it.
 
 ## Why It Matters to Your Institution
 
@@ -23,17 +23,17 @@ HELIX is a free, open framework that gives every university a common data langua
 | **Institutional research & IPEDS** | Definitions differ across departments. "Enrolled student" means three different things. | One shared glossary. One definition. Consistent reporting. |
 | **AI and predictive analytics** | Models are institution-specific and non-portable | Models trained on HELIX-shaped data work across institutions. |
 | **Regulatory compliance (FERPA, GLBA)** | Compliance is bolted on after the fact | Data classification and access controls are built into every data object. |
-| **Benchmarking across institutions** | Impossible — everyone's data speaks a different dialect | HELIX gives institutions a common basis for comparison. |
+| **Benchmarking across institutions** | Impossible, because everyone's data speaks a different dialect | HELIX gives institutions a common basis for comparison. |
 
 ## What's In It
 
 | Component | What It Does |
 |-----------|-------------|
-| **HELIX Core** | 19 standard data definitions (student, enrollment, financial aid, etc.) and 23 code sets (enrollment statuses, degree levels, etc.) |
-| **HELIX Bridge** | Pre-built mappings from PeopleSoft, Banner, Workday, and Colleague to the HELIX standard |
-| **HELIX Govern** | Governance roles, data quality rules, maturity model, and a classification framework (FERPA/GLBA-ready) |
+| **HELIX Core** | 64 standard data definitions across students, courses, financial aid, outcomes, HR, finance, and advancement, plus 67 code sets (enrollment statuses, degree levels, loan types, and so on) |
+| **HELIX Bridge** | 163 pre-built mappings, covering every data definition, from PeopleSoft, Banner, Workday, and Colleague, plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
+| **HELIX Govern** | Governance roles, data quality rules, a maturity model, and access controls for every data object (FERPA and GLBA ready) |
 | **HELIX Connect** | An API specification so systems can exchange data in the HELIX standard |
-| **HELIX Agents** | Downloadable AI assistant templates for migration, enrollment analytics, and donor engagement |
+| **HELIX Agents** | Seven AI assistant templates, including a guide that walks a new institution through getting started and specialists for each PeopleSoft to Workday track |
 
 ## Who Built It and Why
 
@@ -45,16 +45,17 @@ HELIX is **open-source** (Apache 2.0 license), **vendor-neutral**, and **free**.
 
 Institutions adopt HELIX at their own pace:
 
-1. **Explore** — Review the framework as a reference model
-2. **Align** — Map your data lake to HELIX definitions
-3. **Govern** — Implement HELIX governance roles and quality rules
-4. **Contribute** — Share your ERP mappings and extensions with the community
-5. **Champion** — Serve as a reference implementation for other institutions
+1. **Explore:** Review the framework as a reference model
+2. **Align:** Map your data lake to HELIX definitions
+3. **Govern:** Implement HELIX governance roles and quality rules
+4. **Contribute:** Share your ERP mappings and extensions with the community
+5. **Champion:** Serve as a reference implementation for other institutions
 
 ## How to Learn More
 
 - **GitHub:** [github.com/utopify/helix](https://github.com/utopify/helix)
-- **Start with the Glossary:** A plain-language guide to every term in higher education data
+- **Start here:** [START_HERE.md](../START_HERE.md) is six steps from zero to a first proven result
+- **The Glossary:** a plain-language guide to every term in higher education data
 - **Questions?** Open a GitHub Issue or Discussion
 
 ---

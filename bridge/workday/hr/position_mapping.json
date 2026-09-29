@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Position Management",
   "source_system": "workday",
   "module": "HCM - Position Management",
-  "target_resource": "Position (planned)",
+  "target_resource": "Position",
   "version": "0.1",
   "architecture_notes": "Workday uses position management as a core organizational building block. Every job assignment sits in a position, and every position sits in a supervisory organization. Positions define the 'seat' (job profile, location, compensation grade, etc.) independently of who fills it. This differs from PeopleSoft where position management is optional (many PS clients use department/job code without formal positions).",
   "source_objects": [

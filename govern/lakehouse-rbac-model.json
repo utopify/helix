@@ -232,7 +232,7 @@
       "restricted_subtypes": [
         {
           "subtype": "helix_analyst_restricted_finaid",
-          "scope": "GLBA-covered financial aid data (SAI/EFC, ISIR, bank/routing, tax data)",
+          "scope": "GLBA-covered financial aid data: SAI/EFC and ISIR values on AidApplication, need analysis on AidPackage, verification detail, individual disbursement, loan, and R2T4 amounts, SAP appeal narratives, and student employment pay",
           "typical_assignments": [
             "Financial aid director",
             "Senior financial aid counselors",
@@ -380,56 +380,143 @@
     "masking_policies": [
       {
         "policy_name": "helix_mask_restricted",
-        "description": "Masks restricted-tier columns: SSN, national_id, bank_account, routing_number, SAI/EFC, tax return data, SEVIS number, visa details.",
+        "description": "Masks restricted-tier columns: national IDs, SAI/EFC and other ISIR values, individual aid disbursement, loan, and R2T4 amounts, SEVIS and visa details, compensation, benefits, payroll, and performance ratings.",
         "applies_to_columns": [
-          "person.ssn",
-          "person.national_id",
-          "person.bank_account",
-          "person.routing_number",
-          "fin_aid_award.sai",
+          "person.identifiers[].value (where type in national_id, ssn_last4, passport, drivers_license)",
           "fin_aid_award.efc",
-          "fin_aid_award.family_income",
-          "fin_aid_award.tax_data",
-          "international_student.sevis_number",
-          "international_student.visa_number",
-          "compensation.annual_salary",
-          "compensation.hourly_rate",
-          "compensation.total_compensation",
-          "benefit_enrollment.plan_details",
-          "benefit_enrollment.dependent_ssn",
+          "fin_aid_award.cost_of_attendance",
+          "fin_aid_award.unmet_need",
+          "aid_application.sai",
+          "aid_application.efc_legacy",
+          "aid_application.pell_lifetime_eligibility_used",
+          "aid_application.isir_transaction_number",
+          "aid_application.comment_codes",
+          "aid_application.c_flags",
+          "aid_application.nslds_match_flags",
+          "aid_application.dependency_override_flag",
+          "aid_application.homeless_youth_flag",
+          "aid_application.foster_care_flag",
+          "aid_application.citizenship_status",
+          "aid_application.professional_judgment_flag",
+          "aid_package.sai",
+          "aid_package.need",
+          "aid_package.unmet_need",
+          "aid_package.pj_reason",
+          "aid_package.pj_adjustment_amount",
+          "verification.sai_before_verification",
+          "verification.sai_after_verification",
+          "verification.sai_change_amount",
+          "verification.conflicting_info_resolution",
+          "verification.documents_received",
+          "verification.documents_outstanding",
+          "disbursement.gross_amount",
+          "disbursement.net_amount",
+          "disbursement.fees_deducted",
+          "disbursement.refund_amount",
+          "loan_record.gross_loan_amount",
+          "loan_record.net_loan_amount",
+          "loan_record.origination_fee",
+          "loan_record.cod_loan_id",
+          "loan_record.servicer_name",
+          "return_of_title_iv.title_iv_disbursed_amount",
+          "return_of_title_iv.title_iv_earned_amount",
+          "return_of_title_iv.title_iv_unearned_amount",
+          "return_of_title_iv.amount_returned_by_school",
+          "return_of_title_iv.amount_returned_by_student",
+          "return_of_title_iv.pwd_amount",
+          "return_of_title_iv.institutional_charges",
+          "sap_evaluation.appeal_reason",
+          "student_employment.hourly_rate",
+          "student_employment.earnings_ytd",
+          "student_employment.fws_earnings_to_date",
+          "student_employment.fws_award_amount",
+          "international_student.sevis_id",
+          "international_student.visa_type",
+          "international_student.visa_status",
+          "international_student.visa_issue_date",
+          "international_student.visa_expiry_date",
+          "international_student.work_authorization",
+          "international_student.sponsor",
+          "employee.national_id",
+          "employee.date_of_birth",
+          "employee.home_address",
+          "compensation.base_pay",
+          "compensation.pay_rate",
+          "compensation.compa_ratio",
+          "benefit_enrollment.plan_name",
+          "benefit_enrollment.coverage_level",
+          "benefit_enrollment.employee_contribution",
+          "benefit_enrollment.employer_contribution",
+          "benefit_enrollment.dependent_count",
           "payroll_result.gross_pay",
           "payroll_result.net_pay",
-          "payroll_result.tax_withholding",
+          "payroll_result.total_taxes",
+          "payroll_result.total_deductions",
+          "payroll_result.regular_earnings",
+          "payroll_result.overtime_earnings",
+          "payroll_result.supplemental_earnings",
+          "payroll_result.retirement_deduction",
+          "payroll_result.benefit_deductions",
           "performance_review.overall_rating",
-          "performance_review.reviewer_comments"
+          "performance_review.numeric_rating",
+          "performance_review.nine_box_performance",
+          "performance_review.nine_box_potential",
+          "performance_review.flight_risk"
         ],
         "roles_that_see_cleartext": [
           "helix_analyst_restricted"
         ],
         "all_other_roles_see": "SHA-256 token (for join-safe masking) or literal 'RESTRICTED'",
         "platform_implementations": {
-          "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_restricted\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_RESTRICTED', 'HELIX_ANALYST_RESTRICTED_FINAID', 'HELIX_ANALYST_RESTRICTED_HR')\n    THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply to column:\nALTER TABLE silver.fin_aid_award\n  MODIFY COLUMN sai\n  SET MASKING POLICY helix_mask_restricted;",
-          "databricks_unity_catalog": "CREATE FUNCTION helix_mask_restricted(val STRING)\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_restricted') THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply as column mask:\nALTER TABLE silver.fin_aid_award\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;",
-          "redshift": "-- Redshift uses column-level GRANT (no native masking policies)\n-- Create a masking view instead:\nCREATE VIEW silver.fin_aid_award_masked AS\nSELECT\n  helix_id,\n  student_ref,\n  CASE WHEN pg_has_role(CURRENT_USER, 'helix_analyst_restricted', 'member')\n    THEN sai\n    ELSE 'RESTRICTED'\n  END AS sai,\n  -- repeat for each restricted column\n  award_type, award_amount, disbursement_date\nFROM silver.fin_aid_award_raw;",
+          "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_restricted\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_RESTRICTED', 'HELIX_ANALYST_RESTRICTED_FINAID', 'HELIX_ANALYST_RESTRICTED_HR')\n    THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply to column:\nALTER TABLE silver.aid_application\n  MODIFY COLUMN sai\n  SET MASKING POLICY helix_mask_restricted;",
+          "databricks_unity_catalog": "CREATE FUNCTION helix_mask_restricted(val STRING)\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_restricted') THEN val\n    ELSE SHA2(val, 256)\n  END;\n\n-- Apply as column mask:\nALTER TABLE silver.aid_application\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;",
+          "redshift": "-- Redshift uses column-level GRANT (no native masking policies)\n-- Create a masking view instead:\nCREATE VIEW silver.aid_application_masked AS\nSELECT\n  helix_id,\n  student_ref,\n  CASE WHEN pg_has_role(CURRENT_USER, 'helix_analyst_restricted', 'member')\n    THEN sai\n    ELSE 'RESTRICTED'\n  END AS sai,\n  -- repeat for each restricted column\n  academic_year, aid_application_status, dependency_status\nFROM silver.aid_application_raw;",
           "bigquery": "-- BigQuery uses column-level security with policy tags\n-- 1. Create a taxonomy and policy tag in Data Catalog:\n--    Taxonomy: helix_classification\n--    Policy tag: restricted\n-- 2. Apply the tag to restricted columns\n-- 3. Grant Fine-Grained Reader on the policy tag to helix_analyst_restricted group\n-- All other users see ACCESS DENIED on those columns.",
           "aws_lake_formation": "-- Lake Formation uses LF-Tags for column-level access\n-- 1. Create LF-Tag: classification = [public, internal, confidential, restricted]\n-- 2. Tag restricted columns with classification=restricted\n-- 3. Grant SELECT on classification=restricted to helix_analyst_restricted\n-- 4. All other roles lack the tag grant \u2192 column returns NULL"
         }
       },
       {
         "policy_name": "helix_mask_confidential_pii",
-        "description": "Partially masks confidential PII columns: legal_name, email, phone, address. Used when the requesting role has internal-only access but the data is confidential.",
+        "description": "Partially masks confidential PII and re-identifying columns: names, contact details, birth dates, alumni and graduate employment details, license numbers, supervisor contacts.",
         "applies_to_columns": [
-          "person.legal_name",
-          "person.preferred_name",
-          "person.primary_email",
-          "person.primary_phone",
-          "person.addresses",
+          "person.name.family",
+          "person.name.given",
+          "person.name.middle",
+          "person.name.preferred_first",
+          "person.name.preferred_last",
+          "person.birth_date",
+          "person.contact.emails[].address",
+          "person.contact.phones[].number",
+          "person.contact.addresses[]",
+          "person.emergency_contacts[]",
           "employee.legal_name",
-          "employee.email",
-          "employee.phone",
-          "constituent.legal_name",
-          "constituent.email",
-          "constituent.phone"
+          "employee.preferred_name",
+          "employee.primary_work_email",
+          "employee.primary_work_phone",
+          "constituent.giving_capacity.estimated_capacity",
+          "constituent.giving_capacity.capacity_rating",
+          "constituent.giving_capacity.screening_date",
+          "constituent.giving_capacity.screening_source",
+          "constituent.engagement_score",
+          "gift.constituent_ref (where anonymous_flag = true)",
+          "gift.soft_credit_constituents (where anonymous_flag = true)",
+          "employment_outcome.employer_name",
+          "employment_outcome.job_title",
+          "employment_outcome.employment_location_city",
+          "alumni_profile.linkedin_url",
+          "alumni_profile.current_employer",
+          "alumni_profile.current_job_title",
+          "alumni_profile.current_location_city",
+          "alumni_profile.career_progression_notes",
+          "licensure.license_number",
+          "licensure.score",
+          "licensure.scaled_score",
+          "experiential_learning.supervisor_name",
+          "experiential_learning.supervisor_contact",
+          "experiential_learning.compensation_amount",
+          "experiential_learning.evaluation_rating",
+          "award_honor.monetary_value",
+          "award_honor.gpa_at_award"
         ],
         "roles_that_see_cleartext": [
           "helix_analyst_confidential",
@@ -451,6 +538,32 @@
         "platform_implementations": {
           "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_pii_name\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_ANALYST_RESTRICTED_FINAID',\n      'HELIX_ANALYST_RESTRICTED_HR',\n      'HELIX_STEWARD_ENROLLMENT',\n      'HELIX_STEWARD_HR',\n      'HELIX_STEWARD_FINANCE',\n      'HELIX_STEWARD_ADVANCEMENT'\n    )\n    THEN val\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_STANDARD')\n    THEN CONCAT(LEFT(val, 1), '***')\n    ELSE 'MASKED'\n  END;\n\nCREATE OR REPLACE MASKING POLICY helix_mask_pii_email\n  AS (val STRING)\n  RETURNS STRING ->\n  CASE\n    WHEN CURRENT_ROLE() IN (\n      'HELIX_ANALYST_CONFIDENTIAL',\n      'HELIX_ANALYST_RESTRICTED',\n      'HELIX_STEWARD_ENROLLMENT'\n    )\n    THEN val\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_STANDARD')\n    THEN CONCAT('***@', SPLIT_PART(val, '@', 2))\n    ELSE 'MASKED'\n  END;",
           "databricks_unity_catalog": "CREATE FUNCTION helix_mask_pii_name(val STRING)\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_confidential')\n      OR IS_MEMBER('helix_analyst_restricted')\n      OR IS_MEMBER('helix_steward')\n    THEN val\n    WHEN IS_MEMBER('helix_analyst_standard')\n    THEN CONCAT(LEFT(val, 1), '***')\n    ELSE 'MASKED'\n  END;"
+        },
+        "note": "Constituent names and contact details come from the linked Person record, so they are masked by the person.* entries above. Advancement stewards need helix_steward_advancement to see cleartext."
+      },
+      {
+        "policy_name": "helix_mask_outcomes_salary",
+        "description": "Masks individual graduate salary so it can support career services without leaking into reports. Added in v0.7.1 for the Outcomes domain.",
+        "applies_to_columns": [
+          "employment_outcome.salary_amount",
+          "employment_outcome.signing_bonus"
+        ],
+        "roles_that_see_cleartext": [
+          "helix_analyst_confidential",
+          "helix_analyst_restricted",
+          "helix_steward"
+        ],
+        "banded_roles": [
+          "helix_research"
+        ],
+        "no_access_roles": [
+          "helix_analyst_standard"
+        ],
+        "band_format": "Salary rounded down to a 10,000 band (e.g. 55,000 becomes '50,000 to 59,999')",
+        "publication_rule": "Published outcomes use suppressed aggregates only: median or mean by program with N of at least 5 (govern/ferpa-suppression-policy.json SUPP-001).",
+        "platform_implementations": {
+          "snowflake": "CREATE OR REPLACE MASKING POLICY helix_mask_outcomes_salary\n  AS (val NUMBER)\n  RETURNS NUMBER ->\n  CASE\n    WHEN CURRENT_ROLE() IN ('HELIX_ANALYST_CONFIDENTIAL','HELIX_ANALYST_RESTRICTED','HELIX_STEWARD_ENROLLMENT') THEN val\n    WHEN CURRENT_ROLE() IN ('HELIX_RESEARCH') THEN FLOOR(val / 10000) * 10000\n    ELSE NULL\n  END;\n\nALTER TABLE silver.employment_outcome\n  MODIFY COLUMN salary_amount\n  SET MASKING POLICY helix_mask_outcomes_salary;",
+          "databricks_unity_catalog": "CREATE FUNCTION helix_mask_outcomes_salary(val DECIMAL(12,2))\n  RETURN CASE\n    WHEN IS_MEMBER('helix_analyst_confidential') OR IS_MEMBER('helix_analyst_restricted') OR IS_MEMBER('helix_steward') THEN val\n    WHEN IS_MEMBER('helix_research') THEN FLOOR(val / 10000) * 10000\n    ELSE NULL\n  END;\n\nALTER TABLE helix_catalog.silver.employment_outcome\n  ALTER COLUMN salary_amount SET MASK helix_mask_outcomes_salary;"
         }
       },
       {
@@ -514,7 +627,7 @@
     },
     "databricks_unity_catalog": {
       "description": "Databricks Unity Catalog implementation using groups, column masks, and row filters.",
-      "setup_sql": "-- Create groups (Unity Catalog uses groups, not roles)\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\nCREATE GROUP helix_admin;\n\n-- Schema grants\nGRANT USE SCHEMA ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\nGRANT CREATE TABLE ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.bronze TO helix_silver_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.silver TO helix_silver_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.silver TO helix_gold_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.gold TO helix_gold_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.gold TO helix_analyst_standard;\n\n-- Column masks (Unity Catalog 2024+)\nALTER TABLE helix_catalog.silver.fin_aid_award\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;\n\n-- Row filters\nALTER TABLE helix_catalog.gold.dim_student\n  SET ROW FILTER helix_rls_ferpa_directory ON (student_ref);"
+      "setup_sql": "-- Create groups (Unity Catalog uses groups, not roles)\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\nCREATE GROUP helix_admin;\n\n-- Schema grants\nGRANT USE SCHEMA ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\nGRANT CREATE TABLE ON SCHEMA helix_catalog.bronze TO helix_bronze_loader;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.bronze TO helix_silver_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.silver TO helix_silver_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.silver TO helix_gold_engineer;\nGRANT USE SCHEMA, SELECT, CREATE TABLE, MODIFY ON SCHEMA helix_catalog.gold TO helix_gold_engineer;\n\nGRANT USE SCHEMA, SELECT ON SCHEMA helix_catalog.gold TO helix_analyst_standard;\n\n-- Column masks (Unity Catalog 2024+)\nALTER TABLE helix_catalog.silver.aid_application\n  ALTER COLUMN sai\n  SET MASK helix_mask_restricted;\n\n-- Row filters\nALTER TABLE helix_catalog.gold.dim_student\n  SET ROW FILTER helix_rls_ferpa_directory ON (student_ref);"
     },
     "aws_lake_formation": {
       "description": "AWS Lake Formation implementation using LF-Tags for tag-based access control.",
@@ -534,7 +647,7 @@
     },
     "redshift": {
       "description": "Redshift implementation using groups and column-level GRANT.",
-      "setup_sql": "-- Create groups\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\n\n-- Schema grants\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_bronze_loader;\nGRANT INSERT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_bronze_loader;\n\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT SELECT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT USAGE, CREATE ON SCHEMA silver TO GROUP helix_silver_engineer;\n\n-- Column-level GRANT for restricted columns\n-- Redshift supports column-level GRANT natively:\nGRANT SELECT (helix_id, student_ref, award_type, award_amount, disbursement_date)\n  ON silver.fin_aid_award TO GROUP helix_gold_engineer;\n-- Note: sai, efc, family_income columns NOT granted \u2192 access denied\n\nGRANT SELECT (helix_id, student_ref, award_type, award_amount, disbursement_date, sai, efc, family_income)\n  ON silver.fin_aid_award TO GROUP helix_analyst_restricted;\n\n-- RLS via views (Redshift lacks native RLS policies)\nCREATE VIEW gold.dim_student_ferpa_safe AS\nSELECT s.*\nFROM gold.dim_student s\nWHERE NOT EXISTS (\n  SELECT 1 FROM silver.ferpa_restriction fr\n  WHERE fr.student_ref = s.student_ref\n    AND fr.is_active = TRUE\n    AND fr.restrict_directory = TRUE\n)\nOR pg_has_role(CURRENT_USER, 'helix_analyst_confidential', 'member');\n\nGRANT SELECT ON gold.dim_student_ferpa_safe TO GROUP helix_analyst_standard;"
+      "setup_sql": "-- Create groups\nCREATE GROUP helix_bronze_loader;\nCREATE GROUP helix_silver_engineer;\nCREATE GROUP helix_gold_engineer;\nCREATE GROUP helix_analyst_standard;\nCREATE GROUP helix_analyst_confidential;\nCREATE GROUP helix_analyst_restricted;\nCREATE GROUP helix_steward;\nCREATE GROUP helix_research;\n\n-- Schema grants\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_bronze_loader;\nGRANT INSERT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_bronze_loader;\n\nGRANT USAGE ON SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT SELECT ON ALL TABLES IN SCHEMA bronze TO GROUP helix_silver_engineer;\nGRANT USAGE, CREATE ON SCHEMA silver TO GROUP helix_silver_engineer;\n\n-- Column-level GRANT for restricted columns\n-- Redshift supports column-level GRANT natively:\nGRANT SELECT (helix_id, student_ref, academic_year, aid_application_status, dependency_status)\n  ON silver.aid_application TO GROUP helix_gold_engineer;\n-- Note: sai, efc_legacy, nslds_match_flags columns NOT granted \u2192 access denied\n\nGRANT SELECT (helix_id, student_ref, academic_year, aid_application_status, dependency_status, sai, efc_legacy, nslds_match_flags)\n  ON silver.aid_application TO GROUP helix_analyst_restricted;\n\n-- RLS via views (Redshift lacks native RLS policies)\nCREATE VIEW gold.dim_student_ferpa_safe AS\nSELECT s.*\nFROM gold.dim_student s\nWHERE NOT EXISTS (\n  SELECT 1 FROM silver.ferpa_restriction fr\n  WHERE fr.student_ref = s.student_ref\n    AND fr.is_active = TRUE\n    AND fr.restrict_directory = TRUE\n)\nOR pg_has_role(CURRENT_USER, 'helix_analyst_confidential', 'member');\n\nGRANT SELECT ON gold.dim_student_ferpa_safe TO GROUP helix_analyst_standard;"
     },
     "bigquery": {
       "description": "BigQuery implementation using IAM, policy tags, and row-level security.",

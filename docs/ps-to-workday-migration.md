@@ -6,6 +6,9 @@
 
 ---
 
+
+> **Before you start this guide:** fill in the [institution profile](../templates/intake/institution-profile.md) and land your first slice with [`bridge/peoplesoft/PS_EXTRACTION.md`](../bridge/peoplesoft/PS_EXTRACTION.md). [START_HERE](../START_HERE.md) walks through both. Everything below assumes you can already get clean PeopleSoft data into bronze.
+
 ## Contents
 
 1. [Why HELIX makes this faster](#1-why-helix-makes-this-faster)
@@ -45,7 +48,7 @@ HELIX turns that into a lookup.
 
 Three things make it fluid:
 
-- **Bridge mappings on both sides.** PeopleSoft (42 mappings: CS 19, FIN 11, HCM 12) and Workday (42 mappings: SIS 19, FIN 11, HR 12) are both mapped to the same 64 HELIX Core resources, with near-full parity.
+- **Bridge mappings on both sides.** PeopleSoft (54 mappings: CS 31, FIN 11, HCM 12) and Workday (54 mappings: SIS 31, FIN 11, HR 12) are both mapped to the same 64 HELIX Core resources, with near-full parity.
 - **Direct crosswalks.** The `bridge/xref/ps-to-workday-*` folders collapse the two hops into one: a PS value, its HELIX code, and its Workday value on the same row.
 - **Executable rules and proof.** `templates/ps-to-workday/worktag-conversion-rules.json` turns chartfields into worktags, and `templates/ps-to-workday/reconciliation/` proves the numbers tie before you sign off.
 
@@ -193,11 +196,24 @@ The executable version of all of this is `templates/ps-to-workday/worktag-conver
 | Holds | SRVC_IND_CD | Student Hold Type | `service-indicator-hold-xref.json` |
 | Delivery | INSTRUCTION_MODE, SSR_COMPONENT | Delivery Mode, Instructional Format | `instruction-mode-xref.json` |
 | Aid | ITEM_TYPE, FIN_AID_TYPE | Financial Aid award types | `fin-aid-item-type-xref.json` |
+| SAP | STDNT_FA_TERM.SAP_STATUS | Student SAP Status | `sap-status-xref.json` |
+| Verification | Verification status, checklist items, tracking group | Financial Aid Verification, action items | `verification-status-xref.json` |
+| Loans | LOAN_ORIGNATN loan type | Direct Loan Record | `loan-type-xref.json` |
+| Disbursement | STDNT_AWRD_DISB state | Financial Aid Disbursement status | `disbursement-status-xref.json` |
 
 **The two hard parts.**
 
 - **Academic history.** Decide early what converts as structured data and what is archived. A tiered answer works for most schools: structured history for active and recently active students, archived official transcripts (plus a HELIX lakehouse copy) for older records, and verified cumulative balances where full history is skipped.
 - **Degree audit.** PeopleSoft Academic Advisement requirements do not convert as data. They are rebuilt as Workday Academic Requirements and validated by running audits for a sample of students in both systems.
+
+**Financial aid is its own sub-track.** PeopleSoft and Workday now map all ten aid resources: AidApplication (ISIR), AidPackage (cost of attendance and need), Verification, SAPEvaluation, FinAidAward, Disbursement, LoanRecord, ReturnOfTitleIV, StudentEmployment, and FederalAidReport. Four rules keep a conversion out of trouble with the Department of Education:
+
+- **Reload ISIRs, don't convert them.** Pull current and prior award year ISIRs from FPS into Workday so Workday owns a clean transaction chain. Keep PeopleSoft ISIR history in bronze for audit (STU-009).
+- **Carry COD loan IDs unchanged.** Re-originating a loan COD already holds causes rejects and can double-count against a student's limits (STU-011).
+- **Gate on SAP.** `sap_status_carryover_check.sql` must return zero rows before Workday disburses anything. A dropped suspension pays aid to an ineligible student (STU-010).
+- **Don't cut over mid payment period.** Run one disbursement cycle in parallel, tie it out with `disbursement_cod_tieout.sql`, and convert open R2T4 cases with their 45-day deadlines intact.
+
+Aid tie-outs, in order: `sap_status_carryover_check.sql`, `aid_award_total_tieout.sql`, `loan_record_tieout.sql`, `disbursement_cod_tieout.sql`. The Director of Financial Aid signs off; the Bursar co-signs the COD tie-out.
 
 **FERPA is a cutover gate.** Every PeopleSoft FERPA and directory restriction must exist in Workday before any external feed or student-facing directory goes live. Zero misses. See `govern/ferpa-disclosure-framework.json`.
 
@@ -381,8 +397,8 @@ Each agent template drops into ChatGPT, Claude, Gemini, Amazon Q, or Bedrock. Lo
 
 ```
 bridge/
-  peoplesoft/{hcm,fin,cs}/            PS -> HELIX mappings (42)
-  workday/{hr,fin,sis}/               Workday <-> HELIX mappings (42)
+  peoplesoft/{hcm,fin,cs}/            PS -> HELIX mappings (54)
+  workday/{hr,fin,sis}/               Workday <-> HELIX mappings (54)
   xref/
     ps-to-workday-hr/                 direct HCM crosswalks
     ps-to-workday-fin/                direct FIN crosswalks
@@ -406,5 +422,5 @@ govern/
 
 ---
 
-*HELIX PeopleSoft to Workday Cornerstone Guide v0.6.0, September 2026*
+*HELIX PeopleSoft to Workday Cornerstone Guide v0.8.0, September 2026*
 *Part of the [HELIX Open Framework](https://github.com/utopify/helix)*

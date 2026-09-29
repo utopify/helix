@@ -23,7 +23,7 @@
     },
     "plan_type": {
       "type": "string",
-      "description": "Map: 'Medical' \u2192 'medical', 'Dental' \u2192 'dental', 'Vision' \u2192 'vision', 'Life Insurance' \u2192 'life', 'Disability' \u2192 'disability', 'Retirement' \u2192 'retirement', 'FSA' \u2192 'fsa', 'HSA' \u2192 'hsa', 'Tuition Waiver' \u2192 'tuition_waiver'."
+      "description": "Map: 'Medical' \u2192 'medical', 'Dental' \u2192 'dental', 'Vision' \u2192 'vision', 'Life Insurance' \u2192 'life', 'Disability' \u2192 'disability', 'Retirement' \u2192 'retirement', 'FSA' \u2192 'fsa', 'HSA' \u2192 'hsa', 'Tuition Waiver' \u2192 'tuition_waiver'. Bound to HELIX terminology: helix/benefit-plan-type."
     },
     "coverage_level": {
       "type": "string",

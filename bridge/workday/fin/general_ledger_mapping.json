@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 GeneralLedger",
   "source_system": "workday",
   "module": "Financial Management - General Ledger",
-  "target_resource": "GLTransaction (planned)",
+  "target_resource": "GLTransaction",
   "version": "0.1",
   "architecture_notes": "Workday Financials uses worktags rather than chartfields. Every financial transaction is coded with a combination of worktags: Ledger Account, Fund, Cost Center, Revenue Category, Spend Category, Grant, Program, Gift, etc. Worktags are hierarchical and institution-configurable. Data extraction via: RaaS (custom financial reports), Workday Prism Analytics, Workday REST API (Financial Management), or Workday Data Cloud (zero-copy with AWS).",
   "source_objects": [

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: National Student Clearinghouse StudentTracker → ContinuingEducation",
+  "source_system": "nsc_studenttracker",
+  "module": "StudentTracker for Outcomes",
+  "source_objects": [
+    {
+      "object": "StudentTracker detail report",
+      "description": "One row per enrollment (or degree) found at another institution for each graduate you submitted. Columns include Requester Return Field, Record Found Y/N, College Code/Branch, College Name, College State, 2-year / 4-year, Public / Private, Enrollment Begin, Enrollment End, Enrollment Status, Class Level, Enrollment Major and CIP, Graduated?, Degree Title."
+    }
+  ],
+  "notes": "Send the HELIX token (never SSN) in the Requester Return Field so results rejoin without a name match. The Clearinghouse returns data under your StudentTracker agreement; keep that agreement on file with the data sharing templates in govern/. Some students block release (FERPA) and come back as not found; that isn't evidence of no further study.",
+  "validate": "Column names follow the StudentTracker detail report layout. Confirm against the file specification for your contract, since layouts are revised.",
+  "target_resource": "ContinuingEducation",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from Requester Return Field + College Code/Branch + Enrollment Begin."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Requester Return Field",
+      "transformation": "Carries the HELIX token you sent. Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Requester Return Field",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Submitted cohort",
+      "transformation": "Resolve to the HELIX Degree that put the graduate in the cohort you submitted."
+    },
+    {
+      "helix_attribute": "academic_year_graduated",
+      "source": "Submitted cohort",
+      "transformation": "'YYYY-YYYY' of the degree."
+    },
+    {
+      "helix_attribute": "continuing_ed_level",
+      "source": "Class Level / Degree Title",
+      "transformation": "Class Level codes (M masters, D doctoral, P postdoctorate, B bachelor's) and degree titles map to the HELIX values. Unknown levels -> postbaccalaureate. Rows at your own institution after graduation are continuing education too."
+    },
+    {
+      "helix_attribute": "institution_name",
+      "source": "College Name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "institution_ipeds_id",
+      "source": "College Code/Branch",
+      "transformation": "This is the OPEID-based school code. Crosswalk to IPEDS Unit ID with the IPEDS directory file."
+    },
+    {
+      "helix_attribute": "program_name",
+      "source": "Enrollment Major 1",
+      "transformation": "Often blank; many schools don't report majors."
+    },
+    {
+      "helix_attribute": "field_of_study",
+      "source": "Enrollment Major 1",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "Enrollment CIP 1",
+      "transformation": "Direct where reported."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "Enrollment Status",
+      "transformation": "F -> full_time; Q, H, L -> part_time; A (leave), W (withdrawn), blank -> unknown."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Enrollment Begin",
+      "transformation": "YYYYMMDD -> ISO date."
+    },
+    {
+      "helix_attribute": "expected_completion_date",
+      "source": "Not reported",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "funding_type",
+      "source": "Not reported",
+      "transformation": "unknown."
+    },
+    {
+      "helix_attribute": "outcome_date",
+      "source": "Search Date",
+      "transformation": "YYYYMMDD -> ISO date."
+    },
+    {
+      "helix_attribute": "data_collection_method",
+      "source": "Constant",
+      "transformation": "'nsc'."
+    }
+  ]
+}

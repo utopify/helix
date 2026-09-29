@@ -1,0 +1,159 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner → ExperientialLearning",
+  "source_system": "banner",
+  "module": "Student",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SFRSTCR",
+      "description": "Registrations. Rows for experiential sections become HELIX ExperientialLearning."
+    },
+    {
+      "table": "SSBSECT",
+      "description": "Section: SSBSECT_SCHD_CODE (schedule type) identifies internship, practicum, clinical, and field sections."
+    },
+    {
+      "table": "STVSCHD",
+      "description": "Schedule type validation. FLAG: codes are local."
+    },
+    {
+      "table": "SCBCRSE",
+      "description": "Course title and credit hours."
+    },
+    {
+      "table": "SOBPTRM",
+      "description": "Part-of-term start and end dates."
+    }
+  ],
+  "notes": "The ERP knows about credit-bearing experiences (internship, practicum, clinical, student teaching, research, study abroad courses). Employer, supervisor, pay, and evaluations usually live in the career services platform; see bridge/outcomes/handshake_experiential_learning_mapping.json and merge the two in silver on student + term + course.",
+  "target_resource": "ExperientialLearning",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from student + SFRSTCR (PIDM, TERM_CODE, CRN) key."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "SFRSTCR (PIDM, TERM_CODE, CRN)",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "SFRSTCR_TERM_CODE",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "experiential_type",
+      "source": "SSBSECT_SCHD_CODE -> STVSCHD",
+      "transformation": "Map local component or schedule type codes through a lookup: internship, co_op, practicum, clinical_rotation, student_teaching, undergraduate_research, field_experience, study_abroad, capstone_project. Only registrations with an experiential code become rows."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "SCBCRSE_TITLE",
+      "transformation": "Course title, unless a placement title is merged from career services."
+    },
+    {
+      "helix_attribute": "organization_name",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services. Clinical and student teaching placements are sometimes tracked in a custom table or a clinical placement system; map those here if present."
+    },
+    {
+      "helix_attribute": "organization_industry",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services."
+    },
+    {
+      "helix_attribute": "supervisor_name",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services. The faculty of record is not the site supervisor."
+    },
+    {
+      "helix_attribute": "supervisor_contact",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services. Treat as third-party PII."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "SSBSECT_PTRM_START_DATE / SSBSECT_PTRM_END_DATE",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "SSBSECT_PTRM_START_DATE / SSBSECT_PTRM_END_DATE",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "hours_completed",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services or the placement system."
+    },
+    {
+      "helix_attribute": "credit_bearing_flag",
+      "source": "Constant",
+      "transformation": "true for every ERP-sourced row."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "SFRSTCR_CREDIT_HR",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "SFRSTCR_TERM_CODE + SFRSTCR_CRN",
+      "transformation": "Resolve to HELIX CourseSection or Course."
+    },
+    {
+      "helix_attribute": "paid_flag",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services."
+    },
+    {
+      "helix_attribute": "compensation_amount",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services."
+    },
+    {
+      "helix_attribute": "location_city",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services."
+    },
+    {
+      "helix_attribute": "location_state",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services."
+    },
+    {
+      "helix_attribute": "location_country",
+      "source": "Study abroad program / session location",
+      "transformation": "Set for study abroad; else merge from career services."
+    },
+    {
+      "helix_attribute": "learning_objectives",
+      "source": "Course description / not in the ERP",
+      "transformation": "Merge the placement's objectives from career services when available."
+    },
+    {
+      "helix_attribute": "evaluation_completed_flag",
+      "source": "Grade posted",
+      "transformation": "true once a final grade is posted on the registration."
+    },
+    {
+      "helix_attribute": "evaluation_rating",
+      "source": "Official grade",
+      "transformation": "Store the grade only if your policy treats it as the evaluation; otherwise merge the supervisor rating from career services."
+    },
+    {
+      "helix_attribute": "reflection_completed_flag",
+      "source": "Not in the ERP",
+      "transformation": "Merge from career services or the ePortfolio."
+    },
+    {
+      "helix_attribute": "high_impact_practice_flag",
+      "source": "Derived",
+      "transformation": "true for the NSSE high-impact practice types: internship, co_op, practicum, clinical_rotation, student_teaching, undergraduate_research, service_learning, study_abroad, capstone_project."
+    }
+  ]
+}

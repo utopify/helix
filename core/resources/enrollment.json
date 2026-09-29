@@ -71,7 +71,8 @@
         "audit",
         "satisfactory_unsatisfactory",
         "other"
-      ]
+      ],
+      "description": "Bound to HELIX terminology: helix/grade-mode."
     },
     "repeat_flag": {
       "type": "boolean"

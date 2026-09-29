@@ -6,7 +6,9 @@
 
 ---
 
-## 🧭 START HERE: What's Your Migration?
+> **Not sure where to begin? Go to [START_HERE](../START_HERE.md) first.** It's six steps: describe what you have, pick a goal, pick one small slice, land it, prove it, and name an owner. This guide is the map you use once you know which road you're on.
+
+## 🧭 Which Road Are You On?
 
 > **Moving PeopleSoft to Workday?** That is the HELIX cornerstone path, with direct crosswalks, conversion rules, a reconciliation pack, and a specialist agent for every module. Jump to [Chapter 7: PeopleSoft to Workday, The Cornerstone Path](#chapter-7-peoplesoft-to-workday-the-cornerstone-path).
 >
@@ -55,6 +57,8 @@ HELIX migration: **Source A → HELIX Core → Target B**
 
 ## Chapter 1: PeopleSoft Campus Solutions
 
+*Getting data out of PeopleSoft first? See [`bridge/peoplesoft/PS_EXTRACTION.md`](../bridge/peoplesoft/PS_EXTRACTION.md): reporting copies, EMPLID, EFFDT/EFFSEQ, SETID, and incremental loads.*
+
 **You're migrating FROM PeopleSoft Campus Solutions (SIS/Student module).**
 
 ### What module are you working with?
@@ -89,7 +93,7 @@ HELIX migration: **Source A → HELIX Core → Target B**
 |--------|-------------|
 | **Data Lake** | Map PS tables → HELIX Person + Student schemas → Iceberg tables. Done. |
 | **Workday Student** | PS → HELIX Person/Student → `bridge/workday/sis/` (reversed). Full 19-mapping SIS coverage. Map HELIX attributes to Workday business objects. |
-| **Banner** | PS → HELIX Person/Student → `bridge/banner/student_mapping.json` (reverse). Map to SPRIDEN + SPBPERS + SGBSTDN. |
+| **Banner** | PS → HELIX Person/Student → `bridge/banner/sis/student_mapping.json` (reverse). Map to SPRIDEN + SPBPERS + SGBSTDN. |
 | **Colleague** | PS → HELIX Person/Student → `bridge/colleague/student_mapping.json` (reverse). Map to PERSON + STUDENTS MV files. |
 
 **Watch out for:**
@@ -114,7 +118,7 @@ HELIX migration: **Source A → HELIX Core → Target B**
 |--------|-------------|
 | **Data Lake** | Map PS_STDNT_ENRL → HELIX Enrollment → Iceberg. Highest-volume table. |
 | **Workday Student** | PS → HELIX Enrollment → `bridge/workday/sis/enrollment_mapping.json` (reversed). Map to Workday Student Course Registration. |
-| **Banner** | PS → HELIX Enrollment → `bridge/banner/enrollment_mapping.json` (reverse). Map to SFRSTCR + SHRTCKN. |
+| **Banner** | PS → HELIX Enrollment → `bridge/banner/sis/enrollment_mapping.json` (reverse). Map to SFRSTCR + SHRTCKN. |
 
 **Watch out for:**
 - PS enrollment statuses ('E', 'W', 'D') are simpler than Banner's STVRSTS codes
@@ -244,6 +248,8 @@ HELIX migration: **Source A → HELIX Core → Target B**
 
 ## Chapter 2: PeopleSoft Financials
 
+*Getting data out of PeopleSoft first? See [`bridge/peoplesoft/PS_EXTRACTION.md`](../bridge/peoplesoft/PS_EXTRACTION.md): reporting copies, EMPLID, EFFDT/EFFSEQ, SETID, and incremental loads.*
+
 **You're migrating FROM PeopleSoft Financials / FSCM.**
 
 | Module | What It Covers | Mapping File |
@@ -274,16 +280,18 @@ If you're moving to a **data lake**, land the chartfield combinations as dimensi
 
 ## Chapter 3: PeopleSoft HCM
 
+*Getting data out of PeopleSoft first? See [`bridge/peoplesoft/PS_EXTRACTION.md`](../bridge/peoplesoft/PS_EXTRACTION.md): reporting copies, EMPLID, EFFDT/EFFSEQ, SETID, and incremental loads.*
+
 **You're migrating FROM PeopleSoft HCM.**
 
 | Module | What It Covers | Mapping File |
 |--------|---------------|-------------|
-| Core HR / Employee | Job records, employment history, demographics | `bridge/peoplesoft/hcm/employee_mapping.json` |
+| Core HR / Employee | Job records, employment history, demographics | `bridge/peoplesoft/hcm/worker_mapping.json` |
 | Position Management | Position inventory, reporting structure, FTE | `bridge/peoplesoft/hcm/position_mapping.json` |
 | Compensation | Salary, pay grades, comp components, compa-ratio | `bridge/peoplesoft/hcm/compensation_mapping.json` |
 | Benefits | Health, retirement, life, FSA, dependents | `bridge/peoplesoft/hcm/benefits_mapping.json` |
 | Payroll | Earnings, deductions, taxes, pay checks | `bridge/peoplesoft/hcm/payroll_mapping.json` |
-| Time & Labor | Time reporting, punch data, approvals, schedules | `bridge/peoplesoft/hcm/time_labor_mapping.json` |
+| Time & Labor | Time reporting, punch data, approvals, schedules | `bridge/peoplesoft/hcm/time_tracking_mapping.json` |
 | Recruiting | Job openings, applicants, dispositions, postings | `bridge/peoplesoft/hcm/recruiting_mapping.json` |
 
 ### PS_JOB: The Table That Rules Everything
@@ -306,7 +314,7 @@ If migrating to **Workday HCM**, PS_JOB maps to Workday's Worker + Job Profile +
 
 ## Chapter 4: Ellucian Banner
 
-**You're migrating FROM Ellucian Banner.** As of v0.5.0 the Banner Bridge covers 31 mappings across five modules.
+**You're migrating FROM Ellucian Banner.** As of v0.8.1 the Banner Bridge covers 35 mappings across five modules.
 
 | Module | Folder | Mappings | Key Banner Tables |
 |--------|--------|---------:|-------------------|
@@ -349,9 +357,9 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 
 | HELIX Resource | Mapping File | Key Workday Objects |
 |---------------|-------------|---------------------|
-| Student | `bridge/workday/student_mapping.json` | Person, Student, Academic Affiliation |
-| Enrollment | `bridge/workday/enrollment_mapping.json` | Student Course Registration, Student Course Grade |
-| AcademicPeriod | `bridge/workday/academic_period_mapping.json` | Academic Period, Academic Calendar |
+| Student | `bridge/workday/sis/student_mapping.json` | Person, Student, Academic Affiliation |
+| Enrollment | `bridge/workday/sis/enrollment_mapping.json` | Student Course Registration, Student Course Grade |
+| AcademicPeriod | `bridge/workday/sis/academic_period_mapping.json` | Academic Period, Academic Calendar |
 
 **Extraction methods:** RaaS, REST API, Prism Analytics, or Workday Data Cloud (zero-copy with AWS).
 
@@ -378,7 +386,7 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 | Field-level mapping | `bridge/peoplesoft/{hcm,fin,cs}/` and `bridge/workday/{hr,fin,sis}/` |
 | Direct code lookups | `bridge/xref/ps-to-workday-hr/`, `ps-to-workday-fin/`, `ps-to-workday-sis/` |
 | Chartfield and field conversion logic | [`templates/ps-to-workday/worktag-conversion-rules.json`](../templates/ps-to-workday/worktag-conversion-rules.json) |
-| Proof it worked | [`templates/ps-to-workday/reconciliation/`](../templates/ps-to-workday/reconciliation/) (18 tie-outs) |
+| Proof it worked | [`templates/ps-to-workday/reconciliation/`](../templates/ps-to-workday/reconciliation/) (22 tie-outs) |
 | A guide at your side | `agents/ps-to-workday-hcm-agent.json`, `ps-to-workday-fin-agent.json`, `ps-to-workday-sis-agent.json` |
 
 ### §7.1 HCM: PeopleSoft HCM to Workday HCM
@@ -442,7 +450,7 @@ Agent: **PeopleSoft Campus Solutions to Workday Student** (`agents/ps-to-workday
 Banner Oracle (on-prem / EC2)
       |   direct SQL, PIDM joins, STV decode
       v
-bridge/banner/  (31 mappings)  --->  HELIX Core (canonical)
+bridge/banner/  (35 mappings)  --->  HELIX Core (canonical)
                                           |
                                           v
                               bridge/banner-saas/  (8 reverse mappings)
@@ -513,5 +521,5 @@ HELIX Bridge currently covers Banner, PeopleSoft, Workday, and Colleague. If you
 
 ---
 
-*HELIX Migration Adventure Guide v0.6.0, September 2026*
+*HELIX Migration Adventure Guide v0.7.0, September 2026*
 *Part of the [HELIX Open Framework](https://github.com/utopify/helix)*

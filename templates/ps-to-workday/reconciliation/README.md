@@ -1,6 +1,6 @@
 # PeopleSoft to Workday Reconciliation Pack
 
-18 SQL templates that prove a PeopleSoft to Workday conversion is correct. Every query compares both systems through HELIX Silver, so the same query works no matter how each side was extracted.
+22 SQL templates that prove a PeopleSoft to Workday conversion is correct. Every query compares both systems through HELIX Silver, so the same query works no matter how each side was extracted.
 
 ## Run order
 
@@ -24,6 +24,10 @@
 | Student | 4 | `enrollment_credit_tieout.sql` | After registration conversion |
 | Student | 5 | `gpa_recompute_check.sql` | After academic history conversion |
 | Student | 6 | `student_account_balance_tieout.sql` | Before first Workday billing run |
+| Aid | 1 | `sap_status_carryover_check.sql` | HARD GATE: before the first Workday disbursement |
+| Aid | 2 | `aid_award_total_tieout.sql` | Each aid mock, and at cutover for every open award year |
+| Aid | 3 | `loan_record_tieout.sql` | Before any Workday loan origination or disbursement |
+| Aid | 4 | `disbursement_cod_tieout.sql` | Before the first Workday disbursement, then monthly |
 
 ## Tolerances
 
@@ -35,12 +39,15 @@
 | Leave balances | 0.01 hours |
 | GPA | 0.005 |
 | FERPA restriction carryover | Zero misses. No tolerance. |
+| Aid awards, disbursements, loans, COD totals | 0.00 |
+| SAP status carryover | Zero misses. No tolerance. |
 
 ## Parallel-run cadence
 
 - FIN: at least one full month-end close in parallel, ideally a quarter-end.
 - Payroll: at least two full cycles, including one with benefits deductions and one supplemental or off-cycle run.
 - Student: one registration window and one grade posting cycle if timing allows.
+- Aid: one disbursement run in parallel before Workday disburses on its own, and a COD reconciliation after it. Time cutover away from the start of a payment period.
 
 ## Sign-off
 
@@ -49,5 +56,6 @@
 | FIN | Data Steward, Financial Operations; Controller as Data Trustee |
 | HCM | Data Steward, Human Resources; Payroll Director for payroll |
 | Student | University Registrar (Data Steward); FERPA check also signed by the institution's FERPA compliance officer |
+| Aid | Director of Financial Aid (Data Steward); COD tie-out also signed by the Bursar |
 
-Compensation, payroll, benefits, and student account queries touch restricted data. Run them under `helix_analyst_restricted` per `govern/lakehouse-rbac-model.json`.
+Compensation, payroll, benefits, student account, and all Aid queries touch restricted data. Run them under `helix_analyst_restricted` per `govern/lakehouse-rbac-model.json`.

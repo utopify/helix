@@ -9,13 +9,13 @@ HELIX v0.1 includes:
 - **18 terminology code sets** standardizing values across resources
 - **4 ERP Bridge mappings** (Banner, PeopleSoft, Workday, Colleague) covering Student, Enrollment, and AcademicPeriod
 - **Governance framework** with 6 roles, 22 quality rules, a 5-dimension maturity model, and a 9-domain taxonomy
-- **OpenAPI 3.1 spec** with 16 REST endpoints for data exchange
+- **OpenAPI 3.1 spec** with 51 REST endpoints for data exchange
 
 ## How to Contribute
 
 ### Share Feedback (Easiest Entry Point)
 
-Open a [GitHub Issue](../../issues) with your thoughts:
+Open a [GitHub Issue](https://github.com/utopify/helix/issues) with your thoughts:
 
 - **Validation:** Do these resource definitions match your institutional reality? Are the attributes right?
 - **Gaps:** What critical attributes are missing? What resources should be added?
@@ -91,6 +91,7 @@ helix/
 │   └── examples/          ← Sample payloads
 ├── connect/               ← OpenAPI 3.1 API spec
 ├── govern/                ← Governance roles, rules, maturity model, domains
+├── START_HERE.md          ← Six steps to press GO
 ├── bridge/
 │   ├── banner/            ← Ellucian Banner mappings (SIS, HR, Finance, Advancement, Financial Aid)
 │   ├── banner-saas/       ← Reverse bridge: HELIX to Banner SaaS (Ethos)
@@ -98,9 +99,11 @@ helix/
 │   ├── workday/           ← Workday mappings (Student, FIN, HCM)
 │   ├── colleague/         ← Ellucian Colleague mappings
 │   └── xref/              ← PeopleSoft to Workday crosswalks (HR, FIN, SIS)
-├── templates/             ← dbt starter, reconciliation, PeopleSoft to Workday toolkit
+├── templates/             ← intake profile, dbt starter, reconciliation, PeopleSoft to Workday toolkit
 ├── agents/                ← Downloadable AI agent templates
 └── docs/                  ← Comprehensive documentation
+
+**Adding or renaming a Core resource?** Add its row to `govern/access-control-matrix.json` and `govern/domain-taxonomy.json` in the same pull request, then run `python tools/check_governance_coverage.py`. Pull requests that leave a resource without access rules won't be merged.
 
 **Crosswalk contributions are especially welcome.** If your institution has validated a PeopleSoft to Workday value (the rows marked VALIDATE in `bridge/xref/`), a pull request confirming or correcting it helps every institution on the same path.
 ```
@@ -111,7 +114,7 @@ We are committed to providing a welcoming and inclusive experience for everyone.
 
 ## Questions?
 
-Open an issue or start a discussion in the [Discussions](../../discussions) tab.
+Open an issue or start a discussion in the [Discussions](https://github.com/utopify/helix/discussions) tab.
 
 ---
 

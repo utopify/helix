@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Student \u2192 AcademicTermRecord",
   "source_system": "workday",
   "module": "Student - Academic Records",
-  "target_resource": "AcademicTermRecord (planned)",
+  "target_resource": "AcademicTermRecord",
   "version": "0.1",
   "architecture_notes": "Workday Student maintains per-period academic summary records for each student: term GPA, cumulative GPA, units attempted/earned, academic standing, and enrollment status for that period. Equivalent to PS_STDNT_CAR_TERM.",
   "source_objects": [

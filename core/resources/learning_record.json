@@ -27,7 +27,7 @@
     },
     "course_type": {
       "type": "string",
-      "description": "Map: 'Compliance' \u2192 'compliance', 'Professional Development' \u2192 'professional_dev', 'Safety' \u2192 'safety', 'Onboarding' \u2192 'onboarding', 'Technical' \u2192 'technical', 'Leadership' \u2192 'leadership'."
+      "description": "Map: 'Compliance' \u2192 'compliance', 'Professional Development' \u2192 'professional_dev', 'Safety' \u2192 'safety', 'Onboarding' \u2192 'onboarding', 'Technical' \u2192 'technical', 'Leadership' \u2192 'leadership'. Bound to HELIX terminology: helix/learning-type."
     },
     "delivery_method": {
       "type": "string",

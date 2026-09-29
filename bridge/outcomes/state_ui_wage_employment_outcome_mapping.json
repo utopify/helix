@@ -1,0 +1,143 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: State Unemployment Insurance Wage Records → EmploymentOutcome",
+  "source_system": "state_ui_wage_records",
+  "module": "State longitudinal data / workforce agency match",
+  "source_objects": [
+    {
+      "object": "Quarterly UI wage record (matched)",
+      "description": "Returned by the state workforce agency or longitudinal data system for graduates you submitted: quarter, employer account or FEIN, NAICS industry, and wages paid in the quarter."
+    }
+  ],
+  "notes": "Wage records are matched on SSN, so this runs only under a written agreement with the state (use govern/data-sharing-agreement-template.json and the FERPA studies or audit and evaluation exception). Match in the restricted zone, return only the HELIX token, and drop SSN before silver. Wage records miss federal employees, the military, most self-employed people, and anyone working out of state, so a missing record never means unemployed. Most states don't report hours, so full-time vs part-time is an inference from earnings.",
+  "validate": "Layouts differ by state. Confirm fields and the earnings threshold with your state agency.",
+  "target_resource": "EmploymentOutcome",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from HELIX token + quarter + employer account."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "HELIX token returned with the match",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "HELIX token",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Submitted cohort",
+      "transformation": "Resolve to the HELIX Degree that put the graduate in the cohort."
+    },
+    {
+      "helix_attribute": "academic_year_graduated",
+      "source": "Submitted cohort",
+      "transformation": "'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "outcome_type",
+      "source": "Derived from quarterly wages",
+      "transformation": "Wages at or above the full-time threshold (for example, full-time minimum wage for 13 weeks) -> employed_full_time; above zero but below -> employed_part_time. No record -> no row (never seeking_employment)."
+    },
+    {
+      "helix_attribute": "outcome_date",
+      "source": "Quarter end date",
+      "transformation": "Use the second full quarter after graduation for first-destination comparisons."
+    },
+    {
+      "helix_attribute": "employer_name",
+      "source": "Employer account -> employer name",
+      "transformation": "Only if the agreement allows employer names; many don't. Else null."
+    },
+    {
+      "helix_attribute": "employer_industry",
+      "source": "NAICS code",
+      "transformation": "NAICS 2-digit sector label."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "Not reported",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "employment_relation_to_major",
+      "source": "Not reported",
+      "transformation": "not_applicable."
+    },
+    {
+      "helix_attribute": "employment_type",
+      "source": "Derived",
+      "transformation": "full_time or part_time, following outcome_type."
+    },
+    {
+      "helix_attribute": "salary_amount",
+      "source": "Quarterly wages x 4",
+      "transformation": "Annualized estimate. Use only quarters with wages in the quarter before and after (full-quarter employment). Report medians, suppressed below N of 5."
+    },
+    {
+      "helix_attribute": "salary_currency",
+      "source": "Constant",
+      "transformation": "'USD'."
+    },
+    {
+      "helix_attribute": "salary_source",
+      "source": "Constant",
+      "transformation": "'employer_reported'."
+    },
+    {
+      "helix_attribute": "signing_bonus",
+      "source": "Not reported",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "employment_location_city",
+      "source": "Not reported",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "employment_location_state",
+      "source": "Matching state",
+      "transformation": "The state whose records matched."
+    },
+    {
+      "helix_attribute": "employment_location_country",
+      "source": "Constant",
+      "transformation": "'US'."
+    },
+    {
+      "helix_attribute": "time_to_hire_days",
+      "source": "Not reported",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "hired_before_graduation_flag",
+      "source": "Derived",
+      "transformation": "true if wages from the same employer appear in the graduation quarter or earlier. Treat with care; it may be a campus or part-time job."
+    },
+    {
+      "helix_attribute": "continuing_education_flag",
+      "source": "Derived",
+      "transformation": "true if a ContinuingEducation row exists for the same period."
+    },
+    {
+      "helix_attribute": "data_collection_method",
+      "source": "Constant",
+      "transformation": "'other'. Document it as state wage records."
+    },
+    {
+      "helix_attribute": "data_collection_date",
+      "source": "Match file date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "knowledge_source",
+      "source": "Constant",
+      "transformation": "'state_ui_wage_records'."
+    }
+  ]
+}

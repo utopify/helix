@@ -268,7 +268,7 @@ The **Gramm-Leach-Bliley Act** (15 U.S.C. §§ 6801-6809) applies to higher educ
 
 | Data Element | HELIX Resource | Classification |
 |-------------|---------------|----------------|
-| Student account balances | StudentAccount (planned) / AR | **Restricted** |
+| Student account balances | ARTransaction | **Restricted** |
 | Financial aid award details | `FinAidAward` | **Restricted** |
 | EFC / Student Aid Index | `FinAidAward.efc` | **Restricted** |
 | Bank account / routing numbers (for refunds) | Payment records | **Restricted** |
@@ -311,30 +311,74 @@ The **Gramm-Leach-Bliley Act** (15 U.S.C. §§ 6801-6809) applies to higher educ
 
 ## HELIX Resource Classification Map
 
-Every HELIX resource has a default classification. Institutions may elevate (never downgrade) based on their policies.
+Every HELIX resource has a default classification, set in the `meta.classification` default of its schema. This table is generated from the schemas, so it always covers all 64 resources. Institutions may elevate (never downgrade) based on their policies; many publish catalog-level Course and Program data as public. For who can read each resource at each layer, see `govern/access-control-matrix.json`.
 
-| Resource | Default Classification | Regulatory Driver | Contains PII | Contains CFI (GLBA) |
-|----------|----------------------|-------------------|-------------|-------------------|
-| `Person` | **Confidential** | FERPA | Yes (name, DOB, contact, demographics) | No |
-| `Student` | **Confidential** | FERPA | Yes (via person_ref + student-specific attributes) | No |
-| `Enrollment` | **Confidential** | FERPA | Yes (student course-level records) | No |
-| `AcademicPeriod` | Internal | None | No | No |
-| `Course` | **Public** | None | No | No |
-| `CourseSection` | Internal | None | No (instructor names are directory info) | No |
-| `Program` | **Public** | None | No | No |
-| `StudentProgram` | **Confidential** | FERPA | Yes (student's program, GPA, standing) | No |
-| `FinAidAward` | **Restricted** | FERPA + GLBA | Yes (student financial data) | **Yes** |
-| `Degree` | **Confidential** | FERPA | Yes (unless directory info and not restricted) | No |
-| `AdmissionApplication` | **Confidential** | FERPA | Yes (applicant PII, test scores) | No |
-| `TransferCredit` | **Confidential** | FERPA | Yes (student academic record) | No |
-| `Hold` | **Confidential** | FERPA | Yes (nature of hold can reveal protected info) | Potentially (financial holds) |
-| `AcademicOrg` | Internal | None | No | No |
-| `Institution` | **Public** | None | No | No |
-| `Constituent` | **Confidential** | State privacy laws, donor intent | Yes (donor PII, giving capacity) | No |
-| `Gift` | **Confidential** | IRS, state solicitation laws, donor intent | Yes (linked to donor) | No |
-| `Campaign` | Internal | None | No | No |
-| `EngagementActivity` | Internal | FERPA (if student), CAN-SPAM (if email) | Indirectly (linked to person) | No |
-
+| Domain | Resource | Default Classification | Regulatory Driver | Contains PII | Contains CFI (GLBA) |
+|--------|----------|------------------------|-------------------|--------------|---------------------|
+| Identity | `Institution` | Public | None | No | No |
+| Identity | `Person` | **Confidential** | FERPA | Yes | No |
+| Identity | `Student` | **Confidential** | FERPA | Yes | No |
+| Academic Structure | `AcademicOrg` | Internal | None | No | No |
+| Academic Structure | `AcademicPeriod` | Public | None | No | No |
+| Academic Structure | `Course` | Internal | None | No | No |
+| Academic Structure | `CourseSection` | Internal | None | No | No |
+| Academic Structure | `Program` | Internal | None | No | No |
+| Enrollment & Registration | `AcademicTermRecord` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `AdmissionApplication` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `DegreeAudit` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `Enrollment` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `FERPARestriction` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `InternationalStudent` | **Restricted** | FERPA | Yes | No |
+| Enrollment & Registration | `StudentGroup` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `StudentProgram` | **Confidential** | FERPA | Yes | No |
+| Enrollment & Registration | `TransferCredit` | **Confidential** | FERPA | Yes | No |
+| Financial Aid | `AidApplication` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `AidPackage` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `Disbursement` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `FederalAidReport` | **Confidential** | Title IV reporting (no student rows) | No | No |
+| Financial Aid | `FinAidAward` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `LoanRecord` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `ReturnOfTitleIV` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Financial Aid | `SAPEvaluation` | **Confidential** | FERPA | Yes | No |
+| Financial Aid | `StudentEmployment` | **Confidential** | FERPA | Yes | No |
+| Financial Aid | `Verification` | **Restricted** | FERPA + GLBA | Yes | **Yes** |
+| Outcomes | `AlumniProfile` | **Confidential** | State privacy laws (not a FERPA education record once collected after graduation) | Yes | No |
+| Outcomes | `AwardHonor` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `ContinuingEducation` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `Degree` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `EmploymentOutcome` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `ExperientialLearning` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `FirstDestinationSurvey` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `LearningOutcome` | **Confidential** | FERPA | Yes | No |
+| Outcomes | `Licensure` | **Confidential** | FERPA | Yes | No |
+| Student Services | `Hold` | **Confidential** | FERPA | Yes | Potentially (financial holds) |
+| Advancement | `Campaign` | Internal | State privacy laws, donor intent | No | No |
+| Advancement | `Constituent` | **Confidential** | State privacy laws, donor intent | Yes | No |
+| Advancement | `EngagementActivity` | Internal | State privacy laws, donor intent | Yes | No |
+| Advancement | `Gift` | **Confidential** | State privacy laws, donor intent, IRS | Yes | No |
+| Human Resources | `AbsenceRecord` | **Confidential** | Employment law, state privacy | Yes | No |
+| Human Resources | `BenefitEnrollment` | **Restricted** | Employment law, state privacy | Yes | No |
+| Human Resources | `Compensation` | **Restricted** | Employment law, state privacy, FLSA | Yes | No |
+| Human Resources | `Employee` | **Confidential** | Employment law, state privacy | Yes | No |
+| Human Resources | `JobClassification` | Internal | Employment law, state privacy | No | No |
+| Human Resources | `LearningRecord` | Internal | Employment law, state privacy | Yes | No |
+| Human Resources | `PayrollResult` | **Restricted** | Employment law, state privacy, FLSA | Yes | No |
+| Human Resources | `PerformanceReview` | **Restricted** | Employment law, state privacy | Yes | No |
+| Human Resources | `Position` | Internal | Employment law, state privacy | No | No |
+| Human Resources | `PositionBudget` | Internal | Employment law, state privacy | No | No |
+| Human Resources | `Requisition` | **Confidential** | Employment law, state privacy | No | No |
+| Human Resources | `TimeEntry` | **Confidential** | Employment law, state privacy, FLSA | Yes | No |
+| Financial Operations | `APVoucher` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `ARTransaction` | **Confidential** | GLBA when tied to aid, FERPA for student accounts | Yes | Potentially (student billing) |
+| Financial Operations | `Asset` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `Budget` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `Contract` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `ExpenseReport` | Internal | Institutional policy, audit | Yes | No |
+| Financial Operations | `FinancialOrg` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `Fund` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `GLTransaction` | Internal | Institutional policy, audit | No | No |
+| Financial Operations | `Grant` | Internal | 2 CFR 200 (Uniform Guidance) | No | No |
+| Financial Operations | `PurchaseOrder` | Internal | Institutional policy, audit | No | No |
 ---
 
 ## End-to-End Data Flow: From ERP to Dashboard

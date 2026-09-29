@@ -1,0 +1,107 @@
+{
+  "title": "HELIX XREF: SAP Status: PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Satisfactory Academic Progress Status",
+  "description": "Maps PeopleSoft SAP status values (STDNT_FA_TERM.SAP_STATUS, institution-defined) to helix/sap-status and Workday SAP status. SAP status controls whether aid can disburse, so a wrong value here pays aid to an ineligible student or blocks an eligible one.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "MEET",
+      "ps_description": "Meeting SAP",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "meeting",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Meeting SAP",
+      "wd_description": "Eligible",
+      "wd_object": "Student SAP Status",
+      "notes": "VALIDATE: local code (MEET, GOOD, SAT are common)."
+    },
+    {
+      "ps_code": "WARN",
+      "ps_description": "Financial Aid Warning",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "warning",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Financial Aid Warning",
+      "wd_description": "Eligible for one payment period without appeal",
+      "wd_object": "Student SAP Status",
+      "notes": "Only valid for schools that evaluate every payment period (34 CFR 668.34). VALIDATE: local code."
+    },
+    {
+      "ps_code": "PROB",
+      "ps_description": "Financial Aid Probation",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "probation",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Financial Aid Probation",
+      "wd_description": "Eligible after an approved appeal",
+      "wd_object": "Student SAP Status",
+      "notes": "Probation only follows an approved appeal. VALIDATE: local code."
+    },
+    {
+      "ps_code": "PLAN",
+      "ps_description": "Probation with Academic Plan",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "probation",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Financial Aid Probation",
+      "wd_description": "Eligible on an academic plan",
+      "wd_object": "Student SAP Status + Academic Plan",
+      "notes": "Load the plan as a Workday Academic Plan so later evaluations check plan progress, not the standard. VALIDATE: local code."
+    },
+    {
+      "ps_code": "SUSP",
+      "ps_description": "Financial Aid Suspension",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "suspension",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Financial Aid Suspension",
+      "wd_description": "Ineligible",
+      "wd_object": "Student SAP Status",
+      "notes": "Hard stop for disbursement. Part of the SAP carryover gate. VALIDATE: local code."
+    },
+    {
+      "ps_code": "MAXT",
+      "ps_description": "Maximum Timeframe Exceeded",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "suspension",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Financial Aid Suspension",
+      "wd_description": "Ineligible (maximum timeframe)",
+      "wd_object": "Student SAP Status",
+      "notes": "Keep the reason. Maximum timeframe suspensions can't be cured by grades alone. VALIDATE: local code."
+    },
+    {
+      "ps_code": "APPR",
+      "ps_description": "Appeal Approved",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "appeal_approved",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Appeal Approved",
+      "wd_description": "Eligible pending probation assignment",
+      "wd_object": "SAP Appeal",
+      "notes": "Most schools convert this straight to probation. Use appeal_approved only if your policy tracks the decision separately."
+    },
+    {
+      "ps_code": "(blank)",
+      "ps_description": "Not evaluated",
+      "ps_source": "STDNT_FA_TERM.SAP_STATUS",
+      "helix_code": "not_evaluated",
+      "helix_terminology": "helix/sap-status",
+      "wd_value": "Not Evaluated",
+      "wd_description": "New student or no evaluation yet",
+      "wd_object": "Student SAP Status",
+      "notes": "New students start not evaluated. Don't default them to meeting."
+    }
+  ]
+}

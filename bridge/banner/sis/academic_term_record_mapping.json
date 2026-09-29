@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Banner \u2192 AcademicTermRecord",
   "source_system": "banner",
   "module": "Student - Enrollment/GPA",
-  "target_resource": "AcademicTermRecord (planned)",
+  "target_resource": "AcademicTermRecord",
   "version": "0.1",
   "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
   "source_tables": [

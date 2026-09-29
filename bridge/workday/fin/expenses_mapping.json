@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Expenses / Travel",
   "source_system": "workday",
   "module": "Financial Management - Expenses",
-  "target_resource": "ExpenseReport (planned)",
+  "target_resource": "ExpenseReport",
   "version": "0.1",
   "source_objects": [
     {

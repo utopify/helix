@@ -1,0 +1,135 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → SAPEvaluation",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "SAPEvaluation",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_FA_TERM",
+      "description": "FA term record. Carries the SAP status for the term, set by the SAP process or manually."
+    },
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Career term record: attempted, earned, and GPA units used for pace and GPA."
+    },
+    {
+      "table": "PS_ACAD_PROG",
+      "description": "Program of study, for maximum timeframe (150 percent of program length)."
+    },
+    {
+      "table": "PS_PERSON_CHECKLST",
+      "description": "SAP appeal checklist, where appeals are tracked as checklists. FLAG: some schools use a custom appeal record."
+    },
+    {
+      "table": "PeopleSoft SAP evaluation records",
+      "description": "Delivered SAP evaluation engine output (pace, GPA, max timeframe per evaluation). FLAG: record names vary by release; confirm under Financial Aid > Satisfactory Academic Progress."
+    }
+  ],
+  "notes": "SAP must be evaluated at least annually and before the next payment period for schools that evaluate each period (34 CFR 668.34). Map one HELIX SAPEvaluation per evaluation event, not per term, so history shows warning, suspension, appeal, and probation in order.",
+  "privacy": "CONFIDENTIAL. FERPA education record; access requires legitimate educational interest (99.31(a)(1)).",
+  "workday_counterpart": "bridge/workday/sis/sap_evaluation_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + evaluation date."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_FA_TERM.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_FA_TERM.STRM",
+      "transformation": "Resolve through term-period-xref to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_FA_TERM.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "evaluation_date",
+      "source": "SAP evaluation run date (engine) or PS_STDNT_FA_TERM status change date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "sap_status",
+      "source": "PS_STDNT_FA_TERM.SAP_STATUS",
+      "transformation": "Local codes -> helix/sap-status through sap-status-xref."
+    },
+    {
+      "helix_attribute": "quantitative_measure_pace",
+      "source": "Derived from PS_STDNT_CAR_TERM cumulative units",
+      "transformation": "earned / attempted, as a percent. Include transfer credit accepted toward the program. Most schools require 67."
+    },
+    {
+      "helix_attribute": "qualitative_measure_gpa",
+      "source": "PS_STDNT_CAR_TERM.CUM_GPA",
+      "transformation": "Cumulative GPA at evaluation."
+    },
+    {
+      "helix_attribute": "max_timeframe_pct",
+      "source": "Derived",
+      "transformation": "attempted units / program units required. Over 150 means ineligible."
+    },
+    {
+      "helix_attribute": "credits_attempted_cumulative",
+      "source": "PS_STDNT_CAR_TERM cumulative attempted units",
+      "transformation": "Include W, F, I, and repeats per your policy."
+    },
+    {
+      "helix_attribute": "credits_completed_cumulative",
+      "source": "PS_STDNT_CAR_TERM cumulative earned units",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "appeal_filed_flag",
+      "source": "SAP appeal checklist exists",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "appeal_date",
+      "source": "Appeal checklist assigned date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "appeal_status",
+      "source": "Appeal checklist status / decision",
+      "transformation": "none, submitted, approved, denied, withdrawn."
+    },
+    {
+      "helix_attribute": "appeal_reason",
+      "source": "Appeal comment",
+      "transformation": "Restricted: often medical or family circumstances. Never expose outside FA staff."
+    },
+    {
+      "helix_attribute": "academic_plan_flag",
+      "source": "Academic plan indicator or checklist",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "academic_plan_terms",
+      "source": "Academic plan length",
+      "transformation": "Integer terms."
+    },
+    {
+      "helix_attribute": "financial_aid_warning_flag",
+      "source": "sap_status = warning",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "financial_aid_suspension_flag",
+      "source": "sap_status = suspension",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "probation_flag",
+      "source": "sap_status = probation",
+      "transformation": "Derived."
+    }
+  ]
+}

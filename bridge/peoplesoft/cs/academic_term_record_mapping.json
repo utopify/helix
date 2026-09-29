@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: PeopleSoft CS \u2192 AcademicTermRecord",
   "source_system": "peoplesoft",
   "module": "Campus Solutions - Student Records",
-  "target_resource": "AcademicTermRecord (planned)",
+  "target_resource": "AcademicTermRecord",
   "version": "0.1",
   "source_tables": [
     {

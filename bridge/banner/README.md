@@ -17,13 +17,13 @@ HELIX Bridge mappings work with both — they reference the logical table/column
 
 | Module | Sub-Folder | Mappings | Description |
 |--------|-----------|----------|-------------|
-| **Student Information (SIS)** | `sis/` | 11 | Person, student records, enrollment, courses, sections, programs, degrees, GPA, academic org, athletics |
+| **Student Information (SIS)** | `sis/` | 14 | Person, student records, enrollment, courses, sections, programs, degrees, GPA, academic org, athletics, institution, honors, experiential learning |
 | **Human Resources** | `hr/` | 2 | Employee/job records, position management |
 | **Finance** | `finance/` | 7 | GL transactions, funds, budgets, AP vouchers, purchase orders, financial orgs, grants (FOAPAL model) |
-| **Advancement** | `advancement/` | 4 | Constituents, gifts, campaigns, engagement/contacts |
+| **Advancement** | `advancement/` | 5 | Constituents, gifts, campaigns, engagement/contacts, alumni career profiles |
 | **Financial Aid** | `financial-aid/` | 7 | Awards, FAFSA/ISIR applications, packaging, verification, SAP, disbursements, loans |
 
-**Total: 31 Banner mappings**
+**Total: 35 Banner mappings**
 
 ## On-Prem Extraction
 

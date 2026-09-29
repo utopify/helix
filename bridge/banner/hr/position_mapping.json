@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Banner HR \u2192 Position",
   "source_system": "banner",
   "module": "Human Resources - Position Management",
-  "target_resource": "Position (planned)",
+  "target_resource": "Position",
   "version": "0.1",
   "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
   "source_tables": [

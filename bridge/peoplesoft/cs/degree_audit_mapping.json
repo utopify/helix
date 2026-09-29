@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: PeopleSoft CS \u2192 DegreeAudit",
   "source_system": "peoplesoft",
   "module": "Campus Solutions - Academic Advisement",
-  "target_resource": "DegreeAudit (planned)",
+  "target_resource": "DegreeAudit",
   "version": "0.1",
   "source_tables": [
     {

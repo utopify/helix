@@ -47,7 +47,7 @@
     },
     "requisition_status": {
       "type": "string",
-      "description": "Map: 'Draft' \u2192 'draft', 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Closed Not Filled' \u2192 'closed_unfilled', 'On Hold' \u2192 'on_hold', 'Canceled' \u2192 'canceled'."
+      "description": "Map: 'Draft' \u2192 'draft', 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Closed Not Filled' \u2192 'closed_unfilled', 'On Hold' \u2192 'on_hold', 'Canceled' \u2192 'canceled'. Bound to HELIX terminology: helix/requisition-status."
     },
     "applicant_count": {
       "type": "integer",
@@ -71,7 +71,7 @@
     },
     "eeo_category": {
       "type": "string",
-      "description": "For affirmative action reporting."
+      "description": "For affirmative action reporting. Bound to HELIX terminology: helix/eeo-category."
     },
     "meta": {
       "type": "object",

@@ -1,8 +1,8 @@
 # HELIX Bridge: Workday
 
-42 mappings across 3 modules. Full parity with PeopleSoft.
+54 mappings across 3 modules. Full parity with PeopleSoft.
 
-- `sis/` — Student Information System (19 mappings)
+- `sis/` — Student Information System (31 mappings, including 10 financial aid)
 - `fin/` — Financial Management (11 mappings)
 - `hr/` — Human Capital Management (12 mappings)
 

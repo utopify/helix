@@ -1,0 +1,147 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Handshake Experiences → ExperientialLearning",
+  "source_system": "handshake",
+  "module": "Career Services - Experiences",
+  "source_objects": [
+    {
+      "object": "Experience",
+      "description": "A student-submitted internship, co-op, or similar experience, approved by career services and sometimes by faculty for credit."
+    },
+    {
+      "object": "Experience approval / evaluation",
+      "description": "Approval steps, supervisor evaluation, and student reflection, where the school uses them."
+    }
+  ],
+  "notes": "Handshake carries the institutional student ID from SSO or the student data feed. Resolve that ID to HELIX Student in the restricted identity zone; never match on name and email alone without steward review. Merge with the ERP registration in silver when the experience is for credit (same student, term, and course). The ERP row owns credit and grade; this row owns employer, supervisor, pay, hours, and evaluation.",
+  "validate": "Field labels follow a typical Handshake Experiences export and vary by school configuration. VALIDATE against your export. Symplicity and 12twenty carry the same fields.",
+  "target_resource": "ExperientialLearning",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from the Experience ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Institutional student ID",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Term (if for credit) / start date",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "experiential_type",
+      "source": "Experience type",
+      "transformation": "Internship -> internship, Co-op -> co_op, Practicum -> practicum, Research -> undergraduate_research, Externship -> externship, Apprenticeship -> apprenticeship, Service -> service_learning."
+    },
+    {
+      "helix_attribute": "title",
+      "source": "Job title",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "organization_name",
+      "source": "Employer",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "organization_industry",
+      "source": "Employer industry",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "supervisor_name",
+      "source": "Supervisor name",
+      "transformation": "Third-party PII. Confidential."
+    },
+    {
+      "helix_attribute": "supervisor_contact",
+      "source": "Supervisor email / phone",
+      "transformation": "Third-party PII. Don't publish or share outside career services."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Start date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "End date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "hours_completed",
+      "source": "Hours",
+      "transformation": "Total hours, or hours per week times weeks if only a weekly figure is captured."
+    },
+    {
+      "helix_attribute": "credit_bearing_flag",
+      "source": "For credit",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "credit_hours",
+      "source": "Credit hours",
+      "transformation": "Decimal. The ERP registration wins if the two disagree."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "Course (if for credit)",
+      "transformation": "Resolve to HELIX Course or CourseSection."
+    },
+    {
+      "helix_attribute": "paid_flag",
+      "source": "Paid / unpaid",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "compensation_amount",
+      "source": "Pay rate or stipend",
+      "transformation": "Store with the unit in your documentation (hourly vs total). Confidential."
+    },
+    {
+      "helix_attribute": "location_city",
+      "source": "Location city",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "location_state",
+      "source": "Location state",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "location_country",
+      "source": "Location country",
+      "transformation": "ISO alpha-2."
+    },
+    {
+      "helix_attribute": "learning_objectives",
+      "source": "Learning objectives",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "evaluation_completed_flag",
+      "source": "Supervisor evaluation submitted",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "evaluation_rating",
+      "source": "Supervisor evaluation rating",
+      "transformation": "Rating as recorded."
+    },
+    {
+      "helix_attribute": "reflection_completed_flag",
+      "source": "Student reflection submitted",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "high_impact_practice_flag",
+      "source": "Derived",
+      "transformation": "true for NSSE high-impact practice types."
+    }
+  ]
+}

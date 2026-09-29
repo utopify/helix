@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner → Institution",
+  "source_system": "banner",
+  "module": "Student",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "GUBINST",
+      "description": "Installation controls: institution name and base settings. One row for the home institution."
+    },
+    {
+      "table": "STVCAMP",
+      "description": "Campus validation. Map campuses as locations unless they report to IPEDS separately."
+    },
+    {
+      "table": "STVSBGI",
+      "description": "Source/background institution validation: every high school and college a student came from, keyed by SBGI code (usually CEEB/ACT code)."
+    },
+    {
+      "table": "SOBSBGI",
+      "description": "Source/background institution base: address (city, state, nation) for each SBGI code."
+    },
+    {
+      "table": "STVNATN",
+      "description": "Nation validation, for country codes."
+    }
+  ],
+  "notes": "Load the home institution from GUBINST and external schools from STVSBGI/SOBSBGI (filter to colleges; STVSBGI also holds high schools, which belong elsewhere). FLAG: GUBINST column names differ across Banner releases; confirm.",
+  "target_resource": "Institution",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution code (home) or STVSBGI_CODE (external)."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "GUBINST_NAME / STVSBGI_DESC",
+      "transformation": "Direct. FLAG: confirm the GUBINST name column."
+    },
+    {
+      "helix_attribute": "short_name",
+      "source": "Configuration",
+      "transformation": "Banner has no short name for the home institution."
+    },
+    {
+      "helix_attribute": "identifiers",
+      "source": "STVSBGI_CODE; configuration",
+      "transformation": "Array of {system, value}: banner_sbgi (SBGI code, usually CEEB for colleges), ipeds_unit_id, opeid, fice. Add IPEDS and OPEID from configuration or the IPEDS directory file."
+    },
+    {
+      "helix_attribute": "institution_type",
+      "source": "STVSBGI_TYPE_IND / IPEDS directory",
+      "transformation": "STVSBGI type C (college) vs H (high school) filters the list; the HELIX type comes from IPEDS level and control."
+    },
+    {
+      "helix_attribute": "country",
+      "source": "SOBSBGI_NATN_CODE -> STVNATN",
+      "transformation": "Convert the Banner nation code to ISO 3166-1 alpha-2. Null nation means US at most schools."
+    },
+    {
+      "helix_attribute": "state_province",
+      "source": "SOBSBGI_STAT_CODE",
+      "transformation": "Direct for US; ISO 3166-2 for others."
+    },
+    {
+      "helix_attribute": "carnegie_classification",
+      "source": "Not stored in the ERP",
+      "transformation": "Load from the Carnegie Classification public file by IPEDS Unit ID. Refresh when a new edition is published."
+    },
+    {
+      "helix_attribute": "timezone",
+      "source": "Configuration",
+      "transformation": "IANA name, for example America/New_York. Set once per institution or campus."
+    },
+    {
+      "helix_attribute": "erp_system",
+      "source": "Constant",
+      "transformation": "'banner' for the home institution. Null for external schools."
+    },
+    {
+      "helix_attribute": "website",
+      "source": "Configuration / IPEDS directory",
+      "transformation": "Not stored in Banner."
+    }
+  ]
+}

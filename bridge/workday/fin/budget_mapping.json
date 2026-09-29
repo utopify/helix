@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Budget",
   "source_system": "workday",
   "module": "Financial Management - Budgets",
-  "target_resource": "Budget (planned)",
+  "target_resource": "Budget",
   "version": "0.1",
   "source_objects": [
     {

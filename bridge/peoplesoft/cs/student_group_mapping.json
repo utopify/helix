@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: PeopleSoft CS \u2192 StudentGroup",
   "source_system": "peoplesoft",
   "module": "Campus Solutions - Student Records",
-  "target_resource": "StudentGroup (planned)",
+  "target_resource": "StudentGroup",
   "version": "0.1",
   "source_tables": [
     {

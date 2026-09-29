@@ -1,0 +1,127 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → Verification",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "Verification",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_ISIR_COMPUTED, PS_STDNT_AID_ATRBT, PS_PERSON_CHECKLST, PS_PERSON_CHK_ITEM, PS_ISIR_CONTROL. Attribute names match bridge/peoplesoft/cs/verification_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "ISIR Record",
+      "description": "Verification selection and tracking group."
+    },
+    {
+      "object": "Financial Aid Verification",
+      "description": "Verification record for the student and award year: status, completion date, outcome."
+    },
+    {
+      "object": "Action Item",
+      "description": "Document requests assigned to the student (Workday's equivalent of checklist items)."
+    },
+    {
+      "object": "Student Document",
+      "description": "Documents received and attached."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/verification_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Financial Aid Verification.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Financial Aid Verification.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "ISIR Record",
+      "transformation": "Resolve to HELIX AidApplication."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Financial Aid Verification.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "verification_tracking_group",
+      "source": "ISIR Record.Verification_Tracking_Group",
+      "transformation": "V1, V4, V5."
+    },
+    {
+      "helix_attribute": "verification_status",
+      "source": "Financial Aid Verification.Status",
+      "transformation": "Map through verification-status-xref."
+    },
+    {
+      "helix_attribute": "selected_date",
+      "source": "Financial Aid Verification.Selected_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "documents_required",
+      "source": "Action Item (all for verification)",
+      "transformation": "Array."
+    },
+    {
+      "helix_attribute": "documents_received",
+      "source": "Action Item where complete",
+      "transformation": "Array."
+    },
+    {
+      "helix_attribute": "documents_outstanding",
+      "source": "Action Item where open",
+      "transformation": "Array."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "Financial Aid Verification.Completed_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "conflicting_information_flag",
+      "source": "Financial Aid Verification.Conflicting_Information",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "conflicting_info_resolution",
+      "source": "Financial Aid Verification.Resolution_Comment",
+      "transformation": "Restricted."
+    },
+    {
+      "helix_attribute": "sai_before_verification",
+      "source": "ISIR Record (selected transaction).Student_Aid_Index",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "sai_after_verification",
+      "source": "ISIR Record (active transaction).Student_Aid_Index",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "sai_change_amount",
+      "source": "Derived",
+      "transformation": "after minus before."
+    },
+    {
+      "helix_attribute": "isir_correction_required_flag",
+      "source": "ISIR Correction (exists)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "correction_transaction_number",
+      "source": "ISIR Record.Transaction_Number (after correction)",
+      "transformation": "String."
+    },
+    {
+      "helix_attribute": "verification_outcome",
+      "source": "Financial Aid Verification.Outcome",
+      "transformation": "Map to the same values."
+    }
+  ]
+}

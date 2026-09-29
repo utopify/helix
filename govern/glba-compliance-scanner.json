@@ -2,12 +2,18 @@
   "$schema": "https://helixedu.org/govern/glba-compliance-scanner-schema.json",
   "title": "HELIX Govern: GLBA Compliance Scanner",
   "description": "Executable audit rules for detecting GLBA non-compliance across a HELIX-conformant medallion lakehouse. Companion to glba-safeguards-framework.json: that document defines WHAT must be done; this document provides HOW to detect what ISN'T done. Each rule includes a testable query or metadata check, severity, remediation, regulatory citation, and platform-specific implementation notes.",
-  "version": "0.1",
+  "version": "0.2",
   "purpose": "Scan a HELIX lakehouse for GLBA Safeguards Rule (16 CFR Part 314) non-compliance. Covers encryption at rest, encryption in transit, access control, data inventory completeness, monitoring, disposal, and service provider oversight. Intended to be run quarterly at minimum, with critical rules run on every deployment.",
   "scope": {
     "covered_resources": [
-      "FinAidAward (all attributes \u2014 classified restricted)",
-      "Person (financial identifiers: ssn, bank_account, routing_number, tax_id)",
+      "FinAidAward (restricted columns: efc, cost_of_attendance, unmet_need)",
+      "AidApplication (FAFSA/ISIR: SAI, ISIR transaction, comment codes, C-flags, NSLDS match flags)",
+      "AidPackage (need analysis, professional judgment)",
+      "Verification (income and tax verification detail)",
+      "Disbursement (individual aid disbursement and refund amounts)",
+      "LoanRecord (individual loan amounts, COD loan IDs)",
+      "ReturnOfTitleIV (R2T4 calculations)",
+      "Person (identifiers[] where type is national_id or ssn_last4)",
       "ARTransaction (student billing when tied to financial aid disbursement)"
     ],
     "covered_data_elements": [
@@ -36,7 +42,19 @@
       "backup",
       "export"
     ],
-    "helix_classification_tier": "restricted"
+    "helix_classification_tier": "restricted",
+    "glba_tables": [
+      "fin_aid_award",
+      "aid_application",
+      "aid_package",
+      "verification",
+      "disbursement",
+      "loan_record",
+      "return_of_title_iv",
+      "person",
+      "ar_transaction"
+    ],
+    "note": "Every rule checks all tables in glba_tables. Where a platform example shows a single table (for example SHOW TBLPROPERTIES), run it for each table in the list. Query-text checks on 'disbursement' can match unrelated queries, so review hits before escalating."
   },
   "scan_categories": [
     {
@@ -51,11 +69,11 @@
           "severity": "critical",
           "check_type": "metadata_query",
           "check_sql": {
-            "ansi": "-- Verify encryption key assignment for GLBA tables\n-- Requires platform-specific metadata views (see platform notes)\nSELECT\n  t.table_schema,\n  t.table_name,\n  t.encryption_key_id,\n  CASE\n    WHEN t.encryption_key_id = :restricted_kms_key_arn THEN 'PASS'\n    WHEN t.encryption_key_id IS NULL THEN 'FAIL_NO_ENCRYPTION'\n    ELSE 'FAIL_WRONG_KEY'\n  END AS check_result\nFROM information_schema.tables t\nWHERE t.table_name IN (\n  'fin_aid_award',\n  'person',           -- only financial-identifier columns\n  'ar_transaction'    -- student billing subset\n)\nAND t.table_schema IN ('bronze', 'silver', 'gold');",
+            "ansi": "-- Verify encryption key assignment for GLBA tables\n-- Requires platform-specific metadata views (see platform notes)\nSELECT\n  t.table_schema,\n  t.table_name,\n  t.encryption_key_id,\n  CASE\n    WHEN t.encryption_key_id = :restricted_kms_key_arn THEN 'PASS'\n    WHEN t.encryption_key_id IS NULL THEN 'FAIL_NO_ENCRYPTION'\n    ELSE 'FAIL_WRONG_KEY'\n  END AS check_result\nFROM information_schema.tables t\nWHERE t.table_name IN (\n  'fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv',\n  'person',           -- only financial-identifier columns\n  'ar_transaction'    -- student billing subset\n)\nAND t.table_schema IN ('bronze', 'silver', 'gold');",
             "snowflake": "SELECT\n  table_catalog, table_schema, table_name,\n  -- Snowflake encrypts all data; check is whether the table\n  -- resides in a schema with the correct encryption policy\n  'CHECK_MANUALLY' AS encryption_note\nFROM snowflake.account_usage.tables\nWHERE table_name IN ('FIN_AID_AWARD','PERSON','AR_TRANSACTION')\nAND deleted IS NULL;",
-            "redshift": "SELECT\n  schemaname, tablename,\n  -- Redshift uses cluster-level encryption; verify via\n  -- SELECT encrypted FROM stv_startup_recovery_state;\n  'CHECK_CLUSTER_ENCRYPTION' AS note\nFROM pg_tables\nWHERE tablename IN ('fin_aid_award','person','ar_transaction');",
+            "redshift": "SELECT\n  schemaname, tablename,\n  -- Redshift uses cluster-level encryption; verify via\n  -- SELECT encrypted FROM stv_startup_recovery_state;\n  'CHECK_CLUSTER_ENCRYPTION' AS note\nFROM pg_tables\nWHERE tablename IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction');",
             "databricks": "-- Unity Catalog: check table properties for encryption\nSHOW TBLPROPERTIES silver.fin_aid_award;\n-- Look for delta.encryption.key property",
-            "bigquery": "SELECT\n  table_id, kms_key_name,\n  CASE WHEN kms_key_name = @restricted_key THEN 'PASS' ELSE 'FAIL' END AS check_result\nFROM `project.dataset.__TABLES__`\nWHERE table_id IN ('fin_aid_award','person','ar_transaction');"
+            "bigquery": "SELECT\n  table_id, kms_key_name,\n  CASE WHEN kms_key_name = @restricted_key THEN 'PASS' ELSE 'FAIL' END AS check_result\nFROM `project.dataset.__TABLES__`\nWHERE table_id IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction');"
           },
           "expected_result": "All GLBA tables use the restricted-tier KMS key ARN",
           "finding_if_failed": "Table '{schema}.{table_name}' uses {encryption_key_id} instead of the dedicated restricted-tier KMS key",
@@ -86,7 +104,7 @@
           "check_type": "storage_scan",
           "check_sql": {
             "ansi": "-- Check for recent COPY/UNLOAD commands that wrote GLBA tables to external storage\nSELECT\n  query_id,\n  query_text,\n  start_time,\n  user_name\nFROM query_history\nWHERE LOWER(query_text) LIKE '%unload%fin_aid_award%'\n   OR LOWER(query_text) LIKE '%copy into%fin_aid_award%'\n   OR LOWER(query_text) LIKE '%export%fin_aid_award%'\nORDER BY start_time DESC\nLIMIT 100;",
-            "snowflake": "SELECT\n  query_id, query_text, start_time, user_name, role_name\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%copy into%@%' OR LOWER(query_text) LIKE '%unload%')\nAND (LOWER(query_text) LIKE '%fin_aid_award%'\n     OR LOWER(query_text) LIKE '%sai%'\n     OR LOWER(query_text) LIKE '%efc%')\nAND start_time > DATEADD('day', -90, CURRENT_TIMESTAMP())\nORDER BY start_time DESC;"
+            "snowflake": "SELECT\n  query_id, query_text, start_time, user_name, role_name\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%copy into%@%' OR LOWER(query_text) LIKE '%unload%')\nAND ((LOWER(query_text) LIKE '%fin_aid_award%' OR LOWER(query_text) LIKE '%aid_application%' OR LOWER(query_text) LIKE '%aid_package%' OR LOWER(query_text) LIKE '%loan_record%' OR LOWER(query_text) LIKE '%return_of_title_iv%' OR LOWER(query_text) LIKE '%disbursement%')\n     OR LOWER(query_text) LIKE '%sai%'\n     OR LOWER(query_text) LIKE '%efc%')\nAND start_time > DATEADD('day', -90, CURRENT_TIMESTAMP())\nORDER BY start_time DESC;"
           },
           "expected_result": "Zero unauthorized exports, or all exports target encrypted destinations",
           "finding_if_failed": "GLBA data exported by '{user_name}' at {start_time} \u2014 verify destination encryption",
@@ -162,9 +180,9 @@
           "severity": "critical",
           "check_type": "privilege_scan",
           "check_sql": {
-            "ansi": "SELECT\n  grantee,\n  table_schema,\n  table_name,\n  privilege_type\nFROM information_schema.table_privileges\nWHERE table_name IN ('fin_aid_award', 'person', 'ar_transaction')\nAND grantee NOT IN (\n  'helix_analyst_restricted',  -- dedicated named-membership role\n  'helix_silver_engineer',\n  'helix_bronze_loader'\n)\nORDER BY grantee;",
+            "ansi": "SELECT\n  grantee,\n  table_schema,\n  table_name,\n  privilege_type\nFROM information_schema.table_privileges\nWHERE table_name IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction')\nAND grantee NOT IN (\n  'helix_analyst_restricted',  -- dedicated named-membership role\n  'helix_silver_engineer',\n  'helix_bronze_loader'\n)\nORDER BY grantee;",
             "snowflake": "SELECT\n  grantee_name, privilege, table_schema, table_name, granted_by\nFROM snowflake.account_usage.grants_to_roles\nWHERE table_name IN ('FIN_AID_AWARD','PERSON','AR_TRANSACTION')\nAND privilege IN ('SELECT','INSERT','UPDATE')\nAND deleted_on IS NULL\nAND grantee_name NOT IN ('HELIX_ANALYST_RESTRICTED','HELIX_SILVER_ENGINEER','HELIX_BRONZE_LOADER');",
-            "redshift": "SELECT\n  u.usename AS grantee,\n  s.schemaname,\n  s.tablename,\n  HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') AS has_select\nFROM pg_user u\nCROSS JOIN pg_tables s\nWHERE s.tablename IN ('fin_aid_award','person','ar_transaction')\nAND HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') = true\nORDER BY u.usename;"
+            "redshift": "SELECT\n  u.usename AS grantee,\n  s.schemaname,\n  s.tablename,\n  HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') AS has_select\nFROM pg_user u\nCROSS JOIN pg_tables s\nWHERE s.tablename IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction')\nAND HAS_TABLE_PRIVILEGE(u.usename, s.schemaname || '.' || s.tablename, 'SELECT') = true\nORDER BY u.usename;"
           },
           "expected_result": "Only authorized restricted-tier roles and named individuals have access",
           "finding_if_failed": "Unauthorized role/user '{grantee}' has {privilege_type} access to GLBA table '{table_name}'",
@@ -287,8 +305,8 @@
           "check_type": "log_verification",
           "check_sql": {
             "snowflake": "-- Verify access history is capturing GLBA table reads\nSELECT COUNT(*) AS glba_queries_last_24h\nFROM snowflake.account_usage.access_history\nWHERE ARRAY_CONTAINS('FIN_AID_AWARD'::VARIANT, base_objects_accessed:objectName)\nAND query_start_time > DATEADD('hour', -24, CURRENT_TIMESTAMP());",
-            "redshift": "-- Verify STL_QUERY or SYS_QUERY_HISTORY captures GLBA queries\nSELECT COUNT(*) AS glba_queries_last_24h\nFROM stl_query\nWHERE LOWER(querytxt) LIKE '%fin_aid_award%'\nAND starttime > GETDATE() - INTERVAL '24 hours';",
-            "ansi": "SELECT COUNT(*) AS glba_queries_last_24h\nFROM query_history\nWHERE LOWER(query_text) LIKE '%fin_aid_award%'\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '24' HOUR;"
+            "redshift": "-- Verify STL_QUERY or SYS_QUERY_HISTORY captures GLBA queries\nSELECT COUNT(*) AS glba_queries_last_24h\nFROM stl_query\nWHERE (LOWER(querytxt) LIKE '%fin_aid_award%' OR LOWER(querytxt) LIKE '%aid_application%' OR LOWER(querytxt) LIKE '%aid_package%' OR LOWER(querytxt) LIKE '%loan_record%' OR LOWER(querytxt) LIKE '%return_of_title_iv%' OR LOWER(querytxt) LIKE '%disbursement%')\nAND starttime > GETDATE() - INTERVAL '24 hours';",
+            "ansi": "SELECT COUNT(*) AS glba_queries_last_24h\nFROM query_history\nWHERE (LOWER(query_text) LIKE '%fin_aid_award%' OR LOWER(query_text) LIKE '%aid_application%' OR LOWER(query_text) LIKE '%aid_package%' OR LOWER(query_text) LIKE '%loan_record%' OR LOWER(query_text) LIKE '%return_of_title_iv%' OR LOWER(query_text) LIKE '%disbursement%')\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '24' HOUR;"
           },
           "expected_result": "Count > 0 if GLBA tables were queried (confirms logging is active). If count = 0 and tables were queried, logging is broken.",
           "finding_if_failed": "Query logging is not capturing GLBA table access",
@@ -303,8 +321,8 @@
           "severity": "high",
           "check_type": "anomaly_detection",
           "check_sql": {
-            "snowflake": "SELECT\n  user_name,\n  query_id,\n  query_text,\n  rows_produced,\n  query_start_time\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%fin_aid_award%'\n       OR LOWER(query_text) LIKE '%sai%'\n       OR LOWER(query_text) LIKE '%efc%')\nAND rows_produced > 1000\nAND query_start_time > DATEADD('day', -7, CURRENT_TIMESTAMP())\nORDER BY rows_produced DESC;",
-            "ansi": "SELECT\n  user_name, query_id, query_text, rows_returned, start_time\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award','person','ar_transaction')\nAND rows_returned > 1000\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '7' DAY\nORDER BY rows_returned DESC;"
+            "snowflake": "SELECT\n  user_name,\n  query_id,\n  query_text,\n  rows_produced,\n  query_start_time\nFROM snowflake.account_usage.query_history\nWHERE ((LOWER(query_text) LIKE '%fin_aid_award%' OR LOWER(query_text) LIKE '%aid_application%' OR LOWER(query_text) LIKE '%aid_package%' OR LOWER(query_text) LIKE '%loan_record%' OR LOWER(query_text) LIKE '%return_of_title_iv%' OR LOWER(query_text) LIKE '%disbursement%')\n       OR LOWER(query_text) LIKE '%sai%'\n       OR LOWER(query_text) LIKE '%efc%')\nAND rows_produced > 1000\nAND query_start_time > DATEADD('day', -7, CURRENT_TIMESTAMP())\nORDER BY rows_produced DESC;",
+            "ansi": "SELECT\n  user_name, query_id, query_text, rows_returned, start_time\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction')\nAND rows_returned > 1000\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '7' DAY\nORDER BY rows_returned DESC;"
           },
           "expected_result": "Zero bulk reads, or all bulk reads are from authorized batch processes",
           "finding_if_failed": "User '{user_name}' retrieved {rows_produced} GLBA records at {query_start_time}. Query: {query_text}",
@@ -319,8 +337,8 @@
           "severity": "high",
           "check_type": "retention_check",
           "check_sql": {
-            "snowflake": "-- Snowflake account_usage retains 365 days by default.\n-- For 7-year retention, logs must be exported to long-term storage.\nSELECT\n  MIN(query_start_time) AS oldest_log_entry,\n  DATEDIFF('day', MIN(query_start_time), CURRENT_TIMESTAMP()) AS retention_days\nFROM snowflake.account_usage.query_history\nWHERE LOWER(query_text) LIKE '%fin_aid_award%';",
-            "ansi": "SELECT\n  MIN(start_time) AS oldest_log,\n  DATEDIFF('day', MIN(start_time), CURRENT_DATE) AS retention_days\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award');"
+            "snowflake": "-- Snowflake account_usage retains 365 days by default.\n-- For 7-year retention, logs must be exported to long-term storage.\nSELECT\n  MIN(query_start_time) AS oldest_log_entry,\n  DATEDIFF('day', MIN(query_start_time), CURRENT_TIMESTAMP()) AS retention_days\nFROM snowflake.account_usage.query_history\nWHERE (LOWER(query_text) LIKE '%fin_aid_award%' OR LOWER(query_text) LIKE '%aid_application%' OR LOWER(query_text) LIKE '%aid_package%' OR LOWER(query_text) LIKE '%loan_record%' OR LOWER(query_text) LIKE '%return_of_title_iv%' OR LOWER(query_text) LIKE '%disbursement%');",
+            "ansi": "SELECT\n  MIN(start_time) AS oldest_log,\n  DATEDIFF('day', MIN(start_time), CURRENT_DATE) AS retention_days\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv');"
           },
           "expected_result": "Retention >= 2555 days (7 years), OR confirmed export to long-term archive",
           "finding_if_failed": "GLBA access logs only retained for {retention_days} days \u2014 below 7-year requirement",
@@ -335,7 +353,7 @@
           "severity": "medium",
           "check_type": "alert_configuration",
           "check_sql": {
-            "ansi": "-- Check for after-hours GLBA access in the last 30 days\nSELECT\n  user_name,\n  query_id,\n  start_time,\n  EXTRACT(HOUR FROM start_time) AS hour_of_day,\n  EXTRACT(DOW FROM start_time) AS day_of_week\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award','person','ar_transaction')\nAND (\n  EXTRACT(HOUR FROM start_time) < 7\n  OR EXTRACT(HOUR FROM start_time) > 19\n  OR EXTRACT(DOW FROM start_time) IN (0, 6)  -- Sunday, Saturday\n)\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '30' DAY\nORDER BY start_time DESC;"
+            "ansi": "-- Check for after-hours GLBA access in the last 30 days\nSELECT\n  user_name,\n  query_id,\n  start_time,\n  EXTRACT(HOUR FROM start_time) AS hour_of_day,\n  EXTRACT(DOW FROM start_time) AS day_of_week\nFROM query_history\nWHERE table_accessed IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction')\nAND (\n  EXTRACT(HOUR FROM start_time) < 7\n  OR EXTRACT(HOUR FROM start_time) > 19\n  OR EXTRACT(DOW FROM start_time) IN (0, 6)  -- Sunday, Saturday\n)\nAND start_time > CURRENT_TIMESTAMP - INTERVAL '30' DAY\nORDER BY start_time DESC;"
           },
           "expected_result": "Zero after-hours access, or all flagged access has documented justification",
           "finding_if_failed": "After-hours GLBA access by '{user_name}' at {start_time} \u2014 verify this was authorized",
@@ -372,7 +390,7 @@
           "severity": "medium",
           "check_type": "governance_check",
           "check_sql": {
-            "ansi": "SELECT\n  d.disposal_id,\n  d.resource_name,\n  d.records_destroyed,\n  d.disposal_date,\n  d.disposed_by,\n  d.method,\n  d.backup_confirmed_destroyed,\n  d.certificate_on_file\nFROM disposal_log d\nWHERE d.resource_name IN ('fin_aid_award','person','ar_transaction')\nAND (d.certificate_on_file = false OR d.backup_confirmed_destroyed = false);"
+            "ansi": "SELECT\n  d.disposal_id,\n  d.resource_name,\n  d.records_destroyed,\n  d.disposal_date,\n  d.disposed_by,\n  d.method,\n  d.backup_confirmed_destroyed,\n  d.certificate_on_file\nFROM disposal_log d\nWHERE d.resource_name IN ('fin_aid_award', 'aid_application', 'aid_package', 'verification', 'disbursement', 'loan_record', 'return_of_title_iv', 'person', 'ar_transaction')\nAND (d.certificate_on_file = false OR d.backup_confirmed_destroyed = false);"
           },
           "expected_result": "All disposals have certificates and backup confirmation",
           "finding_if_failed": "Disposal {disposal_id} on {disposal_date} missing certificate or backup confirmation",

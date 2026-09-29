@@ -55,7 +55,7 @@
     },
     "budget_status": {
       "type": "string",
-      "description": "Map: 'Draft'\u2192'draft', 'Approved'\u2192'open', 'Closed'\u2192'closed', 'Frozen'\u2192'frozen'."
+      "description": "Map: 'Draft'\u2192'draft', 'Approved'\u2192'open', 'Closed'\u2192'closed', 'Frozen'\u2192'frozen'. Bound to HELIX terminology: helix/budget-status."
     },
     "meta": {
       "type": "object",

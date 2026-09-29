@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 CostCenter",
   "source_system": "workday",
   "module": "Financial Management - Organization",
-  "target_resource": "AcademicOrg / FinancialOrg (planned)",
+  "target_resource": "AcademicOrg / FinancialOrg",
   "version": "0.1",
   "source_objects": [
     {

@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Grants / Sponsored Programs",
   "source_system": "workday",
   "module": "Financial Management - Grants Management",
-  "target_resource": "Grant (planned)",
+  "target_resource": "Grant",
   "version": "0.1",
   "architecture_notes": "Workday Grants Management handles the full sponsored programs lifecycle: award setup, budget management, effort certification, cost sharing, billing/draw-down, and closeout. Grants are a first-class worktag in Workday \u2014 every transaction coded to a grant automatically flows into grant financial reporting. This is a critical module for research universities. The Uniform Guidance (2 CFR 200) governs allowable costs, cost principles, and audit requirements for federal awards.",
   "source_objects": [

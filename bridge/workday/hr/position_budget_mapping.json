@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Position Budgeting / Staffing",
   "source_system": "workday",
   "module": "HCM - Workforce Planning / Position Budget",
-  "target_resource": "PositionBudget (planned)",
+  "target_resource": "PositionBudget",
   "version": "0.1",
   "source_objects": [
     {

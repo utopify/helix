@@ -1,0 +1,162 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → AidPackage",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "AidPackage",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_AID, PS_STDNT_BUDGET_IT, PS_STDNT_AWARDS, PS_ITEM_TYPE_FA, PS_ISIR_COMPUTED, PS_STDNT_AID_ATRBT. Attribute names match bridge/peoplesoft/cs/aid_package_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Cost of Attendance",
+      "description": "Student cost of attendance for the award year and period, with COA items."
+    },
+    {
+      "object": "Financial Aid Package",
+      "description": "The student's package for the award year: awards, need, and status."
+    },
+    {
+      "object": "Financial Aid Award",
+      "description": "Individual awards, summed into totals."
+    },
+    {
+      "object": "Professional Judgment",
+      "description": "Event recording PJ adjustments to COA or SAI."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/aid_package_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Financial Aid Package.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Financial Aid Package.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "ISIR Record (active)",
+      "transformation": "Resolve to HELIX AidApplication."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Financial Aid Package.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Cost of Attendance.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_total",
+      "source": "Cost of Attendance.Total",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "coa_tuition_fees",
+      "source": "Cost of Attendance Item (Tuition and Fees)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_room_board",
+      "source": "Cost of Attendance Item (Housing and Food)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_books_supplies",
+      "source": "Cost of Attendance Item (Books, Course Materials, Supplies, Equipment)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_transportation",
+      "source": "Cost of Attendance Item (Transportation)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_personal",
+      "source": "Cost of Attendance Item (Miscellaneous Personal)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_loan_fees",
+      "source": "Cost of Attendance Item (Loan Fees)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_other",
+      "source": "Cost of Attendance Item (other)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "sai",
+      "source": "Financial Aid Package.Student_Aid_Index",
+      "transformation": "GLBA restricted."
+    },
+    {
+      "helix_attribute": "need",
+      "source": "Financial Aid Package.Need",
+      "transformation": "Direct; recompute in silver to compare."
+    },
+    {
+      "helix_attribute": "total_aid_offered",
+      "source": "SUM(Financial Aid Award.Amount)",
+      "transformation": "Exclude cancelled and declined."
+    },
+    {
+      "helix_attribute": "total_grant_aid",
+      "source": "SUM awards where fund type is grant or scholarship",
+      "transformation": "Gift aid only."
+    },
+    {
+      "helix_attribute": "total_self_help",
+      "source": "SUM awards where fund type is loan or work-study",
+      "transformation": "Loans plus work-study."
+    },
+    {
+      "helix_attribute": "unmet_need",
+      "source": "Financial Aid Package.Unmet_Need",
+      "transformation": "Recompute in silver to compare."
+    },
+    {
+      "helix_attribute": "packaging_status",
+      "source": "Financial Aid Package.Status",
+      "transformation": "Map tenant values to the same five."
+    },
+    {
+      "helix_attribute": "packaging_date",
+      "source": "Financial Aid Package.Packaged_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "professional_judgment_applied_flag",
+      "source": "Professional Judgment (exists)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "pj_reason",
+      "source": "Professional Judgment.Reason",
+      "transformation": "Restricted."
+    },
+    {
+      "helix_attribute": "pj_adjustment_amount",
+      "source": "Professional Judgment.Adjustment_Amount",
+      "transformation": "Net change."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_adjusted_flag",
+      "source": "Cost of Attendance (adjusted)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "enrollment_intensity_assumed",
+      "source": "Financial Aid Package.Enrollment_Assumption",
+      "transformation": "Map to the same values."
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "title": "HELIX XREF: Loan Type: PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Loan Type",
+  "description": "Maps PeopleSoft loan types (LOAN_ORIGNATN loan type and the loan item type, both institution-configured) to helix/loan-type and Workday loan types. GLBA: loan data is covered customer information.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "DLSUB",
+      "ps_description": "Direct Subsidized",
+      "ps_source": "LOAN_ORIGNATN loan type",
+      "helix_code": "direct_subsidized",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Direct Subsidized Loan",
+      "wd_description": "Federal Direct Subsidized",
+      "wd_object": "Direct Loan Record",
+      "notes": "Undergraduates only. Subsidized usage limit history comes from NSLDS. VALIDATE: local code."
+    },
+    {
+      "ps_code": "DLUNS",
+      "ps_description": "Direct Unsubsidized",
+      "ps_source": "LOAN_ORIGNATN loan type",
+      "helix_code": "direct_unsubsidized",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Direct Unsubsidized Loan",
+      "wd_description": "Federal Direct Unsubsidized",
+      "wd_object": "Direct Loan Record",
+      "notes": "VALIDATE: local code."
+    },
+    {
+      "ps_code": "DLPLS",
+      "ps_description": "Direct PLUS (Parent)",
+      "ps_source": "LOAN_ORIGNATN loan type",
+      "helix_code": "direct_plus_parent",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Direct Parent PLUS Loan",
+      "wd_description": "Parent borrower",
+      "wd_object": "Direct Loan Record",
+      "notes": "Borrower is the parent. Map the parent as a separate HELIX Person; don't overwrite student identity. VALIDATE: local code."
+    },
+    {
+      "ps_code": "DLGPL",
+      "ps_description": "Direct Grad PLUS",
+      "ps_source": "LOAN_ORIGNATN loan type",
+      "helix_code": "direct_plus_grad",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Direct Graduate PLUS Loan",
+      "wd_description": "Graduate or professional borrower",
+      "wd_object": "Direct Loan Record",
+      "notes": "VALIDATE: local code, and check current federal eligibility rules for new Grad PLUS borrowers."
+    },
+    {
+      "ps_code": "PERK",
+      "ps_description": "Perkins",
+      "ps_source": "ITEM_TYPE_FA (loan)",
+      "helix_code": "perkins",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Perkins Loan (historical)",
+      "wd_description": "Program ended 2017",
+      "wd_object": "Direct Loan Record (history) or archive",
+      "notes": "Historical only. Most schools archive Perkins history rather than load it."
+    },
+    {
+      "ps_code": "CONS",
+      "ps_description": "Direct Consolidation",
+      "ps_source": "NSLDS history",
+      "helix_code": "direct_consolidation",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Not loaded",
+      "wd_description": "Not school-originated",
+      "wd_object": "None",
+      "notes": "Comes from NSLDS for aggregate limits. Don't create in Workday."
+    },
+    {
+      "ps_code": "ALT",
+      "ps_description": "Private / Alternative",
+      "ps_source": "ITEM_TYPE_FA (loan)",
+      "helix_code": "private_alternative",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Private Education Loan",
+      "wd_description": "Lender-originated",
+      "wd_object": "Financial Aid Award (private loan fund)",
+      "notes": "Needs self-certification tracking. VALIDATE: local item types (often one per lender)."
+    },
+    {
+      "ps_code": "INST",
+      "ps_description": "Institutional Loan",
+      "ps_source": "ITEM_TYPE_FA (loan)",
+      "helix_code": "institutional_loan",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Institutional Loan",
+      "wd_description": "School-funded loan",
+      "wd_object": "Financial Aid Award (institutional fund)",
+      "notes": "Servicing usually lives in Student Financials or a third party. VALIDATE: local code."
+    },
+    {
+      "ps_code": "HEAL",
+      "ps_description": "HEAL (health professions)",
+      "ps_source": "ITEM_TYPE_FA (loan)",
+      "helix_code": "heal",
+      "helix_terminology": "helix/loan-type",
+      "wd_value": "Not loaded",
+      "wd_description": "Legacy health professions loan",
+      "wd_object": "None",
+      "notes": "Historical only."
+    }
+  ]
+}

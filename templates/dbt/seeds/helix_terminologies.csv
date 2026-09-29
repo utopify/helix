@@ -18,6 +18,15 @@ helix/account-type,fund_balance,Fund Balance / Net Position,"The residual of ass
 helix/account-type,revenue,Revenue,"Inflows of resources. Major categories in higher ed: tuition and fees, state appropriations, federal grants and contracts, auxiliary enterprise revenue, gifts and pledges, investment income, hospital/clinical revenue, and other operating revenue.",core/terminologies/account-type.json
 helix/account-type,expenditure,Expenditure / Expense,"Outflows of resources for operations. Classified by function (instruction, research, public service, academic support, student services, institutional support, operation of plant, scholarships/fellowships, auxiliary enterprises, hospital) and by natural classification (salaries, benefits, supplies, travel, equipment, utilities, depreciation).",core/terminologies/account-type.json
 helix/account-type,transfer,Transfer,"Movement of funds between fund groups that is not a revenue or expenditure. Includes mandatory transfers (debt service, matching requirements) and non-mandatory transfers (internal allocations, overhead recovery distributions). Must balance — every transfer-out has a corresponding transfer-in.",core/terminologies/account-type.json
+helix/achievement-level,exceeds,Exceeds Expectations,Performance exceeds the expected standard,core/terminologies/achievement-level.json
+helix/achievement-level,meets,Meets Expectations,Performance meets the expected standard,core/terminologies/achievement-level.json
+helix/achievement-level,approaching,Approaching Expectations,Performance is approaching the expected standard,core/terminologies/achievement-level.json
+helix/achievement-level,below,Below Expectations,Performance is below the expected standard,core/terminologies/achievement-level.json
+helix/achievement-level,not_demonstrated,Not Demonstrated,The competency was not demonstrated,core/terminologies/achievement-level.json
+helix/achievement-level,exemplary,Exemplary,Developmental scale: exemplary attainment,core/terminologies/achievement-level.json
+helix/achievement-level,proficient,Proficient,Developmental scale: proficient attainment,core/terminologies/achievement-level.json
+helix/achievement-level,developing,Developing,Developmental scale: developing attainment,core/terminologies/achievement-level.json
+helix/achievement-level,beginning,Beginning,Developmental scale: beginning attainment,core/terminologies/achievement-level.json
 helix/admission-status,submitted,Submitted,Application received by the institution,core/terminologies/admission-status.json
 helix/admission-status,in_review,In Review,Application is being evaluated by admissions staff or committee,core/terminologies/admission-status.json
 helix/admission-status,incomplete,Incomplete,"Application is missing required materials (transcripts, test scores, essays, etc.)",core/terminologies/admission-status.json
@@ -28,6 +37,14 @@ helix/admission-status,waitlisted,Waitlisted,Applicant placed on a waiting list 
 helix/admission-status,deferred,Deferred,Decision postponed to a future review cycle (common in early decision/action),core/terminologies/admission-status.json
 helix/admission-status,cancelled,Cancelled,"Application cancelled by the institution (e.g., duplicate, fraud)",core/terminologies/admission-status.json
 helix/admission-status,withdrawn,Withdrawn,Applicant voluntarily withdrew their application,core/terminologies/admission-status.json
+helix/aid-application-status,received,Received,Application/ISIR received by the institution,core/terminologies/aid-application-status.json
+helix/aid-application-status,in_review,In Review,Being reviewed by the financial aid office,core/terminologies/aid-application-status.json
+helix/aid-application-status,verification_required,Verification Required,Selected for verification; documentation needed,core/terminologies/aid-application-status.json
+helix/aid-application-status,verification_complete,Verification Complete,Verification finished,core/terminologies/aid-application-status.json
+helix/aid-application-status,isir_correction_pending,ISIR Correction Pending,A correction has been submitted to the CPS/FPS and is pending,core/terminologies/aid-application-status.json
+helix/aid-application-status,complete,Complete,Application complete and ready for packaging,core/terminologies/aid-application-status.json
+helix/aid-application-status,rejected,Rejected,"Application rejected (e.g., reject codes unresolved)",core/terminologies/aid-application-status.json
+helix/aid-application-status,cancelled,Cancelled,Application cancelled by student or institution,core/terminologies/aid-application-status.json
 helix/asset-category,land,Land,"Real property owned by the institution, including land improvements that are not depreciable (grading, fill). Land is not depreciated. Includes donated land recorded at fair market value at date of gift.",core/terminologies/asset-category.json
 helix/asset-category,buildings,Buildings,"Structures owned or capital-leased by the institution. Includes academic buildings, residence halls, athletic facilities, hospitals, parking structures. Capitalization threshold varies ($50K-$100K typical). Depreciated over 20-50 years.",core/terminologies/asset-category.json
 helix/asset-category,building_improvements,Building Improvements,"Capital improvements that extend the useful life of an existing building (not routine maintenance). Examples: roof replacement, HVAC system, ADA renovations, laboratory renovations. Depreciated over 10-20 years.",core/terminologies/asset-category.json
@@ -48,17 +65,17 @@ helix/asset-status,retired,Retired,Asset has reached end of useful life and is f
 helix/asset-status,lost,Lost/Stolen,"Asset cannot be located during physical inventory. Triggers investigation and insurance claim if applicable. If government-funded, may require disclosure to the sponsor. Removed from active inventory after investigation.",core/terminologies/asset-status.json
 helix/asset-status,transferred,Transferred,"Asset transferred to another department, campus, or entity. Original department's asset account credited; receiving department debited. If transferred to a different legal entity, may constitute a disposal.",core/terminologies/asset-status.json
 helix/asset-status,construction_in_progress,Construction in Progress (CIP),Asset under construction or development that has not yet been placed in service. Costs accumulated in CIP account. Not depreciated until substantially complete and placed in service. Common for building projects and major renovations.,core/terminologies/asset-status.json
-,grant,Grant,"Gift aid that does not need to be repaid (e.g., Pell Grant)",core/terminologies/award-type.json
-,scholarship,Scholarship,Merit- or criteria-based gift aid that does not need to be repaid,core/terminologies/award-type.json
-,loan_subsidized,Subsidized Loan,Need-based loan where the government pays interest while student is enrolled,core/terminologies/award-type.json
-,loan_unsubsidized,Unsubsidized Loan,Non-need-based loan where interest accrues from disbursement,core/terminologies/award-type.json
-,loan_plus,PLUS Loan,Federal loan for parents of dependent undergrads or graduate/professional students,core/terminologies/award-type.json
-,loan_private,Private Loan,"Loan from a private lender, not part of federal programs",core/terminologies/award-type.json
-,work_study,Work-Study,Earnings from a federally or institutionally funded part-time employment program,core/terminologies/award-type.json
-,waiver,Tuition Waiver,Full or partial waiver of tuition or fees,core/terminologies/award-type.json
-,fellowship,Fellowship,"Financial support for graduate students, typically for research or academic merit",core/terminologies/award-type.json
-,assistantship,Assistantship,Graduate teaching or research assistantship with stipend and/or tuition remission,core/terminologies/award-type.json
-,other,Other,An award type not covered by the standard codes,core/terminologies/award-type.json
+helix/award-type,grant,Grant,"Gift aid that does not need to be repaid (e.g., Pell Grant)",core/terminologies/award-type.json
+helix/award-type,scholarship,Scholarship,Merit- or criteria-based gift aid that does not need to be repaid,core/terminologies/award-type.json
+helix/award-type,loan_subsidized,Subsidized Loan,Need-based loan where the government pays interest while student is enrolled,core/terminologies/award-type.json
+helix/award-type,loan_unsubsidized,Unsubsidized Loan,Non-need-based loan where interest accrues from disbursement,core/terminologies/award-type.json
+helix/award-type,loan_plus,PLUS Loan,Federal loan for parents of dependent undergrads or graduate/professional students,core/terminologies/award-type.json
+helix/award-type,loan_private,Private Loan,"Loan from a private lender, not part of federal programs",core/terminologies/award-type.json
+helix/award-type,work_study,Work-Study,Earnings from a federally or institutionally funded part-time employment program,core/terminologies/award-type.json
+helix/award-type,waiver,Tuition Waiver,Full or partial waiver of tuition or fees,core/terminologies/award-type.json
+helix/award-type,fellowship,Fellowship,"Financial support for graduate students, typically for research or academic merit",core/terminologies/award-type.json
+helix/award-type,assistantship,Assistantship,Graduate teaching or research assistantship with stipend and/or tuition remission,core/terminologies/award-type.json
+helix/award-type,other,Other,An award type not covered by the standard codes,core/terminologies/award-type.json
 helix/benefit-plan-type,medical,Medical Insurance,"Health insurance coverage for eligible employees and dependents. Institutions typically offer multiple plan options (PPO, HMO, HDHP). State employees may be on a state health plan.",core/terminologies/benefit-plan-type.json
 helix/benefit-plan-type,dental,Dental Insurance,"Dental care coverage, often offered as a separate plan from medical. May include preventive, basic, and major services with annual maximums.",core/terminologies/benefit-plan-type.json
 helix/benefit-plan-type,vision,Vision Insurance,"Vision care coverage for exams, lenses, and frames. Typically a voluntary, employee-paid benefit.",core/terminologies/benefit-plan-type.json
@@ -105,6 +122,15 @@ helix/constituent-type,foundation,Foundation,Private or community foundation,cor
 helix/constituent-type,organization,Organization,"Non-profit, association, or other entity",core/terminologies/constituent-type.json
 helix/constituent-type,prospect,Prospect,Identified potential donor not yet in the giving pipeline,core/terminologies/constituent-type.json
 helix/constituent-type,other,Other,,core/terminologies/constituent-type.json
+helix/continuing-ed-level,masters,Master's Degree,Pursuing a master's degree,core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,doctoral,Doctoral Degree,"Pursuing a research doctoral degree (PhD, EdD, etc.)",core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,professional_jd,Professional - JD,Pursuing a Juris Doctor (law),core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,professional_md,Professional - MD,Pursuing a Doctor of Medicine or equivalent health professional degree,core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,professional_other,Professional - Other,"Pursuing another first-professional degree (DDS, PharmD, DVM, etc.)",core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,second_bachelors,Second Bachelor's,Pursuing a second bachelor's degree,core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,certificate,Certificate,Pursuing a post-baccalaureate certificate,core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,postbaccalaureate,Post-Baccalaureate,"Pursuing post-baccalaureate coursework (e.g., pre-med post-bacc)",core/terminologies/continuing-ed-level.json
+helix/continuing-ed-level,postdoctoral,Postdoctoral,Pursuing postdoctoral study or research,core/terminologies/continuing-ed-level.json
 helix/contract-status,draft,Draft,"Contract is being drafted or assembled from templates. Terms, scope, pricing, and legal provisions under development by the requesting department and/or procurement/legal office.",core/terminologies/contract-status.json
 helix/contract-status,negotiation,In Negotiation,"Draft contract sent to the counterparty (vendor, consultant, partner institution). Terms being negotiated. Multiple redline cycles may occur. Legal counsel reviewing risk provisions.",core/terminologies/contract-status.json
 helix/contract-status,pending_approval,Pending Internal Approval,"Negotiation complete; contract routed for internal signature authority. Approval levels determined by contract value and type (procurement, real estate, sponsored program, affiliation agreement).",core/terminologies/contract-status.json
@@ -122,10 +148,10 @@ helix/course-level,doctoral,Doctoral,"700+ level. Doctoral seminars, research, d
 helix/course-level,professional,Professional,"Professional program courses (law, medicine, etc.) with their own numbering conventions.",core/terminologies/course-level.json
 helix/course-level,non_credit,Non-Credit,"Continuing education, professional development, or community courses not carrying academic credit.",core/terminologies/course-level.json
 helix/course-level,other,Other,,core/terminologies/course-level.json
-,public,Public,"Data approved for unrestricted public access (e.g., course catalog, institution name)",core/terminologies/data-classification.json
-,internal,Internal,"Data intended for institutional use only (e.g., enrollment counts, section capacity)",core/terminologies/data-classification.json
-,confidential,Confidential,"Data protected by regulation or policy (e.g., student PII, grades, financial aid). FERPA-protected data falls here at minimum.",core/terminologies/data-classification.json
-,restricted,Restricted,"Highly sensitive data requiring strict access controls (e.g., SSN, health records, disciplinary records)",core/terminologies/data-classification.json
+helix/data-classification,public,Public,"Data approved for unrestricted public access (e.g., course catalog, institution name)",core/terminologies/data-classification.json
+helix/data-classification,internal,Internal,"Data intended for institutional use only (e.g., enrollment counts, section capacity)",core/terminologies/data-classification.json
+helix/data-classification,confidential,Confidential,"Data protected by regulation or policy (e.g., student PII, grades, financial aid). FERPA-protected data falls here at minimum.",core/terminologies/data-classification.json
+helix/data-classification,restricted,Restricted,"Highly sensitive data requiring strict access controls (e.g., SSN, health records, disciplinary records)",core/terminologies/data-classification.json
 helix/degree-level,certificate_undergraduate,Undergraduate Certificate,Sub-baccalaureate certificate (less than 1 year or 1-2 years),core/terminologies/degree-level.json
 helix/degree-level,associate,Associate Degree,"Two-year degree (AA, AS, AAS, etc.)",core/terminologies/degree-level.json
 helix/degree-level,bachelors,Bachelor's Degree,"Four-year baccalaureate degree (BA, BS, BFA, etc.)",core/terminologies/degree-level.json
@@ -149,6 +175,18 @@ helix/delivery-mode,clinical,Clinical/Practicum,"Supervised hands-on experience 
 helix/delivery-mode,internship,Internship/Co-op,Work-integrated learning in a professional setting,core/terminologies/delivery-mode.json
 helix/delivery-mode,independent_study,Independent Study,Student-directed study under faculty supervision,core/terminologies/delivery-mode.json
 helix/delivery-mode,other,Other,,core/terminologies/delivery-mode.json
+helix/dependency-status,dependent,Dependent,Student must report parent information,core/terminologies/dependency-status.json
+helix/dependency-status,independent,Independent,Student meets an independence criterion; parent info not required,core/terminologies/dependency-status.json
+helix/dependency-status,dependency_override_approved,Dependency Override Approved,FAA approved an override to independent,core/terminologies/dependency-status.json
+helix/dependency-status,provisional_independent,Provisional Independent,"Provisionally independent pending documentation (e.g., homeless/unaccompanied youth)",core/terminologies/dependency-status.json
+helix/disbursement-status,scheduled,Scheduled,Disbursement scheduled for a future date,core/terminologies/disbursement-status.json
+helix/disbursement-status,pending,Pending,"Pending prerequisites (enrollment, MPN, etc.)",core/terminologies/disbursement-status.json
+helix/disbursement-status,held,Held,Held due to an outstanding requirement or hold,core/terminologies/disbursement-status.json
+helix/disbursement-status,disbursed,Disbursed,Fully disbursed to the student account,core/terminologies/disbursement-status.json
+helix/disbursement-status,partially_disbursed,Partially Disbursed,Partially disbursed,core/terminologies/disbursement-status.json
+helix/disbursement-status,cancelled,Cancelled,Disbursement cancelled,core/terminologies/disbursement-status.json
+helix/disbursement-status,returned,Returned,Disbursed funds returned,core/terminologies/disbursement-status.json
+helix/disbursement-status,refunded,Refunded,Credit balance refunded to the student,core/terminologies/disbursement-status.json
 helix/donor-segment,non_donor,Non-Donor,Constituent has never made a gift,core/terminologies/donor-segment.json
 helix/donor-segment,first_time,First-Time Donor,Made their first gift in the current fiscal year,core/terminologies/donor-segment.json
 helix/donor-segment,renewing,Renewing Donor,Gave last year and gave again this year at the same level,core/terminologies/donor-segment.json
@@ -167,6 +205,10 @@ helix/eeo-category,clerical_secretarial,Clerical/Secretarial,"Support staff in o
 helix/eeo-category,technical_paraprofessional,Technical/Paraprofessional,"Workers in technical roles typically requiring specialized training or an associate degree: lab technicians, IT support, library paraprofessionals, medical technicians, engineering technicians. Aligns with IPEDS Healthcare Practitioners, Computer/Engineering/Science Technicians.",core/terminologies/eeo-category.json
 helix/eeo-category,skilled_crafts,Skilled Crafts,"Workers in trades requiring apprenticeship or vocational training: electricians, plumbers, HVAC technicians, carpenters, painters, groundskeepers. Aligns with IPEDS Construction, Installation/Maintenance/Repair Occupations.",core/terminologies/eeo-category.json
 helix/eeo-category,service_maintenance,Service/Maintenance,"Workers in building maintenance, custodial, food service, public safety, transportation, and similar operational roles. Aligns with IPEDS Service Occupations (SOC 31-0000, 33-0000, 35-0000, 37-0000, 39-0000, 53-0000).",core/terminologies/eeo-category.json
+helix/employment-relation,directly_related,Directly Related,The position is directly in the graduate's field of study,core/terminologies/employment-relation.json
+helix/employment-relation,somewhat_related,Somewhat Related,The position is partially or tangentially related to the field of study,core/terminologies/employment-relation.json
+helix/employment-relation,not_related,Not Related,The position is unrelated to the field of study,core/terminologies/employment-relation.json
+helix/employment-relation,not_applicable,Not Applicable,Relation to major is not applicable or not reported,core/terminologies/employment-relation.json
 helix/employment-status,active,Active,"Currently employed and in active pay status. Includes workers on regular schedule, reduced schedule, or modified duties.",core/terminologies/employment-status.json
 helix/employment-status,inactive,Inactive,Employment record exists but individual is not currently in active pay status. Used for seasonal workers between terms or workers awaiting administrative processing.,core/terminologies/employment-status.json
 helix/employment-status,leave_of_absence,Leave of Absence,"Approved absence from duties with employment relationship maintained. Includes FMLA, personal leave, medical leave, military leave, sabbatical. Benefits continuation varies by leave type and institutional policy.",core/terminologies/employment-status.json
@@ -175,6 +217,13 @@ helix/employment-status,retired,Retired,"Employment ended through formal retirem
 helix/employment-status,suspended,Suspended,"Employment relationship maintained but worker is temporarily removed from duties, with or without pay. Typically pending investigation or disciplinary action.",core/terminologies/employment-status.json
 helix/employment-status,deceased,Deceased,"Worker is deceased. Triggers survivor benefit processing, final pay to estate, life insurance claim, and tax document generation (W-2 to estate/beneficiary).",core/terminologies/employment-status.json
 helix/employment-status,furloughed,Furloughed,"Temporary unpaid leave initiated by the institution, typically due to budget constraints. Employment relationship maintained; worker retains benefits eligibility in most cases.",core/terminologies/employment-status.json
+helix/employment-type-aid,federal_work_study,Federal Work-Study,FWS-funded employment,core/terminologies/employment-type-aid.json
+helix/employment-type-aid,institutional_work_study,Institutional Work-Study,Institution-funded work-study,core/terminologies/employment-type-aid.json
+helix/employment-type-aid,graduate_assistantship,Graduate Assistantship,Graduate assistantship (GA),core/terminologies/employment-type-aid.json
+helix/employment-type-aid,teaching_assistantship,Teaching Assistantship,Teaching assistantship (TA),core/terminologies/employment-type-aid.json
+helix/employment-type-aid,research_assistantship,Research Assistantship,Research assistantship (RA),core/terminologies/employment-type-aid.json
+helix/employment-type-aid,fellowship,Fellowship,Fellowship-supported position,core/terminologies/employment-type-aid.json
+helix/employment-type-aid,off_campus_community_service,Off-Campus Community Service,FWS community-service placement off campus,core/terminologies/employment-type-aid.json
 helix/enrollment-funnel-stage,suspect,Suspect,"Name purchased or scraped from College Board, ACT, NRCCUA, or other list source. No interaction yet.",core/terminologies/enrollment-funnel-stage.json
 helix/enrollment-funnel-stage,inquiry,Inquiry,"Student has initiated contact: RFI form, campus visit request, email, test score send, or fair card.",core/terminologies/enrollment-funnel-stage.json
 helix/enrollment-funnel-stage,applicant,Applicant,Student has submitted an application for admission.,core/terminologies/enrollment-funnel-stage.json
@@ -185,14 +234,14 @@ helix/enrollment-funnel-stage,enrolled,Enrolled,Student attended first day/censu
 helix/enrollment-funnel-stage,melted,Melted (Summer Melt),Student confirmed/deposited but did not register or attend. Lost between confirmation and enrollment.,core/terminologies/enrollment-funnel-stage.json
 helix/enrollment-funnel-stage,denied,Denied,Application was not approved.,core/terminologies/enrollment-funnel-stage.json
 helix/enrollment-funnel-stage,withdrawn,Withdrawn,Student withdrew application or rescinded deposit before enrollment.,core/terminologies/enrollment-funnel-stage.json
-,registered,Registered,Student has registered but the term has not started or census has not passed,core/terminologies/enrollment-status.json
-,waitlisted,Waitlisted,Student is on a waitlist for the section,core/terminologies/enrollment-status.json
-,enrolled,Enrolled,Student is confirmed enrolled (post-census or post-start),core/terminologies/enrollment-status.json
-,dropped,Dropped,Student dropped the course before the institution's drop deadline (typically no record on transcript),core/terminologies/enrollment-status.json
-,withdrawn,Withdrawn,Student withdrew after the drop deadline (typically a 'W' on transcript),core/terminologies/enrollment-status.json
-,completed,Completed,Student completed the course and received a final grade,core/terminologies/enrollment-status.json
-,incomplete,Incomplete,Student received an incomplete grade with a deadline for completion,core/terminologies/enrollment-status.json
-,auditing,Auditing,Student is attending the course without receiving credit or a grade,core/terminologies/enrollment-status.json
+helix/enrollment-status,registered,Registered,Student has registered but the term has not started or census has not passed,core/terminologies/enrollment-status.json
+helix/enrollment-status,waitlisted,Waitlisted,Student is on a waitlist for the section,core/terminologies/enrollment-status.json
+helix/enrollment-status,enrolled,Enrolled,Student is confirmed enrolled (post-census or post-start),core/terminologies/enrollment-status.json
+helix/enrollment-status,dropped,Dropped,Student dropped the course before the institution's drop deadline (typically no record on transcript),core/terminologies/enrollment-status.json
+helix/enrollment-status,withdrawn,Withdrawn,Student withdrew after the drop deadline (typically a 'W' on transcript),core/terminologies/enrollment-status.json
+helix/enrollment-status,completed,Completed,Student completed the course and received a final grade,core/terminologies/enrollment-status.json
+helix/enrollment-status,incomplete,Incomplete,Student received an incomplete grade with a deadline for completion,core/terminologies/enrollment-status.json
+helix/enrollment-status,auditing,Auditing,Student is attending the course without receiving credit or a grade,core/terminologies/enrollment-status.json
 helix/ethnicity,hispanic_latino,Hispanic or Latino,"A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race",core/terminologies/ethnicity.json
 helix/ethnicity,american_indian_alaska_native,American Indian or Alaska Native,,core/terminologies/ethnicity.json
 helix/ethnicity,asian,Asian,,core/terminologies/ethnicity.json
@@ -211,6 +260,18 @@ helix/expense-status,paid,Paid/Reimbursed,Reimbursement issued to the employee v
 helix/expense-status,returned,Returned for Correction,"Report sent back to the submitter due to issues: missing receipts, incorrect account coding, policy violations (exceeded per diem, unauthorized expenses), or missing pre-trip authorization.",core/terminologies/expense-status.json
 helix/expense-status,denied,Denied,"Expense report rejected. Common reasons: expense not allowable per policy, insufficient documentation, travel not pre-approved, exceeds budget authority, or retroactive request beyond the submission deadline (typically 30-60 days).",core/terminologies/expense-status.json
 helix/expense-status,under_audit,Under Audit,"Report flagged for detailed review by the travel office or internal audit. May be random selection, high-dollar threshold, or triggered by anomaly detection. Employee may need to provide additional documentation.",core/terminologies/expense-status.json
+helix/experiential-type,internship,Internship,"Supervised professional work experience, often for academic credit",core/terminologies/experiential-type.json
+helix/experiential-type,co_op,Cooperative Education (Co-op),Structured alternation of academic study and full-time paid employment,core/terminologies/experiential-type.json
+helix/experiential-type,practicum,Practicum,Supervised practical application of coursework in a professional setting,core/terminologies/experiential-type.json
+helix/experiential-type,clinical_rotation,Clinical Rotation,Supervised clinical experience in health-professions programs,core/terminologies/experiential-type.json
+helix/experiential-type,student_teaching,Student Teaching,Supervised classroom teaching experience for education majors,core/terminologies/experiential-type.json
+helix/experiential-type,undergraduate_research,Undergraduate Research,Mentored scholarly or creative research,core/terminologies/experiential-type.json
+helix/experiential-type,service_learning,Service Learning,Community service integrated with academic instruction and reflection,core/terminologies/experiential-type.json
+helix/experiential-type,field_experience,Field Experience,Learning in a real-world field setting,core/terminologies/experiential-type.json
+helix/experiential-type,externship,Externship,Short-term job shadowing or observational experience,core/terminologies/experiential-type.json
+helix/experiential-type,apprenticeship,Apprenticeship,Structured earn-and-learn program combining work and instruction,core/terminologies/experiential-type.json
+helix/experiential-type,capstone_project,Capstone Project,Culminating integrative project or experience,core/terminologies/experiential-type.json
+helix/experiential-type,study_abroad,Study Abroad,Academic study in another country,core/terminologies/experiential-type.json
 helix/faculty-rank,instructor,Instructor,"Entry-level teaching appointment, typically requiring a master's degree. Usually non-tenure-track. May be full-time or part-time. Some institutions use this rank for ABD (all but dissertation) candidates.",core/terminologies/faculty-rank.json
 helix/faculty-rank,lecturer,Lecturer,"Teaching-focused appointment, typically non-tenure-track. May be full-time with renewable multi-year contracts. Some institutions have a lecturer promotion track (Lecturer → Senior Lecturer → Principal Lecturer/Teaching Professor).",core/terminologies/faculty-rank.json
 helix/faculty-rank,senior_lecturer,Senior Lecturer,Promoted teaching-focused rank above Lecturer. Recognizes sustained excellence in teaching and service. May carry additional responsibilities such as curriculum coordination or mentoring.,core/terminologies/faculty-rank.json
@@ -224,9 +285,28 @@ helix/faculty-rank,clinical_professor,Clinical Professor,"Non-tenure-track rank 
 helix/faculty-rank,research_professor,Research Professor,Non-tenure-track rank for faculty primarily funded by external grants/contracts. Expected to be substantially (often 80-100%) externally funded. May have its own promotion track. Teaching is typically minimal or by choice.,core/terminologies/faculty-rank.json
 helix/faculty-rank,professor_of_practice,Professor of Practice,"Non-tenure-track rank for individuals with significant professional experience outside academia who bring practitioner expertise to teaching. Common in business, engineering, law, and public policy. Terminal degree not always required.",core/terminologies/faculty-rank.json
 helix/faculty-rank,visiting_professor,Visiting Professor,Temporary appointment (typically 1-2 years) for a faculty member from another institution or a scholar-in-residence. Rank mirrors the visitor's home rank or the level of the appointment.,core/terminologies/faculty-rank.json
+helix/first-destination-status,employed_full_time,Employed Full-Time,Working in a full-time paid position (typically 30+ hours/week),core/terminologies/first-destination-status.json
+helix/first-destination-status,employed_part_time,Employed Part-Time,Working in a part-time paid position,core/terminologies/first-destination-status.json
+helix/first-destination-status,continuing_education,Continuing Education,Enrolled in a program of continuing/further education,core/terminologies/first-destination-status.json
+helix/first-destination-status,military_service,Military Service,Serving in the armed forces,core/terminologies/first-destination-status.json
+helix/first-destination-status,volunteer_service,Volunteer/Service Program,"Participating in a volunteer or service program (e.g., Peace Corps, AmeriCorps)",core/terminologies/first-destination-status.json
+helix/first-destination-status,seeking_employment,Seeking Employment,"Actively seeking employment, not yet employed",core/terminologies/first-destination-status.json
+helix/first-destination-status,seeking_continuing_education,Seeking Continuing Education,Actively seeking to enroll in further education,core/terminologies/first-destination-status.json
+helix/first-destination-status,not_seeking,Not Seeking,Not seeking employment or continuing education (by choice),core/terminologies/first-destination-status.json
+helix/first-destination-status,self_employed,Self-Employed,Working in a self-owned business or practice,core/terminologies/first-destination-status.json
+helix/first-destination-status,freelance_contract,Freelance/Contract,Engaged in freelance or contract work,core/terminologies/first-destination-status.json
+helix/first-destination-status,postgrad_fellowship,Postgraduate Fellowship,Participating in a postgraduate fellowship or internship,core/terminologies/first-destination-status.json
+helix/first-destination-status,unknown,Unknown,Outcome unknown; no reasonable and verifiable information available (excluded from knowledge rate),core/terminologies/first-destination-status.json
 helix/flsa-status,exempt,Exempt,"Employee exempt from FLSA overtime provisions. Must meet both salary threshold ($35,568/year as of 2024 DOL rule, subject to judicial review) and duties test (executive, administrative, professional, computer, or outside sales exemption). Most faculty, administrators, and professional staff are exempt.",core/terminologies/flsa-status.json
 helix/flsa-status,non_exempt,Non-Exempt,"Employee entitled to FLSA overtime (1.5x regular rate for hours over 40 per workweek). Must track hours worked. Includes most clerical, technical, skilled trades, and service/maintenance workers. Student workers are typically non-exempt but may be FICA-exempt.",core/terminologies/flsa-status.json
 helix/flsa-status,exempt_teaching,Exempt — Teaching Professional,"Faculty and instructors meeting the learned professional exemption for teaching. No salary threshold required for bona fide teachers. Primary duty must be teaching, tutoring, instructing, or lecturing.",core/terminologies/flsa-status.json
+helix/fund-source,federal,Federal,Federal Title IV or other federal source,core/terminologies/fund-source.json
+helix/fund-source,state,State,State grant/scholarship agency,core/terminologies/fund-source.json
+helix/fund-source,institutional,Institutional,Institution's own funds,core/terminologies/fund-source.json
+helix/fund-source,private,Private,Private/external scholarship or donor,core/terminologies/fund-source.json
+helix/fund-source,employer,Employer,Employer tuition benefit or sponsorship,core/terminologies/fund-source.json
+helix/fund-source,tribal,Tribal,Tribal nation education funding,core/terminologies/fund-source.json
+helix/fund-source,foreign_government,Foreign Government,Foreign government sponsorship,core/terminologies/fund-source.json
 helix/fund-type,unrestricted,Unrestricted Operating,"General operating funds with no externally imposed restrictions on use. Funded primarily by tuition, state appropriations (public), and unrestricted gifts. The institution's primary discretionary resource pool.",core/terminologies/fund-type.json
 helix/fund-type,temporarily_restricted,Temporarily Restricted,Funds restricted by the donor or grantor for a specific purpose or time period. Restriction is satisfied when the purpose is fulfilled or the time period elapses. FASB ASC 958 (private institutions) terminology; GASB uses 'restricted — expendable.',core/terminologies/fund-type.json
 helix/fund-type,permanently_restricted,Permanently Restricted (Endowment),"Funds where the donor has stipulated that the principal must be maintained in perpetuity. Only the investment return (subject to spending policy) may be used, and typically only for the donor's designated purpose. FASB ASC 958 terminology; GASB uses 'restricted — nonexpendable.'",core/terminologies/fund-type.json
@@ -268,11 +348,11 @@ helix/gift-type,daf,Donor Advised Fund,"Grant from a donor advised fund (Fidelit
 helix/gift-type,corporate_grant,Corporate Grant,Grant from a corporation (distinct from matching gift),core/terminologies/gift-type.json
 helix/gift-type,foundation_grant,Foundation Grant,Grant from a private or community foundation,core/terminologies/gift-type.json
 helix/gift-type,other,Other,,core/terminologies/gift-type.json
-,standard,Standard Letter Grade,Traditional A-F grading scale with GPA impact,core/terminologies/grade-mode.json
-,pass_fail,Pass/Fail,Binary pass or fail with no GPA impact,core/terminologies/grade-mode.json
-,audit,Audit,No grade or credit awarded; student attends for learning only,core/terminologies/grade-mode.json
-,satisfactory_unsatisfactory,Satisfactory/Unsatisfactory,"S/U grading, common for graduate research hours or clinical rotations",core/terminologies/grade-mode.json
-,other,Other,An institution-specific grading mode. Document in extensions.,core/terminologies/grade-mode.json
+helix/grade-mode,standard,Standard Letter Grade,Traditional A-F grading scale with GPA impact,core/terminologies/grade-mode.json
+helix/grade-mode,pass_fail,Pass/Fail,Binary pass or fail with no GPA impact,core/terminologies/grade-mode.json
+helix/grade-mode,audit,Audit,No grade or credit awarded; student attends for learning only,core/terminologies/grade-mode.json
+helix/grade-mode,satisfactory_unsatisfactory,Satisfactory/Unsatisfactory,"S/U grading, common for graduate research hours or clinical rotations",core/terminologies/grade-mode.json
+helix/grade-mode,other,Other,An institution-specific grading mode. Document in extensions.,core/terminologies/grade-mode.json
 helix/grant-status,pre_award,Pre-Award,"Proposal submitted to the sponsor; award not yet received. Institutional pre-award office has reviewed budget, compliance, and authorized submission. May include pre-award spending authorization if sponsor allows.",core/terminologies/grant-status.json
 helix/grant-status,pending,Pending/Under Review,"Proposal is being reviewed by the funding agency. May involve peer review, panel review, or program officer evaluation. Timeline varies: NSF 6 months, NIH 9-12 months, foundations 2-4 months.",core/terminologies/grant-status.json
 helix/grant-status,negotiation,Award Negotiation,"Sponsor intends to fund but terms are being negotiated. Common negotiation points: F&A rate, cost sharing, publication rights, IP ownership, subaward terms, human subjects protocol approval.",core/terminologies/grant-status.json
@@ -295,6 +375,17 @@ helix/hold-type,admissions,Admissions Hold,"Missing admissions documents (final 
 helix/hold-type,international,International Hold,"Visa compliance, SEVIS reporting, or international student office clearance",core/terminologies/hold-type.json
 helix/hold-type,parking,Parking Hold,Unpaid parking fines or violations,core/terminologies/hold-type.json
 helix/hold-type,other,Other,,core/terminologies/hold-type.json
+helix/honor-type,latin_honors,Latin Honors,"Cum laude, magna cum laude, or summa cum laude designation",core/terminologies/honor-type.json
+helix/honor-type,deans_list,Dean's List,Term-based academic recognition by a college/school,core/terminologies/honor-type.json
+helix/honor-type,presidents_list,President's List,Term-based academic recognition at the institutional level (typically highest GPA tier),core/terminologies/honor-type.json
+helix/honor-type,departmental_award,Departmental Award,Award granted by an academic department,core/terminologies/honor-type.json
+helix/honor-type,institutional_award,Institutional Award,Award granted at the institutional level,core/terminologies/honor-type.json
+helix/honor-type,national_award,National Award,"Nationally recognized award or honor (e.g., Fulbright, Goldwater)",core/terminologies/honor-type.json
+helix/honor-type,scholarship,Scholarship,A scholarship awarded to the student,core/terminologies/honor-type.json
+helix/honor-type,fellowship,Fellowship,A fellowship awarded to the student,core/terminologies/honor-type.json
+helix/honor-type,academic_distinction,Academic Distinction,General academic distinction or recognition,core/terminologies/honor-type.json
+helix/honor-type,graduation_honor,Graduation Honor,"Honor conferred at graduation (e.g., honors program completion)",core/terminologies/honor-type.json
+helix/honor-type,honor_society,Honor Society,"Induction into an honor society (e.g., Phi Beta Kappa)",core/terminologies/honor-type.json
 helix/identifier-type,institutional_id,Institutional ID,The primary student/person ID assigned by the institution,core/terminologies/identifier-type.json
 helix/identifier-type,national_id,National ID,"Government-issued national identifier (e.g., SSN in US, SIN in Canada, NI Number in UK)",core/terminologies/identifier-type.json
 helix/identifier-type,ssn_last4,SSN Last 4,Last 4 digits of Social Security Number. Full SSN should never be stored in HELIX.,core/terminologies/identifier-type.json
@@ -316,6 +407,52 @@ helix/learning-type,self_paced,Self-Paced / E-Learning,"Asynchronous online lear
 helix/learning-type,on_the_job,On-the-Job Training,"Structured learning occurring during normal work through observation, shadowing, job rotation, or stretch assignments. Typically documented in the performance management system.",core/terminologies/learning-type.json
 helix/learning-type,mentoring,Mentoring Program,"Formal or informal pairing of experienced and less-experienced employees for professional growth. May be part of new employee onboarding, leadership development, or faculty development programs.",core/terminologies/learning-type.json
 helix/learning-type,compliance_training,Mandatory Compliance Training,"Required training for regulatory compliance: Title IX, FERPA, GLBA information security, Clery Act, hazardous materials, conflict of interest, responsible conduct of research, driver safety. Non-completion may trigger hold on system access or pay.",core/terminologies/learning-type.json
+helix/licensure-result,pass,Pass,Passed the examination,core/terminologies/licensure-result.json
+helix/licensure-result,fail,Fail,Did not pass the examination,core/terminologies/licensure-result.json
+helix/licensure-result,pass_first_attempt,Pass - First Attempt,Passed on the first attempt (key accreditation metric),core/terminologies/licensure-result.json
+helix/licensure-result,pass_subsequent_attempt,Pass - Subsequent Attempt,Passed on a subsequent attempt,core/terminologies/licensure-result.json
+helix/licensure-result,pending,Pending,Result pending,core/terminologies/licensure-result.json
+helix/licensure-result,scheduled,Scheduled,Exam scheduled but not yet taken,core/terminologies/licensure-result.json
+helix/licensure-result,no_show,No Show,Registered but did not sit for the exam,core/terminologies/licensure-result.json
+helix/licensure-result,conditional,Conditional,Conditional pass pending additional requirements,core/terminologies/licensure-result.json
+helix/licensure-type,nursing_nclex,Nursing - NCLEX,"National Council Licensure Examination for nurses (NCLEX-RN, NCLEX-PN)",core/terminologies/licensure-type.json
+helix/licensure-type,cpa,CPA Exam,Uniform Certified Public Accountant Examination,core/terminologies/licensure-type.json
+helix/licensure-type,bar_exam,Bar Exam,State bar examination for attorneys,core/terminologies/licensure-type.json
+helix/licensure-type,teaching_praxis,Teaching - Praxis,Praxis series exams for teacher licensure,core/terminologies/licensure-type.json
+helix/licensure-type,medical_usmle,Medical - USMLE,United States Medical Licensing Examination,core/terminologies/licensure-type.json
+helix/licensure-type,pharmacy_naplex,Pharmacy - NAPLEX,North American Pharmacist Licensure Examination,core/terminologies/licensure-type.json
+helix/licensure-type,engineering_pe,Engineering - PE/FE,Fundamentals of Engineering and Principles and Practice of Engineering exams,core/terminologies/licensure-type.json
+helix/licensure-type,social_work,Social Work,ASWB social work licensure examination,core/terminologies/licensure-type.json
+helix/licensure-type,counseling,Counseling,"Counseling licensure examination (e.g., NCE)",core/terminologies/licensure-type.json
+helix/licensure-type,dental,Dental,"Dental licensure examination (e.g., INBDE)",core/terminologies/licensure-type.json
+helix/licensure-type,veterinary,Veterinary,North American Veterinary Licensing Examination (NAVLE),core/terminologies/licensure-type.json
+helix/licensure-type,physical_therapy,Physical Therapy,National Physical Therapy Examination (NPTE),core/terminologies/licensure-type.json
+helix/licensure-type,other,Other,Another professional licensure or certification exam,core/terminologies/licensure-type.json
+helix/loan-status,originated,Originated,Loan originated,core/terminologies/loan-status.json
+helix/loan-status,pending_mpn,Pending MPN,Awaiting a signed Master Promissory Note,core/terminologies/loan-status.json
+helix/loan-status,pending_counseling,Pending Counseling,Awaiting required entrance counseling,core/terminologies/loan-status.json
+helix/loan-status,certified,Certified,Loan certified by the school,core/terminologies/loan-status.json
+helix/loan-status,disbursed,Disbursed,Loan funds disbursed,core/terminologies/loan-status.json
+helix/loan-status,in_school_deferment,In-School Deferment,In deferment while enrolled,core/terminologies/loan-status.json
+helix/loan-status,grace_period,Grace Period,In post-enrollment grace period,core/terminologies/loan-status.json
+helix/loan-status,repayment,Repayment,In active repayment,core/terminologies/loan-status.json
+helix/loan-status,cancelled,Cancelled,Loan cancelled/inactivated,core/terminologies/loan-status.json
+helix/loan-status,returned,Returned,Loan funds returned to the servicer/COD,core/terminologies/loan-status.json
+helix/loan-type,direct_subsidized,Direct Subsidized Loan,Need-based federal Direct Subsidized Loan,core/terminologies/loan-type.json
+helix/loan-type,direct_unsubsidized,Direct Unsubsidized Loan,Non-need federal Direct Unsubsidized Loan,core/terminologies/loan-type.json
+helix/loan-type,direct_plus_parent,Direct PLUS (Parent),Federal Direct PLUS loan to a parent (Parent PLUS),core/terminologies/loan-type.json
+helix/loan-type,direct_plus_grad,Direct PLUS (Graduate),Federal Direct PLUS loan to a graduate/professional student (Grad PLUS),core/terminologies/loan-type.json
+helix/loan-type,perkins,Federal Perkins Loan,Legacy Federal Perkins Loan (program ended 2017),core/terminologies/loan-type.json
+helix/loan-type,direct_consolidation,Direct Consolidation Loan,Federal Direct Consolidation Loan,core/terminologies/loan-type.json
+helix/loan-type,private_alternative,Private/Alternative Loan,Private education loan from a non-federal lender,core/terminologies/loan-type.json
+helix/loan-type,institutional_loan,Institutional Loan,Loan funded by the institution,core/terminologies/loan-type.json
+helix/loan-type,heal,HEAL,Health Education Assistance Loan (legacy),core/terminologies/loan-type.json
+helix/outcome-type,program_learning_outcome,Program Learning Outcome (PLO),A learning outcome defined at the program/major level,core/terminologies/outcome-type.json
+helix/outcome-type,course_learning_outcome,Course Learning Outcome (CLO),A learning outcome defined at the course level,core/terminologies/outcome-type.json
+helix/outcome-type,institutional_learning_outcome,Institutional Learning Outcome (ILO),An institution-wide learning outcome,core/terminologies/outcome-type.json
+helix/outcome-type,general_education_competency,General Education Competency,A general-education/core-curriculum competency,core/terminologies/outcome-type.json
+helix/outcome-type,professional_competency,Professional Competency,"A profession-specific competency, often accreditation-defined",core/terminologies/outcome-type.json
+helix/outcome-type,accreditation_standard,Accreditation Standard,An outcome mapped directly to an accreditation standard,core/terminologies/outcome-type.json
 helix/pay-frequency,biweekly,Biweekly,Paid every two weeks (26 pay periods per year). Most common for hourly/non-exempt staff in higher education. Creates occasional three-paycheck months.,core/terminologies/pay-frequency.json
 helix/pay-frequency,semimonthly,Semi-Monthly,"Paid twice per month, typically on the 1st and 15th or 15th and last day (24 pay periods per year). Common for exempt staff at some institutions.",core/terminologies/pay-frequency.json
 helix/pay-frequency,monthly,Monthly,Paid once per month (12 pay periods per year). Most common for faculty and senior administrators. 9-month faculty may receive pay over 9 or 12 months depending on election.,core/terminologies/pay-frequency.json
@@ -338,13 +475,13 @@ helix/performance-rating,partially_meets,Partially Meets Expectations,"Performan
 helix/performance-rating,does_not_meet,Does Not Meet Expectations,"Performance fails to meet minimum requirements of the position despite prior feedback and support. May trigger formal corrective action, reassignment, or termination process. Must be well-documented.",core/terminologies/performance-rating.json
 helix/performance-rating,not_rated,Not Rated,"Performance not formally evaluated for this period. Used for new employees in probationary period, employees on extended leave, or positions where evaluation was deferred.",core/terminologies/performance-rating.json
 helix/performance-rating,improvement_demonstrated,Improvement Demonstrated,Used following a performance improvement plan (PIP). Employee has shown measurable progress toward meeting expectations but monitoring continues. PIP may be extended or concluded.,core/terminologies/performance-rating.json
-,semester,Semester,"A ~15-week academic term (typically Fall, Spring). Most common in US institutions.",core/terminologies/period-type.json
-,quarter,Quarter,"A ~10-week academic term (typically Fall, Winter, Spring, Summer)",core/terminologies/period-type.json
-,trimester,Trimester,A ~13-week term dividing the year into three periods,core/terminologies/period-type.json
-,session,Session,A sub-term or accelerated term within a semester or quarter,core/terminologies/period-type.json
-,mini_term,Mini-Term,"A short-duration term (e.g., May term, Winterim, 8-week session)",core/terminologies/period-type.json
-,academic_year,Academic Year,"A full academic year container (e.g., '2026-2027'). Used for annual financial aid and reporting.",core/terminologies/period-type.json
-,other,Other,A period type not covered by the standard codes. Document in extensions.,core/terminologies/period-type.json
+helix/period-type,semester,Semester,"A ~15-week academic term (typically Fall, Spring). Most common in US institutions.",core/terminologies/period-type.json
+helix/period-type,quarter,Quarter,"A ~10-week academic term (typically Fall, Winter, Spring, Summer)",core/terminologies/period-type.json
+helix/period-type,trimester,Trimester,A ~13-week term dividing the year into three periods,core/terminologies/period-type.json
+helix/period-type,session,Session,A sub-term or accelerated term within a semester or quarter,core/terminologies/period-type.json
+helix/period-type,mini_term,Mini-Term,"A short-duration term (e.g., May term, Winterim, 8-week session)",core/terminologies/period-type.json
+helix/period-type,academic_year,Academic Year,"A full academic year container (e.g., '2026-2027'). Used for annual financial aid and reporting.",core/terminologies/period-type.json
+helix/period-type,other,Other,A period type not covered by the standard codes. Document in extensions.,core/terminologies/period-type.json
 helix/position-status,open,Open,Position is authorized and funded but currently vacant. Available for recruitment or internal transfer.,core/terminologies/position-status.json
 helix/position-status,filled,Filled,Position is occupied by an active worker. One position may map to multiple workers if job-shared.,core/terminologies/position-status.json
 helix/position-status,frozen,Frozen,"Position exists in the system but hiring is suspended, typically due to budget constraints or hiring freeze. The position's budget may be temporarily redirected.",core/terminologies/position-status.json
@@ -366,6 +503,13 @@ helix/purchase-order-status,received,Fully Received,All items/services on the PO
 helix/purchase-order-status,closed,Closed,PO fully received and all invoices paid. Any remaining encumbrance is liquidated (released back to available budget). PO is archived.,core/terminologies/purchase-order-status.json
 helix/purchase-order-status,cancelled,Cancelled,"PO cancelled before completion. Encumbrance reversed. If any payments were made (partial receipt), the cancellation applies only to the unreceived portion. May require vendor notification.",core/terminologies/purchase-order-status.json
 helix/purchase-order-status,change_order,Change Order/Amendment,"PO modified after dispatch. Changes may include quantity, price, delivery date, or specifications. Requires approval and may re-trigger budget checking if the total increases.",core/terminologies/purchase-order-status.json
+helix/r2t4-status,withdrawal_reported,Withdrawal Reported,A withdrawal has been reported,core/terminologies/r2t4-status.json
+helix/r2t4-status,calculation_pending,Calculation Pending,R2T4 calculation not yet completed,core/terminologies/r2t4-status.json
+helix/r2t4-status,calculation_complete,Calculation Complete,R2T4 calculation completed,core/terminologies/r2t4-status.json
+helix/r2t4-status,funds_returned,Funds Returned,Required funds returned by school and/or student,core/terminologies/r2t4-status.json
+helix/r2t4-status,post_withdrawal_offered,Post-Withdrawal Disbursement Offered,A post-withdrawal disbursement was offered,core/terminologies/r2t4-status.json
+helix/r2t4-status,pwd_disbursed,Post-Withdrawal Disbursement Made,A post-withdrawal disbursement was made,core/terminologies/r2t4-status.json
+helix/r2t4-status,closed,Closed,R2T4 process closed,core/terminologies/r2t4-status.json
 helix/requisition-status,draft,Draft,"Requisition created but not yet submitted for approval. Hiring manager is still completing position details, justification, and funding information.",core/terminologies/requisition-status.json
 helix/requisition-status,pending_approval,Pending Approval,"Requisition submitted and awaiting approval through the institutional chain (department head, dean/VP, budget office, HR classification, provost, president — varies by position level).",core/terminologies/requisition-status.json
 helix/requisition-status,approved,Approved,Requisition approved through all required levels. Ready for posting. HR may need to finalize the job posting language and determine advertising venues.,core/terminologies/requisition-status.json
@@ -382,14 +526,14 @@ helix/sap-status,probation,SAP Probation,"Student failed SAP, appealed successfu
 helix/sap-status,suspension,SAP Suspension,Student is ineligible for federal financial aid due to failure to meet SAP requirements,core/terminologies/sap-status.json
 helix/sap-status,appeal_approved,Appeal Approved,SAP appeal approved. Student placed on probation with an academic plan.,core/terminologies/sap-status.json
 helix/sap-status,not_evaluated,Not Yet Evaluated,"SAP has not been evaluated for this period (e.g., first term)",core/terminologies/sap-status.json
-,prospective,Prospective,Person has expressed interest but has not applied,core/terminologies/student-status.json
-,applicant,Applicant,Person has submitted an application for admission,core/terminologies/student-status.json
-,admitted,Admitted,Application accepted; student has not yet enrolled,core/terminologies/student-status.json
-,enrolled,Enrolled,Student is actively registered in courses for a current or future term,core/terminologies/student-status.json
-,leave_of_absence,Leave of Absence,Student has an approved leave and intends to return,core/terminologies/student-status.json
-,withdrawn,Withdrawn,Student has voluntarily or administratively separated from the institution,core/terminologies/student-status.json
-,graduated,Graduated,"Student has been conferred a degree, certificate, or credential",core/terminologies/student-status.json
-,deceased,Deceased,Student is deceased. Record retained for historical and compliance purposes.,core/terminologies/student-status.json
+helix/student-status,prospective,Prospective,Person has expressed interest but has not applied,core/terminologies/student-status.json
+helix/student-status,applicant,Applicant,Person has submitted an application for admission,core/terminologies/student-status.json
+helix/student-status,admitted,Admitted,Application accepted; student has not yet enrolled,core/terminologies/student-status.json
+helix/student-status,enrolled,Enrolled,Student is actively registered in courses for a current or future term,core/terminologies/student-status.json
+helix/student-status,leave_of_absence,Leave of Absence,Student has an approved leave and intends to return,core/terminologies/student-status.json
+helix/student-status,withdrawn,Withdrawn,Student has voluntarily or administratively separated from the institution,core/terminologies/student-status.json
+helix/student-status,graduated,Graduated,"Student has been conferred a degree, certificate, or credential",core/terminologies/student-status.json
+helix/student-status,deceased,Deceased,Student is deceased. Record retained for historical and compliance purposes.,core/terminologies/student-status.json
 helix/student-type,first_time_freshman,First-Time Freshman,"Entering college for the first time (no prior postsecondary enrollment). IPEDS: First-time, first-year.",core/terminologies/student-type.json
 helix/student-type,transfer,Transfer Student,Entering with credits from another postsecondary institution,core/terminologies/student-type.json
 helix/student-type,readmit,Readmit,"Previously enrolled at this institution, returning after a break in enrollment",core/terminologies/student-type.json
@@ -400,6 +544,13 @@ helix/student-type,non_degree,Non-Degree Seeking,Taking courses without pursuing
 helix/student-type,post_baccalaureate,Post-Baccalaureate,"Has a bachelor's degree, taking additional undergraduate courses",core/terminologies/student-type.json
 helix/student-type,audit_only,Audit Only,Enrolled solely to audit courses without credit,core/terminologies/student-type.json
 helix/student-type,other,Other,,core/terminologies/student-type.json
+helix/survey-status,not_sent,Not Sent,Survey has not yet been sent,core/terminologies/survey-status.json
+helix/survey-status,sent,Sent,Survey has been sent to the graduate,core/terminologies/survey-status.json
+helix/survey-status,in_progress,In Progress,Survey response is in progress,core/terminologies/survey-status.json
+helix/survey-status,completed,Completed,Survey fully completed,core/terminologies/survey-status.json
+helix/survey-status,partial,Partial,Survey partially completed,core/terminologies/survey-status.json
+helix/survey-status,no_response,No Response,No response received,core/terminologies/survey-status.json
+helix/survey-status,opted_out,Opted Out,Graduate opted out of the survey,core/terminologies/survey-status.json
 helix/tenure-status,pre_tenure,Pre-Tenure (Probationary),Faculty member on the tenure track who has not yet undergone tenure review. Typically in a 6-year probationary period with annual reviews and a mid-probationary (third-year) review. Clock extensions may be granted for qualifying life events.,core/terminologies/tenure-status.json
 helix/tenure-status,tenured,Tenured,"Faculty member who has been granted tenure following successful review. Provides protection against termination without cause (financial exigency, program discontinuance, or adequate cause with due process). The cornerstone of academic freedom.",core/terminologies/tenure-status.json
 helix/tenure-status,non_tenure_track,Non-Tenure-Track (NTT),"Faculty member in a position not eligible for tenure. Includes lecturers, clinical faculty, research faculty, professors of practice, and adjuncts. Appointments may be single-year, multi-year, or rolling. Increasingly the majority of faculty in US higher education.",core/terminologies/tenure-status.json
@@ -416,6 +567,15 @@ helix/transaction-type,elimination,Elimination,"Entry to eliminate intra-entity 
 helix/transaction-type,statistical,Statistical Entry,"Non-monetary entry recording statistical data (headcount, square footage, FTE) in the ledger for allocation and reporting purposes. Does not affect financial balances.",core/terminologies/transaction-type.json
 helix/transaction-type,budget_entry,Budget Entry,"Entry to record the original budget, budget modifications, or encumbrances. In commitment control systems (PeopleSoft), budget entries establish spending authority against which transactions are checked.",core/terminologies/transaction-type.json
 helix/transaction-type,encumbrance,Encumbrance,"Entry to reserve budget for a committed future expenditure (purchase order, contract, salary commitment). Reduces available budget without recording an actual expense. Liquidated when the actual expense posts.",core/terminologies/transaction-type.json
+helix/verification-status,selected,Selected,ISIR selected for verification,core/terminologies/verification-status.json
+helix/verification-status,documents_requested,Documents Requested,Required documents requested from the student,core/terminologies/verification-status.json
+helix/verification-status,documents_partial,Documents Partial,Some but not all documents received,core/terminologies/verification-status.json
+helix/verification-status,documents_complete,Documents Complete,All required documents received,core/terminologies/verification-status.json
+helix/verification-status,in_review,In Review,Documents under review,core/terminologies/verification-status.json
+helix/verification-status,conflicting_information,Conflicting Information,Conflicting information identified; must be resolved,core/terminologies/verification-status.json
+helix/verification-status,completed,Completed,Verification completed,core/terminologies/verification-status.json
+helix/verification-status,incomplete,Incomplete,Verification not completed; aid may be forfeited,core/terminologies/verification-status.json
+helix/verification-status,waived,Waived,Verification requirement waived per allowable exclusion,core/terminologies/verification-status.json
 helix/veteran-status,none,No Military Affiliation,,core/terminologies/veteran-status.json
 helix/veteran-status,veteran,Veteran,Former member of the armed forces who has been discharged,core/terminologies/veteran-status.json
 helix/veteran-status,active_duty,Active Duty,Currently serving in the armed forces,core/terminologies/veteran-status.json

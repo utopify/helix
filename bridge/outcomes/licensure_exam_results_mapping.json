@@ -1,0 +1,131 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Licensure Exam Results → Licensure",
+  "source_system": "licensure_exam_results",
+  "module": "Licensure and certification results",
+  "source_objects": [
+    {
+      "object": "Individual result files",
+      "description": "Results the testing agency or board sends to the program, where allowed: Praxis score reports sent to the school as a recipient, USMLE results to medical schools, NAPLEX and similar reports to pharmacy schools."
+    },
+    {
+      "object": "Program-level reports",
+      "description": "Aggregate pass rates by program and cohort: NCLEX program reports, bar passage by law school, CPA candidate performance by school. Load these as FederalAidReport-style aggregates in gold, not as student rows."
+    },
+    {
+      "object": "Student self-report and public license lookups",
+      "description": "Graduate reports and state license verification, for license number, issue date, and state."
+    }
+  ],
+  "notes": "Coverage differs by exam. Many boards report only aggregates, so a program may never see individual results; don't invent student rows from an aggregate. Pass rates submitted to programmatic accreditors (nursing, teacher preparation, law, pharmacy) must follow the accreditor's cohort definition, which usually counts first-time takers only.",
+  "validate": "There's no common layout. Map each file you receive into these columns and record the source in exam_name and licensing_body.",
+  "target_resource": "Licensure",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from student + exam + exam date + attempt."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Candidate ID matched to the student",
+      "transformation": "Resolve to HELIX Student. Many reports carry name, date of birth, and program; match in the restricted zone."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Same match",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Program completion",
+      "transformation": "Resolve to the HELIX Degree that qualified the candidate."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Program on the report",
+      "transformation": "Resolve to HELIX Program."
+    },
+    {
+      "helix_attribute": "licensure_type",
+      "source": "Exam",
+      "transformation": "NCLEX -> nursing_nclex, CPA -> cpa, bar -> bar_exam, Praxis -> teaching_praxis, USMLE -> medical_usmle, NAPLEX -> pharmacy_naplex, PE -> engineering_pe, ASWB -> social_work, NCE -> counseling, and so on."
+    },
+    {
+      "helix_attribute": "exam_name",
+      "source": "Exam and section",
+      "transformation": "For example 'NCLEX-RN' or 'Praxis Elementary Education: Mathematics'."
+    },
+    {
+      "helix_attribute": "credential_name",
+      "source": "Credential sought",
+      "transformation": "For example 'Registered Nurse'."
+    },
+    {
+      "helix_attribute": "licensing_body",
+      "source": "Board or agency",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "exam_date",
+      "source": "Test date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "licensure_result",
+      "source": "Result",
+      "transformation": "pass, fail, pending, scheduled, no_show, conditional. Use pass_first_attempt or pass_subsequent_attempt when the attempt number is known."
+    },
+    {
+      "helix_attribute": "score",
+      "source": "Raw score",
+      "transformation": "Where reported."
+    },
+    {
+      "helix_attribute": "passing_score",
+      "source": "Cut score",
+      "transformation": "State- or exam-specific; Praxis cut scores vary by state."
+    },
+    {
+      "helix_attribute": "scaled_score",
+      "source": "Scaled score",
+      "transformation": "Where reported."
+    },
+    {
+      "helix_attribute": "attempt_number",
+      "source": "Attempt",
+      "transformation": "Integer, 1 for first attempt."
+    },
+    {
+      "helix_attribute": "first_time_pass_flag",
+      "source": "Derived",
+      "transformation": "result is pass and attempt_number = 1."
+    },
+    {
+      "helix_attribute": "license_number",
+      "source": "License verification",
+      "transformation": "Public record in most states, but keep confidential in HELIX."
+    },
+    {
+      "helix_attribute": "license_issue_date",
+      "source": "License verification",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "license_expiration_date",
+      "source": "License verification",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "license_state",
+      "source": "Licensing jurisdiction",
+      "transformation": "Two-letter state."
+    },
+    {
+      "helix_attribute": "program_pass_rate_cohort",
+      "source": "Accreditor cohort definition",
+      "transformation": "For example '2025 graduates, first-time takers'. Drives which rows count in the pass rate."
+    }
+  ]
+}

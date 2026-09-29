@@ -1,0 +1,71 @@
+# EXAMPLE: a PeopleSoft school with six Oracle databases and a legacy warehouse.
+# Fictional institution. Use it to see what a filled-in profile looks like.
+
+helix_profile_version: "0.1"
+
+institution:
+  name: "Example State University"
+  control: public
+  student_headcount: 18500
+  employee_headcount: 4200
+  ipeds_unit_id: "000000"
+  fiscal_year_start: "07-01"
+  academic_calendar: semester
+
+goal:
+  path: A_lakehouse
+  modules: []
+  driver: "Enrollment and retention reporting takes weeks and nobody agrees on the numbers. Workday is being scoped for 2028."
+  executive_sponsor: "Provost and CIO (joint)"
+  first_result_target_date: "End of spring term"
+
+source_systems:
+  - {name: CSPRD, erp: peoplesoft, module: campus_solutions, app_version: "CS 9.2, PeopleTools 8.61", database: "Oracle 19c", hosting: on_prem, role: production,     refresh: real_time, access: none_for_analytics, owner: "Student Systems"}
+  - {name: CSRPT, erp: peoplesoft, module: campus_solutions, app_version: "CS 9.2, PeopleTools 8.61", database: "Oracle 19c", hosting: on_prem, role: reporting_copy, refresh: nightly,   access: jdbc,               owner: "Student Systems"}
+  - {name: HRPRD, erp: peoplesoft, module: hcm,              app_version: "HCM 9.2, PeopleTools 8.61", database: "Oracle 19c", hosting: aws_ec2, role: production,     refresh: real_time, access: none_for_analytics, owner: "HR Systems"}
+  - {name: HRRPT, erp: peoplesoft, module: hcm,              app_version: "HCM 9.2, PeopleTools 8.61", database: "Oracle 19c", hosting: aws_ec2, role: reporting_copy, refresh: nightly,   access: jdbc,               owner: "HR Systems"}
+  - {name: FSPRD, erp: peoplesoft, module: fscm,             app_version: "FSCM 9.2, PeopleTools 8.60", database: "Oracle 19c", hosting: on_prem, role: production,    refresh: real_time, access: none_for_analytics, owner: "Finance Systems"}
+  - {name: FSRPT, erp: peoplesoft, module: fscm,             app_version: "FSCM 9.2, PeopleTools 8.60", database: "Oracle 19c", hosting: on_prem, role: reporting_copy, refresh: nightly,  access: jdbc,               owner: "Finance Systems"}
+
+existing_warehouse:
+  exists: true
+  platform: "Oracle 12c data warehouse (custom star schemas)"
+  fed_by: [CSRPT, HRRPT, FSRPT]
+  refresh: nightly
+  official_reports: ["Fall census headcount (IR)", "Year-end trial balance (Controller)", "October HR headcount (HR)"]
+  helix_relationship: sit_beside   # used as a second opinion during reconciliation, retired later
+
+identity:
+  person_ids: {campus_solutions: EMPLID, hcm: EMPLID, fscm: "VENDOR_ID for suppliers; EMPLID for employee expenses"}
+  shared_across_modules: true
+  ssn_locations: ["PS_PERS_NID in CS and HCM"]
+  known_duplicate_issues: "Admissions creates new EMPLIDs for some returning students"
+
+target_platform:
+  cloud: AWS
+  engine: "S3 Tables (Iceberg) with Athena and Redshift Serverless"
+  orchestration: "Step Functions and Glue"
+  transformation: dbt
+  bi: QuickSight
+
+governance:
+  ferpa_officer: "University Registrar"
+  glba_qualified_individual: "CISO"
+  classification_policy_exists: true
+  data_stewards: {student: "University Registrar", finance: "Controller", hr: "Director of HR Systems", aid: "Director of Financial Aid"}
+
+first_slice:
+  name: student_census
+  helix_resources: [Person, Student, AcademicPeriod, StudentProgram, Enrollment]
+  window: "Fall 2025 census (STRM 2258)"
+  trusted_number: "Published fall census headcount and credit hours"
+  signed_off_by: "University Registrar"
+
+people:
+  project_lead: "Director of Data and Analytics"
+  data_engineers: ["2 FTE"]
+  functional_experts: {student: "Associate Registrar", ir: "IR Director"}
+
+constraints:
+  - "No extraction during registration opening week"
+  - "Security review required before any SSN leaves the reporting copy"

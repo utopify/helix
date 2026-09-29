@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Compensation",
   "source_system": "workday",
   "module": "HCM - Compensation",
-  "target_resource": "Compensation (planned)",
+  "target_resource": "Compensation",
   "version": "0.1",
   "source_objects": [
     {

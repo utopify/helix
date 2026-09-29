@@ -1,0 +1,81 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → Institution",
+  "source_system": "workday",
+  "module": "Student - Foundation",
+  "architecture_notes": "Workday models the home institution through the Academic Unit hierarchy (the top Academic Unit) and the Company used for finance. Other schools a student attended are Educational Institution objects. Equivalent PeopleSoft records: PS_INSTITUTION_TBL (home) and PS_EXT_ORG_TBL (external).",
+  "source_objects": [
+    {
+      "object": "Academic Unit (top of hierarchy)",
+      "description": "The home institution in Workday Student."
+    },
+    {
+      "object": "Company",
+      "description": "The legal entity used by Workday Financials. Usually one per institution; carries the tax ID and address."
+    },
+    {
+      "object": "Educational Institution",
+      "description": "External schools referenced by transfer credit, prior education, and admissions. Carries CEEB and other codes."
+    }
+  ],
+  "validate": "Workday object and field names vary by release and tenant. VALIDATE against your tenant's report data sources before building extracts.",
+  "target_resource": "Institution",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from Academic Unit Reference_ID (home) or Educational Institution Reference_ID (external)."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "Academic Unit.Name / Educational Institution.Name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "short_name",
+      "source": "Academic Unit.Short_Name",
+      "transformation": "Direct where configured."
+    },
+    {
+      "helix_attribute": "identifiers",
+      "source": "Educational Institution identifiers; Company; configuration",
+      "transformation": "Array of {system, value}: workday_reference_id, ceeb, ipeds_unit_id, opeid, fice."
+    },
+    {
+      "helix_attribute": "institution_type",
+      "source": "Educational Institution.Type / IPEDS directory",
+      "transformation": "Map to the HELIX values; fall back to IPEDS level and control."
+    },
+    {
+      "helix_attribute": "country",
+      "source": "Educational Institution.Country / Company address",
+      "transformation": "Workday uses ISO codes. Direct."
+    },
+    {
+      "helix_attribute": "state_province",
+      "source": "Educational Institution.Region / Company address",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "carnegie_classification",
+      "source": "Not stored in the ERP",
+      "transformation": "Load from the Carnegie Classification public file by IPEDS Unit ID. Refresh when a new edition is published."
+    },
+    {
+      "helix_attribute": "timezone",
+      "source": "Configuration",
+      "transformation": "IANA name, for example America/New_York. Set once per institution or campus."
+    },
+    {
+      "helix_attribute": "erp_system",
+      "source": "Constant",
+      "transformation": "'workday' for the home institution. Null for external schools."
+    },
+    {
+      "helix_attribute": "website",
+      "source": "Company website / configuration",
+      "transformation": "Direct where configured."
+    }
+  ]
+}

@@ -242,7 +242,7 @@ After migration, analysts can query the HELIX lake and produce reports in either
 
 | Resource | Role in This Example |
 |----------|---------------------|
-| `GLTransaction` (planned) | Journal entries with chartfield/worktag coding |
+| `GLTransaction` | Journal entries with chartfield/worktag coding |
 | `Institution` | Business unit / company mapping |
 | `AcademicOrg` | Department / cost center hierarchy |
 

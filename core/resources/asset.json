@@ -23,7 +23,7 @@
     },
     "asset_category": {
       "type": "string",
-      "description": "Map: 'Land' \u2192 'land', 'Buildings' \u2192 'building', 'Equipment' \u2192 'equipment', 'Software' \u2192 'software', 'Vehicles' \u2192 'vehicle', 'Leasehold Improvements' \u2192 'leasehold', 'Library Collections' \u2192 'library', 'Construction in Progress' \u2192 'cip'."
+      "description": "Map: 'Land' \u2192 'land', 'Buildings' \u2192 'building', 'Equipment' \u2192 'equipment', 'Software' \u2192 'software', 'Vehicles' \u2192 'vehicle', 'Leasehold Improvements' \u2192 'leasehold', 'Library Collections' \u2192 'library', 'Construction in Progress' \u2192 'cip'. Bound to HELIX terminology: helix/asset-category."
     },
     "acquisition_date": {
       "type": [
@@ -83,7 +83,7 @@
     },
     "status": {
       "type": "string",
-      "description": "Map: 'Active' \u2192 'in_service', 'Disposed' \u2192 'disposed', 'Under Construction' \u2192 'cip', 'Fully Depreciated' \u2192 'fully_depreciated'."
+      "description": "Map: 'Active' \u2192 'in_service', 'Disposed' \u2192 'disposed', 'Under Construction' \u2192 'cip', 'Fully Depreciated' \u2192 'fully_depreciated'. Bound to HELIX terminology: helix/asset-status."
     },
     "meta": {
       "type": "object",

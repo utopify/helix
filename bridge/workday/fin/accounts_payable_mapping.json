@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 AccountsPayable",
   "source_system": "workday",
   "module": "Financial Management - Accounts Payable",
-  "target_resource": "APVoucher (planned)",
+  "target_resource": "APVoucher",
   "version": "0.1",
   "source_objects": [
     {

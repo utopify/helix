@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Contracts",
   "source_system": "workday",
   "module": "Financial Management - Supplier Contracts",
-  "target_resource": "Contract (planned)",
+  "target_resource": "Contract",
   "version": "0.1",
   "source_objects": [
     {

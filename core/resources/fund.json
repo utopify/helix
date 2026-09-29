@@ -23,7 +23,7 @@
     },
     "fund_category": {
       "type": "string",
-      "description": "Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d"
+      "description": "Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d. Bound to HELIX terminology: helix/fund-type."
     },
     "restriction_type": {
       "type": "string",

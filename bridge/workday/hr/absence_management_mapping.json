@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Absence Management / Leave",
   "source_system": "workday",
   "module": "HCM - Absence Management",
-  "target_resource": "AbsenceRecord (planned)",
+  "target_resource": "AbsenceRecord",
   "version": "0.1",
   "source_objects": [
     {

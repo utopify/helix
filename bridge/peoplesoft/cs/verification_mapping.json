@@ -1,0 +1,130 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → Verification",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "Verification",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_ISIR_COMPUTED",
+      "description": "Verification selection and tracking group on the ISIR."
+    },
+    {
+      "table": "PS_STDNT_AID_ATRBT",
+      "description": "Verification status for the aid year. FLAG: PeopleSoft spells the field VERIFICATON_STATUS in some releases; confirm."
+    },
+    {
+      "table": "PS_PERSON_CHECKLST",
+      "description": "Checklist header. Verification documents are usually a checklist assigned by 3C or the verification process."
+    },
+    {
+      "table": "PS_PERSON_CHK_ITEM",
+      "description": "Checklist items: each required document with status, due date, and status date."
+    },
+    {
+      "table": "PS_ISIR_CONTROL",
+      "description": "ISIR transactions before and after correction, for SAI change."
+    }
+  ],
+  "notes": "Most PeopleSoft schools track verification documents as checklist items. Filter PS_PERSON_CHECKLST to your verification checklist codes before mapping; other aid checklists (SAP appeal, PJ documentation) shouldn't land here.",
+  "privacy": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "workday_counterpart": "bridge/workday/sis/verification_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_AID_ATRBT.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "PS_ISIR_CONTROL (transaction selected)",
+      "transformation": "Resolve to HELIX AidApplication."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AID_ATRBT.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "verification_tracking_group",
+      "source": "PS_ISIR_COMPUTED tracking group",
+      "transformation": "V1, V4, V5."
+    },
+    {
+      "helix_attribute": "verification_status",
+      "source": "PS_STDNT_AID_ATRBT verification status + checklist item statuses",
+      "transformation": "Derive through verification-status-xref: selected, documents_requested, documents_partial, documents_complete, in_review, conflicting_information, completed, incomplete, waived."
+    },
+    {
+      "helix_attribute": "selected_date",
+      "source": "PS_ISIR_CONTROL receipt date of first selected transaction",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "documents_required",
+      "source": "PS_PERSON_CHK_ITEM.CHKLST_ITEM_CD (all items)",
+      "transformation": "Array of document codes. Map local item codes to names in a lookup."
+    },
+    {
+      "helix_attribute": "documents_received",
+      "source": "PS_PERSON_CHK_ITEM where ITEM_STATUS = received/completed",
+      "transformation": "Array."
+    },
+    {
+      "helix_attribute": "documents_outstanding",
+      "source": "PS_PERSON_CHK_ITEM where ITEM_STATUS = initiated/requested",
+      "transformation": "Array."
+    },
+    {
+      "helix_attribute": "completion_date",
+      "source": "PS_PERSON_CHECKLST completion / status date",
+      "transformation": "Date the checklist was completed. ISO date."
+    },
+    {
+      "helix_attribute": "conflicting_information_flag",
+      "source": "Conflicting information checklist item or comment",
+      "transformation": "Boolean. FLAG: local practice varies."
+    },
+    {
+      "helix_attribute": "conflicting_info_resolution",
+      "source": "Comment text",
+      "transformation": "Free text. Restricted."
+    },
+    {
+      "helix_attribute": "sai_before_verification",
+      "source": "PS_ISIR_COMPUTED.SAI on the selected transaction",
+      "transformation": "Integer. GLBA restricted."
+    },
+    {
+      "helix_attribute": "sai_after_verification",
+      "source": "PS_ISIR_COMPUTED.SAI on the transaction after corrections",
+      "transformation": "Integer. GLBA restricted."
+    },
+    {
+      "helix_attribute": "sai_change_amount",
+      "source": "Derived",
+      "transformation": "after minus before."
+    },
+    {
+      "helix_attribute": "isir_correction_required_flag",
+      "source": "ISIR correction records exist for the aid year",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "correction_transaction_number",
+      "source": "PS_ISIR_CONTROL.TRANS_NBR of the corrected ISIR",
+      "transformation": "String."
+    },
+    {
+      "helix_attribute": "verification_outcome",
+      "source": "Derived",
+      "transformation": "no_change, sai_increased, sai_decreased, not_completed. Report to COD for Pell as required."
+    }
+  ]
+}

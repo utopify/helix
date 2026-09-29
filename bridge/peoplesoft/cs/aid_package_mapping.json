@@ -1,0 +1,169 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → AidPackage",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "AidPackage",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_AID",
+      "description": "Aid year activation. Package status lives with the aid year."
+    },
+    {
+      "table": "PS_STDNT_BUDGET_IT",
+      "description": "Student budget items by term: tuition, housing, books, transportation, personal, loan fees. Summed into cost of attendance."
+    },
+    {
+      "table": "PS_STDNT_AWARDS",
+      "description": "Awards by item type and term. Summed into total aid, grant aid, and self-help."
+    },
+    {
+      "table": "PS_ITEM_TYPE_FA",
+      "description": "Item type setup. FIN_AID_TYPE separates grants and scholarships from loans and work (self-help)."
+    },
+    {
+      "table": "PS_ISIR_COMPUTED",
+      "description": "SAI used for need."
+    },
+    {
+      "table": "PS_STDNT_AID_ATRBT",
+      "description": "Need, professional judgment, and packaging indicators. FLAG: confirm which fields your release uses for need summary."
+    }
+  ],
+  "notes": "PeopleSoft doesn't store a single package row. Build AidPackage in silver by summing budgets and awards per student and aid year (or term, if you package by term). Use accepted plus offered amounts for totals, and exclude cancelled and declined awards.",
+  "privacy": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "workday_counterpart": "bridge/workday/sis/aid_package_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_AID.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "aid_application_ref",
+      "source": "PS_ISIR_CONTROL (active transaction)",
+      "transformation": "Resolve to the HELIX AidApplication for the active ISIR."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AID.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_BUDGET_IT.STRM",
+      "transformation": "Resolve through term-period-xref to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_total",
+      "source": "SUM(PS_STDNT_BUDGET_IT.BUDGET_ITEM_AMOUNT)",
+      "transformation": "Sum all budget items for the aid year (or term)."
+    },
+    {
+      "helix_attribute": "coa_tuition_fees",
+      "source": "PS_STDNT_BUDGET_IT where item category = tuition/fees",
+      "transformation": "Sum by budget item category. Category codes are local; map once in a lookup."
+    },
+    {
+      "helix_attribute": "coa_room_board",
+      "source": "PS_STDNT_BUDGET_IT where category = housing/food",
+      "transformation": "Sum. The federal label is now housing and food."
+    },
+    {
+      "helix_attribute": "coa_books_supplies",
+      "source": "PS_STDNT_BUDGET_IT where category = books/supplies",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_transportation",
+      "source": "PS_STDNT_BUDGET_IT where category = transportation",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_personal",
+      "source": "PS_STDNT_BUDGET_IT where category = personal/miscellaneous",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_loan_fees",
+      "source": "PS_STDNT_BUDGET_IT where category = loan fees",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "coa_other",
+      "source": "PS_STDNT_BUDGET_IT remaining categories",
+      "transformation": "Sum of everything not mapped above (dependent care, disability, study abroad, professional licensure)."
+    },
+    {
+      "helix_attribute": "sai",
+      "source": "PS_ISIR_COMPUTED.SAI",
+      "transformation": "From the active ISIR. GLBA restricted."
+    },
+    {
+      "helix_attribute": "need",
+      "source": "Derived",
+      "transformation": "cost_of_attendance_total minus max(sai, 0). Recompute; don't trust a stored value unless you've confirmed it."
+    },
+    {
+      "helix_attribute": "total_aid_offered",
+      "source": "SUM(PS_STDNT_AWARDS.OFFER_AMOUNT)",
+      "transformation": "Exclude cancelled and declined awards."
+    },
+    {
+      "helix_attribute": "total_grant_aid",
+      "source": "SUM awards where PS_ITEM_TYPE_FA.FIN_AID_TYPE in grant, scholarship, waiver",
+      "transformation": "Gift aid only."
+    },
+    {
+      "helix_attribute": "total_self_help",
+      "source": "SUM awards where FIN_AID_TYPE in loan, work",
+      "transformation": "Loans plus work-study."
+    },
+    {
+      "helix_attribute": "unmet_need",
+      "source": "Derived",
+      "transformation": "max(need - need-based aid, 0). Non-need aid (unsubsidized, PLUS) replaces SAI, not need."
+    },
+    {
+      "helix_attribute": "packaging_status",
+      "source": "PS_STDNT_AID packaging status",
+      "transformation": "Not packaged -> draft; packaged -> packaged; repackaged -> revised; awards notified and accepted -> finalized; aid year cancelled -> cancelled."
+    },
+    {
+      "helix_attribute": "packaging_date",
+      "source": "PS_STDNT_AWARDS earliest offer date",
+      "transformation": "ISO date of first packaging for the aid year."
+    },
+    {
+      "helix_attribute": "professional_judgment_applied_flag",
+      "source": "PS_STDNT_AID_ATRBT PJ indicator",
+      "transformation": "Boolean. FLAG: confirm local field."
+    },
+    {
+      "helix_attribute": "pj_reason",
+      "source": "PJ comment or reason code",
+      "transformation": "Free text or local code. Restricted: may describe family circumstances."
+    },
+    {
+      "helix_attribute": "pj_adjustment_amount",
+      "source": "Budget override or ISIR correction amount",
+      "transformation": "Net COA or SAI change from PJ."
+    },
+    {
+      "helix_attribute": "cost_of_attendance_adjusted_flag",
+      "source": "PS_STDNT_BUDGET_IT override indicator",
+      "transformation": "True if any budget item was overridden."
+    },
+    {
+      "helix_attribute": "enrollment_intensity_assumed",
+      "source": "PS_STDNT_FA_TERM.FA_LOAD",
+      "transformation": "The load the package was built on: full_time, three_quarter, half_time, less_than_half."
+    }
+  ]
+}

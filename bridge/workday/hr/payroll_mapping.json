@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Payroll",
   "source_system": "workday",
   "module": "HCM - Payroll (US)",
-  "target_resource": "PayrollResult (planned)",
+  "target_resource": "PayrollResult",
   "version": "0.1",
   "architecture_notes": "Workday Payroll is cloud-native with built-in tax engine (for US). Some institutions use Workday Payroll directly; others use a third-party payroll (ADP, Ceridian) and integrate via Payroll Interface. For institutions using third-party payroll, Workday exports payroll input and imports payroll results.",
   "source_objects": [

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → FederalAidReport",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "FederalAidReport",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_AWRD_DISB. Attribute names match bridge/peoplesoft/cs/federal_aid_report_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "COD Batch",
+      "description": "Outbound COD batch with counts and status."
+    },
+    {
+      "object": "COD Response",
+      "description": "Response records with accepted, rejected, and error codes."
+    },
+    {
+      "object": "FISAP Report",
+      "description": "Campus-based program report."
+    },
+    {
+      "object": "Financial Aid Disbursement",
+      "description": "Disbursement totals by fund, for reconciliation."
+    }
+  ],
+  "notes": "Institution-level aggregates with no student rows. Default classification is confidential; ACM-SPECIAL-010 lets research roles read it because it carries no student-level data. Small counts still follow govern/ferpa-suppression-policy.json when published.",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/federal_aid_report_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + report_type + award year + batch or period."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Institution / Company",
+      "transformation": "Resolve to HELIX Institution."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Award Year",
+      "transformation": "Normalize."
+    },
+    {
+      "helix_attribute": "report_type",
+      "source": "Report source",
+      "transformation": "Same five values."
+    },
+    {
+      "helix_attribute": "reporting_period_start",
+      "source": "COD Batch / report period start",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "reporting_period_end",
+      "source": "COD Batch / report period end",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "submission_date",
+      "source": "COD Batch.Sent_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "submission_status",
+      "source": "COD Batch.Status",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "records_submitted_count",
+      "source": "COD Batch.Record_Count",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "records_accepted_count",
+      "source": "COD Response (accepted count)",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "records_rejected_count",
+      "source": "COD Response (rejected count)",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "error_codes",
+      "source": "COD Response.Edit_Codes",
+      "transformation": "Distinct array."
+    },
+    {
+      "helix_attribute": "total_pell_disbursed",
+      "source": "SUM Financial Aid Disbursement (Pell)",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "total_dl_disbursed",
+      "source": "SUM Financial Aid Disbursement (Direct Loan)",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "total_fseog_disbursed",
+      "source": "SUM Financial Aid Disbursement (FSEOG)",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "total_fws_disbursed",
+      "source": "SUM Work-Study Earnings",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "reconciliation_variance",
+      "source": "Derived",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "reconciliation_status",
+      "source": "Derived",
+      "transformation": "Same."
+    },
+    {
+      "helix_attribute": "cod_batch_id",
+      "source": "COD Batch.Batch_ID",
+      "transformation": "Carry unchanged."
+    },
+    {
+      "helix_attribute": "submitted_by",
+      "source": "COD Batch.Submitted_By",
+      "transformation": "Resolve to HELIX Employee."
+    }
+  ]
+}

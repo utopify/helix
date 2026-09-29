@@ -1,0 +1,13 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+"Selected, no checklist","ISIR selected, checklist not assigned",ISIR_COMPUTED verification flag,selected,helix/verification-status,Selected,Selected by FPS,Financial Aid Verification,Workday assigns action items on load; confirm it doesn't re-send duplicate requests.
+Checklist Initiated,Documents requested,PERSON_CHK_ITEM.ITEM_STATUS,documents_requested,helix/verification-status,Documents Requested,Waiting on student,Financial Aid Verification + Action Item,VALIDATE: checklist item status codes are local.
+Some items Received,Partial documents,PERSON_CHK_ITEM.ITEM_STATUS,documents_partial,helix/verification-status,Documents Partially Received,Some documents in,Action Item,Convert open items as open Workday action items.
+All items Received,All documents in,PERSON_CHK_ITEM.ITEM_STATUS,documents_complete,helix/verification-status,Documents Received,Ready for review,Financial Aid Verification,VALIDATE: local code.
+Under Review,Reviewer working the file,STDNT_AID_ATRBT verification status,in_review,helix/verification-status,In Review,In review,Financial Aid Verification,VALIDATE: local code.
+Conflicting Info,Conflicting information hold,Checklist item or comment,conflicting_information,helix/verification-status,Conflicting Information,Must resolve before disbursing,Financial Aid Verification,Resolve before cutover if you can; conflicting information blocks all Title IV aid.
+Verified,Verification complete,STDNT_AID_ATRBT verification status,completed,helix/verification-status,Complete,Verified,Financial Aid Verification,Carry the completion date. Pell and campus-based funds depend on it.
+Not Completed,Deadline passed,STDNT_AID_ATRBT verification status,incomplete,helix/verification-status,Incomplete,Not verified by deadline,Financial Aid Verification,No Pell or campus-based aid. VALIDATE: local code.
+Excluded,Exclusion under 34 CFR 668.54(b),STDNT_AID_ATRBT verification status,waived,helix/verification-status,Excluded,Not required,Financial Aid Verification,"Keep the exclusion reason (death, incarceration, and so on) for audit."
+V1,Standard verification,ISIR_COMPUTED tracking group,V1,verification.verification_tracking_group,V1,Standard Verification Group,ISIR Record,Federal code. Same in both systems.
+V4,Custom verification,ISIR_COMPUTED tracking group,V4,verification.verification_tracking_group,V4,Custom Verification Group (identity and statement of educational purpose),ISIR Record,Federal code.
+V5,Aggregate verification,ISIR_COMPUTED tracking group,V5,verification.verification_tracking_group,V5,Aggregate Verification Group,ISIR Record,Federal code.

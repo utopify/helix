@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Student \u2192 DegreeAudit",
   "source_system": "workday",
   "module": "Student - Progress to Degree",
-  "target_resource": "DegreeAudit (planned)",
+  "target_resource": "DegreeAudit",
   "version": "0.1",
   "architecture_notes": "Workday Student's Progress to Degree (Academic Progress) evaluates a student's completed and in-progress work against their program's requirements. It is the native degree-audit engine, equivalent to PeopleSoft's Academic Advisement (degree audit / APR). Note: many institutions use a third-party audit tool (DegreeWorks, Stellic) alongside the SIS \u2014 document both the native Workday source and the integration pattern.",
   "source_objects": [

@@ -1,0 +1,151 @@
+{
+  "title": "HELIX XREF: Verification Status and Tracking Group: PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Verification",
+  "description": "Maps PeopleSoft verification state (ISIR selection, aid attribute verification status, and checklist item statuses) to helix/verification-status and Workday verification status. PeopleSoft often has no single status field, so several rows are conditions rather than codes.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "Selected, no checklist",
+      "ps_description": "ISIR selected, checklist not assigned",
+      "ps_source": "ISIR_COMPUTED verification flag",
+      "helix_code": "selected",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Selected",
+      "wd_description": "Selected by FPS",
+      "wd_object": "Financial Aid Verification",
+      "notes": "Workday assigns action items on load; confirm it doesn't re-send duplicate requests."
+    },
+    {
+      "ps_code": "Checklist Initiated",
+      "ps_description": "Documents requested",
+      "ps_source": "PERSON_CHK_ITEM.ITEM_STATUS",
+      "helix_code": "documents_requested",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Documents Requested",
+      "wd_description": "Waiting on student",
+      "wd_object": "Financial Aid Verification + Action Item",
+      "notes": "VALIDATE: checklist item status codes are local."
+    },
+    {
+      "ps_code": "Some items Received",
+      "ps_description": "Partial documents",
+      "ps_source": "PERSON_CHK_ITEM.ITEM_STATUS",
+      "helix_code": "documents_partial",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Documents Partially Received",
+      "wd_description": "Some documents in",
+      "wd_object": "Action Item",
+      "notes": "Convert open items as open Workday action items."
+    },
+    {
+      "ps_code": "All items Received",
+      "ps_description": "All documents in",
+      "ps_source": "PERSON_CHK_ITEM.ITEM_STATUS",
+      "helix_code": "documents_complete",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Documents Received",
+      "wd_description": "Ready for review",
+      "wd_object": "Financial Aid Verification",
+      "notes": "VALIDATE: local code."
+    },
+    {
+      "ps_code": "Under Review",
+      "ps_description": "Reviewer working the file",
+      "ps_source": "STDNT_AID_ATRBT verification status",
+      "helix_code": "in_review",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "In Review",
+      "wd_description": "In review",
+      "wd_object": "Financial Aid Verification",
+      "notes": "VALIDATE: local code."
+    },
+    {
+      "ps_code": "Conflicting Info",
+      "ps_description": "Conflicting information hold",
+      "ps_source": "Checklist item or comment",
+      "helix_code": "conflicting_information",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Conflicting Information",
+      "wd_description": "Must resolve before disbursing",
+      "wd_object": "Financial Aid Verification",
+      "notes": "Resolve before cutover if you can; conflicting information blocks all Title IV aid."
+    },
+    {
+      "ps_code": "Verified",
+      "ps_description": "Verification complete",
+      "ps_source": "STDNT_AID_ATRBT verification status",
+      "helix_code": "completed",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Complete",
+      "wd_description": "Verified",
+      "wd_object": "Financial Aid Verification",
+      "notes": "Carry the completion date. Pell and campus-based funds depend on it."
+    },
+    {
+      "ps_code": "Not Completed",
+      "ps_description": "Deadline passed",
+      "ps_source": "STDNT_AID_ATRBT verification status",
+      "helix_code": "incomplete",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Incomplete",
+      "wd_description": "Not verified by deadline",
+      "wd_object": "Financial Aid Verification",
+      "notes": "No Pell or campus-based aid. VALIDATE: local code."
+    },
+    {
+      "ps_code": "Excluded",
+      "ps_description": "Exclusion under 34 CFR 668.54(b)",
+      "ps_source": "STDNT_AID_ATRBT verification status",
+      "helix_code": "waived",
+      "helix_terminology": "helix/verification-status",
+      "wd_value": "Excluded",
+      "wd_description": "Not required",
+      "wd_object": "Financial Aid Verification",
+      "notes": "Keep the exclusion reason (death, incarceration, and so on) for audit."
+    },
+    {
+      "ps_code": "V1",
+      "ps_description": "Standard verification",
+      "ps_source": "ISIR_COMPUTED tracking group",
+      "helix_code": "V1",
+      "helix_terminology": "verification.verification_tracking_group",
+      "wd_value": "V1",
+      "wd_description": "Standard Verification Group",
+      "wd_object": "ISIR Record",
+      "notes": "Federal code. Same in both systems."
+    },
+    {
+      "ps_code": "V4",
+      "ps_description": "Custom verification",
+      "ps_source": "ISIR_COMPUTED tracking group",
+      "helix_code": "V4",
+      "helix_terminology": "verification.verification_tracking_group",
+      "wd_value": "V4",
+      "wd_description": "Custom Verification Group (identity and statement of educational purpose)",
+      "wd_object": "ISIR Record",
+      "notes": "Federal code."
+    },
+    {
+      "ps_code": "V5",
+      "ps_description": "Aggregate verification",
+      "ps_source": "ISIR_COMPUTED tracking group",
+      "helix_code": "V5",
+      "helix_terminology": "verification.verification_tracking_group",
+      "wd_value": "V5",
+      "wd_description": "Aggregate Verification Group",
+      "wd_object": "ISIR Record",
+      "notes": "Federal code."
+    }
+  ]
+}

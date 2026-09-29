@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Benefits",
   "source_system": "workday",
   "module": "HCM - Benefits",
-  "target_resource": "BenefitEnrollment (planned)",
+  "target_resource": "BenefitEnrollment",
   "version": "0.1",
   "source_objects": [
     {

@@ -87,7 +87,7 @@
     },
     "grant_status": {
       "type": "string",
-      "description": "Map: 'Proposed' \u2192 'proposed', 'Awarded' \u2192 'active', 'Active' \u2192 'active', 'No-Cost Extension' \u2192 'nce', 'Closeout' \u2192 'closing', 'Closed' \u2192 'closed'."
+      "description": "Map: 'Proposed' \u2192 'proposed', 'Awarded' \u2192 'active', 'Active' \u2192 'active', 'No-Cost Extension' \u2192 'nce', 'Closeout' \u2192 'closing', 'Closed' \u2192 'closed'. Bound to HELIX terminology: helix/grant-status."
     },
     "billing_type": {
       "type": "string",

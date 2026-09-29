@@ -34,8 +34,12 @@ Every file ships as JSON and CSV with the same rows. Columns: `ps_code, ps_descr
 | `service-indicator-hold-xref` | Service indicators to Student Hold Types | 12 | helix/hold-type |
 | `instruction-mode-xref` | INSTRUCTION_MODE / SSR_COMPONENT to Delivery Mode, Instructional Format | 13 | helix/delivery-mode |
 | `fin-aid-item-type-xref` | Aid item types to award types and funds | 13 | helix/award-type |
+| `sap-status-xref` | SAP_STATUS to Workday SAP status | 8 | helix/sap-status |
+| `verification-status-xref` | Verification state and tracking group | 12 | helix/verification-status |
+| `loan-type-xref` | Loan types to Workday Direct Loan and private loan funds | 9 | helix/loan-type |
+| `disbursement-status-xref` | Disbursement state to Workday disbursement status | 8 | helix/disbursement-status |
 
-**Total: 11 dimensions, 128 rows.**
+**Total: 15 dimensions, 165 rows.**
 
 ## Identity comes first: one human, one person
 

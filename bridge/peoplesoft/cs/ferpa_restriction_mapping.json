@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: PeopleSoft CS \u2192 FERPARestriction",
   "source_system": "peoplesoft",
   "module": "Campus Solutions - FERPA",
-  "target_resource": "FERPARestriction (planned)",
+  "target_resource": "FERPARestriction",
   "version": "0.1",
   "source_tables": [
     {

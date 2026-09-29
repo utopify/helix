@@ -1,0 +1,141 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → StudentEmployment",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "StudentEmployment",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_AWARDS, PS_ITEM_TYPE_FA, PS_JOB, PS_PAY_EARNINGS. Attribute names match bridge/peoplesoft/cs/student_employment_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Financial Aid Award",
+      "description": "Work-study award (FWS fund)."
+    },
+    {
+      "object": "Worker",
+      "description": "Student worker in Workday HCM. Same Universal ID as the student, so no cross-system join is needed."
+    },
+    {
+      "object": "Position",
+      "description": "Student job: supervisory org, title, hours."
+    },
+    {
+      "object": "Payroll Result",
+      "description": "Earnings by pay period."
+    },
+    {
+      "object": "Work-Study Earnings",
+      "description": "Earnings applied against the work-study award. FLAG: VALIDATE tenant object name."
+    }
+  ],
+  "notes": "CONFIDENTIAL. This is a FERPA education record; access requires legitimate educational interest (99.31(a)(1)). Pay fields follow HR pay rules (ACM-SPECIAL-011).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/student_employment_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Worker Universal ID + award year + Position ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Financial Aid Award.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Financial Aid Award.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "employment_type",
+      "source": "Financial Aid Award.Fund / Position.Job_Profile",
+      "transformation": "Map through helix/employment-type-aid."
+    },
+    {
+      "helix_attribute": "fws_award_amount",
+      "source": "Financial Aid Award.Amount (FWS)",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "fws_earnings_to_date",
+      "source": "Work-Study Earnings (sum)",
+      "transformation": "Sum."
+    },
+    {
+      "helix_attribute": "fws_remaining",
+      "source": "Derived",
+      "transformation": "award minus earnings to date."
+    },
+    {
+      "helix_attribute": "community_service_flag",
+      "source": "Position.Community_Service (custom)",
+      "transformation": "Boolean. FLAG: usually a custom field."
+    },
+    {
+      "helix_attribute": "community_service_percent",
+      "source": "Derived",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "Position.Job_Title",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "employer_department",
+      "source": "Position.Supervisory_Organization",
+      "transformation": "Resolve."
+    },
+    {
+      "helix_attribute": "supervisor_ref",
+      "source": "Position.Manager",
+      "transformation": "Resolve to HELIX Employee."
+    },
+    {
+      "helix_attribute": "hourly_rate",
+      "source": "Worker compensation (hourly)",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "hours_per_week_max",
+      "source": "Position.Scheduled_Weekly_Hours",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "position_start_date",
+      "source": "Worker Hire Date / Position Start",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "position_end_date",
+      "source": "Position.End_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "earnings_ytd",
+      "source": "Payroll Result (YTD)",
+      "transformation": "Decimal. Restricted pay data."
+    },
+    {
+      "helix_attribute": "federal_share_percent",
+      "source": "Costing Allocation (federal)",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "institutional_share_percent",
+      "source": "Costing Allocation (institutional)",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "off_campus_flag",
+      "source": "Position.Location",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "job_placement_status",
+      "source": "Derived",
+      "transformation": "Derived."
+    }
+  ]
+}

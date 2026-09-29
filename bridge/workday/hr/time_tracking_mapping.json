@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Time Tracking",
   "source_system": "workday",
   "module": "HCM - Time Tracking",
-  "target_resource": "TimeEntry (planned)",
+  "target_resource": "TimeEntry",
   "version": "0.1",
   "architecture_notes": "Workday Time Tracking captures hours for non-exempt (hourly) employees, student workers, and any position requiring time entry. Time blocks are coded with worktags for labor distribution. Approval workflows route to the supervisory org manager. Unlike PeopleSoft Time & Labor (which uses Time Reporter Data and Reported Time), Workday time entry is tightly integrated with the worker's primary position and compensation.",
   "source_objects": [

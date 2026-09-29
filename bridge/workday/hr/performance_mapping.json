@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Performance Management / Talent",
   "source_system": "workday",
   "module": "HCM - Talent Management",
-  "target_resource": "PerformanceReview (planned)",
+  "target_resource": "PerformanceReview",
   "version": "0.1",
   "source_objects": [
     {

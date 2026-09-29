@@ -11,7 +11,7 @@ This project provides:
 - **Gold models** that produce consumption-ready dimensions, facts, and reports
 - **Macros** for HELIX-specific operations (UUID generation, FERPA-safe views, classification tagging)
 - **Quality rule tests** implementing all 22 rules from `govern/quality-rules.json`
-- **Seed data** with all 435 HELIX terminology codes for reference lookups
+- **Seed data** with all 595 HELIX terminology codes for reference lookups
 
 ## Prerequisites
 
@@ -96,7 +96,7 @@ Your staging models should map source-specific column names to the HELIX attribu
 │       ├── test_enrollment_valid_status.sql
 │       └── test_gpa_range.sql
 └── seeds/
-    └── helix_terminologies.csv  — All 435 HELIX terminology codes
+    └── helix_terminologies.csv  — All 595 HELIX terminology codes
 ```
 
 ## Extending with Additional Resources

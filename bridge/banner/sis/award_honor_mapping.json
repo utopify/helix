@@ -1,0 +1,133 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner → AwardHonor",
+  "source_system": "banner",
+  "module": "Student",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "SHRDGIH",
+      "description": "Degree institutional honors: SHRDGIH_HONR_CODE per degree sequence. Latin honors live here."
+    },
+    {
+      "table": "SHRDGDH",
+      "description": "Degree departmental honors: SHRDGDH_HONR_CODE per degree and department."
+    },
+    {
+      "table": "STVHONR",
+      "description": "Honors validation: code and description."
+    },
+    {
+      "table": "SHRTTRM",
+      "description": "Term header. Dean's list code for the term (SHRTTRM_ASTD_CODE_DL). FLAG: confirm column at your release."
+    },
+    {
+      "table": "SHRDGMR",
+      "description": "Degree record, parent of degree honors."
+    },
+    {
+      "table": "SHRLGPA",
+      "description": "GPA used for honors decisions."
+    }
+  ],
+  "notes": "Honors are directory information at many schools, but only if the school's annual FERPA notice lists them. Check FERPARestriction before publishing any honor (commencement programs, press releases, dean's list feeds). Scholarships are in Banner Financial Aid (RPRAWRD) and already map to FinAidAward.",
+  "target_resource": "AwardHonor",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from PIDM + source table + honor code + degree sequence or term."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "*_PIDM",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "*_PIDM",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "SHRDGIH/SHRDGDH (PIDM, DEGS_SEQ_NO)",
+      "transformation": "Resolve to HELIX Degree."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "SHRTTRM_TERM_CODE",
+      "transformation": "Resolve to HELIX AcademicPeriod. Null for degree honors."
+    },
+    {
+      "helix_attribute": "honor_type",
+      "source": "Source table + STVHONR code",
+      "transformation": "SHRDGIH -> latin_honors or graduation_honor; SHRDGDH -> departmental_award; SHRTTRM dean's list code -> deans_list or presidents_list."
+    },
+    {
+      "helix_attribute": "honor_name",
+      "source": "STVHONR_DESC / dean's list code description",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "awarding_body",
+      "source": "Constant / department",
+      "transformation": "Institution name; department for departmental honors."
+    },
+    {
+      "helix_attribute": "award_date",
+      "source": "SHRDGMR_GRAD_DATE (degree honors) / term end date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Derived",
+      "transformation": "'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Not stored",
+      "transformation": "Null."
+    },
+    {
+      "helix_attribute": "latin_honors_designation",
+      "source": "SHRDGIH_HONR_CODE",
+      "transformation": "Map local honors codes to cum_laude, magna_cum_laude, summa_cum_laude; 'none' for non-Latin honors. Keep the code-to-designation lookup in one seed table."
+    },
+    {
+      "helix_attribute": "gpa_at_award",
+      "source": "SHRLGPA_GPA (overall, institutional)",
+      "transformation": "GPA the honor was based on, when the honor is GPA-driven."
+    },
+    {
+      "helix_attribute": "monetary_value",
+      "source": "Not stored in Banner Student",
+      "transformation": "Only for awards with a cash value. Scholarships already live in FinAidAward; set scholarship_flag and don't double-count the dollars in reporting."
+    },
+    {
+      "helix_attribute": "scholarship_flag",
+      "source": "Derived",
+      "transformation": "honor_type = scholarship."
+    },
+    {
+      "helix_attribute": "deans_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = deans_list."
+    },
+    {
+      "helix_attribute": "presidents_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = presidents_list."
+    },
+    {
+      "helix_attribute": "departmental_flag",
+      "source": "Derived",
+      "transformation": "honor_type = departmental_award."
+    },
+    {
+      "helix_attribute": "national_recognition_flag",
+      "source": "Derived",
+      "transformation": "honor_type = national_award (Fulbright, Goldwater, Truman, and similar)."
+    }
+  ]
+}

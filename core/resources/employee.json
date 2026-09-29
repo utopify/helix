@@ -91,7 +91,7 @@
     },
     "worker_type": {
       "type": "string",
-      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'. Bound to HELIX terminology: helix/worker-type."
     },
     "employee_type": {
       "type": "string",
@@ -103,7 +103,7 @@
     },
     "flsa_status": {
       "type": "string",
-      "description": "Map: 'Exempt' \u2192 'exempt', 'Non-Exempt' \u2192 'non_exempt'."
+      "description": "Map: 'Exempt' \u2192 'exempt', 'Non-Exempt' \u2192 'non_exempt'. Bound to HELIX terminology: helix/flsa-status."
     },
     "primary_work_email": {
       "type": "string",
@@ -119,7 +119,7 @@
     },
     "employment_status": {
       "type": "string",
-      "description": "Map: 'Active' \u2192 'active', 'Terminated' \u2192 'terminated', 'Leave of Absence' \u2192 'leave', 'Suspended' \u2192 'suspended', 'Retired' \u2192 'retired'."
+      "description": "Map: 'Active' \u2192 'active', 'Terminated' \u2192 'terminated', 'Leave of Absence' \u2192 'leave', 'Suspended' \u2192 'suspended', 'Retired' \u2192 'retired'. Bound to HELIX terminology: helix/employment-status."
     },
     "meta": {
       "type": "object",

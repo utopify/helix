@@ -31,7 +31,7 @@
     },
     "eeo_category": {
       "type": "string",
-      "description": "Map to IPEDS/EEO categories: 'Executive/Admin/Managerial', 'Faculty', 'Other Professional', 'Technical/Paraprofessional', 'Clerical/Secretarial', 'Skilled Crafts', 'Service/Maintenance'."
+      "description": "Map to IPEDS/EEO categories: 'Executive/Admin/Managerial', 'Faculty', 'Other Professional', 'Technical/Paraprofessional', 'Clerical/Secretarial', 'Skilled Crafts', 'Service/Maintenance'. Bound to HELIX terminology: helix/eeo-category."
     },
     "soc_code": {
       "type": "string",
@@ -43,11 +43,11 @@
     },
     "academic_rank": {
       "type": "string",
-      "description": "Map: 'Distinguished Professor' \u2192 'distinguished', 'Professor' \u2192 'professor', 'Associate Professor' \u2192 'associate', 'Assistant Professor' \u2192 'assistant', 'Senior Lecturer' \u2192 'senior_lecturer', 'Lecturer' \u2192 'lecturer', 'Instructor' \u2192 'instructo"
+      "description": "Map: 'Distinguished Professor' \u2192 'distinguished', 'Professor' \u2192 'professor', 'Associate Professor' \u2192 'associate', 'Assistant Professor' \u2192 'assistant', 'Senior Lecturer' \u2192 'senior_lecturer', 'Lecturer' \u2192 'lecturer', 'Instructor' \u2192 'instructo. Bound to HELIX terminology: helix/faculty-rank."
     },
     "tenure_status": {
       "type": "string",
-      "description": "Map: 'Tenured' \u2192 'tenured', 'Tenure Track' \u2192 'tenure_track', 'Non-Tenure Track' \u2192 'ntt', 'Not Applicable' \u2192 'n/a'."
+      "description": "Map: 'Tenured' \u2192 'tenured', 'Tenure Track' \u2192 'tenure_track', 'Non-Tenure Track' \u2192 'ntt', 'Not Applicable' \u2192 'n/a'. Bound to HELIX terminology: helix/tenure-status."
     },
     "tenure_date": {
       "type": [
@@ -67,7 +67,7 @@
     },
     "flsa_status": {
       "type": "string",
-      "description": "Map: true \u2192 'exempt', false \u2192 'non_exempt'. Faculty are typically exempt."
+      "description": "Map: true \u2192 'exempt', false \u2192 'non_exempt'. Faculty are typically exempt. Bound to HELIX terminology: helix/flsa-status."
     },
     "meta": {
       "type": "object",

@@ -35,7 +35,7 @@
     },
     "overall_rating": {
       "type": "string",
-      "description": "Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'."
+      "description": "Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'. Bound to HELIX terminology: helix/performance-rating."
     },
     "numeric_rating": {
       "type": "string",

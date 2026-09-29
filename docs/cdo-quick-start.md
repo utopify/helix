@@ -56,7 +56,7 @@ You're a new (or newly empowered) Chief Data Officer, VP of Data & Analytics, or
 3. Use the HELIX committee charter template as your starting document (see [govern/](../govern/))
 
 **Week 7-8: Establish the Shared Vocabulary**
-1. Take the [HELIX Data Dictionary](../core/data-dictionary.json) (537 entries)
+1. Take the [HELIX Data Dictionary](../core/data-dictionary.json) (1,870 entries across all 64 resources, also as CSV)
 2. Review it with each Data Steward for their domain:
    - "Does 'enrolled student' match our institutional definition?"
    - "Are these enrollment status codes complete for our institution?"

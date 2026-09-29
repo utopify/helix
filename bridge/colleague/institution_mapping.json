@@ -1,0 +1,80 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Ellucian Colleague → Institution",
+  "source_system": "colleague",
+  "description": "Maps the home institution and external schools from Colleague to the HELIX Institution resource.",
+  "architecture_notes": "In Colleague, other schools are records in the INSTITUTIONS file, keyed by the same ID as their PERSON/CORP record. The home institution is one of those records, identified by the host institution setting in DEFAULTS. FLAG: confirm the host institution parameter at your school.",
+  "source_files": [
+    {
+      "file": "INSTITUTIONS",
+      "description": "Institution records (home and external): type, CEEB and FICE codes, other identifiers."
+    },
+    {
+      "file": "CORP / PERSON",
+      "description": "Name and address for the institution's ID."
+    },
+    {
+      "file": "DEFAULTS",
+      "description": "Host institution ID for the installation."
+    }
+  ],
+  "target_resource": "Institution",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from the INSTITUTIONS record ID."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "CORP name for the INSTITUTIONS ID",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "short_name",
+      "source": "Configuration",
+      "transformation": "Not stored."
+    },
+    {
+      "helix_attribute": "identifiers",
+      "source": "INSTITUTIONS ID, CEEB and FICE fields; configuration",
+      "transformation": "Array of {system, value}: colleague_id, ceeb, fice, ipeds_unit_id, opeid. Multi-valued ID fields explode into array items."
+    },
+    {
+      "helix_attribute": "institution_type",
+      "source": "INSTITUTIONS type (INST.TYPE) / IPEDS directory",
+      "transformation": "Colleague type codes separate high schools and colleges; HELIX type comes from IPEDS. FLAG: confirm field name."
+    },
+    {
+      "helix_attribute": "country",
+      "source": "ADDRESS country for the institution",
+      "transformation": "Convert to ISO 3166-1 alpha-2."
+    },
+    {
+      "helix_attribute": "state_province",
+      "source": "ADDRESS state",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "carnegie_classification",
+      "source": "Not stored in the ERP",
+      "transformation": "Load from the Carnegie Classification public file by IPEDS Unit ID. Refresh when a new edition is published."
+    },
+    {
+      "helix_attribute": "timezone",
+      "source": "Configuration",
+      "transformation": "IANA name, for example America/New_York. Set once per institution or campus."
+    },
+    {
+      "helix_attribute": "erp_system",
+      "source": "Constant",
+      "transformation": "'colleague' for the home institution. Null for external schools."
+    },
+    {
+      "helix_attribute": "website",
+      "source": "Configuration / IPEDS directory",
+      "transformation": "Not stored."
+    }
+  ]
+}

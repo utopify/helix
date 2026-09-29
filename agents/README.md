@@ -1,8 +1,11 @@
 # HELIX Agents
 
-7 downloadable AI assistant templates. Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
+7 downloadable AI assistant templates (v0.8.1). Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
 
 **Start here**
+
+Say **"help me start"** to the Migration Companion and it walks you through [START_HERE](../START_HERE.md) step by step.
+
 - **helix-migration-companion.json** — The unified entry point. Interactive menu guiding users through migrations, governance, analytics, and compliance, and routing to the right specialist.
 
 **PeopleSoft to Workday (the cornerstone path)**

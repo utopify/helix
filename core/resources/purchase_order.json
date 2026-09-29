@@ -39,7 +39,7 @@
     },
     "po_status": {
       "type": "string",
-      "description": "Map: 'Draft' \u2192 'draft', 'In Progress' \u2192 'open', 'Fully Received' \u2192 'received', 'Closed' \u2192 'closed', 'Canceled' \u2192 'canceled'."
+      "description": "Map: 'Draft' \u2192 'draft', 'In Progress' \u2192 'open', 'Fully Received' \u2192 'received', 'Closed' \u2192 'closed', 'Canceled' \u2192 'canceled'. Bound to HELIX terminology: helix/purchase-order-status."
     },
     "total_amount": {
       "type": "number",

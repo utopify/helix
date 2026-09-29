@@ -1,0 +1,154 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → Disbursement",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "Disbursement",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_STDNT_AWRD_DISB",
+      "description": "Award disbursement records: one row per student, item type, term, and disbursement ID with scheduled, authorized, and disbursed amounts."
+    },
+    {
+      "table": "PS_STDNT_AWARDS",
+      "description": "Parent award (item type, aid year)."
+    },
+    {
+      "table": "PS_ITEM_TYPE_FA",
+      "description": "Fund name and federal fund code for the item type."
+    },
+    {
+      "table": "PS_ITEM_SF",
+      "description": "Student Financials item posted to the student account when aid disburses. Proves ledger posting."
+    },
+    {
+      "table": "PeopleSoft COD records",
+      "description": "COD origination and disbursement records with response status. FLAG: confirm delivered COD record names for your release."
+    },
+    {
+      "table": "Student Financials refund records",
+      "description": "Refunds generated from credit balances. FLAG: confirm local refund process tables."
+    }
+  ],
+  "notes": "Disbursement is where Financial Aid meets Student Financials. Map the FA side from PS_STDNT_AWRD_DISB and confirm posting from PS_ITEM_SF. A disbursement that FA shows as paid but has no SF item is a reconciliation finding, not a mapping error.",
+  "privacy": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "workday_counterpart": "bridge/workday/sis/disbursement_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR + ITEM_TYPE + STRM + DISBURSEMENT_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_AWRD_DISB.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "fin_aid_award_ref",
+      "source": "PS_STDNT_AWARDS (EMPLID, AID_YEAR, ITEM_TYPE, STRM)",
+      "transformation": "Resolve to HELIX FinAidAward."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_AWRD_DISB.STRM",
+      "transformation": "Resolve through term-period-xref to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AWRD_DISB.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "PS_ITEM_TYPE_FA.DESCR",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "PS_ITEM_TYPE_FA federal fund code / ITEM_TYPE",
+      "transformation": "Use the federal fund code for Title IV funds, else ITEM_TYPE. See fin-aid-item-type-xref."
+    },
+    {
+      "helix_attribute": "disbursement_status",
+      "source": "Derived from PS_STDNT_AWRD_DISB amounts and dates",
+      "transformation": "See disbursement-status-xref."
+    },
+    {
+      "helix_attribute": "scheduled_date",
+      "source": "PS_STDNT_AWRD_DISB scheduled disbursement date",
+      "transformation": "ISO date. Driven by the disbursement plan and split code."
+    },
+    {
+      "helix_attribute": "actual_disbursement_date",
+      "source": "PS_STDNT_AWRD_DISB disbursed date",
+      "transformation": "ISO date. Null until disbursed. Must match COD."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "PS_STDNT_AWRD_DISB disbursed (or scheduled) amount",
+      "transformation": "Gross before loan fees."
+    },
+    {
+      "helix_attribute": "net_amount",
+      "source": "PS_STDNT_AWRD_DISB net disbursed amount",
+      "transformation": "Net after loan origination fees. Equals gross for grants."
+    },
+    {
+      "helix_attribute": "fees_deducted",
+      "source": "Derived",
+      "transformation": "gross minus net."
+    },
+    {
+      "helix_attribute": "disbursement_number",
+      "source": "PS_STDNT_AWRD_DISB.DISBURSEMENT_ID",
+      "transformation": "Integer sequence within the award (01, 02)."
+    },
+    {
+      "helix_attribute": "disbursement_sequence",
+      "source": "Adjustment sequence",
+      "transformation": "Increment for each adjustment to the same disbursement; COD sequence number where available."
+    },
+    {
+      "helix_attribute": "hold_flag",
+      "source": "Disbursement edit failures / hold indicator",
+      "transformation": "True when disbursement is blocked (missing MPN, SAP, verification, enrollment)."
+    },
+    {
+      "helix_attribute": "hold_reason",
+      "source": "Disbursement edit message",
+      "transformation": "Map to a short reason: mpn, counseling, verification, sap, enrollment, other."
+    },
+    {
+      "helix_attribute": "refund_generated_flag",
+      "source": "Refund exists for the credit balance created",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "refund_amount",
+      "source": "Refund amount",
+      "transformation": "Decimal. The 14-day credit balance rule applies (34 CFR 668.164(h))."
+    },
+    {
+      "helix_attribute": "refund_date",
+      "source": "Refund issue date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "cod_reported_flag",
+      "source": "COD disbursement record sent",
+      "transformation": "Boolean. Title IV funds only."
+    },
+    {
+      "helix_attribute": "cod_response_date",
+      "source": "COD response received date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "ledger_posted_flag",
+      "source": "PS_ITEM_SF exists for the disbursement",
+      "transformation": "True when the SF item posted."
+    }
+  ]
+}

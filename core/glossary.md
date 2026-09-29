@@ -196,7 +196,7 @@ A student employed by the institution in a part-time capacity. The student holds
 | **Graduate Fellow** | Graduate student on a fellowship (stipend, no work requirement). | Institutional / External | N/A (no work required) |
 | **Resident Advisor (RA)** | Student employed in residential life, typically with room/board comp. | Institutional (housing) | 15-20 hrs/week |
 
-**HELIX Resources:** `Student` + `Employee` (planned). The PIDM/EMPLID is shared.
+**HELIX Resources:** `Student` + `Employee`. The PIDM/EMPLID is shared.
 **Data challenge:** The student-as-employee creates dual records. HELIX's shared `Person` resource with `Student` and `Employee` both referencing the same `person_ref` solves this.
 
 ### Student Athlete
@@ -215,7 +215,7 @@ A student who is not a citizen or permanent resident of the host country and typ
 
 **Compliance:** SEVIS (Student and Exchange Visitor Information System) reporting to DHS/ICE. Mandatory reporting of enrollment status, address changes, program changes, employment authorization, and travel.
 
-**HELIX Resource:** `InternationalStudent` (planned) mapping covers visa, SEVIS ID, CPT/OPT, English proficiency.
+**HELIX Resource:** `InternationalStudent` covers visa, SEVIS ID, CPT/OPT, English proficiency.
 
 ### First-Generation Student
 A student whose parents/guardians did **not** complete a bachelor's degree. Definition varies by institution (some define it as "neither parent attended any college").

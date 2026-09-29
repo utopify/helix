@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Fund",
   "source_system": "workday",
   "module": "Financial Management - Fund Accounting",
-  "target_resource": "Fund (planned)",
+  "target_resource": "Fund",
   "version": "0.1",
   "source_objects": [
     {

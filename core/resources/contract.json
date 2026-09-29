@@ -59,7 +59,7 @@
     },
     "contract_status": {
       "type": "string",
-      "description": "Map: 'Draft' \u2192 'draft', 'Active' \u2192 'active', 'Expired' \u2192 'expired', 'Terminated' \u2192 'terminated', 'On Hold' \u2192 'on_hold'."
+      "description": "Map: 'Draft' \u2192 'draft', 'Active' \u2192 'active', 'Expired' \u2192 'expired', 'Terminated' \u2192 'terminated', 'On Hold' \u2192 'on_hold'. Bound to HELIX terminology: helix/contract-status."
     },
     "owner": {
       "type": "string",

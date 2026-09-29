@@ -1,0 +1,147 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → ReturnOfTitleIV",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "ReturnOfTitleIV",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_CAR_TERM, PS_STDNT_ENRL, PS_STDNT_AWRD_DISB, PS_TERM_TBL. Attribute names match bridge/peoplesoft/cs/return_of_title_iv_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Return of Title IV Calculation",
+      "description": "The R2T4 worksheet: dates, percent earned, amounts, returns, and status."
+    },
+    {
+      "object": "Student Withdrawal",
+      "description": "Withdrawal event from the academic period with the withdrawal date and type."
+    },
+    {
+      "object": "Post-Withdrawal Disbursement",
+      "description": "PWD offer, response, and disbursement."
+    },
+    {
+      "object": "Financial Aid Disbursement",
+      "description": "Title IV disbursements for the period."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/return_of_title_iv_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Return of Title IV Calculation.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Return of Title IV Calculation.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Return of Title IV Calculation.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Return of Title IV Calculation.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "withdrawal_date",
+      "source": "Student Withdrawal.Withdrawal_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "withdrawal_type",
+      "source": "Student Withdrawal.Type",
+      "transformation": "official or unofficial."
+    },
+    {
+      "helix_attribute": "determination_date",
+      "source": "Return of Title IV Calculation.Determination_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "percent_enrolled",
+      "source": "Return of Title IV Calculation.Percent_Completed",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "percent_title_iv_earned",
+      "source": "Return of Title IV Calculation.Percent_Earned",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "title_iv_disbursed_amount",
+      "source": "Return of Title IV Calculation.Aid_Disbursed",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_could_have_disbursed",
+      "source": "Return of Title IV Calculation.Aid_Could_Have_Been_Disbursed",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_earned_amount",
+      "source": "Return of Title IV Calculation.Aid_Earned",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_unearned_amount",
+      "source": "Return of Title IV Calculation.Aid_Unearned",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "amount_returned_by_school",
+      "source": "Return of Title IV Calculation.School_Return",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "amount_returned_by_student",
+      "source": "Return of Title IV Calculation.Student_Return",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "post_withdrawal_disbursement_flag",
+      "source": "Post-Withdrawal Disbursement (exists)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "pwd_amount",
+      "source": "Post-Withdrawal Disbursement.Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "pwd_offered_date",
+      "source": "Post-Withdrawal Disbursement.Offered_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "pwd_accepted_flag",
+      "source": "Post-Withdrawal Disbursement.Accepted",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "return_calculation_date",
+      "source": "Return of Title IV Calculation.Calculation_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "return_deadline_date",
+      "source": "Derived",
+      "transformation": "determination_date + 45 days."
+    },
+    {
+      "helix_attribute": "institutional_charges",
+      "source": "Return of Title IV Calculation.Institutional_Charges",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "r2t4_status",
+      "source": "Return of Title IV Calculation.Status",
+      "transformation": "Map through helix/r2t4-status."
+    }
+  ]
+}

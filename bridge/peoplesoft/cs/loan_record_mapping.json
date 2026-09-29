@@ -1,0 +1,165 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → LoanRecord",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "LoanRecord",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PS_LOAN_ORIGNATN",
+      "description": "Loan origination: one row per student, aid year, loan type, and sequence. Loan period, amounts, grade level, dependency, COD loan ID."
+    },
+    {
+      "table": "PS_STDNT_AWARDS",
+      "description": "The loan award (item type)."
+    },
+    {
+      "table": "PS_ITEM_TYPE_FA",
+      "description": "Loan program for the item type."
+    },
+    {
+      "table": "PeopleSoft loan disbursement records",
+      "description": "Loan disbursement actions and COD responses. FLAG: confirm delivered record names."
+    },
+    {
+      "table": "COD MPN and counseling responses",
+      "description": "MPN and entrance/exit counseling status returned by COD. FLAG: confirm where your release stores them."
+    }
+  ],
+  "notes": "Direct Loans are originated and reported through COD, so COD is the system of record for MPN status, counseling, and loan IDs. For in-flight award years, carry the COD loan ID unchanged into Workday; creating a new origination for a loan COD already knows about causes rejects.",
+  "privacy": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "workday_counterpart": "bridge/workday/sis/loan_record_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + AID_YEAR + loan type + loan sequence."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_LOAN_ORIGNATN.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_LOAN_ORIGNATN.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "loan_type",
+      "source": "PS_LOAN_ORIGNATN loan type / PS_ITEM_TYPE_FA",
+      "transformation": "Map through loan-type-xref to helix/loan-type."
+    },
+    {
+      "helix_attribute": "loan_status",
+      "source": "Origination status + disbursement status",
+      "transformation": "originated, pending_mpn, pending_counseling, certified, disbursed, cancelled, returned. Repayment states come from NSLDS, not the school."
+    },
+    {
+      "helix_attribute": "loan_period_start",
+      "source": "PS_LOAN_ORIGNATN loan period begin date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "loan_period_end",
+      "source": "PS_LOAN_ORIGNATN loan period end date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "mpn_flag",
+      "source": "COD MPN status",
+      "transformation": "True when an active MPN is on file."
+    },
+    {
+      "helix_attribute": "mpn_date",
+      "source": "COD MPN signed date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "mpn_expiration_date",
+      "source": "COD MPN expiration date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "entrance_counseling_flag",
+      "source": "COD entrance counseling status",
+      "transformation": "Boolean. Required for first-time borrowers."
+    },
+    {
+      "helix_attribute": "entrance_counseling_date",
+      "source": "Entrance counseling completion date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "exit_counseling_flag",
+      "source": "Exit counseling status",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "exit_counseling_date",
+      "source": "Exit counseling completion date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "gross_loan_amount",
+      "source": "PS_LOAN_ORIGNATN gross/approved amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "net_loan_amount",
+      "source": "PS_LOAN_ORIGNATN net amount",
+      "transformation": "Gross minus origination fee."
+    },
+    {
+      "helix_attribute": "origination_fee",
+      "source": "Derived or fee percent x gross",
+      "transformation": "Fee percent set by ED for the disbursement date."
+    },
+    {
+      "helix_attribute": "interest_rate",
+      "source": "Not stored by PeopleSoft",
+      "transformation": "Rate is set by ED per program and first disbursement date. Look up from a reference table."
+    },
+    {
+      "helix_attribute": "subsidized_flag",
+      "source": "loan_type = direct_subsidized",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "loan_disbursement_count",
+      "source": "COUNT of loan disbursements",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "cod_loan_id",
+      "source": "PS_LOAN_ORIGNATN COD loan ID",
+      "transformation": "21-character ID. Carry unchanged. GLBA restricted (contains SSN)."
+    },
+    {
+      "helix_attribute": "servicer_name",
+      "source": "NSLDS servicer",
+      "transformation": "From NSLDS, not the school. Often null."
+    },
+    {
+      "helix_attribute": "grade_level",
+      "source": "PS_LOAN_ORIGNATN grade level",
+      "transformation": "Federal loan grade level 0 to 7. Drives annual limits."
+    },
+    {
+      "helix_attribute": "dependency_at_origination",
+      "source": "PS_LOAN_ORIGNATN dependency status",
+      "transformation": "D/I -> dependent/independent."
+    },
+    {
+      "helix_attribute": "aggregate_loan_limit_check_flag",
+      "source": "Aggregate limit check against NSLDS",
+      "transformation": "True when checked and passed."
+    },
+    {
+      "helix_attribute": "annual_loan_limit_check_flag",
+      "source": "Annual limit check",
+      "transformation": "True when checked and passed."
+    }
+  ]
+}

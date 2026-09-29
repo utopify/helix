@@ -1,0 +1,151 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → Disbursement",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "Disbursement",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_AWRD_DISB, PS_STDNT_AWARDS, PS_ITEM_TYPE_FA, PS_ITEM_SF. Attribute names match bridge/peoplesoft/cs/disbursement_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Financial Aid Disbursement",
+      "description": "Each disbursement: award, period, scheduled and actual date, gross and net amounts, status."
+    },
+    {
+      "object": "Financial Aid Award",
+      "description": "Parent award."
+    },
+    {
+      "object": "Student Payment",
+      "description": "Aid payment posted to the student account in Workday Student Financials."
+    },
+    {
+      "object": "Student Refund",
+      "description": "Refund issued from a credit balance."
+    },
+    {
+      "object": "COD Record",
+      "description": "COD disbursement record and response."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/disbursement_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Financial Aid Disbursement.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Financial Aid Disbursement.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "fin_aid_award_ref",
+      "source": "Financial Aid Disbursement.Award",
+      "transformation": "Resolve to HELIX FinAidAward."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Financial Aid Disbursement.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Financial Aid Disbursement.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "Financial Aid Disbursement.Fund",
+      "transformation": "Fund name."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "Financial Aid Disbursement.Fund.Reference_ID",
+      "transformation": "Resolve through fin-aid-item-type-xref."
+    },
+    {
+      "helix_attribute": "disbursement_status",
+      "source": "Financial Aid Disbursement.Status",
+      "transformation": "Map through disbursement-status-xref."
+    },
+    {
+      "helix_attribute": "scheduled_date",
+      "source": "Financial Aid Disbursement.Scheduled_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "actual_disbursement_date",
+      "source": "Financial Aid Disbursement.Disbursement_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "Financial Aid Disbursement.Gross_Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "net_amount",
+      "source": "Financial Aid Disbursement.Net_Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "fees_deducted",
+      "source": "Derived",
+      "transformation": "gross minus net."
+    },
+    {
+      "helix_attribute": "disbursement_number",
+      "source": "Financial Aid Disbursement.Disbursement_Number",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "disbursement_sequence",
+      "source": "COD Record.Sequence_Number",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "hold_flag",
+      "source": "Financial Aid Disbursement.On_Hold",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "hold_reason",
+      "source": "Financial Aid Disbursement.Hold_Reason",
+      "transformation": "Map to the same short reasons."
+    },
+    {
+      "helix_attribute": "refund_generated_flag",
+      "source": "Student Refund (linked)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "refund_amount",
+      "source": "Student Refund.Amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "refund_date",
+      "source": "Student Refund.Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "cod_reported_flag",
+      "source": "COD Record (sent)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "cod_response_date",
+      "source": "COD Record.Response_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "ledger_posted_flag",
+      "source": "Student Payment (posted)",
+      "transformation": "Boolean."
+    }
+  ]
+}

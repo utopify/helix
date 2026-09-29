@@ -1,8 +1,8 @@
 {
   "$schema": "https://helixedu.org/govern/access-control-matrix-schema.json",
   "title": "HELIX Govern: Access Control Matrix",
-  "description": "Comprehensive matrix mapping database roles to specific HELIX resources, layers, and operations. The single source of truth for who can access what. Covers all 47 HELIX Core resources across 9 domains with column-level exceptions for restricted and PII fields.",
-  "version": "0.1",
+  "description": "Comprehensive matrix mapping database roles to specific HELIX resources, layers, and operations. The single source of truth for who can access what. Covers all 64 HELIX Core resources across 9 domains, including the Financial Aid and Outcomes resources added in v0.4.0.",
+  "version": "0.2",
   "matrix_dimensions": {
     "roles": [
       "helix_bronze_loader",
@@ -38,7 +38,7 @@
       "masked_read": "SELECT access with PII/restricted columns masked or tokenized",
       "no_access": "No access to this resource at this layer"
     },
-    "resources_covered": 47,
+    "resources_covered": 64,
     "domains_covered": 9
   },
   "matrix": [
@@ -198,29 +198,36 @@
         {
           "resource": "Person",
           "columns": [
-            "ssn",
-            "national_id",
-            "bank_account",
-            "routing_number"
+            "identifiers[].value (where identifiers[].type in national_id, ssn_last4, passport, drivers_license)"
           ],
           "classification": "restricted",
-          "override": "Only helix_analyst_restricted sees cleartext. Silver engineers see SHA-256 tokens for identity resolution. All others see 'RESTRICTED' literal.",
+          "override": "Only helix_analyst_restricted sees cleartext. Silver engineers see SHA-256 tokens for identity resolution. All others see 'RESTRICTED'. HELIX Person carries SSN and national IDs inside identifiers[]; bank and routing numbers are not Person attributes. If your institution extends Person with them, add them here.",
           "masking_policy": "helix_mask_restricted"
         },
         {
           "resource": "Person",
           "columns": [
-            "legal_name",
-            "preferred_name",
-            "primary_email",
-            "primary_phone",
-            "addresses"
+            "name.family",
+            "name.given",
+            "name.middle",
+            "name.preferred_first",
+            "name.preferred_last",
+            "birth_date",
+            "contact.emails[].address",
+            "contact.phones[].number",
+            "contact.addresses[]",
+            "emergency_contacts[]"
           ],
           "classification": "confidential",
           "override": "helix_analyst_confidential and helix_steward see cleartext. helix_analyst_standard sees partial mask (first initial, domain-only email). helix_research sees opaque token.",
           "masking_policy": "helix_mask_confidential_pii"
         }
-      ]
+      ],
+      "resource_classification": {
+        "Institution": "public",
+        "Person": "confidential",
+        "Student": "confidential"
+      }
     },
     {
       "domain": "Academic Structure",
@@ -469,6 +476,13 @@
             "gold": "no_access"
           }
         }
+      },
+      "resource_classification": {
+        "AcademicOrg": "internal",
+        "AcademicPeriod": "public",
+        "Course": "internal",
+        "CourseSection": "internal",
+        "Program": "internal"
       }
     },
     {
@@ -915,22 +929,47 @@
         {
           "resource": "InternationalStudent",
           "columns": [
-            "sevis_number",
-            "visa_number",
-            "passport_number",
-            "i20_details"
+            "sevis_id",
+            "visa_type",
+            "visa_status",
+            "visa_issue_date",
+            "visa_expiry_date",
+            "i20_program_start_date",
+            "i20_program_end_date",
+            "work_authorization",
+            "sponsor"
           ],
           "classification": "restricted",
           "override": "Only helix_analyst_restricted sees cleartext. All others see 'RESTRICTED' literal. Export-controlled data.",
           "masking_policy": "helix_mask_restricted"
         }
-      ]
+      ],
+      "resource_classification": {
+        "AcademicTermRecord": "confidential",
+        "AdmissionApplication": "confidential",
+        "DegreeAudit": "confidential",
+        "Enrollment": "confidential",
+        "FerpaRestriction": "confidential",
+        "InternationalStudent": "restricted",
+        "StudentGroup": "confidential",
+        "StudentProgram": "confidential",
+        "TransferCredit": "confidential"
+      }
     },
     {
       "domain": "Financial Aid",
-      "classification": "confidential",
+      "classification": "mixed",
       "resources": [
-        "FinAidAward"
+        "AidApplication",
+        "AidPackage",
+        "Disbursement",
+        "FederalAidReport",
+        "FinAidAward",
+        "LoanRecord",
+        "ReturnOfTitleIv",
+        "SapEvaluation",
+        "StudentEmployment",
+        "Verification"
       ],
       "ferpa_education_record": true,
       "access_by_resource": {
@@ -980,30 +1019,587 @@
             "silver": "no_access",
             "gold": "no_access"
           }
+        },
+        "AidApplication": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "AidPackage": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Verification": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "SapEvaluation": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Disbursement": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "LoanRecord": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "ReturnOfTitleIv": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "masked_read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "masked_read",
+            "gold": "masked_read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "StudentEmployment": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "FederalAidReport": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
         }
       },
       "column_exceptions": [
         {
           "resource": "FinAidAward",
           "columns": [
-            "sai",
             "efc",
-            "family_income",
-            "tax_data",
-            "bank_account",
-            "routing_number"
+            "cost_of_attendance",
+            "unmet_need"
           ],
           "classification": "restricted (GLBA-covered)",
-          "override": "Only helix_analyst_restricted_finaid sees cleartext. All others see SHA-256 token or 'RESTRICTED'. GLBA 16 CFR 314.4(c)(3) encryption required at rest and in transit.",
+          "override": "Only helix_analyst_restricted_finaid sees cleartext. All others see SHA-256 token or 'RESTRICTED'. For 2024-25 onward the Student Aid Index lives on AidApplication.sai. GLBA 16 CFR 314.4(c)(3) encryption required at rest and in transit.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "AidApplication",
+          "columns": [
+            "sai",
+            "efc_legacy",
+            "pell_lifetime_eligibility_used",
+            "isir_transaction_number",
+            "comment_codes",
+            "c_flags",
+            "nslds_match_flags"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "ISIR and FAFSA-derived values. Only helix_analyst_restricted_finaid sees cleartext; everyone else sees SHA-256 token or 'RESTRICTED'. Never surfaced in agent responses (agent-guardrails PQP-05).",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "AidApplication",
+          "columns": [
+            "dependency_override_flag",
+            "homeless_youth_flag",
+            "foster_care_flag",
+            "citizenship_status",
+            "professional_judgment_flag"
+          ],
+          "classification": "restricted (sensitive circumstance)",
+          "override": "Reveals personal circumstances (homelessness, foster care, citizenship). Only helix_analyst_restricted_finaid sees cleartext. Never used as a dimension in aggregates without small-cell suppression (ferpa-suppression-policy SUPP-001, SUPP-005).",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "AidPackage",
+          "columns": [
+            "sai",
+            "need",
+            "unmet_need",
+            "pj_reason",
+            "pj_adjustment_amount"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Need analysis and professional judgment detail. Only helix_analyst_restricted_finaid sees cleartext. COA components are institutional budgets and are not masked.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "Verification",
+          "columns": [
+            "sai_before_verification",
+            "sai_after_verification",
+            "sai_change_amount",
+            "conflicting_info_resolution",
+            "documents_received",
+            "documents_outstanding"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Tax and income verification detail. Only helix_analyst_restricted_finaid sees cleartext.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "Disbursement",
+          "columns": [
+            "gross_amount",
+            "net_amount",
+            "fees_deducted",
+            "refund_amount"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Individual disbursement and refund amounts. Cleartext for helix_analyst_restricted_finaid and bursar staff holding helix_analyst_restricted. Totals by fund and term are available to helix_analyst_standard through suppressed gold aggregates.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "LoanRecord",
+          "columns": [
+            "gross_loan_amount",
+            "net_loan_amount",
+            "origination_fee",
+            "cod_loan_id",
+            "servicer_name"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Individual loan amounts and COD identifiers. Only helix_analyst_restricted_finaid sees cleartext. Aggregate loan volume by type is available in suppressed gold aggregates.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "ReturnOfTitleIv",
+          "columns": [
+            "title_iv_disbursed_amount",
+            "title_iv_earned_amount",
+            "title_iv_unearned_amount",
+            "amount_returned_by_school",
+            "amount_returned_by_student",
+            "pwd_amount",
+            "institutional_charges"
+          ],
+          "classification": "restricted (GLBA-covered)",
+          "override": "Individual R2T4 calculations. Only helix_analyst_restricted_finaid sees cleartext.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "SapEvaluation",
+          "columns": [
+            "appeal_reason"
+          ],
+          "classification": "restricted (sensitive circumstance)",
+          "override": "Appeal narratives often describe illness, family, or financial hardship. Only helix_analyst_restricted_finaid sees cleartext; the rest of the SAP record follows the confidential template.",
+          "masking_policy": "helix_mask_restricted"
+        },
+        {
+          "resource": "StudentEmployment",
+          "columns": [
+            "hourly_rate",
+            "earnings_ytd",
+            "fws_earnings_to_date",
+            "fws_award_amount"
+          ],
+          "classification": "restricted (pay)",
+          "override": "Student pay follows HR pay rules. Cleartext for helix_analyst_restricted (finaid or hr subtype). Supervisors and confidential analysts see job details but 'RESTRICTED' for pay.",
           "masking_policy": "helix_mask_restricted"
         }
-      ]
+      ],
+      "note": "Nine of ten resources are FERPA education records. FederalAidReport is institution-level aggregate reporting with no student rows. Resources classified restricted are GLBA-covered (16 CFR 314) and follow the restricted grant template.",
+      "resource_classification": {
+        "AidApplication": "restricted",
+        "AidPackage": "restricted",
+        "Disbursement": "restricted",
+        "FederalAidReport": "confidential",
+        "FinAidAward": "restricted",
+        "LoanRecord": "restricted",
+        "ReturnOfTitleIv": "restricted",
+        "SapEvaluation": "confidential",
+        "StudentEmployment": "confidential",
+        "Verification": "restricted"
+      }
     },
     {
       "domain": "Outcomes",
       "classification": "confidential",
       "resources": [
-        "Degree"
+        "AlumniProfile",
+        "AwardHonor",
+        "ContinuingEducation",
+        "Degree",
+        "EmploymentOutcome",
+        "ExperientialLearning",
+        "FirstDestinationSurvey",
+        "LearningOutcome",
+        "Licensure"
       ],
       "ferpa_education_record": true,
       "access_by_resource": {
@@ -1053,7 +1649,464 @@
             "silver": "no_access",
             "gold": "no_access"
           }
+        },
+        "EmploymentOutcome": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "ContinuingEducation": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "ExperientialLearning": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "Licensure": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "AlumniProfile": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "FirstDestinationSurvey": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "LearningOutcome": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
+        },
+        "AwardHonor": {
+          "helix_bronze_loader": {
+            "bronze": "write",
+            "silver": "no_access",
+            "gold": "no_access"
+          },
+          "helix_silver_engineer": {
+            "bronze": "read",
+            "silver": "write",
+            "gold": "no_access"
+          },
+          "helix_gold_engineer": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "write"
+          },
+          "helix_analyst_standard": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "aggregate_only"
+          },
+          "helix_analyst_confidential": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_analyst_restricted": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "read"
+          },
+          "helix_steward": {
+            "bronze": "no_access",
+            "silver": "read",
+            "gold": "read"
+          },
+          "helix_research": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "masked_read"
+          },
+          "helix_admin": {
+            "bronze": "no_access",
+            "silver": "no_access",
+            "gold": "no_access"
+          }
         }
+      },
+      "column_exceptions": [
+        {
+          "resource": "EmploymentOutcome",
+          "columns": [
+            "salary_amount",
+            "signing_bonus"
+          ],
+          "classification": "confidential (salary)",
+          "override": "Individual salary is visible to helix_analyst_confidential with a career-services purpose and to helix_analyst_restricted. helix_research sees salary bands. Published only as suppressed aggregates (median by program with N of at least 5).",
+          "masking_policy": "helix_mask_outcomes_salary"
+        },
+        {
+          "resource": "EmploymentOutcome",
+          "columns": [
+            "employer_name",
+            "job_title",
+            "employment_location_city"
+          ],
+          "classification": "confidential (re-identifying)",
+          "override": "With graduation year and program these re-identify a graduate. helix_research and helix_analyst_standard see masked values.",
+          "masking_policy": "helix_mask_confidential_pii"
+        },
+        {
+          "resource": "AlumniProfile",
+          "columns": [
+            "linkedin_url",
+            "current_employer",
+            "current_job_title",
+            "current_location_city",
+            "career_progression_notes"
+          ],
+          "classification": "confidential (PII)",
+          "override": "Alumni contact and career detail. Cleartext for helix_analyst_confidential and helix_steward (advancement or enrollment steward); masked for helix_analyst_standard and helix_research.",
+          "masking_policy": "helix_mask_confidential_pii"
+        },
+        {
+          "resource": "Licensure",
+          "columns": [
+            "license_number",
+            "score",
+            "scaled_score"
+          ],
+          "classification": "confidential",
+          "override": "License numbers identify a person; individual scores are education records. Programs report pass rates as suppressed aggregates.",
+          "masking_policy": "helix_mask_confidential_pii"
+        },
+        {
+          "resource": "ExperientialLearning",
+          "columns": [
+            "supervisor_name",
+            "supervisor_contact",
+            "compensation_amount",
+            "evaluation_rating"
+          ],
+          "classification": "confidential",
+          "override": "Third-party supervisor contact details and individual evaluations. Masked for helix_analyst_standard and helix_research.",
+          "masking_policy": "helix_mask_confidential_pii"
+        },
+        {
+          "resource": "AwardHonor",
+          "columns": [
+            "monetary_value",
+            "gpa_at_award"
+          ],
+          "classification": "confidential",
+          "override": "Award amounts and GPA are not directory information even though the honor itself usually is (34 CFR 99.3). Masked for helix_analyst_standard and helix_research.",
+          "masking_policy": "helix_mask_confidential_pii"
+        }
+      ],
+      "note": "Eight of nine resources are FERPA education records. AlumniProfile is not an education record once the data is collected independently after graduation, but it stays confidential. See ACM-SPECIAL-009.",
+      "resource_classification": {
+        "AlumniProfile": "confidential",
+        "AwardHonor": "confidential",
+        "ContinuingEducation": "confidential",
+        "Degree": "confidential",
+        "EmploymentOutcome": "confidential",
+        "ExperientialLearning": "confidential",
+        "FirstDestinationSurvey": "confidential",
+        "LearningOutcome": "confidential",
+        "Licensure": "confidential"
       }
     },
     {
@@ -1111,6 +2164,9 @@
             "gold": "no_access"
           }
         }
+      },
+      "resource_classification": {
+        "Hold": "confidential"
       }
     },
     {
@@ -1317,26 +2373,33 @@
         {
           "resource": "Constituent",
           "columns": [
-            "giving_capacity",
-            "wealth_screening_data",
-            "prospect_rating"
+            "giving_capacity.estimated_capacity",
+            "giving_capacity.capacity_rating",
+            "giving_capacity.screening_date",
+            "giving_capacity.screening_source",
+            "engagement_score"
           ],
           "classification": "confidential",
-          "override": "Only helix_analyst_confidential with advancement steward authorization. helix_analyst_standard sees aggregate giving by segment only.",
+          "override": "Wealth screening and prospect ratings. Only helix_analyst_confidential with advancement steward authorization. helix_analyst_standard sees aggregate giving by segment only. Constituent names and contact details come from Person and follow the Person PII rule.",
           "masking_policy": "helix_mask_confidential_pii"
         },
         {
           "resource": "Gift",
           "columns": [
-            "giving_capacity",
-            "wealth_screening_data",
-            "prospect_rating"
+            "constituent_ref (where anonymous_flag = true)",
+            "soft_credit_constituents (where anonymous_flag = true)"
           ],
           "classification": "confidential",
-          "override": "Only helix_analyst_confidential with advancement steward authorization. helix_analyst_standard sees aggregate giving by segment only.",
+          "override": "Anonymous gifts: donor identity is masked for every role except helix_analyst_confidential holding advancement steward authorization. Gift amounts roll up to segments for helix_analyst_standard.",
           "masking_policy": "helix_mask_confidential_pii"
         }
-      ]
+      ],
+      "resource_classification": {
+        "Campaign": "internal",
+        "Constituent": "confidential",
+        "EngagementActivity": "internal",
+        "Gift": "confidential"
+      }
     },
     {
       "domain": "Financial Operations",
@@ -1873,6 +2936,19 @@
             "gold": "no_access"
           }
         }
+      },
+      "resource_classification": {
+        "ApVoucher": "internal",
+        "ArTransaction": "confidential",
+        "Asset": "internal",
+        "Budget": "internal",
+        "Contract": "internal",
+        "ExpenseReport": "internal",
+        "FinancialOrg": "internal",
+        "Fund": "internal",
+        "GlTransaction": "internal",
+        "Grant": "internal",
+        "PurchaseOrder": "internal"
       }
     },
     {
@@ -2463,10 +3539,11 @@
         {
           "resource": "BenefitEnrollment",
           "columns": [
-            "plan_details",
-            "dependent_ssn",
-            "dependent_dob",
-            "coverage_amount"
+            "plan_name",
+            "coverage_level",
+            "employee_contribution",
+            "employer_contribution",
+            "dependent_count"
           ],
           "classification": "restricted",
           "override": "Only helix_analyst_restricted_hr (benefits subtype) sees cleartext.",
@@ -2475,10 +3552,9 @@
         {
           "resource": "Compensation",
           "columns": [
-            "annual_salary",
-            "hourly_rate",
-            "total_compensation",
-            "bonus_amount"
+            "base_pay",
+            "pay_rate",
+            "compa_ratio"
           ],
           "classification": "restricted",
           "override": "Only helix_analyst_restricted_hr sees cleartext. All others see 'RESTRICTED'. Aggregate salary data by department/rank may be exposed to helix_analyst_standard in gold aggregates.",
@@ -2487,12 +3563,12 @@
         {
           "resource": "Employee",
           "columns": [
-            "ssn",
             "national_id",
-            "bank_account"
+            "date_of_birth",
+            "home_address"
           ],
           "classification": "restricted",
-          "override": "Only helix_analyst_restricted_hr sees cleartext. All others see SHA-256 token.",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. All others see SHA-256 token. Bank and routing numbers are not HELIX Employee attributes; they stay in the payroll system of record.",
           "masking_policy": "helix_mask_restricted"
         },
         {
@@ -2500,28 +3576,46 @@
           "columns": [
             "gross_pay",
             "net_pay",
-            "tax_withholding",
-            "deductions",
-            "bank_account",
-            "routing_number"
+            "total_taxes",
+            "total_deductions",
+            "regular_earnings",
+            "overtime_earnings",
+            "supplemental_earnings",
+            "retirement_deduction",
+            "benefit_deductions"
           ],
           "classification": "restricted",
-          "override": "Only helix_analyst_restricted_hr sees cleartext. Bank/routing numbers: only payroll director.",
+          "override": "Only helix_analyst_restricted_hr sees cleartext. Bank and routing numbers are not HELIX PayrollResult attributes and never leave the payroll system.",
           "masking_policy": "helix_mask_restricted"
         },
         {
           "resource": "PerformanceReview",
           "columns": [
             "overall_rating",
-            "reviewer_comments",
-            "improvement_plan",
-            "goals"
+            "numeric_rating",
+            "nine_box_performance",
+            "nine_box_potential",
+            "flight_risk"
           ],
           "classification": "restricted",
           "override": "Only helix_analyst_restricted_hr sees cleartext. Aggregate ratings by department available to helix_analyst_standard.",
           "masking_policy": "helix_mask_restricted"
         }
-      ]
+      ],
+      "resource_classification": {
+        "AbsenceRecord": "confidential",
+        "BenefitEnrollment": "restricted",
+        "Compensation": "restricted",
+        "Employee": "confidential",
+        "JobClassification": "internal",
+        "LearningRecord": "internal",
+        "PayrollResult": "restricted",
+        "PerformanceReview": "restricted",
+        "Position": "internal",
+        "PositionBudget": "internal",
+        "Requisition": "confidential",
+        "TimeEntry": "confidential"
+      }
     }
   ],
   "special_rules": [
@@ -2540,15 +3634,21 @@
     {
       "rule_id": "ACM-SPECIAL-002",
       "name": "GLBA restricted financial data",
-      "description": "Only helix_analyst_restricted with the finaid subtype and named-individual authorization can access GLBA-covered columns on FinAidAward and Person financial identifiers.",
+      "description": "Only helix_analyst_restricted with the finaid subtype and named-individual authorization can read GLBA-covered columns on the Financial Aid resources and financial identifiers on Person.",
       "enforcement": "Column masking policy helix_mask_restricted + named grant",
       "applies_to_roles": [
         "helix_analyst_restricted_finaid"
       ],
       "applies_to_resources": [
         "FinAidAward",
-        "Person (ssn, bank_account, routing_number)",
-        "ARTransaction (student billing with financial identifiers)"
+        "AidApplication",
+        "AidPackage",
+        "Verification",
+        "Disbursement",
+        "LoanRecord",
+        "ReturnOfTitleIv",
+        "Person (identifiers[] where type is national_id or ssn_last4)",
+        "ArTransaction (student billing tied to aid)"
       ],
       "glba_citation": "16 CFR 314.4(c)(1), (c)(3)"
     },
@@ -2596,7 +3696,8 @@
         "helix_steward_academic": [
           "Academic Structure"
         ]
-      }
+      },
+      "note": "AlumniProfile sits in the Outcomes domain (helix_steward_enrollment) and is also readable by helix_steward_advancement through constituent_ref, because it links to the Advancement Constituent record for the same person."
     },
     {
       "rule_id": "ACM-SPECIAL-005",
@@ -2639,6 +3740,51 @@
       "applies_to_roles": [
         "helix_research"
       ]
+    },
+    {
+      "rule_id": "ACM-SPECIAL-009",
+      "name": "Post-graduation outcomes and alumni data",
+      "description": "AlumniProfile is not a FERPA education record once alumni data is collected independently after graduation, but it stays confidential. Advancement staff reach it through constituent_ref for a documented advancement purpose. Do not bulk-join AlumniProfile or EmploymentOutcome to student education records for solicitation lists without Data Steward review. Individual salary in EmploymentOutcome is published only as suppressed aggregates.",
+      "enforcement": "helix_mask_outcomes_salary and helix_mask_confidential_pii masking policies; RLS steward scoping; SUPP-001 small-cell suppression on published outcomes.",
+      "applies_to_roles": [
+        "helix_analyst_standard",
+        "helix_analyst_confidential",
+        "helix_steward",
+        "helix_research"
+      ],
+      "applies_to_resources": [
+        "AlumniProfile",
+        "EmploymentOutcome",
+        "ContinuingEducation",
+        "FirstDestinationSurvey"
+      ]
+    },
+    {
+      "rule_id": "ACM-SPECIAL-010",
+      "name": "Aggregate federal aid reporting",
+      "description": "FederalAidReport holds institution-level totals (COD, NSLDS, FISAP, Pell and Direct Loan reconciliation) and no student rows. It is confidential until submitted to the Department of Education, which is why helix_research may read it. Reconciliation variances should be reviewed by the Financial Aid steward before wider sharing.",
+      "enforcement": "Standard confidential grant template; no column masking required.",
+      "applies_to_roles": [
+        "helix_analyst_standard",
+        "helix_research"
+      ],
+      "applies_to_resources": [
+        "FederalAidReport"
+      ]
+    },
+    {
+      "rule_id": "ACM-SPECIAL-011",
+      "name": "Student employment pay",
+      "description": "Wage fields on StudentEmployment follow the same restricted pay rules as HR Compensation and PayrollResult, even though the record is a FERPA education record. Supervisors and advisors see the job, not the pay.",
+      "enforcement": "helix_mask_restricted on StudentEmployment pay columns.",
+      "applies_to_roles": [
+        "helix_analyst_confidential",
+        "helix_analyst_standard",
+        "helix_research"
+      ],
+      "applies_to_resources": [
+        "StudentEmployment"
+      ]
     }
   ],
   "operation_legend": {
@@ -2655,5 +3801,6 @@
     "govern/agent-guardrails.json \u2014 AI agent and NLQ access controls",
     "govern/roles.json \u2014 institutional governance role definitions",
     "govern/domain-taxonomy.json \u2014 domain assignments for steward scoping"
-  ]
+  ],
+  "coverage_check": "Run tools/check_governance_coverage.py after adding or renaming any Core resource. It fails if a resource is missing from this matrix or a column exception names a column that isn't in the schema."
 }

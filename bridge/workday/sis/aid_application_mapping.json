@@ -1,0 +1,162 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → AidApplication",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "AidApplication",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_AID, PS_ISIR_CONTROL, PS_ISIR_STUDENT, PS_ISIR_COMPUTED, PS_STDNT_AID_ATRBT, PS_STDNT_FA_TERM. Attribute names match bridge/peoplesoft/cs/aid_application_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "ISIR Record",
+      "description": "Each ISIR transaction loaded for the student and award year, with the active transaction flagged."
+    },
+    {
+      "object": "Student Award Year Record",
+      "description": "The student's financial aid record for an award year: application status, dependency, verification selection."
+    },
+    {
+      "object": "ISIR Comment Code",
+      "description": "Comment codes and C-flag conditions returned by FPS on the ISIR."
+    },
+    {
+      "object": "Dependency Override",
+      "description": "Event recording an approved dependency override."
+    }
+  ],
+  "notes": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/aid_application_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + ISIR Record.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "ISIR Record.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Student Award Year Record.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "application_type",
+      "source": "ISIR Record (present) / Student Award Year Record.Application_Type",
+      "transformation": "'fafsa' when an ISIR exists; other application types are tenant-configured."
+    },
+    {
+      "helix_attribute": "aid_application_status",
+      "source": "Student Award Year Record.Status",
+      "transformation": "Map tenant status values through helix/aid-application-status."
+    },
+    {
+      "helix_attribute": "submission_date",
+      "source": "ISIR Record.Application_Receipt_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "sai",
+      "source": "ISIR Record.Student_Aid_Index",
+      "transformation": "Integer, can be negative. GLBA restricted."
+    },
+    {
+      "helix_attribute": "efc_legacy",
+      "source": "ISIR Record.Expected_Family_Contribution",
+      "transformation": "Present only for historical award years loaded into Workday."
+    },
+    {
+      "helix_attribute": "dependency_status",
+      "source": "ISIR Record.Dependency_Status",
+      "transformation": "Map through helix/dependency-status."
+    },
+    {
+      "helix_attribute": "dependency_override_flag",
+      "source": "Dependency Override (exists for award year)",
+      "transformation": "True when an approved override exists."
+    },
+    {
+      "helix_attribute": "pell_eligible_flag",
+      "source": "ISIR Record.Pell_Eligible",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "pell_lifetime_eligibility_used",
+      "source": "ISIR Record.Pell_Lifetime_Eligibility_Used",
+      "transformation": "Percent, 0 to 600."
+    },
+    {
+      "helix_attribute": "verification_selected_flag",
+      "source": "ISIR Record.Selected_for_Verification",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "verification_tracking_group",
+      "source": "ISIR Record.Verification_Tracking_Group",
+      "transformation": "V1, V4, or V5."
+    },
+    {
+      "helix_attribute": "isir_transaction_number",
+      "source": "ISIR Record.Transaction_Number",
+      "transformation": "String, zero-padded."
+    },
+    {
+      "helix_attribute": "isir_received_date",
+      "source": "ISIR Record.Transaction_Receipt_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "comment_codes",
+      "source": "ISIR Comment Code (all for the transaction)",
+      "transformation": "Array of codes."
+    },
+    {
+      "helix_attribute": "c_flags",
+      "source": "ISIR Comment Code (C-flag conditions)",
+      "transformation": "Array of condition names."
+    },
+    {
+      "helix_attribute": "nslds_match_flags",
+      "source": "ISIR Record NSLDS fields",
+      "transformation": "Array of set flags."
+    },
+    {
+      "helix_attribute": "professional_judgment_flag",
+      "source": "Professional Judgment (exists for award year)",
+      "transformation": "True when a PJ event exists."
+    },
+    {
+      "helix_attribute": "expected_enrollment_status",
+      "source": "Student Award Year Record.Expected_Enrollment",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "citizenship_status",
+      "source": "ISIR Record.Citizenship_Status",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "sar_received_flag",
+      "source": "ISIR Record (exists)",
+      "transformation": "True when at least one ISIR exists."
+    },
+    {
+      "helix_attribute": "fafsa_signature_flag",
+      "source": "ISIR Record.Signature_Received",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "homeless_youth_flag",
+      "source": "ISIR Record.Homeless_Youth",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "foster_care_flag",
+      "source": "ISIR Record.Foster_Care",
+      "transformation": "Boolean."
+    }
+  ]
+}

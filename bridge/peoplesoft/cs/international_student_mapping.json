@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: PeopleSoft CS \u2192 InternationalStudent",
   "source_system": "peoplesoft",
   "module": "Campus Solutions - Campus Community / International",
-  "target_resource": "InternationalStudent (planned)",
+  "target_resource": "InternationalStudent",
   "version": "0.1",
   "source_tables": [
     {

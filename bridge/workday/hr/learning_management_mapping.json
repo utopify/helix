@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Learning Management",
   "source_system": "workday",
   "module": "HCM - Learning",
-  "target_resource": "LearningRecord (planned)",
+  "target_resource": "LearningRecord",
   "version": "0.1",
   "source_objects": [
     {

@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Student \u2192 FERPARestriction",
   "source_system": "workday",
   "module": "Student - Privacy / FERPA",
-  "target_resource": "FERPARestriction (planned)",
+  "target_resource": "FERPARestriction",
   "version": "0.1",
   "architecture_notes": "Workday Student manages FERPA directory-information restrictions through Privacy settings / Student Privacy flags. When a student requests a FERPA block, directory information must be withheld from disclosure. Equivalent to PS_SCC_PRTCTN (privacy protection) / FERPA service indicators.",
   "source_objects": [

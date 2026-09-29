@@ -4,8 +4,8 @@ Executable building blocks for the HELIX cornerstone path. Start with `docs/ps-t
 
 | File | What it is |
 |------|------------|
-| `worktag-conversion-rules.json` | 20 FIN rules that convert a PeopleSoft chartfield string into a Workday Ledger Account plus worktags, with precedence, fallbacks, suspense handling, validation checks, and 5 worked examples. Also 10 HCM field rules (JOB actions to business processes, JOBCODE to Job Profile, EMPLID to Universal ID) and 7 Student field rules. |
-| `reconciliation/` | 18 tie-out queries (6 FIN, 6 HCM, 6 Student) with run order, tolerances, parallel cadence, and sign-off roles. |
+| `worktag-conversion-rules.json` | 20 FIN rules that convert a PeopleSoft chartfield string into a Workday Ledger Account plus worktags, with precedence, fallbacks, suspense handling, validation checks, and 5 worked examples. Also 10 HCM field rules (JOB actions to business processes, JOBCODE to Job Profile, EMPLID to Universal ID) and 13 Student field rules (6 for financial aid). |
+| `reconciliation/` | 22 tie-out queries (6 FIN, 6 HCM, 6 Student, 4 Aid) with run order, tolerances, parallel cadence, and sign-off roles. |
 
 ## How the pieces fit
 

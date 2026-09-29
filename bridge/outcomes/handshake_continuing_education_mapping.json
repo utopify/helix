@@ -1,0 +1,107 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Handshake First Destination Survey → ContinuingEducation",
+  "source_system": "handshake",
+  "module": "Career Services - First Destination Survey",
+  "source_objects": [
+    {
+      "object": "First Destination Survey response",
+      "description": "One row per graduate per survey: status, outcome, employer, continuing education, and knowledge source."
+    },
+    {
+      "object": "Survey recipient list",
+      "description": "Graduates the survey was sent to, including non-responders. Needed for the knowledge rate."
+    }
+  ],
+  "notes": "Handshake carries the institutional student ID from SSO or the student data feed. Resolve that ID to HELIX Student in the restricted identity zone; never match on name and email alone without steward review. Outcomes follow NACE First-Destination Standards: the class includes graduates from July 1 to June 30, and outcomes are measured up to six months after graduation.",
+  "validate": "Column labels follow a typical Handshake First Destination Survey export; they change with survey configuration. VALIDATE against your own export. The same fields apply if your survey runs in Qualtrics, Symplicity, or GradLeaders.",
+  "target_resource": "ContinuingEducation",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from student ID + survey ID + school."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Institutional student ID",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Institutional student ID",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Student ID + graduation date + program",
+      "transformation": "Resolve to the HELIX Degree the survey is about. Students with two degrees in one class get one survey per degree only if your office surveys that way."
+    },
+    {
+      "helix_attribute": "academic_year_graduated",
+      "source": "Graduation date",
+      "transformation": "NACE class year: July 1 to June 30. A May 2026 graduate is '2025-2026'."
+    },
+    {
+      "helix_attribute": "continuing_ed_level",
+      "source": "Degree type pursued",
+      "transformation": "Master's -> masters, Doctorate -> doctoral, JD -> professional_jd, MD/DO -> professional_md, other professional -> professional_other, second bachelor's -> second_bachelors, certificate -> certificate, post-bacc -> postbaccalaureate."
+    },
+    {
+      "helix_attribute": "institution_name",
+      "source": "School name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "institution_ipeds_id",
+      "source": "School (directory match)",
+      "transformation": "Match the school name to the IPEDS directory; null if no confident match."
+    },
+    {
+      "helix_attribute": "program_name",
+      "source": "Program",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "field_of_study",
+      "source": "Field of study",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "cip_code",
+      "source": "Derived",
+      "transformation": "CIP 2020 code if the survey captures it; else null."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "Full-time or part-time",
+      "transformation": "full_time, part_time, else unknown."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Start date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "expected_completion_date",
+      "source": "Expected completion",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "funding_type",
+      "source": "Funding",
+      "transformation": "Assistantship, fellowship, self, loan, employer, scholarship, else unknown."
+    },
+    {
+      "helix_attribute": "outcome_date",
+      "source": "Outcome recorded date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "data_collection_method",
+      "source": "Knowledge source",
+      "transformation": "survey, linkedin, nsc, faculty_report, phone, other."
+    }
+  ]
+}

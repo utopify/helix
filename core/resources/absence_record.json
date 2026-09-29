@@ -19,7 +19,7 @@
     },
     "absence_type": {
       "type": "string",
-      "description": "Map: 'Vacation' \u2192 'vacation', 'Sick' \u2192 'sick', 'Personal' \u2192 'personal', 'FMLA' \u2192 'fmla', 'Sabbatical' \u2192 'sabbatical', 'Bereavement' \u2192 'bereavement', 'Jury Duty' \u2192 'jury_duty', 'Military' \u2192 'military', 'Parental' \u2192 'parental', 'Workers Comp'"
+      "description": "Map: 'Vacation' \u2192 'vacation', 'Sick' \u2192 'sick', 'Personal' \u2192 'personal', 'FMLA' \u2192 'fmla', 'Sabbatical' \u2192 'sabbatical', 'Bereavement' \u2192 'bereavement', 'Jury Duty' \u2192 'jury_duty', 'Military' \u2192 'military', 'Parental' \u2192 'parental', 'Workers Comp'. Bound to HELIX terminology: helix/absence-type."
     },
     "start_date": {
       "type": [

@@ -138,7 +138,6 @@
           "StudentProgram",
           "AdmissionApplication",
           "TransferCredit",
-          "FinAidAward (non-restricted attributes)",
           "Degree",
           "Hold",
           "AcademicTermRecord",
@@ -149,7 +148,19 @@
           "Employee",
           "AbsenceRecord",
           "TimeEntry",
-          "LearningRecord"
+          "LearningRecord",
+          "FinAidAward (award-level attributes)",
+          "SAPEvaluation (except appeal_reason)",
+          "StudentEmployment (job details, not pay)",
+          "FederalAidReport (institution-level totals, no student rows)",
+          "EmploymentOutcome (salary only as suppressed aggregates)",
+          "ContinuingEducation",
+          "ExperientialLearning",
+          "Licensure (pass rates as suppressed aggregates)",
+          "AlumniProfile (not an education record; see ACM-SPECIAL-009)",
+          "FirstDestinationSurvey",
+          "LearningOutcome",
+          "AwardHonor"
         ]
       },
       {
@@ -180,8 +191,16 @@
           "BenefitEnrollment",
           "PayrollResult",
           "PerformanceReview",
-          "FinAidAward (restricted attributes: sai, efc, family_income)",
-          "Person (restricted attributes: ssn, national_id, bank_account, routing_number)"
+          "FinAidAward (restricted attributes: efc, cost_of_attendance, unmet_need)",
+          "Person (identifiers[] where type is national_id or ssn_last4)",
+          "AidApplication (SAI, ISIR values, sensitive circumstance flags)",
+          "AidPackage (need analysis, professional judgment)",
+          "Verification",
+          "Disbursement (individual amounts)",
+          "LoanRecord (individual amounts, COD IDs)",
+          "ReturnOfTitleIV",
+          "StudentEmployment (pay fields)",
+          "SAPEvaluation (appeal_reason)"
         ]
       }
     ]
@@ -245,7 +264,7 @@
       "pattern_id": "PQP-05",
       "pattern": "GLBA data in response text",
       "severity": "critical",
-      "description": "Agent must never surface GLBA-covered values in chat text, even for authorized users. GLBA-covered values include: SAI/EFC, family income, bank account numbers, routing numbers, tax return data, FAFSA/ISIR fields, loan disbursement amounts at the individual level.",
+      "description": "Agent must never surface GLBA-covered values in chat text, even for authorized users. GLBA-covered values include: SAI/EFC, family income, bank account numbers, routing numbers, tax return data, FAFSA/ISIR fields, loan disbursement amounts at the individual level. In HELIX these live on FinAidAward, AidApplication, AidPackage, Verification, Disbursement, LoanRecord, and ReturnOfTitleIV (see govern/access-control-matrix.json ACM-SPECIAL-002).",
       "enforcement": "Output filter: before rendering any response, scan for patterns matching GLBA field values. Regex patterns for SSN (\\d{3}-\\d{2}-\\d{4}), bank routing (\\d{9}), and numeric values preceded by GLBA field labels.",
       "agent_response": "I can confirm this student has financial aid records on file, but I can't display specific financial values (SAI, income, bank information) in this interface. Please access these details through the financial aid module in your SIS."
     },
@@ -405,7 +424,21 @@
           "isir",
           "bank_account",
           "routing_number",
-          "tax_return"
+          "tax_return",
+          "sai_before_verification",
+          "sai_after_verification",
+          "efc_legacy",
+          "pell_lifetime_eligibility_used",
+          "nslds_match_flags",
+          "isir_transaction_number",
+          "gross_loan_amount",
+          "net_loan_amount",
+          "cod_loan_id",
+          "title_iv_earned_amount",
+          "title_iv_unearned_amount",
+          "refund_amount",
+          "homeless_youth_flag",
+          "foster_care_flag"
         ],
         "action": "If any GLBA field label followed by a value is detected in the response, replace the value with '[on file]'. Example: 'SAI: 1,234' \u2192 'SAI: [on file]'."
       },

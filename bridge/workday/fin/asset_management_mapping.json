@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Asset Management",
   "source_system": "workday",
   "module": "Financial Management - Business Assets",
-  "target_resource": "Asset (planned)",
+  "target_resource": "Asset",
   "version": "0.1",
   "source_objects": [
     {

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → SAPEvaluation",
+  "source_system": "workday",
+  "module": "Student - Financial Aid",
+  "target_resource": "SAPEvaluation",
+  "version": "0.1",
+  "architecture_notes": "Equivalent PeopleSoft records: PS_STDNT_FA_TERM, PS_STDNT_CAR_TERM, PS_ACAD_PROG, PS_PERSON_CHECKLST. Attribute names match bridge/peoplesoft/cs/sap_evaluation_mapping.json one for one, so PeopleSoft and Workday land in the same HELIX shape and can be reconciled directly.",
+  "source_objects": [
+    {
+      "object": "Satisfactory Academic Progress Evaluation",
+      "description": "Each SAP evaluation: date, pace, GPA, maximum timeframe, resulting status."
+    },
+    {
+      "object": "Student SAP Status",
+      "description": "Current SAP status for the student."
+    },
+    {
+      "object": "SAP Appeal",
+      "description": "Appeal submitted, decision, and date."
+    },
+    {
+      "object": "Academic Plan",
+      "description": "Academic plan assigned after an approved appeal."
+    }
+  ],
+  "notes": "CONFIDENTIAL. FERPA education record; access requires legitimate educational interest (99.31(a)(1)).",
+  "validate": "Workday object and field names follow Workday Student Financial Aid naming but vary by release and tenant configuration. VALIDATE each against your tenant's report data sources before building RaaS or Web Services extracts.",
+  "peoplesoft_counterpart": "bridge/peoplesoft/cs/sap_evaluation_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Satisfactory Academic Progress Evaluation.Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Satisfactory Academic Progress Evaluation.Student",
+      "transformation": "Resolve Universal ID or Student ID to HELIX Student.helix_id. Same person as the PeopleSoft EMPLID through identifier-xref."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Satisfactory Academic Progress Evaluation.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Satisfactory Academic Progress Evaluation.Award_Year",
+      "transformation": "Workday award year label. Normalize to 'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "evaluation_date",
+      "source": "Satisfactory Academic Progress Evaluation.Evaluation_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "sap_status",
+      "source": "Satisfactory Academic Progress Evaluation.SAP_Status",
+      "transformation": "Map through sap-status-xref."
+    },
+    {
+      "helix_attribute": "quantitative_measure_pace",
+      "source": "Satisfactory Academic Progress Evaluation.Pace",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "qualitative_measure_gpa",
+      "source": "Satisfactory Academic Progress Evaluation.GPA",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "max_timeframe_pct",
+      "source": "Satisfactory Academic Progress Evaluation.Maximum_Timeframe_Percent",
+      "transformation": "Percent."
+    },
+    {
+      "helix_attribute": "credits_attempted_cumulative",
+      "source": "Satisfactory Academic Progress Evaluation.Units_Attempted",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "credits_completed_cumulative",
+      "source": "Satisfactory Academic Progress Evaluation.Units_Completed",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "appeal_filed_flag",
+      "source": "SAP Appeal (exists)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "appeal_date",
+      "source": "SAP Appeal.Submitted_Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "appeal_status",
+      "source": "SAP Appeal.Status",
+      "transformation": "Map to the same values."
+    },
+    {
+      "helix_attribute": "appeal_reason",
+      "source": "SAP Appeal.Reason",
+      "transformation": "Restricted."
+    },
+    {
+      "helix_attribute": "academic_plan_flag",
+      "source": "Academic Plan (exists)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "academic_plan_terms",
+      "source": "Academic Plan.Number_of_Periods",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "financial_aid_warning_flag",
+      "source": "Derived",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "financial_aid_suspension_flag",
+      "source": "Derived",
+      "transformation": "Derived."
+    },
+    {
+      "helix_attribute": "probation_flag",
+      "source": "Derived",
+      "transformation": "Derived."
+    }
+  ]
+}

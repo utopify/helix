@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Worker / Employee",
   "source_system": "workday",
   "module": "HCM - Core Worker",
-  "target_resource": "Employee (planned)",
+  "target_resource": "Employee",
   "version": "0.1",
   "architecture_notes": "Workday uses 'Worker' as the universal entity \u2014 an Employee is a worker type (the other is Contingent Worker). Every worker has one or more Job records (primary + additional). Unlike PeopleSoft (where EMPLID is a flat number), Workday Worker IDs can be system-generated or institution-defined. Worker data is effective-dated via Workday's native event framework: every change (hire, transfer, promotion, termination) is a discrete business process event with an effective date. Workday's security is role-based and tied to supervisory organizations.",
   "source_objects": [

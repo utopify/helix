@@ -1,0 +1,9 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+Scheduled,"Scheduled, not yet authorized","STDNT_AWRD_DISB (scheduled amount, no disbursed amount)",scheduled,helix/disbursement-status,Scheduled,Future disbursement,Financial Aid Disbursement,Convert only for open award years.
+Authorized,"Authorized, not yet disbursed",STDNT_AWRD_DISB (authorized amount),pending,helix/disbursement-status,Pending,"Authorized, awaiting disbursement run",Financial Aid Disbursement,VALIDATE: authorization logic differs by release.
+Edit failure,Failed disbursement edits,Disbursement edit messages,held,helix/disbursement-status,On Hold,Blocked by an eligibility check,Financial Aid Disbursement,Carry the hold reason so staff can clear it in Workday.
+Disbursed,Fully disbursed,STDNT_AWRD_DISB (disbursed = scheduled),disbursed,helix/disbursement-status,Disbursed,Paid to student account,Financial Aid Disbursement + Student Payment,Must also exist in COD and as a posted SF item.
+Partial,Partially disbursed,STDNT_AWRD_DISB (0 < disbursed < scheduled),partially_disbursed,helix/disbursement-status,Partially Disbursed,Partly paid,Financial Aid Disbursement,Usually a mid-period adjustment. Review before cutover.
+Cancelled,Cancelled before disbursement,STDNT_AWRD_DISB (amount reduced to 0),cancelled,helix/disbursement-status,Cancelled,Not paid,Financial Aid Disbursement,Load for history only if the award year is open.
+Returned,Returned (R2T4 or adjustment),STDNT_AWRD_DISB negative adjustment,returned,helix/disbursement-status,Returned,Funds sent back,Financial Aid Disbursement,Link to the HELIX ReturnOfTitleIV case when caused by withdrawal.
+Refunded,Credit balance refunded,Student Financials refund,refunded,helix/disbursement-status,Refunded,Credit balance paid to student,Student Refund,Refund status belongs to Student Financials; this row tracks the aid side.

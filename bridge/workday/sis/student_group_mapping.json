@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Student \u2192 StudentGroup / Cohort",
   "source_system": "workday",
   "module": "Student - Student Groups",
-  "target_resource": "StudentGroup (planned)",
+  "target_resource": "StudentGroup",
   "version": "0.1",
   "architecture_notes": "Workday Student uses Student Groups (and Student Cohorts) to tag students for population management: athletes, honors, first-gen, veterans, TRIO, EOP, specific scholarship cohorts. Used for reporting, communication, and service delivery. Equivalent to PS_STDNT_GROUP + PS_STDNT_GRPS.",
   "source_objects": [

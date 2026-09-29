@@ -43,7 +43,7 @@
     },
     "fund_type": {
       "type": "string",
-      "description": "Some institutions configure cost centers with a default fund type for budgeting."
+      "description": "Some institutions configure cost centers with a default fund type for budgeting. Bound to HELIX terminology: helix/fund-type."
     },
     "meta": {
       "type": "object",

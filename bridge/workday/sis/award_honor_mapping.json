@@ -1,0 +1,122 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Workday Student → AwardHonor",
+  "source_system": "workday",
+  "module": "Student - Records",
+  "architecture_notes": "Workday Student records academic honors (Latin honors, dean's list) against the student's academic record and program of study completion, and awards through the student's honors and awards data. Equivalent PeopleSoft records: PS_ACAD_DEGR_HONS, PS_HONOR_AWARD_CS.",
+  "source_objects": [
+    {
+      "object": "Academic Honor",
+      "description": "Honor assigned to a student for a period or on completion: dean's list, Latin honors."
+    },
+    {
+      "object": "Program of Study Completion / Academic Credential",
+      "description": "Parent credential for graduation honors."
+    },
+    {
+      "object": "Student Award",
+      "description": "Institutional, departmental, and external awards. VALIDATE: some tenants use Student Recruiting or custom objects."
+    }
+  ],
+  "notes": "Honors are directory information at many schools, but only if the school's annual FERPA notice lists them. Check FERPARestriction before publishing any honor (commencement programs, press releases, dean's list feeds).",
+  "validate": "Workday object and field names vary by release and tenant. VALIDATE against your tenant's report data sources before building extracts.",
+  "target_resource": "AwardHonor",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from the honor or award Reference_ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Academic Honor.Student",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Student.Person",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "Academic Credential",
+      "transformation": "Resolve to HELIX Degree."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Academic Honor.Academic_Period",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "honor_type",
+      "source": "Academic Honor Type / Student Award Type",
+      "transformation": "Map tenant types to the HELIX values."
+    },
+    {
+      "helix_attribute": "honor_name",
+      "source": "Academic Honor.Name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "awarding_body",
+      "source": "Student Award.Awarding_Organization / constant",
+      "transformation": "Direct or institution name."
+    },
+    {
+      "helix_attribute": "award_date",
+      "source": "Academic Honor.Date / Student Award.Date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Derived",
+      "transformation": "'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Student Award.Description",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "latin_honors_designation",
+      "source": "Academic Honor Type (Latin honors)",
+      "transformation": "Map local honors codes to cum_laude, magna_cum_laude, summa_cum_laude; 'none' for non-Latin honors. Keep the code-to-designation lookup in one seed table."
+    },
+    {
+      "helix_attribute": "gpa_at_award",
+      "source": "Academic Record GPA",
+      "transformation": "GPA the honor was based on, when the honor is GPA-driven."
+    },
+    {
+      "helix_attribute": "monetary_value",
+      "source": "Student Award.Amount",
+      "transformation": "Only for awards with a cash value. Scholarships already live in FinAidAward; set scholarship_flag and don't double-count the dollars in reporting."
+    },
+    {
+      "helix_attribute": "scholarship_flag",
+      "source": "Derived",
+      "transformation": "honor_type = scholarship."
+    },
+    {
+      "helix_attribute": "deans_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = deans_list."
+    },
+    {
+      "helix_attribute": "presidents_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = presidents_list."
+    },
+    {
+      "helix_attribute": "departmental_flag",
+      "source": "Derived",
+      "transformation": "honor_type = departmental_award."
+    },
+    {
+      "helix_attribute": "national_recognition_flag",
+      "source": "Derived",
+      "transformation": "honor_type = national_award (Fulbright, Goldwater, Truman, and similar)."
+    }
+  ]
+}

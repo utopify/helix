@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday Financial Management \u2192 Purchasing / Procurement",
   "source_system": "workday",
   "module": "Financial Management - Procurement",
-  "target_resource": "PurchaseOrder (planned)",
+  "target_resource": "PurchaseOrder",
   "version": "0.1",
   "architecture_notes": "Workday Procurement covers requisitions, purchase orders, receipts, and supplier contract management. The procurement-to-pay cycle: Requisition \u2192 Approval \u2192 PO \u2192 Receipt \u2192 Supplier Invoice \u2192 Payment. Workday uses spend categories (worktags) for commodity classification and sourcing events for competitive bidding.",
   "source_objects": [

@@ -536,6 +536,42 @@
       "when": "FERPA flag / directory restriction",
       "then": "Carry over as a Workday FERPA restriction before any other student data is exposed; zero misses allowed",
       "lookup": "govern/ferpa-disclosure-framework.json"
+    },
+    {
+      "rule_id": "STU-008",
+      "when": "AID_YEAR",
+      "then": "Workday Award Year. PeopleSoft AID_YEAR is the ending year (2026 = 2025-2026).",
+      "lookup": null
+    },
+    {
+      "rule_id": "STU-009",
+      "when": "ISIR records for the current and prior award years",
+      "then": "Reload ISIR files from FPS (SAIG) into Workday rather than converting PeopleSoft ISIR rows, so Workday owns a clean transaction chain. Keep PeopleSoft ISIR history in HELIX bronze for audit.",
+      "lookup": "bridge/peoplesoft/cs/aid_application_mapping.json"
+    },
+    {
+      "rule_id": "STU-010",
+      "when": "STDNT_FA_TERM.SAP_STATUS",
+      "then": "Workday Student SAP Status from the latest evaluation; academic plans load as Workday Academic Plans. Gate: sap_status_carryover_check.sql.",
+      "lookup": "bridge/xref/ps-to-workday-sis/sap-status-xref.json"
+    },
+    {
+      "rule_id": "STU-011",
+      "when": "LOAN_ORIGNATN loan type and COD loan ID",
+      "then": "Workday Direct Loan Record with the COD loan ID carried unchanged. Never re-originate a loan COD already holds.",
+      "lookup": "bridge/xref/ps-to-workday-sis/loan-type-xref.json"
+    },
+    {
+      "rule_id": "STU-012",
+      "when": "STDNT_AWRD_DISB for open award years",
+      "then": "Workday Financial Aid Disbursement history for open award years only; closed years stay in the HELIX lakehouse. Gate: disbursement_cod_tieout.sql before the first Workday disbursement.",
+      "lookup": "bridge/xref/ps-to-workday-sis/disbursement-status-xref.json"
+    },
+    {
+      "rule_id": "STU-013",
+      "when": "Verification in progress at cutover",
+      "then": "Open verification records and outstanding checklist items convert as Workday verification records and open action items. Completed verifications carry their completion date and outcome.",
+      "lookup": "bridge/xref/ps-to-workday-sis/verification-status-xref.json"
     }
   ]
 }

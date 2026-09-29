@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Job Classification / EEO / Faculty Rank",
   "source_system": "workday",
   "module": "HCM - Job Profile / Worker Additional Data",
-  "target_resource": "JobClassification (planned)",
+  "target_resource": "JobClassification",
   "version": "0.1",
   "architecture_notes": "Workday's Job Profile serves as the primary classification entity (equivalent to PeopleSoft's Job Code). Job Profiles belong to Job Families and Job Family Groups, which drive reporting hierarchies. For higher ed, Job Profiles need to accommodate both the standard EEO/SOC classification system AND the academic rank system (Professor \u2192 Associate \u2192 Assistant \u2192 Instructor \u2192 Lecturer). Faculty tenure status is typically tracked via a custom field or worker additional data, as Workday has no native tenure tracking.",
   "source_objects": [

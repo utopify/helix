@@ -39,7 +39,7 @@
     },
     "report_status": {
       "type": "string",
-      "description": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Paid' \u2192 'paid', 'Returned' \u2192 'returned'."
+      "description": "Map: 'Draft' \u2192 'draft', 'Submitted' \u2192 'submitted', 'Approved' \u2192 'approved', 'Paid' \u2192 'paid', 'Returned' \u2192 'returned'. Bound to HELIX terminology: helix/expense-status."
     },
     "expense_type": {
       "type": "string",

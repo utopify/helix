@@ -1,0 +1,121 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Canvas LMS Outcomes → LearningOutcome",
+  "source_system": "canvas",
+  "module": "Learning Management - Outcomes",
+  "source_objects": [
+    {
+      "object": "Outcome",
+      "description": "A learning outcome defined at the account (institution or program) or course level: title, description, mastery points, rating scale."
+    },
+    {
+      "object": "Outcome Result",
+      "description": "A student's result against an outcome through an aligned rubric, quiz, or assignment (Outcome Results API): score, percent, mastery, assessed date, alignment."
+    },
+    {
+      "object": "Outcome Group",
+      "description": "Folder structure of outcomes. Most schools use it to hold institutional, general education, and program outcomes."
+    }
+  ],
+  "notes": "Canvas user IDs aren't institutional IDs. Resolve through the Canvas SIS user ID loaded from your SIS. Outcome results are education records. For accreditation reports, aggregate by outcome and program and suppress cells under N of 5. Watermark, Anthology, and D2L Brightspace hold the same data under different names.",
+  "validate": "Field names follow the Canvas Outcomes and Outcome Results APIs. Confirm against your instance, and note that the newer Outcomes Service may be enabled.",
+  "target_resource": "LearningOutcome",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from Outcome Result ID."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Outcome Result user -> SIS user ID",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "program_ref",
+      "source": "Outcome Group / account",
+      "transformation": "Resolve the program an account-level outcome belongs to, through a mapping of outcome groups to HELIX Program."
+    },
+    {
+      "helix_attribute": "course_ref",
+      "source": "Course -> SIS course ID",
+      "transformation": "Resolve to HELIX CourseSection or Course."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "Course term -> SIS term ID",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "outcome_type",
+      "source": "Outcome Group / context",
+      "transformation": "Institution account outcomes -> institutional_learning_outcome; general education group -> general_education_competency; program group -> program_learning_outcome; course-level -> course_learning_outcome; accreditor standard groups -> accreditation_standard or professional_competency."
+    },
+    {
+      "helix_attribute": "outcome_statement",
+      "source": "Outcome.description",
+      "transformation": "Strip HTML."
+    },
+    {
+      "helix_attribute": "competency_name",
+      "source": "Outcome.title / display_name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "competency_framework",
+      "source": "Outcome Group / vendor GUID",
+      "transformation": "For example AAC&U VALUE rubrics or an accreditor's standards."
+    },
+    {
+      "helix_attribute": "assessment_method",
+      "source": "Alignment type",
+      "transformation": "Rubric -> rubric; quiz or exam -> exam; ePortfolio -> portfolio; capstone assignments -> capstone; else other."
+    },
+    {
+      "helix_attribute": "assessment_date",
+      "source": "Outcome Result.submitted_or_assessed_at",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "achievement_level",
+      "source": "Outcome rating matched to score",
+      "transformation": "Map the Canvas rating labels (Exceeds Mastery, Meets Mastery, Near Mastery, Well Below Mastery, No Evidence) to exceeds, meets, approaching, below, not_demonstrated."
+    },
+    {
+      "helix_attribute": "score",
+      "source": "Outcome Result.score",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "max_score",
+      "source": "Outcome.points_possible",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "met_expectations_flag",
+      "source": "Outcome Result.mastery",
+      "transformation": "Boolean. Canvas sets it from the outcome's mastery points and calculation method."
+    },
+    {
+      "helix_attribute": "assessment_instrument",
+      "source": "Alignment (assignment or rubric name)",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "assessor_ref",
+      "source": "Not in the Outcome Result",
+      "transformation": "Resolve the grader from the submission if you need it; else null."
+    },
+    {
+      "helix_attribute": "plo_reference",
+      "source": "Outcome ID (program-level)",
+      "transformation": "Canvas outcome ID or vendor GUID."
+    },
+    {
+      "helix_attribute": "institutional_outcome_reference",
+      "source": "Outcome ID (institution-level)",
+      "transformation": "Canvas outcome ID or vendor GUID."
+    }
+  ]
+}

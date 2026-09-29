@@ -47,7 +47,7 @@
     },
     "voucher_status": {
       "type": "string",
-      "description": "Map: 'Draft'\u2192'pending', 'Awaiting Approval'\u2192'pending', 'Approved'\u2192'approved', 'Paid'\u2192'paid', 'Canceled'\u2192'void'."
+      "description": "Map: 'Draft'\u2192'pending', 'Awaiting Approval'\u2192'pending', 'Approved'\u2192'approved', 'Paid'\u2192'paid', 'Canceled'\u2192'void'. Bound to HELIX terminology: helix/payment-status."
     },
     "payment_date": {
       "type": [

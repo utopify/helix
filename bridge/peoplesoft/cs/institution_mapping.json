@@ -1,0 +1,84 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → Institution",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "source_tables": [
+    {
+      "table": "PS_INSTITUTION_TBL",
+      "description": "Academic institution setup (effective-dated). One row per INSTITUTION code: description, short description, country, and default settings."
+    },
+    {
+      "table": "PS_CAMPUS_TBL",
+      "description": "Campuses under each institution. Map campuses as locations, not separate HELIX Institutions, unless they report to IPEDS separately."
+    },
+    {
+      "table": "PS_EXT_ORG_TBL",
+      "description": "External organizations, including other colleges (EXT_ORG_TYPE = SCHL). Source for Institution rows that represent transfer and prior schools."
+    },
+    {
+      "table": "PS_EXT_ORG_ID_TBL / PS_ORG_ID_TBL",
+      "description": "External org identifiers such as ATP/CEEB and FICE codes. FLAG: record name varies by release; confirm."
+    }
+  ],
+  "notes": "Most schools have one home INSTITUTION and hundreds of external schools. Load both: the home institution from PS_INSTITUTION_TBL and external schools from PS_EXT_ORG_TBL, so TransferCredit and ContinuingEducation can point at real Institution rows. Take the current effective-dated row (max EFFDT <= today, EFF_STATUS = 'A').",
+  "target_resource": "Institution",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from INSTITUTION (home) or EXT_ORG_ID (external)."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "PS_INSTITUTION_TBL.DESCR / PS_EXT_ORG_TBL.DESCR",
+      "transformation": "Official name. Use the full legal name, not the 10-character short form."
+    },
+    {
+      "helix_attribute": "short_name",
+      "source": "PS_INSTITUTION_TBL.DESCRSHORT",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "identifiers",
+      "source": "PS_INSTITUTION_TBL.INSTITUTION; external org ID records; configuration",
+      "transformation": "Array of {system, value}: peoplesoft_institution (INSTITUTION), ipeds_unit_id, opeid (8-digit, from FA setup or configuration), fice, ceeb/atp. IPEDS and OPEID usually come from configuration or the IPEDS directory file, not a PeopleSoft field."
+    },
+    {
+      "helix_attribute": "institution_type",
+      "source": "Configuration / IPEDS directory",
+      "transformation": "Map from IPEDS level and control: 4-year -> university or college, 2-year -> community_college or technical_college. Not stored in PeopleSoft."
+    },
+    {
+      "helix_attribute": "country",
+      "source": "PS_INSTITUTION_TBL.COUNTRY / PS_EXT_ORG_TBL.COUNTRY",
+      "transformation": "PeopleSoft stores 3-letter codes (USA). Convert to ISO 3166-1 alpha-2 (US)."
+    },
+    {
+      "helix_attribute": "state_province",
+      "source": "Institution address / PS_EXT_ORG_TBL address",
+      "transformation": "Two-letter state or ISO 3166-2 subdivision. FLAG: home institution address may sit on a location record."
+    },
+    {
+      "helix_attribute": "carnegie_classification",
+      "source": "Not stored in the ERP",
+      "transformation": "Load from the Carnegie Classification public file by IPEDS Unit ID. Refresh when a new edition is published."
+    },
+    {
+      "helix_attribute": "timezone",
+      "source": "Configuration",
+      "transformation": "IANA name, for example America/New_York. Set once per institution or campus."
+    },
+    {
+      "helix_attribute": "erp_system",
+      "source": "Constant",
+      "transformation": "'peoplesoft' for the home institution. Null for external schools."
+    },
+    {
+      "helix_attribute": "website",
+      "source": "PS_EXT_ORG_TBL URL field / configuration",
+      "transformation": "FLAG: URL field is not populated at most schools; fall back to the IPEDS directory file."
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "$schema": "https://helixedu.org/govern/ferpa-disclosure-framework-schema.json",
   "title": "HELIX Govern: FERPA Disclosure & Enforcement Framework",
   "description": "Operationalizes FERPA (34 CFR Part 99) across the HELIX medallion lakehouse. Where the GLBA framework is mostly encryption and security, this framework governs DISCLOSURE: who may receive education records, under which statutory basis, and how each basis is enforced as a flag from Bronze through Silver. Focuses on the disclosure exceptions in 34 CFR 99.31(a)(1) (school officials with legitimate educational interest), (a)(6) (organizations conducting studies), and (a)(11) (directory information, which is actually governed by 99.31(a) via 99.37).",
-  "version": "0.1",
+  "version": "0.2",
   "core_principle": "FERPA is disclosure-centric. Education records may not be disclosed without written consent (34 CFR 99.30) UNLESS a specific exception in 99.31 applies. HELIX enforces this by (1) resolving every record to a single student identity at Bronze->Silver, (2) attaching the active FERPARestriction state to that identity, and (3) requiring every consumer to assert a disclosure basis that is checked against the record's flags before data is returned.",
   "identity_resolution": {
     "why_it_matters": "FERPA enforcement is only as good as identity resolution. If the same student exists as two unlinked identities (e.g., a Banner PIDM and a separate application record), a FERPA restriction on one will not protect the other. Identity must be resolved to ONE HELIX Person before FERPA flags can be reliably applied.",
@@ -44,7 +44,7 @@
       "legitimate_interest_scope": "array \u2014 the set of roles/purposes pre-authorized as school officials with legitimate educational interest for this record type (drives the (a)(1) check).",
       "study_disclosure_allowed": "boolean \u2014 whether this record type may be released under an (a)(6) studies agreement (typically de-identified or under a written agreement)."
     },
-    "schema_location": "As of v0.2.0, the ferpa_flags object is embedded in the meta block of all 14 FERPA education-record Core resources (person, student, enrollment, student_program, admission_application, transfer_credit, fin_aid_award, degree, hold, academic_term_record, degree_audit, ferpa_restriction, international_student, student_group). It is NOT present on non-education-record resources (course, program, institution, and advancement resources)."
+    "schema_location": "The ferpa_flags object is embedded in the meta block of 31 Core resources. 29 are FERPA education records (is_education_record defaults to true): academic_term_record, admission_application, aid_application, aid_package, award_honor, continuing_education, degree, degree_audit, disbursement, employment_outcome, enrollment, experiential_learning, ferpa_restriction, fin_aid_award, first_destination_survey, hold, international_student, learning_outcome, licensure, loan_record, person, return_of_title_iv, sap_evaluation, student, student_employment, student_group, student_program, transfer_credit, verification. Two carry the flags with is_education_record defaulting to false: alumni_profile (post-graduation data collected independently) and federal_aid_report (institution-level totals with no student rows). Resources without ferpa_flags (academic structure, advancement, HR, financial operations) are not education records. Per-resource grants are in govern/access-control-matrix.json."
   },
   "disclosure_exceptions": [
     {

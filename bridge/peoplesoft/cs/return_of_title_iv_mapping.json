@@ -1,0 +1,150 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → ReturnOfTitleIV",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "ReturnOfTitleIV",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PeopleSoft Return of Title IV records",
+      "description": "Delivered R2T4 calculation: withdrawal date, percent earned, amounts earned and unearned, school and student returns, post-withdrawal disbursement. FLAG: confirm record names under Financial Aid > Return of Title IV for your release."
+    },
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Withdrawal code, reason, and date for the term."
+    },
+    {
+      "table": "PS_STDNT_ENRL",
+      "description": "Last date of attendance for unofficial withdrawals. FLAG: confirm the attendance field your school uses."
+    },
+    {
+      "table": "PS_STDNT_AWRD_DISB",
+      "description": "Title IV disbursed and could-have-been-disbursed amounts."
+    },
+    {
+      "table": "PS_TERM_TBL",
+      "description": "Payment period start and end dates, for percent enrolled."
+    }
+  ],
+  "notes": "R2T4 has hard federal deadlines: return funds within 45 days of the date the school determined the student withdrew, and offer a post-withdrawal disbursement of grant funds within 30 days (34 CFR 668.22). Convert every open R2T4 case, and keep closed ones for at least the record retention period.",
+  "privacy": "RESTRICTED. This is a FERPA education record and GLBA-covered customer financial information. Land in bronze under the restricted KMS key, tokenize SAI, COD loan IDs, and PJ or appeal text at silver, and grant only to financial aid roles (govern/access-control-matrix.json, ACM-SPECIAL-002).",
+  "workday_counterpart": "bridge/workday/sis/return_of_title_iv_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + EMPLID + STRM + calculation sequence."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "PS_STDNT_CAR_TERM.EMPLID",
+      "transformation": "Resolve EMPLID to HELIX Student.helix_id through the identity crosswalk."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "PS_STDNT_CAR_TERM.STRM",
+      "transformation": "Resolve through term-period-xref to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "PS_STDNT_AWRD_DISB.AID_YEAR",
+      "transformation": "PeopleSoft AID_YEAR is the ending year: 2026 means 2025-2026. Emit '2025-2026'."
+    },
+    {
+      "helix_attribute": "withdrawal_date",
+      "source": "PS_STDNT_CAR_TERM.WITHDRAW_DATE (official) or last attendance (unofficial)",
+      "transformation": "ISO date. For unofficial withdrawals use the last date of academically related activity, or the midpoint if unknown."
+    },
+    {
+      "helix_attribute": "withdrawal_type",
+      "source": "PS_STDNT_CAR_TERM.WITHDRAW_CODE",
+      "transformation": "Official withdrawal codes -> official; all-F or no-attendance detection -> unofficial."
+    },
+    {
+      "helix_attribute": "determination_date",
+      "source": "R2T4 determination date",
+      "transformation": "ISO date. Starts the 45-day clock."
+    },
+    {
+      "helix_attribute": "percent_enrolled",
+      "source": "R2T4 percent of period completed",
+      "transformation": "Calendar days completed / days in period, excluding scheduled breaks of 5 or more days."
+    },
+    {
+      "helix_attribute": "percent_title_iv_earned",
+      "source": "R2T4 percent earned",
+      "transformation": "100 when percent_enrolled is over 60."
+    },
+    {
+      "helix_attribute": "title_iv_disbursed_amount",
+      "source": "R2T4 disbursed amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_could_have_disbursed",
+      "source": "R2T4 could-have-disbursed amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_earned_amount",
+      "source": "R2T4 earned amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "title_iv_unearned_amount",
+      "source": "R2T4 unearned amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "amount_returned_by_school",
+      "source": "R2T4 school return amount",
+      "transformation": "Decimal. Returned in federal order: Unsub, Sub, Grad PLUS, Parent PLUS, Pell, FSEOG, TEACH."
+    },
+    {
+      "helix_attribute": "amount_returned_by_student",
+      "source": "R2T4 student return amount",
+      "transformation": "Decimal. Grant overpayments under 50 dollars aren't collected."
+    },
+    {
+      "helix_attribute": "post_withdrawal_disbursement_flag",
+      "source": "R2T4 PWD indicator",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "pwd_amount",
+      "source": "R2T4 PWD amount",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "pwd_offered_date",
+      "source": "PWD offer date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "pwd_accepted_flag",
+      "source": "PWD student response",
+      "transformation": "Boolean. Loan PWDs need student confirmation; grant PWDs don't."
+    },
+    {
+      "helix_attribute": "return_calculation_date",
+      "source": "R2T4 calculation date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "return_deadline_date",
+      "source": "Derived",
+      "transformation": "determination_date + 45 days."
+    },
+    {
+      "helix_attribute": "institutional_charges",
+      "source": "R2T4 institutional charges",
+      "transformation": "Tuition, fees, and on-campus housing and food for the period."
+    },
+    {
+      "helix_attribute": "r2t4_status",
+      "source": "R2T4 status",
+      "transformation": "Map through helix/r2t4-status."
+    }
+  ]
+}

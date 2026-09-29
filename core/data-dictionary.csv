@@ -1,5 +1,5 @@
 term,resource,domain,definition,data_type,format,required,terminology_binding,classification,ferpa,glba,source_file
-absence_type,AbsenceRecord,Human Resources,"Map: 'Vacation' → 'vacation', 'Sick' → 'sick', 'Personal' → 'personal', 'FMLA' → 'fmla', 'Sabbatical' → 'sabbatical', 'Bereavement' → 'bereavement', 'Jury Duty' → 'jury_duty', 'Military' → 'military', 'Parental' → 'parental', 'Workers Comp'",string,,False,,confidential,False,False,core/resources/absence_record.json
+absence_type,AbsenceRecord,Human Resources,"Map: 'Vacation' → 'vacation', 'Sick' → 'sick', 'Personal' → 'personal', 'FMLA' → 'fmla', 'Sabbatical' → 'sabbatical', 'Bereavement' → 'bereavement', 'Jury Duty' → 'jury_duty', 'Military' → 'military', 'Parental' → 'parental', 'Workers Comp'",string,,False,helix/absence-type,confidential,False,False,core/resources/absence_record.json
 balance_sick,AbsenceRecord,Human Resources,Current available sick hours.,number,,False,,confidential,False,False,core/resources/absence_record.json
 balance_vacation,AbsenceRecord,Human Resources,Current available vacation hours.,number,,False,,confidential,False,False,core/resources/absence_record.json
 employee_ref,AbsenceRecord,Human Resources,Link to HELIX employee_id.,string,,True,,confidential,False,False,core/resources/absence_record.json
@@ -50,7 +50,7 @@ meta.source_system,AcademicPeriod,Academic Structure,"Originating system (e.g., 
 meta.updated_at,AcademicPeriod,Academic Structure,,string,date-time,False,,public,False,False,core/resources/academic_period.json
 meta.version,AcademicPeriod,Academic Structure,Resource version number,integer,,False,,public,False,False,core/resources/academic_period.json
 name,AcademicPeriod,Academic Structure,,string,,False,,public,False,False,core/resources/academic_period.json
-period_type,AcademicPeriod,Academic Structure,,string,,True,,public,False,False,core/resources/academic_period.json
+period_type,AcademicPeriod,Academic Structure,,string,,True,helix/period-type,public,False,False,core/resources/academic_period.json
 start_date,AcademicPeriod,Academic Structure,,string,date,True,,public,False,False,core/resources/academic_period.json
 academic_level,AcademicTermRecord,Enrollment & Registration,Academic level as of this period.,string,,False,,confidential,True,False,core/resources/academic_term_record.json
 academic_load,AcademicTermRecord,Enrollment & Registration,Official academic load classification (drives financial aid eligibility).,string,,False,,confidential,True,False,core/resources/academic_term_record.json
@@ -83,7 +83,7 @@ units_passed,AcademicTermRecord,Enrollment & Registration,Credit hours with pass
 admit_period_ref,AdmissionApplication,Enrollment & Registration,HELIX ID of the AcademicPeriod the applicant is applying for,string,,True,,confidential,True,False,core/resources/admission_application.json
 application_number,AdmissionApplication,Enrollment & Registration,Institution-assigned application number,string,,False,,confidential,True,False,core/resources/admission_application.json
 application_source,AdmissionApplication,Enrollment & Registration,"Application platform (e.g., 'Common App', 'Coalition', 'institutional', 'SOPHAS', 'AMCAS')",string,,False,,confidential,True,False,core/resources/admission_application.json
-application_status,AdmissionApplication,Enrollment & Registration,Bound to helix/admission-status terminology,string,,True,,confidential,True,False,core/resources/admission_application.json
+application_status,AdmissionApplication,Enrollment & Registration,Bound to helix/admission-status terminology,string,,True,helix/admission-status,confidential,True,False,core/resources/admission_application.json
 application_type,AdmissionApplication,Enrollment & Registration,,string,,True,,confidential,True,False,core/resources/admission_application.json
 decision_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
 enrollment_deposit_date,AdmissionApplication,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/admission_application.json
@@ -118,13 +118,13 @@ test_scores[].test_date,AdmissionApplication,Enrollment & Registration,,string,d
 test_scores[].test_type,AdmissionApplication,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/admission_application.json
 transfer_gpa,AdmissionApplication,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/admission_application.json
 academic_year,AidApplication,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,restricted,True,True,core/resources/aid_application.json
-aid_application_status,AidApplication,Financial Aid,Bound to helix/aid-application-status.,string,,True,,restricted,True,True,core/resources/aid_application.json
+aid_application_status,AidApplication,Financial Aid,Bound to helix/aid-application-status.,string,,True,helix/aid-application-status,restricted,True,True,core/resources/aid_application.json
 application_type,AidApplication,Financial Aid,Bound to application source,string,,True,,restricted,True,True,core/resources/aid_application.json
 c_flags,AidApplication,Financial Aid,C-flag / reject codes on the ISIR.,array,,False,,restricted,True,True,core/resources/aid_application.json
 citizenship_status,AidApplication,Financial Aid,"Eligibility citizenship category (citizen, eligible_noncitizen, ineligible).",string,,False,,restricted,True,True,core/resources/aid_application.json
 comment_codes,AidApplication,Financial Aid,ISIR comment codes.,array,,False,,restricted,True,True,core/resources/aid_application.json
 dependency_override_flag,AidApplication,Financial Aid,True if a dependency override was applied by the FAA.,boolean,,False,,restricted,True,True,core/resources/aid_application.json
-dependency_status,AidApplication,Financial Aid,Bound to helix/dependency-status.,string,,False,,restricted,True,True,core/resources/aid_application.json
+dependency_status,AidApplication,Financial Aid,Bound to helix/dependency-status.,string,,False,helix/dependency-status,restricted,True,True,core/resources/aid_application.json
 efc_legacy,AidApplication,Financial Aid,Expected Family Contribution for pre-2024-25 records (legacy).,integer,,False,,restricted,True,True,core/resources/aid_application.json
 expected_enrollment_status,AidApplication,Financial Aid,Expected enrollment intensity for the aid year.,string,,False,,restricted,True,True,core/resources/aid_application.json
 fafsa_signature_flag,AidApplication,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/aid_application.json
@@ -258,7 +258,7 @@ spend_category,ApVoucher,Financial Operations,Direct map. Workday-specific class
 vendor_id,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
 vendor_name,ApVoucher,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/ap_voucher.json
 voucher_id,ApVoucher,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/ap_voucher.json
-voucher_status,ApVoucher,Financial Operations,"Map: 'Draft'→'pending', 'Awaiting Approval'→'pending', 'Approved'→'approved', 'Paid'→'paid', 'Canceled'→'void'.",string,,False,,internal,False,False,core/resources/ap_voucher.json
+voucher_status,ApVoucher,Financial Operations,"Map: 'Draft'→'pending', 'Awaiting Approval'→'pending', 'Approved'→'approved', 'Paid'→'paid', 'Canceled'→'void'.",string,,False,helix/payment-status,internal,False,False,core/resources/ap_voucher.json
 amount,ArTransaction,Financial Operations,"Charges positive, payments/refunds negative.",number,,False,,confidential,False,True,core/resources/ar_transaction.json
 balance_due,ArTransaction,Financial Operations,Direct map. Remaining balance after payments applied.,number,,False,,confidential,False,True,core/resources/ar_transaction.json
 charge_code,ArTransaction,Financial Operations,"Map Workday Revenue Category to HELIX charge code. E.g., 'Tuition - Undergraduate' → 'tuition_ug'.",string,,False,,confidential,False,True,core/resources/ar_transaction.json
@@ -286,7 +286,7 @@ transaction_type,ArTransaction,Financial Operations,"Map: Customer Invoice → '
 accumulated_depreciation,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
 acquisition_cost,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
 acquisition_date,Asset,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/asset.json
-asset_category,Asset,Financial Operations,"Map: 'Land' → 'land', 'Buildings' → 'building', 'Equipment' → 'equipment', 'Software' → 'software', 'Vehicles' → 'vehicle', 'Leasehold Improvements' → 'leasehold', 'Library Collections' → 'library', 'Construction in Progress' → 'cip'.",string,,False,,internal,False,False,core/resources/asset.json
+asset_category,Asset,Financial Operations,"Map: 'Land' → 'land', 'Buildings' → 'building', 'Equipment' → 'equipment', 'Software' → 'software', 'Vehicles' → 'vehicle', 'Leasehold Improvements' → 'leasehold', 'Library Collections' → 'library', 'Construction in Progress' → 'cip'.",string,,False,helix/asset-category,internal,False,False,core/resources/asset.json
 asset_id,Asset,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/asset.json
 custodian,Asset,Financial Operations,Resolve to name. Person responsible.,string,,False,,internal,False,False,core/resources/asset.json
 department,Asset,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/asset.json
@@ -306,7 +306,7 @@ meta.updated_at,Asset,Financial Operations,,string,date-time,False,,internal,Fal
 meta.version,Asset,Financial Operations,,integer,,False,,internal,False,False,core/resources/asset.json
 net_book_value,Asset,Financial Operations,acquisition_cost - accumulated_depreciation.,number,,False,,internal,False,False,core/resources/asset.json
 salvage_value,Asset,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/asset.json
-status,Asset,Financial Operations,"Map: 'Active' → 'in_service', 'Disposed' → 'disposed', 'Under Construction' → 'cip', 'Fully Depreciated' → 'fully_depreciated'.",string,,False,,internal,False,False,core/resources/asset.json
+status,Asset,Financial Operations,"Map: 'Active' → 'in_service', 'Disposed' → 'disposed', 'Under Construction' → 'cip', 'Fully Depreciated' → 'fully_depreciated'.",string,,False,helix/asset-status,internal,False,False,core/resources/asset.json
 useful_life_months,Asset,Financial Operations,Convert to months if in years.,number,,False,,internal,False,False,core/resources/asset.json
 academic_period_ref,AwardHonor,Outcomes,HELIX ID of the AcademicPeriod,string,,False,,confidential,True,False,core/resources/award_honor.json
 academic_year,AwardHonor,Outcomes,Academic year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/award_honor.json
@@ -319,7 +319,7 @@ description,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/res
 gpa_at_award,AwardHonor,Outcomes,,number,,False,,confidential,True,False,core/resources/award_honor.json
 helix_id,AwardHonor,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/award_honor.json
 honor_name,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
-honor_type,AwardHonor,Outcomes,Category of honor/award. Bound to HELIX terminology: helix/honor-type,string,,True,,confidential,True,False,core/resources/award_honor.json
+honor_type,AwardHonor,Outcomes,Category of honor/award. Bound to HELIX terminology: helix/honor-type,string,,True,helix/honor-type,confidential,True,False,core/resources/award_honor.json
 latin_honors_designation,AwardHonor,Outcomes,,string,,False,,confidential,True,False,core/resources/award_honor.json
 meta,AwardHonor,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/award_honor.json
 meta.classification,AwardHonor,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/award_honor.json
@@ -357,14 +357,14 @@ meta.source_system,BenefitEnrollment,Human Resources,"Originating system (e.g., 
 meta.updated_at,BenefitEnrollment,Human Resources,,string,date-time,False,,restricted,False,False,core/resources/benefit_enrollment.json
 meta.version,BenefitEnrollment,Human Resources,,integer,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 plan_name,BenefitEnrollment,Human Resources,Direct map.,string,,False,,restricted,False,False,core/resources/benefit_enrollment.json
-plan_type,BenefitEnrollment,Human Resources,"Map: 'Medical' → 'medical', 'Dental' → 'dental', 'Vision' → 'vision', 'Life Insurance' → 'life', 'Disability' → 'disability', 'Retirement' → 'retirement', 'FSA' → 'fsa', 'HSA' → 'hsa', 'Tuition Waiver' → 'tuition_waiver'.",string,,False,,restricted,False,False,core/resources/benefit_enrollment.json
+plan_type,BenefitEnrollment,Human Resources,"Map: 'Medical' → 'medical', 'Dental' → 'dental', 'Vision' → 'vision', 'Life Insurance' → 'life', 'Disability' → 'disability', 'Retirement' → 'retirement', 'FSA' → 'fsa', 'HSA' → 'hsa', 'Tuition Waiver' → 'tuition_waiver'.",string,,False,helix/benefit-plan-type,restricted,False,False,core/resources/benefit_enrollment.json
 retirement_contribution_pct,BenefitEnrollment,Human Resources,"Employee deferral percentage for 403(b), 457(b), state pension.",number,,False,,restricted,False,False,core/resources/benefit_enrollment.json
 termination_date,BenefitEnrollment,Human Resources,Null if active. Cast to ISO 8601 if ended.,string,date,False,,restricted,False,False,core/resources/benefit_enrollment.json
 account,Budget,Financial Operations,Map to HELIX account code.,string,,False,,internal,False,False,core/resources/budget.json
 available_balance,Budget,Financial Operations,budget_amount - encumbered - expended.,number,,False,,internal,False,False,core/resources/budget.json
 budget_amount,Budget,Financial Operations,Original budget + amendments.,number,,False,,internal,False,False,core/resources/budget.json
 budget_id,Budget,Financial Operations,Composite key.,string,,True,,internal,False,False,core/resources/budget.json
-budget_status,Budget,Financial Operations,"Map: 'Draft'→'draft', 'Approved'→'open', 'Closed'→'closed', 'Frozen'→'frozen'.",string,,False,,internal,False,False,core/resources/budget.json
+budget_status,Budget,Financial Operations,"Map: 'Draft'→'draft', 'Approved'→'open', 'Closed'→'closed', 'Frozen'→'frozen'.",string,,False,helix/budget-status,internal,False,False,core/resources/budget.json
 business_unit,Budget,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/budget.json
 department,Budget,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/budget.json
 encumbered,Budget,Financial Operations,"Sum of open commitments (POs, contracts).",number,,False,,internal,False,False,core/resources/budget.json
@@ -422,7 +422,7 @@ meta.source_system,Compensation,Human Resources,"Originating system (e.g., 'peop
 meta.updated_at,Compensation,Human Resources,,string,date-time,False,,restricted,False,False,core/resources/compensation.json
 meta.version,Compensation,Human Resources,,integer,,False,,restricted,False,False,core/resources/compensation.json
 pay_rate,Compensation,Human Resources,The actual rate: salary amount or hourly rate.,number,,False,,restricted,False,False,core/resources/compensation.json
-pay_rate_type,Compensation,Human Resources,"Map: 'Salary' → 'salary', 'Hourly' → 'hourly'.",string,,False,,restricted,False,False,core/resources/compensation.json
+pay_rate_type,Compensation,Human Resources,"Map: 'Salary' → 'salary', 'Hourly' → 'hourly'.",string,,False,helix/compensation-type,restricted,False,False,core/resources/compensation.json
 affinity_groups,Constituent,Advancement,"Affiliations: Greek org, athletics, college, department, student org, etc.",array,,False,,confidential,False,False,core/resources/constituent.json
 assigned_officer,Constituent,Advancement,Development officer/gift officer managing this relationship,string,,False,,confidential,False,False,core/resources/constituent.json
 class_year,Constituent,Advancement,"Graduation class year (e.g., '2015'). Primary affinity identifier for alumni.",string,,False,,confidential,False,False,core/resources/constituent.json
@@ -432,13 +432,13 @@ communication_preferences.mail_opt_in,Constituent,Advancement,,boolean,,False,,c
 communication_preferences.phone_opt_in,Constituent,Advancement,,boolean,,False,,confidential,False,False,core/resources/constituent.json
 communication_preferences.preferred_channel,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 consecutive_giving_years,Constituent,Advancement,,integer,,False,,confidential,False,False,core/resources/constituent.json
-constituent_type,Constituent,Advancement,Bound to HELIX terminology: helix/constituent-type.,string,,True,,confidential,False,False,core/resources/constituent.json
+constituent_type,Constituent,Advancement,Bound to HELIX terminology: helix/constituent-type.,string,,True,helix/constituent-type,confidential,False,False,core/resources/constituent.json
 degrees,Constituent,Advancement,,array,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].degree_ref,Constituent,Advancement,HELIX ID of the Degree resource,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].degree_type,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].major,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 degrees[].year,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
-donor_segment,Constituent,Advancement,Current donor lifecycle segment for targeting Bound to HELIX terminology: helix/donor-segment.,string,,False,,confidential,False,False,core/resources/constituent.json
+donor_segment,Constituent,Advancement,Current donor lifecycle segment for targeting Bound to HELIX terminology: helix/donor-segment.,string,,False,helix/donor-segment,confidential,False,False,core/resources/constituent.json
 employer,Constituent,Advancement,,string,,False,,confidential,False,False,core/resources/constituent.json
 engagement_score,Constituent,Advancement,"Composite engagement score (events, emails, volunteering, social, etc.)",number,,False,,confidential,False,False,core/resources/constituent.json
 giving_capacity,Constituent,Advancement,,object,,False,,confidential,False,False,core/resources/constituent.json
@@ -462,13 +462,13 @@ meta.source_system,Constituent,Advancement,,string,,False,,confidential,False,Fa
 meta.updated_at,Constituent,Advancement,,string,date-time,False,,confidential,False,False,core/resources/constituent.json
 meta.version,Constituent,Advancement,,integer,,False,,confidential,False,False,core/resources/constituent.json
 person_ref,Constituent,Advancement,HELIX ID of the underlying Person resource (if individual),string,,False,,confidential,False,False,core/resources/constituent.json
-prospect_stage,Constituent,Advancement,Moves management pipeline stage Bound to HELIX terminology: helix/prospect-stage.,string,,False,,confidential,False,False,core/resources/constituent.json
+prospect_stage,Constituent,Advancement,Moves management pipeline stage Bound to HELIX terminology: helix/prospect-stage.,string,,False,helix/prospect-stage,confidential,False,False,core/resources/constituent.json
 solicitation_codes,Constituent,Advancement,Active solicitation restrictions or preferences,array,,False,,confidential,False,False,core/resources/constituent.json
 status,Constituent,Advancement,,string,,True,,confidential,False,False,core/resources/constituent.json
 student_ref,Constituent,Advancement,HELIX ID of the Student resource (if alumnus),string,,False,,confidential,False,False,core/resources/constituent.json
 academic_year_graduated,ContinuingEducation,Outcomes,Graduation year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/continuing_education.json
 cip_code,ContinuingEducation,Outcomes,Classification of Instructional Programs (CIP) code of the new program,string,,False,,confidential,True,False,core/resources/continuing_education.json
-continuing_ed_level,ContinuingEducation,Outcomes,Level of continuing education pursued. Bound to HELIX terminology: helix/continuing-ed-level,string,,True,,confidential,True,False,core/resources/continuing_education.json
+continuing_ed_level,ContinuingEducation,Outcomes,Level of continuing education pursued. Bound to HELIX terminology: helix/continuing-ed-level,string,,True,helix/continuing-ed-level,confidential,True,False,core/resources/continuing_education.json
 data_collection_method,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
 degree_ref,ContinuingEducation,Outcomes,HELIX ID of the Degree completed prior to continuing education,string,,False,,confidential,True,False,core/resources/continuing_education.json
 enrollment_status,ContinuingEducation,Outcomes,,string,,False,,confidential,True,False,core/resources/continuing_education.json
@@ -500,7 +500,7 @@ student_ref,ContinuingEducation,Outcomes,HELIX ID of the Student,string,,True,,c
 amount_spent,Contract,Financial Operations,Sum of invoiced amounts linked to this contract.,number,,False,,internal,False,False,core/resources/contract.json
 contract_id,Contract,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/contract.json
 contract_name,Contract,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/contract.json
-contract_status,Contract,Financial Operations,"Map: 'Draft' → 'draft', 'Active' → 'active', 'Expired' → 'expired', 'Terminated' → 'terminated', 'On Hold' → 'on_hold'.",string,,False,,internal,False,False,core/resources/contract.json
+contract_status,Contract,Financial Operations,"Map: 'Draft' → 'draft', 'Active' → 'active', 'Expired' → 'expired', 'Terminated' → 'terminated', 'On Hold' → 'on_hold'.",string,,False,helix/contract-status,internal,False,False,core/resources/contract.json
 contract_type,Contract,Financial Operations,"Map: 'Blanket PO' → 'blanket', 'Rate Contract' → 'rate', 'Service Agreement' → 'service', 'Construction' → 'construction', 'Consulting' → 'consulting'.",string,,False,,internal,False,False,core/resources/contract.json
 department,Contract,Financial Operations,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/contract.json
 end_date,Contract,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/contract.json
@@ -528,7 +528,7 @@ end_date,Course,Academic Structure,,string,date,False,,internal,False,False,core
 helix_id,Course,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/course.json
 institution_id,Course,Academic Structure,,string,,True,,internal,False,False,core/resources/course.json
 is_active,Course,Academic Structure,,boolean,,False,,internal,False,False,core/resources/course.json
-level,Course,Academic Structure,Bound to HELIX terminology: helix/course-level.,string,,False,,internal,False,False,core/resources/course.json
+level,Course,Academic Structure,Bound to HELIX terminology: helix/course-level.,string,,False,helix/course-level,internal,False,False,core/resources/course.json
 meta,Course,Academic Structure,HELIX metadata block — present on every resource,object,,False,,internal,False,False,core/resources/course.json
 meta.classification,Course,Academic Structure,Data classification tier per HELIX Govern,string,,False,,internal,False,False,core/resources/course.json
 meta.created_at,Course,Academic Structure,,string,date-time,False,,internal,False,False,core/resources/course.json
@@ -547,7 +547,7 @@ course_ref,CourseSection,Academic Structure,HELIX ID of the parent Course resour
 credit_hours,CourseSection,Academic Structure,,number,,False,,internal,False,False,core/resources/course_section.json
 crn,CourseSection,Academic Structure,Course Reference Number or equivalent registration code,string,,False,,internal,False,False,core/resources/course_section.json
 cross_listed_sections,CourseSection,Academic Structure,"HELIX IDs of cross-listed sections (same meeting, different subject/number)",array,,False,,internal,False,False,core/resources/course_section.json
-delivery_mode,CourseSection,Academic Structure,Bound to HELIX terminology: helix/delivery-mode.,string,,False,,internal,False,False,core/resources/course_section.json
+delivery_mode,CourseSection,Academic Structure,Bound to HELIX terminology: helix/delivery-mode.,string,,False,helix/delivery-mode,internal,False,False,core/resources/course_section.json
 fees,CourseSection,Academic Structure,,array,,False,,internal,False,False,core/resources/course_section.json
 fees[].amount,CourseSection,Academic Structure,,number,,False,,internal,False,False,core/resources/course_section.json
 fees[].currency,CourseSection,Academic Structure,,string,,False,,internal,False,False,core/resources/course_section.json
@@ -584,7 +584,7 @@ concentration,Degree,Outcomes,,string,,False,,confidential,True,False,core/resou
 conferral_date,Degree,Outcomes,,string,date,True,,confidential,True,False,core/resources/degree.json
 conferral_period_ref,Degree,Outcomes,HELIX ID of the AcademicPeriod of conferral,string,,False,,confidential,True,False,core/resources/degree.json
 cumulative_gpa,Degree,Outcomes,,number,,False,,confidential,True,False,core/resources/degree.json
-degree_level,Degree,Outcomes,Bound to HELIX terminology: helix/degree-level.,string,,False,,confidential,True,False,core/resources/degree.json
+degree_level,Degree,Outcomes,Bound to HELIX terminology: helix/degree-level.,string,,False,helix/degree-level,confidential,True,False,core/resources/degree.json
 degree_status,Degree,Outcomes,Tracks degree from near-completion through official conferral,string,,False,,confidential,True,False,core/resources/degree.json
 degree_type,Degree,Outcomes,"Degree designation (e.g., 'BS', 'MA', 'PhD')",string,,False,,confidential,True,False,core/resources/degree.json
 helix_id,Degree,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/degree.json
@@ -655,7 +655,7 @@ cod_reported_flag,Disbursement,Financial Aid,Reported to Common Origination and 
 cod_response_date,Disbursement,Financial Aid,,string,date,False,,restricted,True,True,core/resources/disbursement.json
 disbursement_number,Disbursement,Financial Aid,"Disbursement number (1st, 2nd, ...).",integer,,False,,restricted,True,True,core/resources/disbursement.json
 disbursement_sequence,Disbursement,Financial Aid,,integer,,False,,restricted,True,True,core/resources/disbursement.json
-disbursement_status,Disbursement,Financial Aid,Bound to helix/disbursement-status.,string,,True,,restricted,True,True,core/resources/disbursement.json
+disbursement_status,Disbursement,Financial Aid,Bound to helix/disbursement-status.,string,,True,helix/disbursement-status,restricted,True,True,core/resources/disbursement.json
 fees_deducted,Disbursement,Financial Aid,,number,,False,,restricted,True,True,core/resources/disbursement.json
 fin_aid_award_ref,Disbursement,Financial Aid,HELIX ID of the FinAidAward being disbursed,string,,True,,restricted,True,True,core/resources/disbursement.json
 fund_code,Disbursement,Financial Aid,Institution's internal fund code.,string,,False,,restricted,True,True,core/resources/disbursement.json
@@ -690,9 +690,9 @@ continuous_service_date,Employee,Human Resources,"Date for service-based calcula
 date_of_birth,Employee,Human Resources,Cast to ISO 8601.,string,,False,,confidential,False,False,core/resources/employee.json
 employee_id,Employee,Human Resources,Direct map. Institution's employee number.,string,,False,,confidential,False,False,core/resources/employee.json
 employee_type,Employee,Human Resources,"Higher ed specific: 'faculty_tenured', 'faculty_tenure_track', 'faculty_ntt', 'faculty_adjunct', 'staff_regular', 'staff_temp', 'student_worker', 'graduate_assistant', 'postdoc'.",string,,False,,confidential,False,False,core/resources/employee.json
-employment_status,Employee,Human Resources,"Map: 'Active' → 'active', 'Terminated' → 'terminated', 'Leave of Absence' → 'leave', 'Suspended' → 'suspended', 'Retired' → 'retired'.",string,,False,,confidential,False,False,core/resources/employee.json
+employment_status,Employee,Human Resources,"Map: 'Active' → 'active', 'Terminated' → 'terminated', 'Leave of Absence' → 'leave', 'Suspended' → 'suspended', 'Retired' → 'retired'.",string,,False,helix/employment-status,confidential,False,False,core/resources/employee.json
 ethnicity,Employee,Human Resources,Map to HELIX ethnicity terminology. IPEDS/EEO category.,string,,False,,confidential,False,False,core/resources/employee.json
-flsa_status,Employee,Human Resources,"Map: 'Exempt' → 'exempt', 'Non-Exempt' → 'non_exempt'.",string,,False,,confidential,False,False,core/resources/employee.json
+flsa_status,Employee,Human Resources,"Map: 'Exempt' → 'exempt', 'Non-Exempt' → 'non_exempt'.",string,,False,helix/flsa-status,confidential,False,False,core/resources/employee.json
 fte,Employee,Human Resources,Normalize to 0.0-1.0. Full-time = 1.0.,number,,False,,confidential,False,False,core/resources/employee.json
 gender,Employee,Human Resources,Map to HELIX gender terminology.,string,,False,,confidential,False,False,core/resources/employee.json
 helix_id,Employee,Human Resources,HELIX-assigned unique identifier for this Employee record.,string,,True,,confidential,False,False,core/resources/employee.json
@@ -715,7 +715,7 @@ primary_work_phone,Employee,Human Resources,Direct map.,string,,False,,confident
 termination_date,Employee,Human Resources,Null if active. Cast to ISO 8601 if terminated.,string,date,False,,confidential,False,False,core/resources/employee.json
 termination_reason,Employee,Human Resources,"Map: 'Voluntary - Resignation' → 'resignation', 'Voluntary - Retirement' → 'retirement', 'Involuntary - Termination' → 'involuntary', 'End of Contract' → 'contract_end', 'Deceased' → 'deceased'.",string,,False,,confidential,False,False,core/resources/employee.json
 visa_type,Employee,Human Resources,"If non-citizen: H-1B, J-1, F-1/OPT, TN, etc.",string,,False,,confidential,False,False,core/resources/employee.json
-worker_type,Employee,Human Resources,"Map: 'Employee' → 'employee', 'Contingent Worker' → 'contingent'.",string,,False,,confidential,False,False,core/resources/employee.json
+worker_type,Employee,Human Resources,"Map: 'Employee' → 'employee', 'Contingent Worker' → 'contingent'.",string,,False,helix/worker-type,confidential,False,False,core/resources/employee.json
 academic_year_graduated,EmploymentOutcome,Outcomes,Graduation aid/academic year in YYYY-YYYY format,string,,False,,confidential,True,False,core/resources/employment_outcome.json
 continuing_education_flag,EmploymentOutcome,Outcomes,True if the graduate is simultaneously pursuing continuing education,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
 data_collection_date,EmploymentOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/employment_outcome.json
@@ -726,7 +726,7 @@ employer_name,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False
 employment_location_city,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
 employment_location_country,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
 employment_location_state,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
-employment_relation_to_major,EmploymentOutcome,Outcomes,How related the position is to the field of study. Bound to HELIX terminology: helix/employment-relation,string,,False,,confidential,True,False,core/resources/employment_outcome.json
+employment_relation_to_major,EmploymentOutcome,Outcomes,How related the position is to the field of study. Bound to HELIX terminology: helix/employment-relation,string,,False,helix/employment-relation,confidential,True,False,core/resources/employment_outcome.json
 employment_type,EmploymentOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/employment_outcome.json
 helix_id,EmploymentOutcome,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/employment_outcome.json
 hired_before_graduation_flag,EmploymentOutcome,Outcomes,,boolean,,False,,confidential,True,False,core/resources/employment_outcome.json
@@ -747,7 +747,7 @@ meta.source_system,EmploymentOutcome,Outcomes,"Originating system (e.g., 'banner
 meta.updated_at,EmploymentOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/employment_outcome.json
 meta.version,EmploymentOutcome,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/employment_outcome.json
 outcome_date,EmploymentOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/employment_outcome.json
-outcome_type,EmploymentOutcome,Outcomes,First-destination outcome category. Bound to HELIX terminology: helix/first-destination-status,string,,True,,confidential,True,False,core/resources/employment_outcome.json
+outcome_type,EmploymentOutcome,Outcomes,First-destination outcome category. Bound to HELIX terminology: helix/first-destination-status,string,,True,helix/first-destination-status,confidential,True,False,core/resources/employment_outcome.json
 person_ref,EmploymentOutcome,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/employment_outcome.json
 salary_amount,EmploymentOutcome,Outcomes,Annual salary in local currency,number,,False,,confidential,True,False,core/resources/employment_outcome.json
 salary_currency,EmploymentOutcome,Outcomes,ISO 4217 currency code,string,,False,,confidential,True,False,core/resources/employment_outcome.json
@@ -782,10 +782,10 @@ credit_hours_attempted,Enrollment,Enrollment & Registration,,number,,False,,conf
 credit_hours_earned,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
 drop_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
 enrollment_date,Enrollment,Enrollment & Registration,,string,date,False,,confidential,True,False,core/resources/enrollment.json
-enrollment_status,Enrollment,Enrollment & Registration,Bound to HELIX terminology: helix/enrollment-status.,string,,True,,confidential,True,False,core/resources/enrollment.json
+enrollment_status,Enrollment,Enrollment & Registration,Bound to HELIX terminology: helix/enrollment-status.,string,,True,helix/enrollment-status,confidential,True,False,core/resources/enrollment.json
 final_exam_grade,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
 grade,Enrollment,Enrollment & Registration,Final grade. Bound to institution's HELIX grade terminology profile.,string,,False,,confidential,True,False,core/resources/enrollment.json
-grade_mode,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
+grade_mode,Enrollment,Enrollment & Registration,,string,,False,helix/grade-mode,confidential,True,False,core/resources/enrollment.json
 grade_points,Enrollment,Enrollment & Registration,,number,,False,,confidential,True,False,core/resources/enrollment.json
 helix_id,Enrollment,Enrollment & Registration,,string,uuid,True,,confidential,True,False,core/resources/enrollment.json
 instructional_method,Enrollment,Enrollment & Registration,,string,,False,,confidential,True,False,core/resources/enrollment.json
@@ -826,7 +826,7 @@ meta.version,ExpenseReport,Financial Operations,,integer,,False,,internal,False,
 purpose,ExpenseReport,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/expense_report.json
 report_date,ExpenseReport,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/expense_report.json
 report_id,ExpenseReport,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/expense_report.json
-report_status,ExpenseReport,Financial Operations,"Map: 'Draft' → 'draft', 'Submitted' → 'submitted', 'Approved' → 'approved', 'Paid' → 'paid', 'Returned' → 'returned'.",string,,False,,internal,False,False,core/resources/expense_report.json
+report_status,ExpenseReport,Financial Operations,"Map: 'Draft' → 'draft', 'Submitted' → 'submitted', 'Approved' → 'approved', 'Paid' → 'paid', 'Returned' → 'returned'.",string,,False,helix/expense-status,internal,False,False,core/resources/expense_report.json
 total_amount,ExpenseReport,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/expense_report.json
 academic_period_ref,ExperientialLearning,Outcomes,HELIX ID of the AcademicPeriod during which the experience occurred,string,,False,,confidential,True,False,core/resources/experiential_learning.json
 compensation_amount,ExperientialLearning,Outcomes,,number,,False,,confidential,True,False,core/resources/experiential_learning.json
@@ -836,7 +836,7 @@ credit_hours,ExperientialLearning,Outcomes,,number,,False,,confidential,True,Fal
 end_date,ExperientialLearning,Outcomes,,string,date,False,,confidential,True,False,core/resources/experiential_learning.json
 evaluation_completed_flag,ExperientialLearning,Outcomes,,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
 evaluation_rating,ExperientialLearning,Outcomes,Supervisor or faculty evaluation rating,string,,False,,confidential,True,False,core/resources/experiential_learning.json
-experiential_type,ExperientialLearning,Outcomes,Type of experiential learning. Bound to HELIX terminology: helix/experiential-type,string,,True,,confidential,True,False,core/resources/experiential_learning.json
+experiential_type,ExperientialLearning,Outcomes,Type of experiential learning. Bound to HELIX terminology: helix/experiential-type,string,,True,helix/experiential-type,confidential,True,False,core/resources/experiential_learning.json
 helix_id,ExperientialLearning,Outcomes,,string,uuid,True,,confidential,True,False,core/resources/experiential_learning.json
 high_impact_practice_flag,ExperientialLearning,Outcomes,True if this qualifies as a NSSE High-Impact Practice,boolean,,False,,confidential,True,False,core/resources/experiential_learning.json
 hours_completed,ExperientialLearning,Outcomes,,number,,False,,confidential,True,False,core/resources/experiential_learning.json
@@ -928,7 +928,7 @@ amount_accepted,FinAidAward,Financial Aid,,number,,False,,restricted,True,True,c
 amount_disbursed,FinAidAward,Financial Aid,NOTE: Actual disbursements are now modeled in the Disbursement resource; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 amount_offered,FinAidAward,Financial Aid,Amount offered in local currency,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 award_status,FinAidAward,Financial Aid,,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
-award_type,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/award-type.,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+award_type,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/award-type.,string,,True,helix/award-type,restricted,True,True,core/resources/fin_aid_award.json
 award_year_total,FinAidAward,Financial Aid,Total award amount across all terms in the academic year,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 cost_of_attendance,FinAidAward,Financial Aid,Institutional COA budget used for this award calculation NOTE: Full COA components are modeled on AidPackage; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 currency,FinAidAward,Financial Aid,ISO 4217 currency code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
@@ -936,7 +936,7 @@ disbursement_date,FinAidAward,Financial Aid,,string,date,False,,restricted,True,
 efc,FinAidAward,Financial Aid,"Expected Family Contribution / Student Aid Index at time of award NOTE: For 2024-25+ records, model the Student Aid Index on AidApplication (sai/efc_legacy); retained here for backward compatibility.",number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 fund_code,FinAidAward,Financial Aid,Institution's internal fund code,string,,False,,restricted,True,True,core/resources/fin_aid_award.json
 fund_name,FinAidAward,Financial Aid,"Specific fund or program name (e.g., 'Federal Pell Grant', 'Dean's Scholarship')",string,,False,,restricted,True,True,core/resources/fin_aid_award.json
-fund_source,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/fund-source.,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
+fund_source,FinAidAward,Financial Aid,Bound to HELIX terminology: helix/fund-source.,string,,True,helix/fund-source,restricted,True,True,core/resources/fin_aid_award.json
 helix_id,FinAidAward,Financial Aid,,string,uuid,True,,restricted,True,True,core/resources/fin_aid_award.json
 is_renewable,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
 merit_based_flag,FinAidAward,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/fin_aid_award.json
@@ -961,7 +961,7 @@ satisfactory_academic_progress,FinAidAward,Financial Aid,SAP status at time of a
 student_ref,FinAidAward,Financial Aid,HELIX ID of the Student resource,string,,True,,restricted,True,True,core/resources/fin_aid_award.json
 unmet_need,FinAidAward,Financial Aid,Remaining financial need after all awards NOTE: Unmet need is now computed on AidPackage; retained here for backward compatibility.,number,,False,,restricted,True,True,core/resources/fin_aid_award.json
 company,FinancialOrg,Financial Operations,The legal entity / campus this cost center belongs to.,string,,False,,internal,False,False,core/resources/financial_org.json
-fund_type,FinancialOrg,Financial Operations,Some institutions configure cost centers with a default fund type for budgeting.,string,,False,,internal,False,False,core/resources/financial_org.json
+fund_type,FinancialOrg,Financial Operations,Some institutions configure cost centers with a default fund type for budgeting.,string,,False,helix/fund-type,internal,False,False,core/resources/financial_org.json
 helix_id,FinancialOrg,Financial Operations,HELIX-assigned unique identifier for this FinancialOrg record.,string,,True,,internal,False,False,core/resources/financial_org.json
 is_active,FinancialOrg,Financial Operations,"Map: false → true (active), true → false (inactive).",boolean,,False,,internal,False,False,core/resources/financial_org.json
 manager,FinancialOrg,Financial Operations,Resolve to name. Budget owner / department head.,string,,False,,internal,False,False,core/resources/financial_org.json
@@ -998,7 +998,7 @@ meta.version,FirstDestinationSurvey,Outcomes,Resource version number,integer,,Fa
 military_service_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
 months_since_graduation,FirstDestinationSurvey,Outcomes,Months elapsed since graduation at time of measurement (6 = NACE standard),integer,,False,,confidential,True,False,core/resources/first_destination_survey.json
 not_seeking_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
-outcome_status,FirstDestinationSurvey,Outcomes,Resulting first-destination outcome. Bound to HELIX terminology: helix/first-destination-status,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
+outcome_status,FirstDestinationSurvey,Outcomes,Resulting first-destination outcome. Bound to HELIX terminology: helix/first-destination-status,string,,False,helix/first-destination-status,confidential,True,False,core/resources/first_destination_survey.json
 person_ref,FirstDestinationSurvey,Outcomes,HELIX ID of the underlying Person,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
 primary_outcome,FirstDestinationSurvey,Outcomes,,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
 response_method,FirstDestinationSurvey,Outcomes,,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
@@ -1008,9 +1008,9 @@ student_ref,FirstDestinationSurvey,Outcomes,HELIX ID of the Student,string,,True
 survey_cohort,FirstDestinationSurvey,Outcomes,Graduating cohort identifier for the survey,string,,False,,confidential,True,False,core/resources/first_destination_survey.json
 survey_completed_date,FirstDestinationSurvey,Outcomes,,string,date,False,,confidential,True,False,core/resources/first_destination_survey.json
 survey_sent_date,FirstDestinationSurvey,Outcomes,,string,date,False,,confidential,True,False,core/resources/first_destination_survey.json
-survey_status,FirstDestinationSurvey,Outcomes,Status of the survey instrument. Bound to HELIX terminology: helix/survey-status,string,,True,,confidential,True,False,core/resources/first_destination_survey.json
+survey_status,FirstDestinationSurvey,Outcomes,Status of the survey instrument. Bound to HELIX terminology: helix/survey-status,string,,True,helix/survey-status,confidential,True,False,core/resources/first_destination_survey.json
 volunteer_service_flag,FirstDestinationSurvey,Outcomes,,boolean,,False,,confidential,True,False,core/resources/first_destination_survey.json
-fund_category,Fund,Financial Operations,"Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d",string,,False,,internal,False,False,core/resources/fund.json
+fund_category,Fund,Financial Operations,"Map to HELIX fund categories: 'unrestricted_general', 'unrestricted_designated', 'auxiliary', 'restricted_federal', 'restricted_state', 'restricted_private', 'endowment_true', 'endowment_quasi', 'plant_unexpended', 'plant_renewal', 'plant_d",string,,False,helix/fund-type,internal,False,False,core/resources/fund.json
 fund_code,Fund,Financial Operations,"Direct map. E.g., 'FD100'.",string,,True,,internal,False,False,core/resources/fund.json
 fund_name,Fund,Financial Operations,"Direct map. E.g., 'General Operating'.",string,,False,,internal,False,False,core/resources/fund.json
 gasb_fund_type,Fund,Financial Operations,"For public (GASB) institutions: 'current_unrestricted', 'current_restricted', 'loan', 'endowment', 'plant', 'agency'. Maps to GASB fund types for statement of net position.",string,,False,,internal,False,False,core/resources/fund.json
@@ -1042,7 +1042,7 @@ designation.fund_type,Gift,Advancement,,string,,False,,confidential,False,False,
 gift_date,Gift,Advancement,Date the gift was received or pledged,string,date,True,,confidential,False,False,core/resources/gift.json
 gift_number,Gift,Advancement,Institution-assigned gift/receipt number,string,,False,,confidential,False,False,core/resources/gift.json
 gift_source,Gift,Advancement,,string,,False,,confidential,False,False,core/resources/gift.json
-gift_type,Gift,Advancement,Type of philanthropic transaction Bound to HELIX terminology: helix/gift-type.,string,,True,,confidential,False,False,core/resources/gift.json
+gift_type,Gift,Advancement,Type of philanthropic transaction Bound to HELIX terminology: helix/gift-type.,string,,True,helix/gift-type,confidential,False,False,core/resources/gift.json
 helix_id,Gift,Advancement,,string,uuid,True,,confidential,False,False,core/resources/gift.json
 institution_id,Gift,Advancement,,string,,True,,confidential,False,False,core/resources/gift.json
 matching_company,Gift,Advancement,Employer name for corporate matching gifts,string,,False,,confidential,False,False,core/resources/gift.json
@@ -1067,7 +1067,7 @@ stewardship_actions[].notes,Gift,Advancement,,string,,False,,confidential,False,
 tax_deductible_amount,Gift,Advancement,,number,,False,,confidential,False,False,core/resources/gift.json
 account,GlTransaction,Financial Operations,"Map Workday ledger account to HELIX account code via XREF. E.g., WD '6200 - Travel' → HELIX 'EXP-TRAVEL-DOM'.",string,,False,,internal,False,False,core/resources/gl_transaction.json
 account_description,GlTransaction,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/gl_transaction.json
-account_type,GlTransaction,Financial Operations,"Map: 'Asset'→'asset', 'Liability'→'liability', 'Equity'→'equity', 'Revenue'→'revenue', 'Expense'→'expense'.",string,,False,,internal,False,False,core/resources/gl_transaction.json
+account_type,GlTransaction,Financial Operations,"Map: 'Asset'→'asset', 'Liability'→'liability', 'Equity'→'equity', 'Revenue'→'revenue', 'Expense'→'expense'.",string,,False,helix/account-type,internal,False,False,core/resources/gl_transaction.json
 accounting_period,GlTransaction,Financial Operations,Workday fiscal periods are configurable. Standard: 12 monthly + adjustment periods.,integer,,False,,internal,False,False,core/resources/gl_transaction.json
 amount,GlTransaction,Financial Operations,"Debit amounts positive, credit amounts negative. Or use Ledger_Debit_Amount / Ledger_Credit_Amount for ledger currency.",number,,False,,internal,False,False,core/resources/gl_transaction.json
 business_unit,GlTransaction,Financial Operations,Workday Company = organizational entity. Map to HELIX Institution or business unit.,string,,False,,internal,False,False,core/resources/gl_transaction.json
@@ -1079,7 +1079,7 @@ fund_code,GlTransaction,Financial Operations,"Map Workday Fund worktag to HELIX 
 helix_id,GlTransaction,Financial Operations,HELIX-assigned unique identifier for this GLTransaction record.,string,,True,,internal,False,False,core/resources/gl_transaction.json
 journal_date,GlTransaction,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/gl_transaction.json
 journal_id,GlTransaction,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/gl_transaction.json
-journal_source,GlTransaction,Financial Operations,"Source of the journal: 'Manual', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Asset Accounting', etc.",string,,False,,internal,False,False,core/resources/gl_transaction.json
+journal_source,GlTransaction,Financial Operations,"Source of the journal: 'Manual', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Asset Accounting', etc.",string,,False,helix/transaction-type,internal,False,False,core/resources/gl_transaction.json
 journal_status,GlTransaction,Financial Operations,"Map: 'Draft'→'not_edited', 'Submitted'→'valid', 'Approved'→'valid', 'Posted'→'posted', 'Reversed'→'reversed'.",string,,False,,internal,False,False,core/resources/gl_transaction.json
 ledger,GlTransaction,Financial Operations,"Direct map. Workday ledgers: 'Actuals', 'Budget', 'Encumbrance', etc.",string,,False,,internal,False,False,core/resources/gl_transaction.json
 meta,GlTransaction,Financial Operations,HELIX metadata block — present on every resource.,object,,False,,internal,False,False,core/resources/gl_transaction.json
@@ -1100,7 +1100,7 @@ direct_costs_budget,Grant,Financial Operations,Sum of direct cost budget lines.,
 fund_code,Grant,Financial Operations,"Map to HELIX fund code. Federal grants → restricted_federal, state → restricted_state, etc.",string,,False,,internal,False,False,core/resources/grant.json
 grant_id,Grant,Financial Operations,Direct map. Institution's internal grant number.,string,,True,,internal,False,False,core/resources/grant.json
 grant_name,Grant,Financial Operations,Direct map.,string,,False,,internal,False,False,core/resources/grant.json
-grant_status,Grant,Financial Operations,"Map: 'Proposed' → 'proposed', 'Awarded' → 'active', 'Active' → 'active', 'No-Cost Extension' → 'nce', 'Closeout' → 'closing', 'Closed' → 'closed'.",string,,False,,internal,False,False,core/resources/grant.json
+grant_status,Grant,Financial Operations,"Map: 'Proposed' → 'proposed', 'Awarded' → 'active', 'Active' → 'active', 'No-Cost Extension' → 'nce', 'Closeout' → 'closing', 'Closed' → 'closed'.",string,,False,helix/grant-status,internal,False,False,core/resources/grant.json
 helix_id,Grant,Financial Operations,HELIX-assigned unique identifier for this Grant record.,string,,True,,internal,False,False,core/resources/grant.json
 idc_rate,Grant,Financial Operations,"Negotiated F&A rate (e.g., 55.5% MTDC for on-campus organized research). May vary by activity type and location.",number,,False,,internal,False,False,core/resources/grant.json
 indirect_costs_budget,Grant,Financial Operations,F&A/overhead. Calculated using the institution's negotiated IDC rate.,number,,False,,internal,False,False,core/resources/grant.json
@@ -1126,7 +1126,7 @@ expiration_date,Hold,Student Services,Date the hold auto-expires if not released
 helix_id,Hold,Student Services,,string,uuid,True,,confidential,True,False,core/resources/hold.json
 hold_code,Hold,Student Services,Institution's internal hold code,string,,False,,confidential,True,False,core/resources/hold.json
 hold_status,Hold,Student Services,,string,,True,,confidential,True,False,core/resources/hold.json
-hold_type,Hold,Student Services,Bound to HELIX terminology: helix/hold-type.,string,,True,,confidential,True,False,core/resources/hold.json
+hold_type,Hold,Student Services,Bound to HELIX terminology: helix/hold-type.,string,,True,helix/hold-type,confidential,True,False,core/resources/hold.json
 meta,Hold,Student Services,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/hold.json
 meta.classification,Hold,Student Services,,string,,False,,confidential,True,False,core/resources/hold.json
 meta.created_at,Hold,Student Services,,string,date-time,False,,confidential,True,False,core/resources/hold.json
@@ -1197,11 +1197,11 @@ visa_type,InternationalStudent,Enrollment & Registration,Visa/immigration classi
 work_auth_end_date,InternationalStudent,Enrollment & Registration,,string,date,False,,restricted,True,False,core/resources/international_student.json
 work_auth_start_date,InternationalStudent,Enrollment & Registration,,string,date,False,,restricted,True,False,core/resources/international_student.json
 work_authorization,InternationalStudent,Enrollment & Registration,Current work authorization type.,string,,False,,restricted,True,False,core/resources/international_student.json
-academic_rank,JobClassification,Human Resources,"Map: 'Distinguished Professor' → 'distinguished', 'Professor' → 'professor', 'Associate Professor' → 'associate', 'Assistant Professor' → 'assistant', 'Senior Lecturer' → 'senior_lecturer', 'Lecturer' → 'lecturer', 'Instructor' → 'instructo",string,,False,,internal,False,False,core/resources/job_classification.json
+academic_rank,JobClassification,Human Resources,"Map: 'Distinguished Professor' → 'distinguished', 'Professor' → 'professor', 'Associate Professor' → 'associate', 'Assistant Professor' → 'assistant', 'Senior Lecturer' → 'senior_lecturer', 'Lecturer' → 'lecturer', 'Instructor' → 'instructo",string,,False,helix/faculty-rank,internal,False,False,core/resources/job_classification.json
 cip_code,JobClassification,Human Resources,"Classification of Instructional Programs code. Relevant for faculty to link to academic discipline. E.g., '11.0101' for Computer Science.",string,,False,,internal,False,False,core/resources/job_classification.json
-eeo_category,JobClassification,Human Resources,"Map to IPEDS/EEO categories: 'Executive/Admin/Managerial', 'Faculty', 'Other Professional', 'Technical/Paraprofessional', 'Clerical/Secretarial', 'Skilled Crafts', 'Service/Maintenance'.",string,,False,,internal,False,False,core/resources/job_classification.json
+eeo_category,JobClassification,Human Resources,"Map to IPEDS/EEO categories: 'Executive/Admin/Managerial', 'Faculty', 'Other Professional', 'Technical/Paraprofessional', 'Clerical/Secretarial', 'Skilled Crafts', 'Service/Maintenance'.",string,,False,helix/eeo-category,internal,False,False,core/resources/job_classification.json
 faculty_status,JobClassification,Human Resources,"Map: 'Full-Time' → 'full_time', 'Part-Time/Adjunct' → 'adjunct', 'Emeritus' → 'emeritus', 'On Leave' → 'on_leave', 'Visiting' → 'visiting'.",string,,False,,internal,False,False,core/resources/job_classification.json
-flsa_status,JobClassification,Human Resources,"Map: true → 'exempt', false → 'non_exempt'. Faculty are typically exempt.",string,,False,,internal,False,False,core/resources/job_classification.json
+flsa_status,JobClassification,Human Resources,"Map: true → 'exempt', false → 'non_exempt'. Faculty are typically exempt.",string,,False,helix/flsa-status,internal,False,False,core/resources/job_classification.json
 helix_id,JobClassification,Human Resources,HELIX-assigned unique identifier for this JobClassification record.,string,,True,,internal,False,False,core/resources/job_classification.json
 ipeds_faculty_category,JobClassification,Human Resources,"For IPEDS HR survey: 'Tenured', 'On Tenure Track', 'Not on Tenure Track/Multi-Year Contract', 'Not on Tenure Track/Annual Contract', 'Not on Tenure Track/Less Than Annual'. Cross-reference with FTE and function.",string,,False,,internal,False,False,core/resources/job_classification.json
 job_code,JobClassification,Human Resources,Direct map. The institution's job code.,string,,True,,internal,False,False,core/resources/job_classification.json
@@ -1217,9 +1217,9 @@ meta.updated_at,JobClassification,Human Resources,,string,date-time,False,,inter
 meta.version,JobClassification,Human Resources,,integer,,False,,internal,False,False,core/resources/job_classification.json
 soc_code,JobClassification,Human Resources,"Standard Occupational Classification code. E.g., '25-1021' for CS professors.",string,,False,,internal,False,False,core/resources/job_classification.json
 tenure_date,JobClassification,Human Resources,Date tenure was granted. Null if not tenured. Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/job_classification.json
-tenure_status,JobClassification,Human Resources,"Map: 'Tenured' → 'tenured', 'Tenure Track' → 'tenure_track', 'Non-Tenure Track' → 'ntt', 'Not Applicable' → 'n/a'.",string,,False,,internal,False,False,core/resources/job_classification.json
+tenure_status,JobClassification,Human Resources,"Map: 'Tenured' → 'tenured', 'Tenure Track' → 'tenure_track', 'Non-Tenure Track' → 'ntt', 'Not Applicable' → 'n/a'.",string,,False,helix/tenure-status,internal,False,False,core/resources/job_classification.json
 academic_period_ref,LearningOutcome,Outcomes,HELIX ID of the AcademicPeriod,string,,False,,confidential,True,False,core/resources/learning_outcome.json
-achievement_level,LearningOutcome,Outcomes,Level of attainment demonstrated. Bound to HELIX terminology: helix/achievement-level,string,,False,,confidential,True,False,core/resources/learning_outcome.json
+achievement_level,LearningOutcome,Outcomes,Level of attainment demonstrated. Bound to HELIX terminology: helix/achievement-level,string,,False,helix/achievement-level,confidential,True,False,core/resources/learning_outcome.json
 assessment_date,LearningOutcome,Outcomes,,string,date,False,,confidential,True,False,core/resources/learning_outcome.json
 assessment_instrument,LearningOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/learning_outcome.json
 assessment_method,LearningOutcome,Outcomes,,string,,False,,confidential,True,False,core/resources/learning_outcome.json
@@ -1246,7 +1246,7 @@ meta.source_system,LearningOutcome,Outcomes,"Originating system (e.g., 'banner',
 meta.updated_at,LearningOutcome,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/learning_outcome.json
 meta.version,LearningOutcome,Outcomes,Resource version number,integer,,False,,confidential,True,False,core/resources/learning_outcome.json
 outcome_statement,LearningOutcome,Outcomes,The learning outcome statement being assessed,string,,False,,confidential,True,False,core/resources/learning_outcome.json
-outcome_type,LearningOutcome,Outcomes,Type/level of the learning outcome. Bound to HELIX terminology: helix/outcome-type,string,,True,,confidential,True,False,core/resources/learning_outcome.json
+outcome_type,LearningOutcome,Outcomes,Type/level of the learning outcome. Bound to HELIX terminology: helix/outcome-type,string,,True,helix/outcome-type,confidential,True,False,core/resources/learning_outcome.json
 plo_reference,LearningOutcome,Outcomes,Program Learning Outcome identifier,string,,False,,confidential,True,False,core/resources/learning_outcome.json
 program_ref,LearningOutcome,Outcomes,HELIX ID of the Program,string,,False,,confidential,True,False,core/resources/learning_outcome.json
 score,LearningOutcome,Outcomes,,number,,False,,confidential,True,False,core/resources/learning_outcome.json
@@ -1254,7 +1254,7 @@ student_ref,LearningOutcome,Outcomes,HELIX ID of the Student,string,,True,,confi
 completion_date,LearningRecord,Human Resources,Cast to ISO 8601. Null if not completed.,string,date,False,,internal,False,False,core/resources/learning_record.json
 course_id,LearningRecord,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/learning_record.json
 course_title,LearningRecord,Human Resources,Direct map.,string,,False,,internal,False,False,core/resources/learning_record.json
-course_type,LearningRecord,Human Resources,"Map: 'Compliance' → 'compliance', 'Professional Development' → 'professional_dev', 'Safety' → 'safety', 'Onboarding' → 'onboarding', 'Technical' → 'technical', 'Leadership' → 'leadership'.",string,,False,,internal,False,False,core/resources/learning_record.json
+course_type,LearningRecord,Human Resources,"Map: 'Compliance' → 'compliance', 'Professional Development' → 'professional_dev', 'Safety' → 'safety', 'Onboarding' → 'onboarding', 'Technical' → 'technical', 'Leadership' → 'leadership'.",string,,False,helix/learning-type,internal,False,False,core/resources/learning_record.json
 delivery_method,LearningRecord,Human Resources,"Map: 'Online Self-Paced' → 'online_async', 'Virtual Instructor-Led' → 'online_sync', 'In Person' → 'in_person', 'Blended' → 'blended'.",string,,False,,internal,False,False,core/resources/learning_record.json
 due_date,LearningRecord,Human Resources,For mandatory training: compliance deadline.,string,date,False,,internal,False,False,core/resources/learning_record.json
 employee_ref,LearningRecord,Human Resources,Link to HELIX employee_id.,string,,True,,internal,False,False,core/resources/learning_record.json
@@ -1282,8 +1282,8 @@ license_issue_date,Licensure,Outcomes,,string,date,False,,confidential,True,Fals
 license_number,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
 license_state,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
 licensing_body,Licensure,Outcomes,,string,,False,,confidential,True,False,core/resources/licensure.json
-licensure_result,Licensure,Outcomes,Exam result. Bound to HELIX terminology: helix/licensure-result,string,,True,,confidential,True,False,core/resources/licensure.json
-licensure_type,Licensure,Outcomes,Category of licensure/certification exam. Bound to HELIX terminology: helix/licensure-type,string,,True,,confidential,True,False,core/resources/licensure.json
+licensure_result,Licensure,Outcomes,Exam result. Bound to HELIX terminology: helix/licensure-result,string,,True,helix/licensure-result,confidential,True,False,core/resources/licensure.json
+licensure_type,Licensure,Outcomes,Category of licensure/certification exam. Bound to HELIX terminology: helix/licensure-type,string,,True,helix/licensure-type,confidential,True,False,core/resources/licensure.json
 meta,Licensure,Outcomes,HELIX metadata block — present on every resource,object,,False,,confidential,True,False,core/resources/licensure.json
 meta.classification,Licensure,Outcomes,Data classification tier per HELIX Govern,string,,False,,confidential,True,False,core/resources/licensure.json
 meta.created_at,Licensure,Outcomes,,string,date-time,False,,confidential,True,False,core/resources/licensure.json
@@ -1321,8 +1321,8 @@ interest_rate,LoanRecord,Financial Aid,Fixed interest rate (percentage).,number,
 loan_disbursement_count,LoanRecord,Financial Aid,,integer,,False,,restricted,True,True,core/resources/loan_record.json
 loan_period_end,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
 loan_period_start,LoanRecord,Financial Aid,,string,date,False,,restricted,True,True,core/resources/loan_record.json
-loan_status,LoanRecord,Financial Aid,Bound to helix/loan-status.,string,,True,,restricted,True,True,core/resources/loan_record.json
-loan_type,LoanRecord,Financial Aid,Bound to helix/loan-type.,string,,True,,restricted,True,True,core/resources/loan_record.json
+loan_status,LoanRecord,Financial Aid,Bound to helix/loan-status.,string,,True,helix/loan-status,restricted,True,True,core/resources/loan_record.json
+loan_type,LoanRecord,Financial Aid,Bound to helix/loan-type.,string,,True,helix/loan-type,restricted,True,True,core/resources/loan_record.json
 meta,LoanRecord,Financial Aid,HELIX metadata block — present on every resource,object,,False,,restricted,True,True,core/resources/loan_record.json
 meta.classification,LoanRecord,Financial Aid,Data classification tier per HELIX Govern,string,,False,,restricted,True,True,core/resources/loan_record.json
 meta.created_at,LoanRecord,Financial Aid,,string,date-time,False,,restricted,True,True,core/resources/loan_record.json
@@ -1384,7 +1384,7 @@ meta.version,PerformanceReview,Human Resources,,integer,,False,,restricted,False
 nine_box_performance,PerformanceReview,Human Resources,Low/Medium/High on the performance axis.,string,,False,,restricted,False,False,core/resources/performance_review.json
 nine_box_potential,PerformanceReview,Human Resources,Low/Medium/High on the potential axis.,string,,False,,restricted,False,False,core/resources/performance_review.json
 numeric_rating,PerformanceReview,Human Resources,"Numeric equivalent if available (e.g., 1-5 scale).",string,,False,,restricted,False,False,core/resources/performance_review.json
-overall_rating,PerformanceReview,Human Resources,"Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'.",string,,False,,restricted,False,False,core/resources/performance_review.json
+overall_rating,PerformanceReview,Human Resources,"Map to institution's rating scale. E.g., 'Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Unsatisfactory'.",string,,False,helix/performance-rating,restricted,False,False,core/resources/performance_review.json
 review_period_end,PerformanceReview,Human Resources,Cast to ISO 8601.,string,date,False,,restricted,False,False,core/resources/performance_review.json
 review_period_start,PerformanceReview,Human Resources,Cast to ISO 8601.,string,date,False,,restricted,False,False,core/resources/performance_review.json
 review_status,PerformanceReview,Human Resources,"Map: 'Not Started' → 'not_started', 'In Progress' → 'in_progress', 'Manager Review' → 'manager_review', 'Completed' → 'completed', 'Acknowledged' → 'acknowledged'.",string,,False,,restricted,False,False,core/resources/performance_review.json
@@ -1415,11 +1415,11 @@ emergency_contacts[].email,Person,Identity,,string,email,False,,confidential,Tru
 emergency_contacts[].name,Person,Identity,,string,,False,,confidential,True,False,core/resources/person.json
 emergency_contacts[].phone,Person,Identity,,string,,False,,confidential,True,False,core/resources/person.json
 emergency_contacts[].relationship,Person,Identity,,string,,False,,confidential,True,False,core/resources/person.json
-ethnicity,Person,Identity,Self-reported ethnicity/race categories. Multi-select. Bound to helix/ethnicity terminology or country-specific profile.,array,,False,,confidential,True,False,core/resources/person.json
-gender,Person,Identity,Bound to helix/gender terminology,string,,False,,confidential,True,False,core/resources/person.json
-gender_identity,Person,Identity,Self-reported gender identity. Bound to helix/gender-identity terminology. Separate from legal gender for institutions that track both.,string,,False,,confidential,True,False,core/resources/person.json
+ethnicity,Person,Identity,Self-reported ethnicity/race categories. Multi-select. Bound to helix/ethnicity terminology or country-specific profile.,array,,False,helix/ethnicity,confidential,True,False,core/resources/person.json
+gender,Person,Identity,Bound to helix/gender terminology,string,,False,helix/gender,confidential,True,False,core/resources/person.json
+gender_identity,Person,Identity,Self-reported gender identity. Bound to helix/gender-identity terminology. Separate from legal gender for institutions that track both.,string,,False,helix/gender-identity,confidential,True,False,core/resources/person.json
 helix_id,Person,Identity,,string,uuid,True,,confidential,True,False,core/resources/person.json
-identifiers,Person,Identity,All known identifiers across systems,array,,True,,confidential,True,False,core/resources/person.json
+identifiers,Person,Identity,All known identifiers across systems,array,,True,helix/identifier-type,confidential,True,False,core/resources/person.json
 identifiers[].system,Person,Identity,,string,,True,,confidential,True,False,core/resources/person.json
 identifiers[].type,Person,Identity,Bound to helix/identifier-type terminology,string,,True,,confidential,True,False,core/resources/person.json
 identifiers[].value,Person,Identity,,string,,True,,confidential,True,False,core/resources/person.json
@@ -1473,11 +1473,11 @@ meta.source_system,Position,Human Resources,"Originating system (e.g., 'peopleso
 meta.updated_at,Position,Human Resources,,string,date-time,False,,internal,False,False,core/resources/position.json
 meta.version,Position,Human Resources,,integer,,False,,internal,False,False,core/resources/position.json
 position_id,Position,Human Resources,Direct map.,string,,True,,internal,False,False,core/resources/position.json
-position_status,Position,Human Resources,"Map: 'Open' → 'open', 'Filled' → 'filled', 'Frozen' → 'frozen', 'Closed' → 'closed'.",string,,False,,internal,False,False,core/resources/position.json
+position_status,Position,Human Resources,"Map: 'Open' → 'open', 'Filled' → 'filled', 'Frozen' → 'frozen', 'Closed' → 'closed'.",string,,False,helix/position-status,internal,False,False,core/resources/position.json
 position_title,Position,Human Resources,"Position-specific title if overridden, otherwise from job profile.",string,,False,,internal,False,False,core/resources/position.json
 supervisory_org,Position,Human Resources,The org unit this position reports into.,string,,False,,internal,False,False,core/resources/position.json
 time_type,Position,Human Resources,"Map: 'Full time' → 'full_time', 'Part time' → 'part_time'.",string,,False,,internal,False,False,core/resources/position.json
-worker_type,Position,Human Resources,"Map: 'Employee' → 'employee', 'Contingent Worker' → 'contingent'.",string,,False,,internal,False,False,core/resources/position.json
+worker_type,Position,Human Resources,"Map: 'Employee' → 'employee', 'Contingent Worker' → 'contingent'.",string,,False,helix/worker-type,internal,False,False,core/resources/position.json
 actual_spend,PositionBudget,Human Resources,Actual compensation + benefits cost.,number,,False,,internal,False,False,core/resources/position_budget.json
 budgeted_amount,PositionBudget,Human Resources,Total funded amount for this position/year.,number,,False,,internal,False,False,core/resources/position_budget.json
 department,PositionBudget,Human Resources,Map to HELIX org code.,string,,False,,internal,False,False,core/resources/position_budget.json
@@ -1503,9 +1503,9 @@ accreditation_body,Program,Academic Structure,External accreditor if program-lev
 admission_selectivity,Program,Academic Structure,Program-level admission selectivity,string,,False,,internal,False,False,core/resources/program.json
 cip_code,Program,Academic Structure,"NCES Classification of Instructional Programs code (e.g., '11.0701')",string,,False,,internal,False,False,core/resources/program.json
 code,Program,Academic Structure,Institution's program code,string,,False,,internal,False,False,core/resources/program.json
-degree_level,Program,Academic Structure,Bound to HELIX terminology: helix/degree-level.,string,,True,,internal,False,False,core/resources/program.json
+degree_level,Program,Academic Structure,Bound to HELIX terminology: helix/degree-level.,string,,True,helix/degree-level,internal,False,False,core/resources/program.json
 degree_type,Program,Academic Structure,"Degree designation (e.g., 'BS', 'BA', 'MS', 'PhD', 'AAS')",string,,False,,internal,False,False,core/resources/program.json
-delivery_mode,Program,Academic Structure,Primary delivery mode for the program Bound to HELIX terminology: helix/delivery-mode.,string,,False,,internal,False,False,core/resources/program.json
+delivery_mode,Program,Academic Structure,Primary delivery mode for the program Bound to HELIX terminology: helix/delivery-mode.,string,,False,helix/delivery-mode,internal,False,False,core/resources/program.json
 gainful_employment_flag,Program,Academic Structure,Whether the program is subject to Gainful Employment reporting (US),boolean,,False,,internal,False,False,core/resources/program.json
 helix_id,Program,Academic Structure,,string,uuid,True,,internal,False,False,core/resources/program.json
 institution_id,Program,Academic Structure,,string,,True,,internal,False,False,core/resources/program.json
@@ -1542,7 +1542,7 @@ meta.updated_at,PurchaseOrder,Financial Operations,,string,date-time,False,,inte
 meta.version,PurchaseOrder,Financial Operations,,integer,,False,,internal,False,False,core/resources/purchase_order.json
 po_date,PurchaseOrder,Financial Operations,Cast to ISO 8601.,string,date,False,,internal,False,False,core/resources/purchase_order.json
 po_id,PurchaseOrder,Financial Operations,Direct map.,string,,True,,internal,False,False,core/resources/purchase_order.json
-po_status,PurchaseOrder,Financial Operations,"Map: 'Draft' → 'draft', 'In Progress' → 'open', 'Fully Received' → 'received', 'Closed' → 'closed', 'Canceled' → 'canceled'.",string,,False,,internal,False,False,core/resources/purchase_order.json
+po_status,PurchaseOrder,Financial Operations,"Map: 'Draft' → 'draft', 'In Progress' → 'open', 'Fully Received' → 'received', 'Closed' → 'closed', 'Canceled' → 'canceled'.",string,,False,helix/purchase-order-status,internal,False,False,core/resources/purchase_order.json
 requisition_ref,PurchaseOrder,Financial Operations,Link back to originating requisition.,string,,False,,internal,False,False,core/resources/purchase_order.json
 spend_category,PurchaseOrder,Financial Operations,Workday's commodity classification. Map to HELIX procurement category if defined.,string,,False,,internal,False,False,core/resources/purchase_order.json
 total_amount,PurchaseOrder,Financial Operations,Direct map.,number,,False,,internal,False,False,core/resources/purchase_order.json
@@ -1554,7 +1554,7 @@ application_stage,Requisition,Human Resources,Map to institution's recruiting pi
 candidate_name,Requisition,Human Resources,Direct map. Sensitive — pre-hire data.,string,,False,,confidential,False,False,core/resources/requisition.json
 candidate_source,Requisition,Human Resources,"Map: 'Job Board' → 'job_board', 'Employee Referral' → 'referral', 'Internal' → 'internal', 'Agency' → 'agency', 'Career Site' → 'career_site'.",string,,False,,confidential,False,False,core/resources/requisition.json
 department,Requisition,Human Resources,Map to HELIX org code.,string,,False,,confidential,False,False,core/resources/requisition.json
-eeo_category,Requisition,Human Resources,For affirmative action reporting.,string,,False,,confidential,False,False,core/resources/requisition.json
+eeo_category,Requisition,Human Resources,For affirmative action reporting.,string,,False,helix/eeo-category,confidential,False,False,core/resources/requisition.json
 helix_id,Requisition,Human Resources,HELIX-assigned unique identifier for this Requisition record.,string,,True,,confidential,False,False,core/resources/requisition.json
 hiring_manager,Requisition,Human Resources,Resolve to name.,string,,False,,confidential,False,False,core/resources/requisition.json
 job_profile,Requisition,Human Resources,Direct map. The classification being recruited.,string,,False,,confidential,False,False,core/resources/requisition.json
@@ -1567,7 +1567,7 @@ meta.updated_at,Requisition,Human Resources,,string,date-time,False,,confidentia
 meta.version,Requisition,Human Resources,,integer,,False,,confidential,False,False,core/resources/requisition.json
 recruiter,Requisition,Human Resources,Resolve to name.,string,,False,,confidential,False,False,core/resources/requisition.json
 requisition_id,Requisition,Human Resources,Direct map.,string,,True,,confidential,False,False,core/resources/requisition.json
-requisition_status,Requisition,Human Resources,"Map: 'Draft' → 'draft', 'Open' → 'open', 'Filled' → 'filled', 'Closed Not Filled' → 'closed_unfilled', 'On Hold' → 'on_hold', 'Canceled' → 'canceled'.",string,,False,,confidential,False,False,core/resources/requisition.json
+requisition_status,Requisition,Human Resources,"Map: 'Draft' → 'draft', 'Open' → 'open', 'Filled' → 'filled', 'Closed Not Filled' → 'closed_unfilled', 'On Hold' → 'on_hold', 'Canceled' → 'canceled'.",string,,False,helix/requisition-status,confidential,False,False,core/resources/requisition.json
 requisition_title,Requisition,Human Resources,Direct map.,string,,False,,confidential,False,False,core/resources/requisition.json
 target_start_date,Requisition,Human Resources,Cast to ISO 8601.,string,date,False,,confidential,False,False,core/resources/requisition.json
 academic_period_ref,ReturnOfTitleIv,Financial Aid,HELIX ID of the AcademicPeriod,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
@@ -1597,7 +1597,7 @@ post_withdrawal_disbursement_flag,ReturnOfTitleIv,Financial Aid,,boolean,,False,
 pwd_accepted_flag,ReturnOfTitleIv,Financial Aid,,boolean,,False,,restricted,True,True,core/resources/return_of_title_iv.json
 pwd_amount,ReturnOfTitleIv,Financial Aid,,number,,False,,restricted,True,True,core/resources/return_of_title_iv.json
 pwd_offered_date,ReturnOfTitleIv,Financial Aid,,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
-r2t4_status,ReturnOfTitleIv,Financial Aid,Bound to helix/r2t4-status.,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
+r2t4_status,ReturnOfTitleIv,Financial Aid,Bound to helix/r2t4-status.,string,,True,helix/r2t4-status,restricted,True,True,core/resources/return_of_title_iv.json
 return_calculation_date,ReturnOfTitleIv,Financial Aid,,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
 return_deadline_date,ReturnOfTitleIv,Financial Aid,Return deadline (typically 45 days from determination).,string,date,False,,restricted,True,True,core/resources/return_of_title_iv.json
 student_ref,ReturnOfTitleIv,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/return_of_title_iv.json
@@ -1639,7 +1639,7 @@ meta.version,SapEvaluation,Financial Aid,Resource version number,integer,,False,
 probation_flag,SapEvaluation,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/sap_evaluation.json
 qualitative_measure_gpa,SapEvaluation,Financial Aid,Cumulative GPA measure.,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
 quantitative_measure_pace,SapEvaluation,Financial Aid,Pace = cumulative completed / attempted credits (percentage).,number,,False,,confidential,True,False,core/resources/sap_evaluation.json
-sap_status,SapEvaluation,Financial Aid,Bound to helix/sap-status.,string,,True,,confidential,True,False,core/resources/sap_evaluation.json
+sap_status,SapEvaluation,Financial Aid,Bound to helix/sap-status.,string,,True,helix/sap-status,confidential,True,False,core/resources/sap_evaluation.json
 student_ref,SapEvaluation,Financial Aid,HELIX ID of the Student,string,,True,,confidential,True,False,core/resources/sap_evaluation.json
 academic_level,Student,Identity,Current academic career/level,string,,False,,confidential,True,False,core/resources/student.json
 admit_period_ref,Student,Identity,HELIX ID of the AcademicPeriod when the student was first admitted,string,,False,,confidential,True,False,core/resources/student.json
@@ -1652,7 +1652,7 @@ demographics,Student,Identity,Extension point for institution- or country-specif
 expected_graduation_date,Student,Identity,,string,date,False,,confidential,True,False,core/resources/student.json
 first_generation_flag,Student,Identity,,boolean,,False,,confidential,True,False,core/resources/student.json
 full_part_time,Student,Identity,Enrollment intensity. Critical for financial aid and IPEDS reporting.,string,,False,,confidential,True,False,core/resources/student.json
-gender,Student,Identity,Bound to HELIX terminology: helix/gender,string,,False,,confidential,True,False,core/resources/student.json
+gender,Student,Identity,Bound to HELIX terminology: helix/gender,string,,False,helix/gender,confidential,True,False,core/resources/student.json
 helix_id,Student,Identity,Globally unique HELIX identifier,string,uuid,True,,confidential,True,False,core/resources/student.json
 identifiers,Student,Identity,All known identifiers for this student across systems,array,,True,,confidential,True,False,core/resources/student.json
 identifiers[].system,Student,Identity,"Source system (e.g., 'banner', 'peoplesoft', 'national_id')",string,,True,,confidential,True,False,core/resources/student.json
@@ -1690,17 +1690,17 @@ name.suffix,Student,Identity,,string,,False,,confidential,True,False,core/resour
 person_ref,Student,Identity,HELIX ID of the underlying Person resource. A Student is a role on a Person.,string,,False,,confidential,True,False,core/resources/student.json
 primary_program_ref,Student,Identity,HELIX ID of the student's primary StudentProgram,string,,False,,confidential,True,False,core/resources/student.json
 residency,Student,Identity,,string,,False,,confidential,True,False,core/resources/student.json
-status,Student,Identity,Current lifecycle status. Bound to HELIX terminology: helix/student-status,string,,True,,confidential,True,False,core/resources/student.json
-student_type,Student,Identity,Classification of the student's entry pathway Bound to HELIX terminology: helix/student-type.,string,,False,,confidential,True,False,core/resources/student.json
+status,Student,Identity,Current lifecycle status. Bound to HELIX terminology: helix/student-status,string,,True,helix/student-status,confidential,True,False,core/resources/student.json
+student_type,Student,Identity,Classification of the student's entry pathway Bound to HELIX terminology: helix/student-type.,string,,False,helix/student-type,confidential,True,False,core/resources/student.json
 total_credits_attempted,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
 total_credits_earned,Student,Identity,,number,,False,,confidential,True,False,core/resources/student.json
-veteran_status,Student,Identity,Military/veteran classification for benefits and reporting Bound to HELIX terminology: helix/veteran-status.,string,,False,,confidential,True,False,core/resources/student.json
+veteran_status,Student,Identity,Military/veteran classification for benefits and reporting Bound to HELIX terminology: helix/veteran-status.,string,,False,helix/veteran-status,confidential,True,False,core/resources/student.json
 academic_year,StudentEmployment,Financial Aid,Aid year in YYYY-YYYY format,string,,True,,confidential,True,False,core/resources/student_employment.json
 community_service_flag,StudentEmployment,Financial Aid,,boolean,,False,,confidential,True,False,core/resources/student_employment.json
 community_service_percent,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
 earnings_ytd,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
 employer_department,StudentEmployment,Financial Aid,,string,,False,,confidential,True,False,core/resources/student_employment.json
-employment_type,StudentEmployment,Financial Aid,Bound to helix/employment-type-aid.,string,,True,,confidential,True,False,core/resources/student_employment.json
+employment_type,StudentEmployment,Financial Aid,Bound to helix/employment-type-aid.,string,,True,helix/employment-type-aid,confidential,True,False,core/resources/student_employment.json
 federal_share_percent,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
 fws_award_amount,StudentEmployment,Financial Aid,Federal Work-Study award amount.,number,,False,,confidential,True,False,core/resources/student_employment.json
 fws_earnings_to_date,StudentEmployment,Financial Aid,,number,,False,,confidential,True,False,core/resources/student_employment.json
@@ -1867,5 +1867,5 @@ sai_change_amount,Verification,Financial Aid,,integer,,False,,restricted,True,Tr
 selected_date,Verification,Financial Aid,,string,date,False,,restricted,True,True,core/resources/verification.json
 student_ref,Verification,Financial Aid,HELIX ID of the Student,string,,True,,restricted,True,True,core/resources/verification.json
 verification_outcome,Verification,Financial Aid,"Outcome of verification (no_change, corrected, referred_oig, incomplete).",string,,False,,restricted,True,True,core/resources/verification.json
-verification_status,Verification,Financial Aid,Bound to helix/verification-status.,string,,True,,restricted,True,True,core/resources/verification.json
+verification_status,Verification,Financial Aid,Bound to helix/verification-status.,string,,True,helix/verification-status,restricted,True,True,core/resources/verification.json
 verification_tracking_group,Verification,Financial Aid,ED verification tracking group,string,,False,,restricted,True,True,core/resources/verification.json

@@ -27,7 +27,7 @@
     },
     "pay_rate_type": {
       "type": "string",
-      "description": "Map: 'Salary' \u2192 'salary', 'Hourly' \u2192 'hourly'."
+      "description": "Map: 'Salary' \u2192 'salary', 'Hourly' \u2192 'hourly'. Bound to HELIX terminology: helix/compensation-type."
     },
     "currency": {
       "type": "string",

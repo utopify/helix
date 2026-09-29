@@ -1,0 +1,107 @@
+{
+  "title": "HELIX XREF: Disbursement Status: PeopleSoft → HELIX → Workday",
+  "version": "0.1",
+  "dimension": "Disbursement Status",
+  "description": "Maps PeopleSoft disbursement state (derived from STDNT_AWRD_DISB amounts, dates, and edit results) to helix/disbursement-status and Workday disbursement status.",
+  "columns": [
+    "ps_code",
+    "ps_description",
+    "ps_source",
+    "helix_code",
+    "helix_terminology",
+    "wd_value",
+    "wd_description",
+    "wd_object",
+    "notes"
+  ],
+  "mappings": [
+    {
+      "ps_code": "Scheduled",
+      "ps_description": "Scheduled, not yet authorized",
+      "ps_source": "STDNT_AWRD_DISB (scheduled amount, no disbursed amount)",
+      "helix_code": "scheduled",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Scheduled",
+      "wd_description": "Future disbursement",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "Convert only for open award years."
+    },
+    {
+      "ps_code": "Authorized",
+      "ps_description": "Authorized, not yet disbursed",
+      "ps_source": "STDNT_AWRD_DISB (authorized amount)",
+      "helix_code": "pending",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Pending",
+      "wd_description": "Authorized, awaiting disbursement run",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "VALIDATE: authorization logic differs by release."
+    },
+    {
+      "ps_code": "Edit failure",
+      "ps_description": "Failed disbursement edits",
+      "ps_source": "Disbursement edit messages",
+      "helix_code": "held",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "On Hold",
+      "wd_description": "Blocked by an eligibility check",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "Carry the hold reason so staff can clear it in Workday."
+    },
+    {
+      "ps_code": "Disbursed",
+      "ps_description": "Fully disbursed",
+      "ps_source": "STDNT_AWRD_DISB (disbursed = scheduled)",
+      "helix_code": "disbursed",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Disbursed",
+      "wd_description": "Paid to student account",
+      "wd_object": "Financial Aid Disbursement + Student Payment",
+      "notes": "Must also exist in COD and as a posted SF item."
+    },
+    {
+      "ps_code": "Partial",
+      "ps_description": "Partially disbursed",
+      "ps_source": "STDNT_AWRD_DISB (0 < disbursed < scheduled)",
+      "helix_code": "partially_disbursed",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Partially Disbursed",
+      "wd_description": "Partly paid",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "Usually a mid-period adjustment. Review before cutover."
+    },
+    {
+      "ps_code": "Cancelled",
+      "ps_description": "Cancelled before disbursement",
+      "ps_source": "STDNT_AWRD_DISB (amount reduced to 0)",
+      "helix_code": "cancelled",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Cancelled",
+      "wd_description": "Not paid",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "Load for history only if the award year is open."
+    },
+    {
+      "ps_code": "Returned",
+      "ps_description": "Returned (R2T4 or adjustment)",
+      "ps_source": "STDNT_AWRD_DISB negative adjustment",
+      "helix_code": "returned",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Returned",
+      "wd_description": "Funds sent back",
+      "wd_object": "Financial Aid Disbursement",
+      "notes": "Link to the HELIX ReturnOfTitleIV case when caused by withdrawal."
+    },
+    {
+      "ps_code": "Refunded",
+      "ps_description": "Credit balance refunded",
+      "ps_source": "Student Financials refund",
+      "helix_code": "refunded",
+      "helix_terminology": "helix/disbursement-status",
+      "wd_value": "Refunded",
+      "wd_description": "Credit balance paid to student",
+      "wd_object": "Student Refund",
+      "notes": "Refund status belongs to Student Financials; this row tracks the aid side."
+    }
+  ]
+}

@@ -3,15 +3,14 @@
   "$id": "https://helixedu.org/govern/domain-taxonomy.json",
   "title": "HELIX Govern: Data Domain Taxonomy",
   "description": "Standard data domains for higher education institutions. Each domain has a designated Data Trustee and one or more Data Stewards. Used to organize governance responsibilities and align with HELIX Core resources.",
-  "version": "0.1",
+  "version": "0.2",
   "domains": [
     {
       "domain": "Student Identity",
       "description": "Person records, biographical data, contact information, identifiers, and demographic attributes for students.",
       "helix_resources": [
-        "Student",
         "Person",
-        "Identifier"
+        "Student"
       ],
       "typical_trustee": "VP for Student Affairs or Provost",
       "typical_steward": "University Registrar",
@@ -27,7 +26,15 @@
       "description": "Course registrations, enrollment statuses, waitlists, grading, and credit hour tracking.",
       "helix_resources": [
         "Enrollment",
-        "Registration"
+        "StudentProgram",
+        "AdmissionApplication",
+        "TransferCredit",
+        "AcademicTermRecord",
+        "DegreeAudit",
+        "FERPARestriction",
+        "InternationalStudent",
+        "StudentGroup",
+        "Hold"
       ],
       "typical_trustee": "Provost",
       "typical_steward": "University Registrar",
@@ -36,7 +43,8 @@
         "IPEDS/NCES reporting",
         "State reporting mandates"
       ],
-      "default_classification": "confidential"
+      "default_classification": "confidential",
+      "note_on_hold": "Hold is listed here for stewardship; the access control matrix files it under Student Services."
     },
     {
       "domain": "Academic Structure",
@@ -63,8 +71,15 @@
       "description": "Aid applications, awards, disbursements, satisfactory academic progress, and compliance reporting.",
       "helix_resources": [
         "FinAidAward",
-        "FinAidApplication",
-        "Disbursement"
+        "AidApplication",
+        "AidPackage",
+        "Verification",
+        "SAPEvaluation",
+        "Disbursement",
+        "LoanRecord",
+        "ReturnOfTitleIV",
+        "StudentEmployment",
+        "FederalAidReport"
       ],
       "typical_trustee": "VP for Enrollment Management or CFO",
       "typical_steward": "Director of Financial Aid",
@@ -81,8 +96,14 @@
       "description": "Degrees conferred, certificates, credentials, transcripts, and graduation metrics.",
       "helix_resources": [
         "Degree",
-        "GradeRecord",
-        "Credential"
+        "EmploymentOutcome",
+        "ContinuingEducation",
+        "ExperientialLearning",
+        "Licensure",
+        "AlumniProfile",
+        "FirstDestinationSurvey",
+        "LearningOutcome",
+        "AwardHonor"
       ],
       "typical_trustee": "Provost",
       "typical_steward": "University Registrar",
@@ -97,7 +118,18 @@
       "domain": "Human Resources",
       "description": "Employee records, positions, compensation, benefits, and workforce analytics. Covers faculty, staff, and student employees.",
       "helix_resources": [
-        "(Future: Employee, Position, Appointment)"
+        "Employee",
+        "Position",
+        "Compensation",
+        "BenefitEnrollment",
+        "PayrollResult",
+        "TimeEntry",
+        "Requisition",
+        "AbsenceRecord",
+        "PerformanceReview",
+        "JobClassification",
+        "LearningRecord",
+        "PositionBudget"
       ],
       "typical_trustee": "VP for Human Resources / CHRO",
       "typical_steward": "Director of HR Systems / HRIS Manager",
@@ -108,13 +140,22 @@
         "IPEDS HR Survey"
       ],
       "default_classification": "confidential",
-      "status": "Planned for HELIX Core v0.2"
+      "status": "In HELIX Core (12 resources)"
     },
     {
       "domain": "Finance & General Ledger",
       "description": "Chart of accounts, transactions, budgets, procurement, and financial reporting.",
       "helix_resources": [
-        "(Future: GLTransaction, Budget, Account)"
+        "GLTransaction",
+        "APVoucher",
+        "ARTransaction",
+        "Budget",
+        "PurchaseOrder",
+        "Asset",
+        "ExpenseReport",
+        "Contract",
+        "Fund",
+        "FinancialOrg"
       ],
       "typical_trustee": "CFO / VP for Finance",
       "typical_steward": "Controller / Director of Financial Systems",
@@ -124,13 +165,13 @@
         "State appropriations reporting"
       ],
       "default_classification": "internal",
-      "status": "Planned for HELIX Core v0.2"
+      "status": "In HELIX Core (10 resources)"
     },
     {
       "domain": "Research Administration",
       "description": "Grants, contracts, research compliance, IRB, and sponsored program financial management.",
       "helix_resources": [
-        "(Future: Grant, ResearchProject, PI)"
+        "Grant"
       ],
       "typical_trustee": "VP for Research",
       "typical_steward": "Director of Sponsored Programs / Research Compliance Officer",
@@ -140,13 +181,19 @@
         "Export controls"
       ],
       "default_classification": "confidential",
-      "status": "Planned for HELIX Core v0.3"
+      "status": "In HELIX Core (1 resources)",
+      "shared_resources": [
+        "GLTransaction, Fund, and ExpenseReport carry grant_ref or project_id for sponsored activity"
+      ]
     },
     {
       "domain": "Advancement & Alumni",
       "description": "Donor records, gifts, pledges, campaigns, alumni relations, and constituent engagement.",
       "helix_resources": [
-        "(Future: Constituent, Gift, Campaign)"
+        "Constituent",
+        "Gift",
+        "Campaign",
+        "EngagementActivity"
       ],
       "typical_trustee": "VP for Advancement / VP for University Relations",
       "typical_steward": "Director of Advancement Services / CRM Manager",
@@ -155,7 +202,11 @@
         "CASE reporting standards"
       ],
       "default_classification": "confidential",
-      "status": "Planned for HELIX Core v0.3"
+      "status": "In HELIX Core (4 resources)",
+      "shared_resources": [
+        "AlumniProfile (lives in Outcomes & Credentials; linked through constituent_ref)"
+      ]
     }
-  ]
+  ],
+  "resource_count": 64
 }

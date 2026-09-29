@@ -3,7 +3,7 @@
   "title": "HELIX Bridge: Workday HCM \u2192 Recruiting / Talent Acquisition",
   "source_system": "workday",
   "module": "HCM - Recruiting",
-  "target_resource": "Requisition (planned)",
+  "target_resource": "Requisition",
   "version": "0.1",
   "source_objects": [
     {

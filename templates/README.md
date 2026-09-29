@@ -4,11 +4,16 @@ Ready-to-use project templates and query libraries for implementing HELIX.
 
 ## Contents
 
+### `intake/`: Institution Profile *New in v0.7.0*
+
+Step 1 of [START_HERE](../START_HERE.md). A fill-in profile of your source systems, identity, target platform, governance contacts, and first slice, plus a machine-readable YAML version and a filled-in PeopleSoft example.
+
+
 ### `ps-to-workday/` — PeopleSoft to Workday Toolkit (22 files) *New in v0.6.0*
 
 The executable half of the HELIX cornerstone path:
-- **`worktag-conversion-rules.json`**: 20 chartfield to worktag rules with precedence, fallbacks, suspense handling, and 5 worked examples, plus 10 HCM field rules and 7 Student field rules
-- **`reconciliation/`**: 18 PS to Workday tie-outs (6 FIN, 6 HCM, 6 Student) with run order, tolerances, parallel-run cadence, and sign-off roles. Includes payroll parallel compare, GPA recompute, and a zero-miss FERPA restriction carryover gate.
+- **`worktag-conversion-rules.json`**: 20 chartfield to worktag rules with precedence, fallbacks, suspense handling, and 5 worked examples, plus 10 HCM field rules and 13 Student field rules (6 for financial aid)
+- **`reconciliation/`**: 22 PS to Workday tie-outs (6 FIN, 6 HCM, 6 Student, 4 Aid) with run order, tolerances, parallel-run cadence, and sign-off roles. Includes payroll parallel compare, GPA recompute, and a zero-miss FERPA restriction carryover gate.
 
 
 ### `dbt/` — dbt Starter Project (27 files)
@@ -19,7 +24,7 @@ A complete dbt project implementing the HELIX medallion architecture:
 - **Gold models** (3): Silver → consumption-ready dimensions, facts, reports
 - **Macros** (4): HELIX UUID generation, classification tagging, FERPA-safe views, source metadata
 - **Tests** (4): Quality rule implementations from `govern/quality-rules.json`
-- **Seeds** (1): All 435 HELIX terminology codes as a CSV lookup table
+- **Seeds** (1): All 595 HELIX terminology codes as a CSV lookup table
 - **Config** (3): dbt_project.yml, profiles.yml.example, packages.yml
 - **README**: Setup guide with ERP configuration table
 

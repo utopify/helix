@@ -51,7 +51,7 @@
     },
     "account_type": {
       "type": "string",
-      "description": "Map: 'Asset'\u2192'asset', 'Liability'\u2192'liability', 'Equity'\u2192'equity', 'Revenue'\u2192'revenue', 'Expense'\u2192'expense'."
+      "description": "Map: 'Asset'\u2192'asset', 'Liability'\u2192'liability', 'Equity'\u2192'equity', 'Revenue'\u2192'revenue', 'Expense'\u2192'expense'. Bound to HELIX terminology: helix/account-type."
     },
     "fund_code": {
       "type": "string",
@@ -83,7 +83,7 @@
     },
     "journal_source": {
       "type": "string",
-      "description": "Source of the journal: 'Manual', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Asset Accounting', etc."
+      "description": "Source of the journal: 'Manual', 'Accounts Payable', 'Accounts Receivable', 'Payroll', 'Asset Accounting', etc. Bound to HELIX terminology: helix/transaction-type."
     },
     "journal_status": {
       "type": "string",

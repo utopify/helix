@@ -1,0 +1,128 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → AwardHonor",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions",
+  "source_tables": [
+    {
+      "table": "PS_ACAD_DEGR_HONS",
+      "description": "Degree honors: one row per honor on a conferred degree (HONORS_CODE, honors date). Latin honors live here."
+    },
+    {
+      "table": "PS_HONOR_AWARD_CS",
+      "description": "Honors and awards: institutional, departmental, and external awards with award code, grantor, and date received. FLAG: confirm record name for your release."
+    },
+    {
+      "table": "Term honors (dean's list)",
+      "description": "Term honors assigned by the academic standing process, stored with the career term. FLAG: record and field vary by release; many schools store dean's list as a service indicator or student group instead."
+    },
+    {
+      "table": "PS_STDNT_CAR_TERM",
+      "description": "Term GPA used for dean's list decisions."
+    },
+    {
+      "table": "PS_ACAD_DEGR",
+      "description": "Parent degree for degree honors."
+    }
+  ],
+  "notes": "Honors are directory information at many schools, but only if the school's annual FERPA notice lists them. Check FERPARestriction before publishing any honor (commencement programs, press releases, dean's list feeds).",
+  "target_resource": "AwardHonor",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from EMPLID + source record + honor code + date."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "EMPLID",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "EMPLID",
+      "transformation": "Resolve to HELIX Person."
+    },
+    {
+      "helix_attribute": "degree_ref",
+      "source": "PS_ACAD_DEGR_HONS (EMPLID, STDNT_DEGR)",
+      "transformation": "Resolve to HELIX Degree. Null for non-degree honors."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "STRM on term honors / award record",
+      "transformation": "Resolve through term-period-xref. Null for degree honors."
+    },
+    {
+      "helix_attribute": "honor_type",
+      "source": "Source record + honors/award code",
+      "transformation": "Degree honors -> latin_honors or graduation_honor; term honors -> deans_list or presidents_list; award codes -> departmental_award, institutional_award, national_award, scholarship, fellowship, honor_society through a local lookup."
+    },
+    {
+      "helix_attribute": "honor_name",
+      "source": "Honors or award code description",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "awarding_body",
+      "source": "PS_HONOR_AWARD_CS grantor / constant",
+      "transformation": "Institution name for internal honors; grantor for external awards."
+    },
+    {
+      "helix_attribute": "award_date",
+      "source": "Honors date / date received",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "Derived from award date or term",
+      "transformation": "'YYYY-YYYY'."
+    },
+    {
+      "helix_attribute": "description",
+      "source": "Award comments",
+      "transformation": "Free text."
+    },
+    {
+      "helix_attribute": "latin_honors_designation",
+      "source": "PS_ACAD_DEGR_HONS.HONORS_CODE",
+      "transformation": "Map local honors codes to cum_laude, magna_cum_laude, summa_cum_laude; 'none' for non-Latin honors. Keep the code-to-designation lookup in one seed table."
+    },
+    {
+      "helix_attribute": "gpa_at_award",
+      "source": "PS_STDNT_CAR_TERM.CUM_GPA (degree honors) / term GPA (dean's list)",
+      "transformation": "GPA the honor was based on, when the honor is GPA-driven."
+    },
+    {
+      "helix_attribute": "monetary_value",
+      "source": "Award amount on PS_HONOR_AWARD_CS, if tracked",
+      "transformation": "Only for awards with a cash value. Scholarships already live in FinAidAward; set scholarship_flag and don't double-count the dollars in reporting."
+    },
+    {
+      "helix_attribute": "scholarship_flag",
+      "source": "Derived",
+      "transformation": "honor_type = scholarship."
+    },
+    {
+      "helix_attribute": "deans_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = deans_list."
+    },
+    {
+      "helix_attribute": "presidents_list_flag",
+      "source": "Derived",
+      "transformation": "honor_type = presidents_list."
+    },
+    {
+      "helix_attribute": "departmental_flag",
+      "source": "Derived",
+      "transformation": "honor_type = departmental_award."
+    },
+    {
+      "helix_attribute": "national_recognition_flag",
+      "source": "Derived",
+      "transformation": "honor_type = national_award (Fulbright, Goldwater, Truman, and similar)."
+    }
+  ]
+}

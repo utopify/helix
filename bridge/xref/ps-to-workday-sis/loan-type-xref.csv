@@ -1,0 +1,10 @@
+ps_code,ps_description,ps_source,helix_code,helix_terminology,wd_value,wd_description,wd_object,notes
+DLSUB,Direct Subsidized,LOAN_ORIGNATN loan type,direct_subsidized,helix/loan-type,Direct Subsidized Loan,Federal Direct Subsidized,Direct Loan Record,Undergraduates only. Subsidized usage limit history comes from NSLDS. VALIDATE: local code.
+DLUNS,Direct Unsubsidized,LOAN_ORIGNATN loan type,direct_unsubsidized,helix/loan-type,Direct Unsubsidized Loan,Federal Direct Unsubsidized,Direct Loan Record,VALIDATE: local code.
+DLPLS,Direct PLUS (Parent),LOAN_ORIGNATN loan type,direct_plus_parent,helix/loan-type,Direct Parent PLUS Loan,Parent borrower,Direct Loan Record,Borrower is the parent. Map the parent as a separate HELIX Person; don't overwrite student identity. VALIDATE: local code.
+DLGPL,Direct Grad PLUS,LOAN_ORIGNATN loan type,direct_plus_grad,helix/loan-type,Direct Graduate PLUS Loan,Graduate or professional borrower,Direct Loan Record,"VALIDATE: local code, and check current federal eligibility rules for new Grad PLUS borrowers."
+PERK,Perkins,ITEM_TYPE_FA (loan),perkins,helix/loan-type,Perkins Loan (historical),Program ended 2017,Direct Loan Record (history) or archive,Historical only. Most schools archive Perkins history rather than load it.
+CONS,Direct Consolidation,NSLDS history,direct_consolidation,helix/loan-type,Not loaded,Not school-originated,None,Comes from NSLDS for aggregate limits. Don't create in Workday.
+ALT,Private / Alternative,ITEM_TYPE_FA (loan),private_alternative,helix/loan-type,Private Education Loan,Lender-originated,Financial Aid Award (private loan fund),Needs self-certification tracking. VALIDATE: local item types (often one per lender).
+INST,Institutional Loan,ITEM_TYPE_FA (loan),institutional_loan,helix/loan-type,Institutional Loan,School-funded loan,Financial Aid Award (institutional fund),Servicing usually lives in Student Financials or a third party. VALIDATE: local code.
+HEAL,HEAL (health professions),ITEM_TYPE_FA (loan),heal,helix/loan-type,Not loaded,Legacy health professions loan,None,Historical only.

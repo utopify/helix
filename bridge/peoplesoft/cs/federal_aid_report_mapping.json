@@ -1,0 +1,131 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: PeopleSoft CS → FederalAidReport",
+  "source_system": "peoplesoft",
+  "module": "Campus Solutions - Financial Aid",
+  "target_resource": "FederalAidReport",
+  "version": "0.1",
+  "source_tables": [
+    {
+      "table": "PeopleSoft COD records",
+      "description": "COD batches and responses: batch ID, records sent, accepted, rejected, error codes. FLAG: confirm delivered COD record names."
+    },
+    {
+      "table": "PeopleSoft FISAP records",
+      "description": "FISAP data for campus-based programs. FLAG: confirm; many schools build FISAP from queries."
+    },
+    {
+      "table": "PS_STDNT_AWRD_DISB",
+      "description": "Disbursement totals by fund, for reconciliation."
+    },
+    {
+      "table": "NSLDS enrollment reporting",
+      "description": "Enrollment reporting files (usually through the Clearinghouse). Not stored as a PeopleSoft record at most schools."
+    }
+  ],
+  "notes": "This resource is institution-level and has no student rows. Build most fields in silver by aggregating HELIX Disbursement and comparing to COD school account statements. Research roles can read it under ACM-SPECIAL-010 because it carries no student rows.",
+  "privacy": "Institution-level aggregates with no student rows. Default classification is confidential; ACM-SPECIAL-010 lets research roles read it because it carries no student-level data. Small counts still follow govern/ferpa-suppression-policy.json when published.",
+  "workday_counterpart": "bridge/workday/sis/federal_aid_report_mapping.json",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + report_type + AID_YEAR + batch or period."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "PS_INSTITUTION_TBL.INSTITUTION",
+      "transformation": "Resolve to HELIX Institution."
+    },
+    {
+      "helix_attribute": "academic_year",
+      "source": "AID_YEAR",
+      "transformation": "2026 -> '2025-2026'."
+    },
+    {
+      "helix_attribute": "report_type",
+      "source": "Record source",
+      "transformation": "COD batch -> cod; FISAP -> fisap; NSLDS enrollment -> nslds; Pell and DL reconciliation runs -> pell_reconciliation, dl_reconciliation."
+    },
+    {
+      "helix_attribute": "reporting_period_start",
+      "source": "Batch or report period start",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "reporting_period_end",
+      "source": "Batch or report period end",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "submission_date",
+      "source": "Batch sent date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "submission_status",
+      "source": "Batch status + response",
+      "transformation": "Map to draft, submitted, accepted, rejected, partially_accepted, resubmitted."
+    },
+    {
+      "helix_attribute": "records_submitted_count",
+      "source": "COD batch record count",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "records_accepted_count",
+      "source": "COD response accepted count",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "records_rejected_count",
+      "source": "COD response rejected count",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "error_codes",
+      "source": "COD response edit codes",
+      "transformation": "Distinct array."
+    },
+    {
+      "helix_attribute": "total_pell_disbursed",
+      "source": "SUM Pell disbursements (net of returns)",
+      "transformation": "From HELIX Disbursement. Must equal the COD school account statement."
+    },
+    {
+      "helix_attribute": "total_dl_disbursed",
+      "source": "SUM Direct Loan net disbursements",
+      "transformation": "From HELIX Disbursement."
+    },
+    {
+      "helix_attribute": "total_fseog_disbursed",
+      "source": "SUM FSEOG disbursements",
+      "transformation": "Federal plus institutional share, per FISAP rules."
+    },
+    {
+      "helix_attribute": "total_fws_disbursed",
+      "source": "SUM FWS earnings",
+      "transformation": "From HELIX StudentEmployment."
+    },
+    {
+      "helix_attribute": "reconciliation_variance",
+      "source": "Derived",
+      "transformation": "School total minus COD total. Zero is the target every month."
+    },
+    {
+      "helix_attribute": "reconciliation_status",
+      "source": "Derived",
+      "transformation": "balanced when variance is zero; variance_identified, resolved, pending otherwise."
+    },
+    {
+      "helix_attribute": "cod_batch_id",
+      "source": "COD batch ID",
+      "transformation": "Carry unchanged."
+    },
+    {
+      "helix_attribute": "submitted_by",
+      "source": "Operator ID on the batch",
+      "transformation": "Resolve to HELIX Employee."
+    }
+  ]
+}

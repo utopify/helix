@@ -33,6 +33,6 @@ The common thread: each example involves data that traditionally lives in 3-5 se
 | TransferCredit | | | ✅ |
 | AcademicPeriod | | | ✅ |
 | Degree | ✅ | | |
-| GLTransaction (planned) | | ✅ | |
+| GLTransaction | | ✅ | |
 | Institution | | ✅ | |
 | AcademicOrg | | ✅ | |

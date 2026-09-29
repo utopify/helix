@@ -2,10 +2,10 @@
   "$schema": "https://helixedu.org/govern/glba-safeguards-framework-schema.json",
   "title": "HELIX Govern: GLBA Safeguards Framework",
   "description": "Operational framework aligning the FTC Safeguards Rule (16 CFR Part 314, revised rule fully effective June 2023) to a HELIX-conformant medallion lakehouse. GLBA applies to higher education institutions because participation in Title IV federal student aid makes them 'financial institutions' handling 'customer information'. This framework maps each of the nine required Safeguards Rule elements to concrete controls at the Bronze, Silver, and Gold layers.",
-  "version": "0.1",
+  "version": "0.2",
   "applicability": {
     "why_higher_ed_is_covered": "Institutions that participate in Title IV student financial aid are treated as financial institutions under GLBA. The 2003 FTC guidance and the institution's Program Participation Agreement (PPA) with the U.S. Department of Education both obligate compliance with the Safeguards Rule.",
-    "covered_data": "GLBA-covered 'customer information' is nonpublic personal information about a student or family obtained in connection with a financial product or service (primarily financial aid). In HELIX this is the data classified 'restricted' on the FinAidAward resource and financial identifiers on Person.",
+    "covered_data": "GLBA-covered 'customer information' is nonpublic personal information about a student or family obtained in connection with a financial product or service (primarily financial aid). In HELIX this is the data classified 'restricted' on the Financial Aid resources (FinAidAward, AidApplication, AidPackage, Verification, Disbursement, LoanRecord, ReturnOfTitleIV) and national identifiers on Person. The column-level list is in govern/access-control-matrix.json (ACM-SPECIAL-002) and the lakehouse masking policy helix_mask_restricted.",
     "covered_data_elements": [
       "FAFSA / ISIR data",
       "Student Aid Index (SAI, formerly EFC)",
@@ -15,7 +15,7 @@
       "SSN when collected for aid processing",
       "Loan and disbursement records"
     ],
-    "helix_mapping": "GLBA-covered elements are the subset of the HELIX 'restricted' classification tier tied to financial aid. See govern/classification-handling-rules.json (restricted tier) and core/resources/fin_aid_award.json."
+    "helix_mapping": "GLBA-covered elements are the subset of the HELIX 'restricted' classification tier tied to financial aid. See govern/classification-handling-rules.json (restricted tier) and the Financial Aid resources in core/resources/ (fin_aid_award, aid_application, aid_package, verification, disbursement, loan_record, return_of_title_iv)."
   },
   "qualified_individual": {
     "requirement": "16 CFR 314.4(a) requires designation of a single Qualified Individual responsible for overseeing, implementing, and enforcing the information security program.",
@@ -39,7 +39,7 @@
       "element": "(c)(1) Access Controls",
       "citation": "16 CFR 314.4(c)(1)",
       "control": "Named-individual authorization for GLBA-covered data (no broad role grants). Periodic access reviews. In the lakehouse, restrict the bronze financial-aid landing zone and any silver column carrying SAI/EFC or financial identifiers to an explicitly enumerated grant list.",
-      "lakehouse_layer": "bronze (financial-aid raw), silver (fin_aid_award restricted columns)"
+      "lakehouse_layer": "bronze (financial-aid raw), silver (restricted columns on the seven GLBA-covered Financial Aid resources)"
     },
     {
       "element": "(c)(2) Data Inventory",
@@ -122,7 +122,7 @@
   ],
   "lakehouse_control_summary": {
     "bronze": "Financial-aid raw landing zone encrypted with dedicated KMS keys, named-individual access only, every read logged with query text, immutable and append-only. Bank/routing numbers stay here and are never promoted.",
-    "silver": "fin_aid_award restricted columns (SAI/EFC, unmet need) tokenized or column-encrypted. Additional access grant required beyond standard FERPA authorization. Bank/routing numbers not present in silver.",
+    "silver": "Restricted Financial Aid columns (SAI and ISIR values on aid_application, need analysis on aid_package, individual disbursement, loan, and R2T4 amounts) tokenized or column-encrypted. Additional access grant required beyond standard FERPA authorization. Bank/routing numbers not present in silver.",
     "gold": "Aggregated/de-identified aid metrics only. No individual GLBA-covered values in gold tables that feed dashboards."
   },
   "references": [

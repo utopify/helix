@@ -55,7 +55,7 @@
     },
     "worker_type": {
       "type": "string",
-      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'."
+      "description": "Map: 'Employee' \u2192 'employee', 'Contingent Worker' \u2192 'contingent'. Bound to HELIX terminology: helix/worker-type."
     },
     "time_type": {
       "type": "string",
@@ -63,7 +63,7 @@
     },
     "position_status": {
       "type": "string",
-      "description": "Map: 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Frozen' \u2192 'frozen', 'Closed' \u2192 'closed'."
+      "description": "Map: 'Open' \u2192 'open', 'Filled' \u2192 'filled', 'Frozen' \u2192 'frozen', 'Closed' \u2192 'closed'. Bound to HELIX terminology: helix/position-status."
     },
     "incumbent_ref": {
       "type": "string",

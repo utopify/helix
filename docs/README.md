@@ -1,5 +1,9 @@
 # HELIX Documentation
 
+New here? Start with [`../START_HERE.md`](../START_HERE.md).
+
+- `helix-reference.md`: The full inventory: every layer, count, principle, and folder *(new in v0.7.0, moved out of the root README)*
+
 - `helix-executive-summary.md` — One-pager for CIOs and leadership
 - `cdo-quick-start.md` — 90-day governance implementation plan
 - `resource-catalog.md` — Full attribute details for all Core resources
