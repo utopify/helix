@@ -74,6 +74,20 @@ Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.
 
 HELIX gets better every time an institution confirms a mapping. The fastest way to help is to check the values marked VALIDATE in [`bridge/xref/VALIDATE_REGISTER.md`](bridge/xref/VALIDATE_REGISTER.md) against your own configuration and open a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-HELIX is an open, philanthropic effort. It isn't a product, a consultancy, or owned by any vendor. It belongs to the higher education community.
+---
+
+## About the Founder
+
+**Dr. Dallas Maddox, PhD** created HELIX from years spent at the intersection of higher education and technology. With doctoral research focused on the systems and structures that power colleges and universities, Dallas saw the same pattern repeat at every institution: brilliant people solving the same data problems in isolation, duplicating millions of dollars in integration work with no shared benefit and no shared language.
+
+HELIX exists because higher education deserves better tools: tools that accelerate innovation instead of consuming it, tools that free institutions to focus on what actually matters: the student experience, groundbreaking research, and community impact.
+
+At its core, HELIX is about the human element. Behind every data record is a student navigating their future, a faculty member advancing knowledge, a financial aid counselor changing someone's life trajectory, a donor investing in a mission they believe in. The data infrastructure we build should honor that reality, not obscure it beneath layers of technical complexity. When we eliminate the friction of data integration, we give people back the time and clarity to do the work that drew them to higher education in the first place.
+
+HELIX is an open, philanthropic effort. It is not a product, not a consultancy, and not owned by any vendor. It belongs to the higher education community.
+
+The double helix is a fitting metaphor. Two strands, data and governance, wound together into a structure that carries the blueprint for something larger. HELIX is the blueprint.
+
+---
 
 *HELIX v0.8.1, September 2026 · Licensed under Apache 2.0*
