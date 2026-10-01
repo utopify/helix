@@ -100,4 +100,4 @@ Rules for AI assistants and natural-language query tools: what each classificati
 
 New to governance? Start with the [CDO Quick Start](cdo-quick-start.md).
 
-*HELIX v0.8.1, September 2026*
+*HELIX v0.9.0, September 2026*

@@ -6,7 +6,7 @@
 
 HELIX is a free, open framework that gives colleges and universities one shared data model for students, courses, financial aid, HR, finance, and advancement, plus ready-made mappings from the ERPs they already run (PeopleSoft, Banner, Workday, Colleague). Map your ERP to HELIX once, and your lakehouse, your reporting, and your next ERP migration all start from the same foundation.
 
-**Version:** 0.8.1 (September 2026) · **License:** Apache 2.0 · **Founded by:** Dallas Maddox
+**Version:** 0.9.0 (September 2026) · **License:** Apache 2.0 · **Founded by:** Dallas Maddox
 
 ---
 
@@ -16,11 +16,11 @@ HELIX is a free, open framework that gives colleges and universities one shared 
 |--------|-------------------|
 | [`core/`](core/) | The data model: 64 resources, 67 code sets, a data dictionary, and a plain-English [glossary](core/glossary.md) of higher ed terms |
 | [`bridge/`](bridge/) | Field-by-field mappings from PeopleSoft, Banner, Workday, and Colleague into HELIX, mappings for graduate outcomes sources outside the ERP (career services, the Clearinghouse, state wage records, licensure, the LMS), plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
-| [`templates/`](templates/) | Things you run: a [starter intake](templates/intake/), a dbt starter project, reconciliation queries, and the PeopleSoft to Workday toolkit |
+| [`templates/`](templates/) | Things you run: a [starter intake](templates/intake/), a dbt starter project, reconciliation queries, the PeopleSoft to Workday toolkit, and a [customization discovery toolkit](templates/customization-discovery/) for PeopleSoft and Banner |
 | [`govern/`](govern/) | Data governance you can adopt: roles, quality rules, FERPA and GLBA frameworks, access controls, AI agent guardrails |
-| [`agents/`](agents/) | AI assistant templates for ChatGPT, Claude, Gemini, Amazon Q, or Bedrock |
+| [`agents/`](agents/) | Eight AI assistant templates for ChatGPT, Claude, Gemini, Amazon Q, or Bedrock, each with working knowledge of the AWS services conversions run on |
 | [`connect/`](connect/) | An OpenAPI spec for exchanging HELIX data between systems |
-| [`tools/`](tools/) | A validator that checks your data against the HELIX schemas, and a check that every resource has access rules |
+| [`tools/`](tools/) | A validator that checks your data against the HELIX schemas, a check that every resource has access rules, and tools that compare your installation with vanilla to find customizations |
 
 Want every count, layer, and file? See the [full reference](docs/helix-reference.md).
 
@@ -49,6 +49,8 @@ Want every count, layer, and file? See the [full reference](docs/helix-reference
 | **Move PeopleSoft to Workday** (HCM, Financials, or Student) | [PeopleSoft to Workday Guide](docs/ps-to-workday-migration.md) |
 | **Move Banner on-prem to Banner SaaS** | [Adventure Guide, Chapter 8](docs/migration-adventure-guide.md#chapter-8-banner-on-prem-to-banner-saas) |
 | **Stand up data governance** | [CDO Quick Start](docs/cdo-quick-start.md) |
+| **Find our customizations** before a migration, and convert the ones worth keeping | [Conversion Guides](docs/conversion/) |
+| **Build it on AWS** | [AWS Services Guide](docs/aws-services-guide.md) |
 | **Explore other paths** (Colleague, Banner to Workday, and more) | [Migration Adventure Guide](docs/migration-adventure-guide.md) |
 
 Building a lakehouse and moving to Workday go together. The extraction, mapping, and reconciliation you do for one is the same work the other needs.
@@ -57,7 +59,7 @@ Building a lakehouse and moving to Workday go together. The extraction, mapping,
 
 ## Get help from an AI assistant
 
-Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.json) into your assistant of choice, upload this repo as knowledge, and say **"help me start."** It walks you through the same six steps and hands you off to a specialist (PeopleSoft to Workday HCM, Financials, or Student; Banner; enrollment; advancement) when you need one.
+Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.json) into your assistant of choice, upload this repo as knowledge, and say **"help me start."** It walks you through the same six steps and hands you off to a specialist (PeopleSoft to Workday HCM, Financials, or Student; Banner; customization discovery; enrollment; advancement) when you need one.
 
 ---
 
@@ -65,6 +67,7 @@ Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.
 
 - [Executive summary](docs/helix-executive-summary.md): a one-page explainer for CIOs, provosts, and presidents
 - [Full reference](docs/helix-reference.md): the complete inventory, design principles, and how HELIX relates to CEDS, Ed-Fi, and PESC
+- [AWS services guide](docs/aws-services-guide.md): which AWS service does what in a HELIX conversion or lakehouse
 - [Glossary](core/glossary.md): the student lifecycle and campus operations, explained
 - [Changelog](CHANGELOG.md): what changed in each release
 
@@ -90,4 +93,4 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.8.1, September 2026 · Licensed under Apache 2.0*
+*HELIX v0.9.0, September 2026 · Licensed under Apache 2.0*

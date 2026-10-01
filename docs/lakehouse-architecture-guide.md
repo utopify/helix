@@ -446,6 +446,9 @@ Every HELIX resource has a default classification, set in the `meta.classificati
 
 ## Technology Stack Reference
 
+For the AWS services behind each layer, the HELIX controls mapped to Lake Formation, KMS, Macie, and Bedrock Guardrails, and path-by-path recipes, see the [AWS Services Guide](aws-services-guide.md).
+
+
 HELIX is technology-neutral at the spec layer, but here's the recommended stack for each major cloud:
 
 | Component | AWS | Azure | GCP |

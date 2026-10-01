@@ -293,6 +293,10 @@ Load order matters here: the Academic Period, Course, Course Section, and Studen
 
 ## 9. Data conversion strategy
 
+**Find your customizations first.** Before mock 1, build a customization register: every PeopleSoft object that differs from the PUM image at your level, with usage, owner, and a decision (retire, rebuild in Workday, convert to the lakehouse, keep as data, or add a crosswalk row). PeopleCode and custom pages don't move to Workday as code; the register is how each one becomes a Workday design item or gets retired. See `docs/conversion/peoplesoft-customizations.md` and `agents/customization-discovery-agent.json`.
+
+**On AWS:** DMS from a reporting copy into S3, HELIX silver in S3 Tables, EIB files written from gold, tie-outs in Athena, and the Workday Data Cloud zero-copy integration for HR and finance reads after cutover. See `docs/aws-services-guide.md`.
+
 **Balances vs detail.** For most objects, convert current state and point-in-time balances, and keep the full detail in the HELIX lakehouse. Workday is your system of record going forward; the lakehouse is your system of history.
 
 | Object | Recommended in Workday | Recommended in HELIX lakehouse |
@@ -332,6 +336,7 @@ Plan for at least three mock conversions and a dress rehearsal. Reconcile every 
 ## 11. Cutover checklist: T-90 to T+30
 
 **T-90 to T-60: foundations**
+- Customization register complete: every PeopleSoft customization has a disposition and an owner (`docs/conversion/peoplesoft-customizations.md`)
 - Identity crosswalk complete; Universal ID seeding approach signed off
 - All crosswalk VALIDATE flags resolved against your Workday tenant
 - Local code lists (ACTION_REASON, earnings, plans, service indicators) mapped with zero unmapped values in the last mock
@@ -387,6 +392,7 @@ Plan for at least three mock conversions and a dress rehearsal. Reconcile every 
 | Workers, jobs, positions, comp, payroll, benefits, absence | HCM agent | `agents/ps-to-workday-hcm-agent.json` |
 | Chartfields, worktags, GL, AP, PO, grants, budgets | FIN agent | `agents/ps-to-workday-fin-agent.json` |
 | Students, programs, terms, registration, grades, holds, aid, FERPA | SIS agent | `agents/ps-to-workday-sis-agent.json` |
+| Finding and deciding on PeopleSoft customizations | Customization Discovery agent | `agents/customization-discovery-agent.json` |
 | Not sure where to start, or planning across tracks | Migration Companion | `agents/helix-migration-companion.json` |
 
 Each agent template drops into ChatGPT, Claude, Gemini, Amazon Q, or Bedrock. Load the knowledge files listed in the template, and the agent works from the same bridges, crosswalks, and reconciliation pack described here.
@@ -404,6 +410,7 @@ bridge/
     ps-to-workday-fin/                direct FIN crosswalks
     ps-to-workday-sis/                direct Student crosswalks
 templates/
+  customization-discovery/            inventory queries, register, Bedrock prompts
   ps-to-workday/
     worktag-conversion-rules.json     chartfield -> worktag rules (+ HCM and Student field rules)
     reconciliation/                   FIN, HCM, Student tie-out queries
@@ -422,5 +429,5 @@ govern/
 
 ---
 
-*HELIX PeopleSoft to Workday Cornerstone Guide v0.8.0, September 2026*
+*HELIX PeopleSoft to Workday Cornerstone Guide v0.9.0, September 2026*
 *Part of the [HELIX Open Framework](https://github.com/utopify/helix)*

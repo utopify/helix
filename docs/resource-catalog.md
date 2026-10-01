@@ -702,4 +702,4 @@ A time entry — reported hours for a non-exempt employee or student worker, wit
 
 **Required:** `helix_id`, `employee_ref`
 
-*HELIX v0.8.1, September 2026. Generated from core/resources/.*
+*HELIX v0.9.0, September 2026. Generated from core/resources/.*

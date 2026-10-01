@@ -36,6 +36,8 @@ That's it. Repeat steps 3 through 6 until you've covered what you need.
 | **C. Migrate Banner on-prem to Banner SaaS** | You're moving to Ellucian Platform. | [Adventure guide, Chapter 8](docs/migration-adventure-guide.md#chapter-8-banner-on-prem-to-banner-saas) |
 | **D. Stand up data governance** | The first problem is ownership and definitions, not pipelines. | [`docs/cdo-quick-start.md`](docs/cdo-quick-start.md) |
 
+Going with **B** or **C**? Start a customization register in parallel with your first slice ([`docs/conversion/`](docs/conversion/)). Finding out what you've customized takes weeks, and every later decision depends on it. On AWS, [`docs/aws-services-guide.md`](docs/aws-services-guide.md) lists the service for each step.
+
 A and B aren't competing choices. A lakehouse built on HELIX is the staging ground for a Workday migration: the extraction, mapping, and reconciliation work you do for A is the same work B needs.
 
 ---
@@ -93,4 +95,4 @@ Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.
 
 When you want the full inventory of what's in the repo, see [`docs/helix-reference.md`](docs/helix-reference.md).
 
-*HELIX v0.8.1, September 2026*
+*HELIX v0.9.0, September 2026*

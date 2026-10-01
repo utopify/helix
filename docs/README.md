@@ -15,3 +15,5 @@ New here? Start with [`../START_HERE.md`](../START_HERE.md).
 - `banner-saas-landing-architecture.md` — Where Banner SaaS data lands: Ethos write-back, PostgreSQL staging, S3 Tables/Iceberg analytics *(v0.5.0)*
 - `migration-adventure-guide.md` — "Choose your own adventure" migration paths
 - `lakehouse-architecture-guide.md` — Medallion architecture, FERPA/GLBA compliance
+- `aws-services-guide.md`: AWS services by phase and migration path, HELIX controls on AWS, and which tool converts which code *(new in v0.9.0)*
+- `conversion/`: customization discovery and conversion: the method, plus PeopleSoft and Banner guides *(new in v0.9.0)*

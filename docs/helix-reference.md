@@ -181,13 +181,16 @@ Ready-to-use AI agent templates that work with any LLM platform:
 
 | Agent | What It Does | Best For |
 |-------|-------------|----------|
-| **[HELIX Migration Companion](../agents/helix-migration-companion.json)** | Interactive guide to the entire HELIX framework with a 9-option menu. Combines all specialist knowledge into one conversational entry point. | Anyone starting with HELIX. Drop into ChatGPT, Gemini, Claude, Grok, Amazon Q, or Bedrock. |
+| **[HELIX Migration Companion](../agents/helix-migration-companion.json)** | Interactive guide to the entire HELIX framework with a menu of 11 options. Combines all specialist knowledge into one conversational entry point. | Anyone starting with HELIX. Drop into ChatGPT, Gemini, Claude, Grok, Amazon Q, or Bedrock. |
 | [PS-to-Workday HCM Agent](../agents/ps-to-workday-hcm-agent.json) | JOB rows to business processes, EMPLID to Universal ID, job profiles, comp, payroll parallel, benefits | HR and payroll teams migrating PeopleSoft HCM to Workday |
 | [PS-to-Workday FIN Agent](../agents/ps-to-workday-fin-agent.json) | Chartfield-to-worktag mapping, GLBA guardrails, reconciliation | Finance teams migrating PeopleSoft to Workday |
 | [PS-to-Workday Student Agent](../agents/ps-to-workday-sis-agent.json) | Identity, program of study, academic history, FERPA carryover | Registrar and student systems teams migrating Campus Solutions to Workday Student |
 | [Enrollment Analytics Agent](../agents/enrollment-analytics-agent.json) | Funnel analysis, marketing ROI, melt prediction, interventions | Enrollment management and student success |
 | [Advancement & Donor Agent](../agents/advancement-donor-agent.json) | Stewardship acceleration, prospect identification, event briefings | Advancement and fundraising teams |
 | [Banner-to-Lakehouse Agent](../agents/banner-to-lakehouse-agent.json) | PIDM handling, STV lookups, dbt model generation | Banner institutions building data lakes |
+| [Customization Discovery Agent](../agents/customization-discovery-agent.json) | Vanilla vs production comparison, customization register, conversion with AWS DMS Schema Conversion, AWS Transform, and Amazon Bedrock | Teams preparing for PeopleSoft to Workday or Banner on-prem to Banner SaaS |
+
+Every agent knows the AWS services HELIX conversions run on; see the [AWS Services Guide](aws-services-guide.md).
 
 **Setup:** Copy the `system_prompt` field from any agent JSON into your platform's system prompt / custom instructions. Upload the HELIX repository (or relevant files) as knowledge. Each agent template includes platform-specific setup guides for ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
 
@@ -297,7 +300,8 @@ helix/
 |   +-- intake/                        <-- Institution profile (step 1): md, yaml, filled example
 |   +-- ps-to-workday/                 <-- Cornerstone toolkit
 |   |   +-- worktag-conversion-rules.json <-- Chartfield -> worktag + HCM/Student field rules
-|   |   +-- reconciliation/            <-- 18 PS -> Workday tie-outs (FIN, HCM, Student)
+|   |   +-- reconciliation/            <-- 22 PS -> Workday tie-outs (FIN, HCM, Student, Aid)
+|   +-- customization-discovery/       <-- 22 inventory queries, register, Bedrock prompts, sample
 |   +-- dbt/                           <-- dbt starter project (27 files)
 |   |   +-- dbt_project.yml            <-- Project configuration
 |   |   +-- profiles.yml.example       <-- Snowflake/Redshift/Databricks/BigQuery
@@ -326,9 +330,12 @@ helix/
 |   +-- enrollment-analytics-agent.json
 |   +-- advancement-donor-agent.json
 |   +-- banner-to-lakehouse-agent.json
+|   +-- customization-discovery-agent.json <-- Find and convert PS and Banner customizations
 +-- tools/
 |   +-- validate.py                    <-- Schema validation (JSON/NDJSON/CSV)
 |   +-- check_governance_coverage.py   <-- Fails if any resource lacks access rules
+|   +-- diff_customizations.py         <-- Vanilla vs production: builds the customization register
+|   +-- inventory_source_files.py      <-- Fingerprints SQR, COBOL, Pro*C, and scripts on servers
 +-- docs/
     +-- helix-reference.md             <-- This file: the full inventory
     +-- helix-executive-summary.md     <-- One-pager for CIOs and leadership
@@ -342,6 +349,8 @@ helix/
     +-- banner-saas-landing-architecture.md <-- Banner SaaS landing decisions
     +-- migration-adventure-guide.md        <-- "Choose your own adventure"
     +-- lakehouse-architecture-guide.md     <-- Medallion, FERPA/GLBA
+    +-- aws-services-guide.md               <-- AWS services by phase and path
+    +-- conversion/                         <-- Customization discovery: method, PeopleSoft, Banner
 ```
 
 ---
@@ -360,4 +369,4 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.8.1, September 2026. Licensed under Apache 2.0.*
+*HELIX v0.9.0, September 2026. Licensed under Apache 2.0.*

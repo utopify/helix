@@ -444,6 +444,8 @@ Agent: **PeopleSoft Campus Solutions to Workday Student** (`agents/ps-to-workday
 
 **You're moving Banner from a self-managed Oracle database (on-prem or Oracle-on-EC2) to Banner SaaS (Ellucian Platform).** The hard part is not the data. It is that Banner SaaS has no direct database access, so every integration, view, stored procedure, and SQL script that touched Oracle has to be rebuilt against governed APIs.
 
+**Start with a customization register.** `docs/conversion/banner-customizations.md` walks through comparing your Banner with a vanilla install at the same release, listing every Z object, added column, trigger, local job, and hidden integration, and deciding what happens to each. The AWS tools for each step are in `docs/aws-services-guide.md`.
+
 ### The path
 
 ```

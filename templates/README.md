@@ -16,6 +16,16 @@ The executable half of the HELIX cornerstone path:
 - **`reconciliation/`**: 22 PS to Workday tie-outs (6 FIN, 6 HCM, 6 Student, 4 Aid) with run order, tolerances, parallel-run cadence, and sign-off roles. Includes payroll parallel compare, GPA recompute, and a zero-miss FERPA restriction carryover gate.
 
 
+### `customization-discovery/`: Customization Discovery Toolkit *New in v0.9.0*
+
+Find every PeopleSoft and Banner customization and decide what happens to each:
+- **`peoplesoft/`** (12 queries) and **`banner/`** (10 queries): inventories to run against a vanilla baseline and production
+- **`customization-register.csv`**, its schema, and a filled example
+- **`conversion-prompts/`**: 5 Amazon Bedrock prompts (PL/SQL to PostgreSQL, PL/SQL to dbt, PeopleCode to business rules, SQR to dbt, batch to AWS Glue)
+- **`sample/`**: a fictional inventory pair and the register the diff tool produced
+
+Use with `tools/diff_customizations.py` and `tools/inventory_source_files.py`. Method: `docs/conversion/`.
+
 ### `dbt/` — dbt Starter Project (27 files)
 
 A complete dbt project implementing the HELIX medallion architecture:

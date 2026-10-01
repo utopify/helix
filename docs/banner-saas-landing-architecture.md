@@ -126,6 +126,10 @@ capacity, curriculum rules). See `../bridge/banner-saas/WRITEBACK_PATTERNS.md`.
 | Gold     | Consumption models, marts, reporting, ML features           |
 +----------+-------------------------------------------------------------+
 
+## Before cutover: customizations
+
+Everything above assumes you know what your on-prem Banner does beyond the delivered product. Build a customization register first (`docs/conversion/banner-customizations.md`): read-only local logic converts to Aurora PostgreSQL against the Data Connect copy or to dbt on the lakehouse; anything that writes to Banner becomes an Ethos or Banner Integration API integration. The AWS services for each step are in `docs/aws-services-guide.md`.
+
 ## Caveats
 
 These are current best-practice patterns (2025-2026). Validate against your

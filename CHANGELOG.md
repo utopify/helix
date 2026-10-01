@@ -1,5 +1,26 @@
 # HELIX Changelog
 
+## v0.9.0 (October 2026): AWS knowledge and customization discovery
+
+Two additions: every agent now knows the AWS services HELIX conversions run on, and there's a full method and toolkit for finding PeopleSoft and Banner customizations and converting the ones worth keeping.
+
+**Added**
+- `docs/aws-services-guide.md`: AWS services by phase (extract, store, transform, convert code, govern, analyze) and by path (Banner to a lakehouse, Banner on-prem to Banner SaaS, PeopleSoft to Workday, analytics only), HELIX controls mapped to Lake Formation, KMS, Macie, Glue Data Quality, and Bedrock Guardrails, which tool converts which kind of code, where Amazon Translate fits (human languages, not code), and running the agents on Bedrock or Amazon Quick.
+- `docs/conversion/`: the seven-step customization method (baseline, inventory, diff, enrich, decide, convert, prove), plus PeopleSoft and Banner guides with disposition tables for Workday, Banner SaaS, and lakehouse targets.
+- `templates/customization-discovery/`: 12 PeopleSoft inventory queries (records, record fields, fields, PeopleCode, SQL objects and view text, App Engine, pages and components, PS Query usage, process run history, Integration Broker, translate values, quick triage) and 10 Banner queries (objects, PL/SQL source, columns, triggers, views, dependencies, Job Submission, validation codes, Self-Service, hidden integrations); a customization register template, schema, and filled example; 5 Amazon Bedrock conversion prompts (PL/SQL to PostgreSQL, PL/SQL to dbt, PeopleCode to business rules, SQR to dbt, batch to AWS Glue); and a fictional sample.
+- `tools/diff_customizations.py`: compares a vanilla inventory with production and writes the register (added, modified, removed), joining split text and normalizing whitespace before hashing. Tested on the sample.
+- `tools/inventory_source_files.py`: fingerprints SQR, COBOL, Pro*C, and scripts on servers so file-based customizations get compared too.
+- `agents/customization-discovery-agent.json`: the eighth agent. Walks the method, holds the line on what can move where (no code to Workday, no customer database objects in Banner SaaS), and converts with AWS DMS Schema Conversion, AWS Transform, and Amazon Bedrock.
+
+**Changed**
+- All seven existing agents now carry AWS service knowledge, with track-specific notes (Workday Data Cloud zero-copy for HR and finance, Ellucian Data Connect to RDS for PostgreSQL for Banner SaaS, Quick Sight and SageMaker Unified Studio for analytics). The Companion has a new menu option 10 for customization discovery and routes to the new agent. All agents at v0.9.0.
+- Customization discovery is now in the PeopleSoft to Workday cutover checklist (T-90), the cornerstone guide's conversion strategy and agent table, Adventure Guide chapter 8, the Banner SaaS landing architecture, and Getting Started step 2.
+- Updated: root README (two new goals, folder descriptions), agents, templates, and docs READMEs, `docs/helix-reference.md` (also fixed a stale "18 tie-outs" in the folder tree), CONTRIBUTING, and the lakehouse architecture guide.
+
+**Still to confirm locally**
+- Queries marked FLAG reference PeopleTools or Banner tables and columns that vary by release (PSPCMTXT before PeopleTools 8.52, PSAESTEPDEFN, PSQRYSTATS, Integration Broker tables, GJBJOBS, TWGRMENU, validation table naming).
+- What Banner SaaS supports for extensibility depends on your Ellucian contract.
+
 ## v0.8.1 (September 2026): Every resource has a mapping
 
 Closes the last coverage gap. All 64 Core resources now have at least one bridge mapping.

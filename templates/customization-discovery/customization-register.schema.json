@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helixedu.org/templates/customization-register.schema.json",
+  "title": "HELIX Customization Register",
+  "version": "0.1",
+  "description": "One row per difference between a vanilla PeopleSoft, Banner, or Colleague installation and production. Produced by tools/diff_customizations.py, then enriched and decided by people. The CSV template has the same columns.",
+  "type": "object",
+  "required": [
+    "customization_id",
+    "source_system",
+    "object_type",
+    "object_name",
+    "change_type",
+    "disposition"
+  ],
+  "properties": {
+    "customization_id": {
+      "type": "string",
+      "description": "PS-00001, BN-00001, CL-00001. Assigned by the diff tool."
+    },
+    "source_system": {
+      "type": "string",
+      "enum": [
+        "peoplesoft",
+        "banner",
+        "colleague",
+        "other"
+      ]
+    },
+    "source_release": {
+      "type": "string",
+      "description": "Application and tools release the baseline was built at, for example 'CS 9.2 PUM 35 / PeopleTools 8.61' or 'Banner Student 9.x'."
+    },
+    "object_type": {
+      "type": "string",
+      "description": "RECORD, RECORD_FIELD, PEOPLECODE, APP_ENGINE, SQL_OBJECT, QUERY, PROCESS, IB_ROUTING, XLAT_VALUE, PACKAGE BODY, PROCEDURE, TRIGGER, VIEW, TABLE_COLUMN, JOB, VALIDATION_CODE, DB_LINK, EXTERNAL_CALL, SQR, COBOL, and others."
+    },
+    "object_name": {
+      "type": "string"
+    },
+    "sub_key": {
+      "type": "string",
+      "description": "Part of the object: field on a record, PeopleCode event path, trigger's table, validation code value, relative folder for files."
+    },
+    "owner": {
+      "type": "string"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "added",
+        "modified",
+        "removed",
+        "unchanged"
+      ],
+      "description": "added: not in vanilla. modified: in vanilla but different. removed: in vanilla, missing in production."
+    },
+    "baseline_fingerprint": {
+      "type": "string"
+    },
+    "production_fingerprint": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string"
+    },
+    "last_updated_by": {
+      "type": "string"
+    },
+    "lines_of_code": {
+      "type": [
+        "integer",
+        "string"
+      ]
+    },
+    "usage_runs_12mo": {
+      "type": [
+        "integer",
+        "string"
+      ],
+      "description": "Runs in the last 12 months from process scheduler, job submission, or query statistics. Blank means no evidence, not zero."
+    },
+    "usage_last_run": {
+      "type": "string"
+    },
+    "local_name_flag": {
+      "type": "string",
+      "enum": [
+        "Y",
+        "N",
+        ""
+      ],
+      "description": "Name follows the site's local prefix convention (Banner: usually Z)."
+    },
+    "functional_area": {
+      "type": "string",
+      "description": "Registrar, Financial Aid, Bursar, HR, Payroll, Finance, Advancement, Admissions, IT, and so on."
+    },
+    "business_owner": {
+      "type": "string",
+      "description": "The person who can say whether it's still needed. Required before a disposition other than retire is approved."
+    },
+    "helix_resources_touched": {
+      "type": "string",
+      "description": "Semicolon-separated HELIX Core resources the object reads or writes, found through the bridge mappings. Example: Student;Hold;Enrollment"
+    },
+    "complexity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        ""
+      ]
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "",
+        "retire",
+        "configure",
+        "rebuild",
+        "convert",
+        "preserve_as_data",
+        "crosswalk"
+      ],
+      "description": "See docs/conversion/customization-discovery.md step 5."
+    },
+    "target_platform": {
+      "type": "string",
+      "description": "workday, banner_saas, aurora_postgresql, rds_postgresql, redshift, helix_lakehouse, none."
+    },
+    "target_object": {
+      "type": "string",
+      "description": "What it becomes: a dbt model, a Glue job, a Workday business process condition, an Ethos integration, a crosswalk row, and so on."
+    },
+    "conversion_tool": {
+      "type": "string",
+      "description": "dms_schema_conversion, aws_transform, bedrock, manual, none."
+    },
+    "conversion_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "converted",
+        "in_review",
+        "verified",
+        "blocked",
+        "not_applicable"
+      ]
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

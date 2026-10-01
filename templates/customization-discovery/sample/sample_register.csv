@@ -1,0 +1,7 @@
+customization_id,source_system,source_release,object_type,object_name,sub_key,owner,change_type,baseline_fingerprint,production_fingerprint,last_updated,last_updated_by,lines_of_code,usage_runs_12mo,usage_last_run,local_name_flag,functional_area,business_owner,helix_resources_touched,complexity,disposition,target_platform,target_object,conversion_tool,conversion_status,reviewer,verified_date,notes
+BN-00001,banner,sample (fictional),PACKAGE BODY,ZK_HOLD_CHECK,,BANINST1,added,,f6bd7127a1a9bc8a,2024-09-03,,3,,,,,,,,,,,,not_started,,,
+BN-00002,banner,sample (fictional),PACKAGE BODY,SB_REGISTRATION,,SATURN,modified,ac78748ae76fa348,9ee116c28c542f29,2026-02-11,,3,,,,,,,,,,,,not_started,,,
+BN-00003,banner,sample (fictional),TABLE_COLUMN,SGBSTDN,SGBSTDN_ZATHLETE_IND,SATURN,added,,6b71a8e237ac17aa,,,1,,,,,,,,,,,,not_started,,,
+BN-00004,banner,sample (fictional),TRIGGER,ZT_SGBSTDN_AUDIT,SATURN.SGBSTDN,BANINST1,added,,e489e8b1ba5c7871,2023-01-15,,1,,,,,,,,,,,,not_started,,,
+BN-00005,banner,sample (fictional),VALIDATION_CODE,STVSTYP,Z,SATURN,added,,c449ab1990a2268f,2022-08-20,,1,,,,,,,,,,,,not_started,,,
+BN-00006,banner,sample (fictional),VIEW,AS_STUDENT_DATA,,BANINST1,removed,ea1526cd480925cc,,2025-06-01,,1,,,,,,,,,,,,not_started,,,
