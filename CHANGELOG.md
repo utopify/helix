@@ -14,6 +14,7 @@ Closes the last coverage gap. All 64 Core resources now have at least one bridge
 **Changed**
 - Bridge: 144 to 163 mappings. PeopleSoft 54 (CS 31), Banner 35 (SIS 14, Advancement 5), Workday 54 (SIS 31), Colleague 4, Outcomes 8, Banner SaaS reverse 8.
 - `tools/check_governance_coverage.py` now scans `bridge/outcomes/` and reports 64 of 64 resources mapped.
+- Root README: "What's in the box" moved to the top, "Press GO" renamed "Getting Started" (here, in START_HERE.md, CONTRIBUTING, the reference guide, and the Migration Companion's menu), and "About the Founder" restored at the bottom (it moved to the reference guide in v0.7.0).
 - Agents: the Companion explains where outcomes data comes from; the SIS agent covers Institution, honors, and experiential learning conversion; the Banner agent covers the four new Banner mappings; the advancement agent covers alumni career data; the enrollment analytics agent covers outcomes reporting rules. All agents at v0.8.1.
 - Updated: bridge, PeopleSoft, CS, Banner, Banner SIS, Banner Advancement, Workday, and Colleague READMEs, `docs/bridge-reference.md`, `docs/helix-reference.md`, the executive summary, the cornerstone guide, the adventure guide, and the root README.
 

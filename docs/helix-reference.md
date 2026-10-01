@@ -238,8 +238,8 @@ HELIX fills the gap none of them cover: **the ERP-to-lake foundational data mode
 
 ```
 helix/
-+-- README.md                          <-- Short intro and the GO table
-+-- START_HERE.md                      <-- Six steps to press GO
++-- README.md                          <-- Short intro and Getting Started
++-- START_HERE.md                      <-- Getting started: six steps
 +-- CHANGELOG.md                       <-- Release notes
 +-- CONTRIBUTING.md                    <-- How to participate
 +-- core/

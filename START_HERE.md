@@ -1,4 +1,4 @@
-# Start Here: How to Press GO on HELIX
+# Getting Started with HELIX
 
 HELIX is big. You don't need most of it on day one. This page is the whole starting line: six steps, what to do in each one, which file to use, and how you know you're done.
 

@@ -91,7 +91,7 @@ helix/
 │   └── examples/          ← Sample payloads
 ├── connect/               ← OpenAPI 3.1 API spec
 ├── govern/                ← Governance roles, rules, maturity model, domains
-├── START_HERE.md          ← Six steps to press GO
+├── START_HERE.md          ← Getting started: six steps
 ├── bridge/
 │   ├── banner/            ← Ellucian Banner mappings (SIS, HR, Finance, Advancement, Financial Aid)
 │   ├── banner-saas/       ← Reverse bridge: HELIX to Banner SaaS (Ethos)

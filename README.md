@@ -10,7 +10,23 @@ HELIX is a free, open framework that gives colleges and universities one shared 
 
 ---
 
-## Press GO
+## What's in the box
+
+| Folder | What it gives you |
+|--------|-------------------|
+| [`core/`](core/) | The data model: 64 resources, 67 code sets, a data dictionary, and a plain-English [glossary](core/glossary.md) of higher ed terms |
+| [`bridge/`](bridge/) | Field-by-field mappings from PeopleSoft, Banner, Workday, and Colleague into HELIX, mappings for graduate outcomes sources outside the ERP (career services, the Clearinghouse, state wage records, licensure, the LMS), plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
+| [`templates/`](templates/) | Things you run: a [starter intake](templates/intake/), a dbt starter project, reconciliation queries, and the PeopleSoft to Workday toolkit |
+| [`govern/`](govern/) | Data governance you can adopt: roles, quality rules, FERPA and GLBA frameworks, access controls, AI agent guardrails |
+| [`agents/`](agents/) | AI assistant templates for ChatGPT, Claude, Gemini, Amazon Q, or Bedrock |
+| [`connect/`](connect/) | An OpenAPI spec for exchanging HELIX data between systems |
+| [`tools/`](tools/) | A validator that checks your data against the HELIX schemas, and a check that every resource has access rules |
+
+Want every count, layer, and file? See the [full reference](docs/helix-reference.md).
+
+---
+
+## Getting Started
 
 **New here? Open [START_HERE.md](START_HERE.md).** It's six steps, and each one tells you what to do, which file to use, and how you know you're done.
 
@@ -36,22 +52,6 @@ HELIX is a free, open framework that gives colleges and universities one shared 
 | **Explore other paths** (Colleague, Banner to Workday, and more) | [Migration Adventure Guide](docs/migration-adventure-guide.md) |
 
 Building a lakehouse and moving to Workday go together. The extraction, mapping, and reconciliation you do for one is the same work the other needs.
-
----
-
-## What's in the box
-
-| Folder | What it gives you |
-|--------|-------------------|
-| [`core/`](core/) | The data model: 64 resources, 67 code sets, a data dictionary, and a plain-English [glossary](core/glossary.md) of higher ed terms |
-| [`bridge/`](bridge/) | Field-by-field mappings from PeopleSoft, Banner, Workday, and Colleague into HELIX, mappings for graduate outcomes sources outside the ERP (career services, the Clearinghouse, state wage records, licensure, the LMS), plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
-| [`templates/`](templates/) | Things you run: a [starter intake](templates/intake/), a dbt starter project, reconciliation queries, and the PeopleSoft to Workday toolkit |
-| [`govern/`](govern/) | Data governance you can adopt: roles, quality rules, FERPA and GLBA frameworks, access controls, AI agent guardrails |
-| [`agents/`](agents/) | AI assistant templates for ChatGPT, Claude, Gemini, Amazon Q, or Bedrock |
-| [`connect/`](connect/) | An OpenAPI spec for exchanging HELIX data between systems |
-| [`tools/`](tools/) | A validator that checks your data against the HELIX schemas, and a check that every resource has access rules |
-
-Want every count, layer, and file? See the [full reference](docs/helix-reference.md).
 
 ---
 
