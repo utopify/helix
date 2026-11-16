@@ -2,11 +2,20 @@
 
 ### Higher Education Linked Information eXchange
 
-> What if every university spoke the same data language?
+> Modernize or migrate your institution's core systems without starting from scratch.
 
-HELIX is a free, open framework that gives colleges and universities one shared data model for students, courses, financial aid, HR, finance, and advancement, plus ready-made mappings from the ERPs they already run (PeopleSoft, Banner, Workday, Colleague). Map your ERP to HELIX once, and your lakehouse, your reporting, and your next ERP migration all start from the same foundation.
+HELIX helps colleges and universities move off, modernize, or build on top of the systems that run the institution: student, financial aid, HR and payroll, finance, and advancement. It gives you ready-made mappings out of PeopleSoft, Banner, Workday, Colleague, and Salesforce, one data model to land them in, governance built for FERPA and GLBA, and AI agents that walk your team through the work.
 
-**Version:** 0.10.0 (November 2026) · **License:** Apache 2.0 · **Founded by:** Dallas Maddox
+What teams use it for:
+
+- **Migrating PeopleSoft to Workday, or Banner on-prem to Banner SaaS,** with crosswalks, conversion rules, and tie-out queries that prove the numbers match before cutover
+- **Finding years of customizations** in PeopleSoft or Banner and deciding what to keep, rebuild, convert, or retire
+- **Building a lakehouse** that joins every system on one identity, using what your vendor subscriptions already include
+- **Getting data ready for AI,** with definitions, metrics, and rules your institution owns, so agents can answer questions that cross the student system, aid, HR, and the CRM
+
+Start with one slice of data, prove it matches a number your registrar or controller already trusts, and build from there. The work you do for one project carries into the next.
+
+**Version:** 0.10.1 (November 2026) · **License:** Apache 2.0 · **Founded by:** Dallas Maddox
 
 ---
 
@@ -95,4 +104,4 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.10.0, November 2026 · Licensed under Apache 2.0*
+*HELIX v0.10.1, November 2026 · Licensed under Apache 2.0*

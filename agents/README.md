@@ -1,6 +1,6 @@
 # HELIX Agents
 
-9 downloadable AI assistant templates (v0.10.0). Every agent also follows HELIX's position that AI agents should point at your own lakehouse and context layer, not at vendor platforms (`docs/own-your-intelligence.md`). Every agent knows the AWS services HELIX conversions run on (see `docs/aws-services-guide.md`). Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
+9 downloadable AI assistant templates (v0.10.1). Every agent also follows HELIX's position that AI agents should point at your own lakehouse and context layer, not at vendor platforms (`docs/own-your-intelligence.md`). Every agent knows the AWS services HELIX conversions run on (see `docs/aws-services-guide.md`). Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
 
 **Start here**
 

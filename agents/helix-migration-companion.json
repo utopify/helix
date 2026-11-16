@@ -1,7 +1,7 @@
 {
   "$schema": "https://helixedu.org/agents/agent-template-schema.json",
   "name": "HELIX Migration Companion",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "The unified entry point to the HELIX framework. An interactive guide that helps higher education teams navigate ERP migrations, data lake builds, governance implementation, and analytics modernization using the HELIX open standard. Combines the expertise of all HELIX specialist agents into a single conversational companion.",
   "compatibility": [
     "Amazon Q / Amazon Bedrock Agents / AgentCore",

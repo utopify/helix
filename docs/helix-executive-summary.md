@@ -10,9 +10,9 @@ Every university rebuilds the same data integrations from scratch, at a cost of 
 
 ## What HELIX Is
 
-HELIX is a free, open framework that gives every university a common data language. Think of it as a shared blueprint: when every institution describes a "student," an "enrollment," or a "financial aid award" the same way, the cost of integrating systems drops dramatically.
+HELIX is a free, open toolkit that helps a university modernize or replace the systems that run it (student, financial aid, HR, finance, advancement) without paying to rebuild the same integrations every other school has already built. It starts from one shared data model and adds what a project team actually needs: ready-made mappings out of PeopleSoft, Banner, Workday, Colleague, and Salesforce; migration kits with checks that prove the numbers match; a method for finding old customizations; FERPA and GLBA governance; and AI agents that guide the team through each step.
 
-**HELIX is not software.** It's a standard, like the electrical code for buildings. Architects and contractors follow the code; they build whatever they want on top of it.
+**Your institution keeps the result.** Data lands in a lakehouse you control, with definitions and rules you own, so your reporting and AI tools work across every system and survive your next vendor change.
 
 ## Why It Matters to Your Institution
 

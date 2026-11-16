@@ -1,5 +1,15 @@
 # HELIX Changelog
 
+## v0.10.1 (November 2026): What HELIX helps you do
+
+HELIX started as a shared data language for higher education. It's grown into a working toolkit for modernizing and migrating institutional systems, so the description now says that.
+
+**Changed**
+- Root README: new tagline and intro focused on outcomes (migrating PeopleSoft to Workday or Banner to Banner SaaS, finding customizations, building a lakehouse with what vendor subscriptions already include, and getting data ready for AI with definitions the institution owns).
+- `docs/helix-executive-summary.md`: "What HELIX Is" rewritten the same way. Dropped "HELIX is not software," since HELIX now ships tools, templates, and agents alongside the standard.
+- Suggested GitHub About text (set on github.com, not in the repo): "Open toolkit for modernizing or migrating higher ed systems: ready-made mappings from PeopleSoft, Banner, Workday, Colleague, and Salesforce; PeopleSoft to Workday and Banner SaaS migration kits; customization discovery; FERPA and GLBA governance; and AI agents that help institutions own their data and definitions."
+- All agents at v0.10.1.
+
 ## v0.10.0 (November 2026): Own your intelligence layer
 
 HELIX now says plainly where AI agents should point: at the institution's own lakehouse and context layer, not at each vendor's platform. This release adds the Context Route for defining silver, gold, and historical or custom tables; Workday and Salesforce landing zones that need no add-on; a Salesforce bridge; and a ninth agent.
