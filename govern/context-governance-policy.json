@@ -1,0 +1,124 @@
+{
+  "$schema": "https://helixedu.org/govern/schema.json",
+  "title": "HELIX Context Governance Policy",
+  "version": "0.1",
+  "description": "Rules for creating, approving, publishing, and retiring context (definitions, classifications, metric logic, join paths, usage rules, ontology) that people and AI agents rely on. Applies to context drafted by AI and to context written by people. Pairs with docs/context/context-route.md.",
+  "principles": [
+    "The institution owns its context. Every approved definition exists as a file in the institution's own repository or storage, as well as in any catalog or knowledge graph.",
+    "AI drafts; people decide. Nothing drafted by a model reaches a catalog agents read until a named steward approves it.",
+    "Classification follows the data and never goes down by accident.",
+    "Context never contains data. Definitions, profiles, and rules may describe values; they never carry rows.",
+    "Plan around public capabilities. Don't design governance around unreleased or privately disclosed vendor features."
+  ],
+  "roles": {
+    "data_steward": "Approves definitions, links, and usage rules for the domain (govern/roles.json). Owns the review sheet.",
+    "data_trustee": "Approves any classification lower than proposed and any metric that changes an official number.",
+    "metric_owner": "Signs gold metric definitions (approved_by, approved_date in gold-metrics.yaml).",
+    "data_custodian": "Runs the publishing tools and keeps catalog and files in step.",
+    "context_steward_agent": "Drafts and checks; never approves (agents/context-steward-agent.json)."
+  },
+  "lifecycle": [
+    {
+      "state": "draft",
+      "who": "tool or model",
+      "rule": "Created by tools/draft_custom_table_context.py or prompts/draft-definitions.md. Not published."
+    },
+    {
+      "state": "needs_info",
+      "who": "steward",
+      "rule": "Open questions recorded in notes. Not published."
+    },
+    {
+      "state": "approved",
+      "who": "steward (and trustee where required)",
+      "rule": "steward_definition written, classification set, reviewer and date recorded. Eligible to publish."
+    },
+    {
+      "state": "published",
+      "who": "custodian",
+      "rule": "Written to the Glue Data Catalog (and later AWS Context) by tools/apply_glue_context.py. Version recorded."
+    },
+    {
+      "state": "retired",
+      "who": "steward",
+      "rule": "Column or table removed or replaced. Definition kept in history with the retirement date."
+    }
+  ],
+  "rules": [
+    {
+      "id": "CTX-001",
+      "name": "Human approval before publishing",
+      "rule": "Only rows with status approved and a steward_definition are published. The publisher refuses everything else.",
+      "enforced_by": "tools/apply_glue_context.py"
+    },
+    {
+      "id": "CTX-002",
+      "name": "No lowered classification without the trustee",
+      "rule": "A steward_classification lower than the proposed classification is refused by the publisher until the data trustee approves it and the proposal is updated.",
+      "enforced_by": "tools/apply_glue_context.py"
+    },
+    {
+      "id": "CTX-003",
+      "name": "No data in prompts or profiles",
+      "rule": "Model prompts receive DDL, profiles, candidate definitions, and bridge excerpts only. Profiles contain counts and shapes; example values only for code columns the steward approved.",
+      "enforced_by": "templates/context/profile-table.sql, prompts/draft-definitions.md"
+    },
+    {
+      "id": "CTX-004",
+      "name": "Sensitive names start high",
+      "rule": "Columns whose names suggest national IDs, bank data, pay, aid amounts, income, health, or immigration are proposed restricted. Tables keyed to a person default to confidential.",
+      "enforced_by": "tools/draft_custom_table_context.py"
+    },
+    {
+      "id": "CTX-005",
+      "name": "Generated definitions are marked",
+      "rule": "Definitions generated from a column name carry helix.definition_status = pattern and are shown to agents as unconfirmed until a steward replaces them.",
+      "enforced_by": "tools/build_context_pack.py"
+    },
+    {
+      "id": "CTX-006",
+      "name": "Metrics are signed",
+      "rule": "An agent answering a gold metric uses the definition in gold-metrics.yaml. Unsigned metrics are labeled as drafts in answers.",
+      "enforced_by": "govern/agent-guardrails.json, generated gold skills"
+    },
+    {
+      "id": "CTX-007",
+      "name": "Context inherits access",
+      "rule": "Context about a restricted table is visible only to roles that can see the table's metadata. Definitions don't reveal restricted values (for example, no example SSN formats with real numbers).",
+      "enforced_by": "Lake Formation permissions on catalog objects; AWS Context is designed to inherit IAM and Lake Formation permissions"
+    },
+    {
+      "id": "CTX-008",
+      "name": "Versioned and portable",
+      "rule": "Every approval updates the file copy (review sheet, gold-metrics.yaml, skills) in version control. The catalog is a published copy, not the only copy.",
+      "enforced_by": "Process; data custodian"
+    },
+    {
+      "id": "CTX-009",
+      "name": "Learned context is reviewed",
+      "rule": "Where a context service learns from agent usage (for example shared join paths), stewards review learned changes on a set schedule before they're treated as approved definitions.",
+      "enforced_by": "Process; steward review cadence"
+    },
+    {
+      "id": "CTX-010",
+      "name": "Vendor semantic layers are inputs, not the source",
+      "rule": "Definitions taken from a vendor's semantic layer are copied into the institution's files and approved like any other draft, so they survive a change of vendor.",
+      "enforced_by": "Process"
+    }
+  ],
+  "review_cadence": {
+    "new_custom_tables": "Before the table is promoted past bronze",
+    "silver_and_gold": "After each HELIX upgrade (rerun tools/build_context_pack.py and review diffs)",
+    "learned_context": "Monthly",
+    "gold_metrics": "Annually, and whenever a federal or accreditor definition changes"
+  },
+  "references": [
+    "docs/context/context-route.md",
+    "docs/own-your-intelligence.md",
+    "templates/context/",
+    "govern/access-control-matrix.json",
+    "govern/classification-handling-rules.json",
+    "govern/agent-guardrails.json",
+    "govern/schema-evolution-policy.json"
+  ]
+}

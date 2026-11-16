@@ -16,4 +16,7 @@ New here? Start with [`../START_HERE.md`](../START_HERE.md).
 - `migration-adventure-guide.md` — "Choose your own adventure" migration paths
 - `lakehouse-architecture-guide.md` — Medallion architecture, FERPA/GLBA compliance
 - `aws-services-guide.md`: AWS services by phase and migration path, HELIX controls on AWS, and which tool converts which code *(new in v0.9.0)*
+- `own-your-intelligence.md`: why AI agents should point at your lakehouse and context layer, not vendor platforms, with honest trade-offs *(new in v0.10.0)*
+- `landing-zones/`: Workday and Salesforce landing zones using what the base subscriptions include *(new in v0.10.0)*
+- `context/`: the Context Route for definitions, metadata, and ontology on silver, gold, and custom or historical tables *(new in v0.10.0)*
 - `conversion/`: customization discovery and conversion: the method, plus PeopleSoft and Banner guides *(new in v0.9.0)*

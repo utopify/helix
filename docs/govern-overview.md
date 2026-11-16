@@ -88,7 +88,11 @@ The safeguards framework maps all 9 elements of the FTC Safeguards Rule (16 CFR 
 
 Rules for AI assistants and natural-language query tools: what each classification tier allows in a response, 7 prohibited query patterns, output filters for PII and GLBA values, and a 21-field audit log.
 
-### 10. Operating the Program
+### 10. Context for AI agents (`govern/context-governance-policy.json`)
+
+The rules behind the [Context Route](context/context-route.md): a named steward approves every definition before it's published, classification can be raised but not lowered without the data trustee, profiles and prompts never carry data, generated definitions are marked until a steward confirms them, and gold metrics are answered only from signed definitions. `govern/agent-guardrails.json` has the matching agent rules (CG-01 to CG-06).
+
+### 11. Operating the Program
 
 | File | Use it for |
 |------|-----------|
@@ -100,4 +104,4 @@ Rules for AI assistants and natural-language query tools: what each classificati
 
 New to governance? Start with the [CDO Quick Start](cdo-quick-start.md).
 
-*HELIX v0.9.0, September 2026*
+*HELIX v0.10.0, November 2026*

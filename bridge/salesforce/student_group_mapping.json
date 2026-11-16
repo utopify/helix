@@ -1,0 +1,90 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Salesforce → StudentGroup",
+  "source_system": "salesforce",
+  "module": "Groups and attributes",
+  "target_resource": "StudentGroup",
+  "version": "0.1",
+  "architecture_notes": "Groups that drive reporting (athletes, honors, first-generation programs, IPEDS cohorts) belong in StudentGroup. Social clubs usually don't; decide with the steward which group types carry forward.",
+  "source_objects": [
+    {
+      "object": "InvolvementGroup / InvolvementGroupMember",
+      "description": "Agentforce Education involvement groups (clubs, teams, cohorts)."
+    },
+    {
+      "object": "EducCharacteristicAssignment",
+      "description": "Educational characteristics such as student-athlete status, assigned for an academic interval."
+    },
+    {
+      "object": "hed__Affiliation__c",
+      "description": "EDA affiliations to organizations, including athletics and clubs."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + member or assignment Id."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Member Contact / hed__Contact__c",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "group_code",
+      "source": "Group or characteristic code",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "group_name",
+      "source": "InvolvementGroup.Name / EducationalCharacteristic name / affiliated Account name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "group_category",
+      "source": "Group type / characteristic type / affiliation role",
+      "transformation": "Map to athletics, honors, access_program, cohort, and so on."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Membership or assignment start",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Membership or assignment end",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "Status or end date",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "sport_code",
+      "source": "Team code for athletics groups",
+      "transformation": "Direct. Confidential."
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Bulk API 2.0 query",
+      "description": "Default. SOQL by SystemModstamp high-water mark; queryAll to include deleted rows. Included with API-enabled editions."
+    },
+    {
+      "method": "Change Data Capture",
+      "description": "Near real-time change events for objects that need freshness. A limited number of objects is included; more needs an add-on. Check your contract."
+    },
+    {
+      "method": "Amazon AppFlow",
+      "description": "AWS-managed Salesforce to S3 flows, scheduled or event-triggered. Priced per flow run and data processed on the AWS side."
+    },
+    {
+      "method": "Data 360 zero copy (optional)",
+      "description": "Only if the institution already licenses Salesforce Data 360. Not required for HELIX."
+    }
+  ],
+  "validate": "Object and field names follow Salesforce's published Agentforce Education (formerly Education Cloud), EDA, NPSP, and standard object models, but orgs add custom fields and record types. VALIDATE every field against your org's describe output before building extracts; custom fields end in __c.",
+  "landing_zone": "docs/landing-zones/salesforce-landing-zone.md"
+}

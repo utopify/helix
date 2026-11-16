@@ -35,6 +35,7 @@ That's it. Repeat steps 3 through 6 until you've covered what you need.
 | **B. Migrate PeopleSoft to Workday** | A Workday contract is signed or close. | [`docs/ps-to-workday-migration.md`](docs/ps-to-workday-migration.md) |
 | **C. Migrate Banner on-prem to Banner SaaS** | You're moving to Ellucian Platform. | [Adventure guide, Chapter 8](docs/migration-adventure-guide.md#chapter-8-banner-on-prem-to-banner-saas) |
 | **D. Stand up data governance** | The first problem is ownership and definitions, not pipelines. | [`docs/cdo-quick-start.md`](docs/cdo-quick-start.md) |
+| **E. Make our data AI-ready** | You want agents to answer across every system from data and definitions you own. | [`docs/own-your-intelligence.md`](docs/own-your-intelligence.md), then [`docs/context/context-route.md`](docs/context/context-route.md) |
 
 Going with **B** or **C**? Start a customization register in parallel with your first slice ([`docs/conversion/`](docs/conversion/)). Finding out what you've customized takes weeks, and every later decision depends on it. On AWS, [`docs/aws-services-guide.md`](docs/aws-services-guide.md) lists the service for each step.
 
@@ -95,4 +96,4 @@ Load [`agents/helix-migration-companion.json`](agents/helix-migration-companion.
 
 When you want the full inventory of what's in the repo, see [`docs/helix-reference.md`](docs/helix-reference.md).
 
-*HELIX v0.9.0, September 2026*
+*HELIX v0.10.0, November 2026*

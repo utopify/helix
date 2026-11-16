@@ -1,6 +1,6 @@
 # HELIX Govern
 
-17 governance artifacts:
+18 governance artifacts:
 
 **Foundational**
 - `roles.json`: 6 governance roles
@@ -21,6 +21,9 @@
 **Compliance Frameworks (policy, what must be done)**
 - `glba-safeguards-framework.json`: FTC Safeguards Rule (16 CFR 314) mapped to lakehouse layers
 - `ferpa-disclosure-framework.json`: 99.31(a)(1)/(a)(6)/(a)(11) enforcement with identity resolution
+
+**Context (new in v0.10.0)**
+- `context-governance-policy.json`: 10 rules for creating, approving, publishing, and retiring the definitions, classifications, metric logic, and usage rules AI agents rely on. AI drafts; stewards approve; classification never goes down by accident; context never carries data. Enforced in part by `tools/apply_glue_context.py`.
 
 **Enforcement & Operations (executable, how it's detected and enforced)**
 - `glba-compliance-scanner.json`: 21 executable audit rules across 7 categories (encryption at rest/in transit, access control, data inventory, monitoring, disposal, service-provider oversight) covering all nine GLBA tables with platform-specific SQL and a 10-section annual board report template per 16 CFR 314.4(i)

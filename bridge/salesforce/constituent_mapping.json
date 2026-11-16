@@ -1,0 +1,124 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Salesforce → Constituent",
+  "source_system": "salesforce",
+  "module": "Advancement (NPSP or Nonprofit Cloud)",
+  "target_resource": "Constituent",
+  "version": "0.1",
+  "architecture_notes": "Many institutions run advancement on Salesforce with NPSP or Nonprofit Cloud. Rollup fields are convenient but recompute in gold from HELIX Gift so totals follow CASE rules. Wealth screening and capacity fields are restricted to prospect research.",
+  "source_objects": [
+    {
+      "object": "Contact",
+      "description": "The donor, alumnus, parent, or friend."
+    },
+    {
+      "object": "Account",
+      "description": "Household or organization."
+    },
+    {
+      "object": "npsp rollup fields on Contact",
+      "description": "Lifetime giving, last gift, largest gift, consecutive years."
+    },
+    {
+      "object": "Affiliation and relationship objects",
+      "description": "Alumni and family relationships."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Contact.Id (or Account.Id for organizations)."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Institution's HELIX registration."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "Contact",
+      "transformation": "Resolve to HELIX Person (same person as the student and alumni records)."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "SIS ID on Contact",
+      "transformation": "Resolve to HELIX Student when the constituent is a current or former student."
+    },
+    {
+      "helix_attribute": "constituent_type",
+      "source": "Constituent type or record type; affiliations",
+      "transformation": "Map through helix/constituent-type (alumnus, donor, parent, friend, faculty_staff, corporation, foundation, prospect)."
+    },
+    {
+      "helix_attribute": "class_year",
+      "source": "Preferred class year field",
+      "transformation": "Four digits."
+    },
+    {
+      "helix_attribute": "lifetime_giving",
+      "source": "npo02__TotalOppAmount__c (NPSP) or Nonprofit Cloud rollups",
+      "transformation": "Decimal. Recompute in gold."
+    },
+    {
+      "helix_attribute": "last_gift_date",
+      "source": "npo02__LastCloseDate__c",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "last_gift_amount",
+      "source": "npo02__LastOppAmount__c",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "largest_gift_amount",
+      "source": "npo02__LargestAmount__c",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "consecutive_giving_years",
+      "source": "npo02__ConsecutiveYearsGiven__c or computed",
+      "transformation": "Integer."
+    },
+    {
+      "helix_attribute": "assigned_officer",
+      "source": "Relationship manager or portfolio owner field",
+      "transformation": "Resolve to HELIX Employee."
+    },
+    {
+      "helix_attribute": "prospect_stage",
+      "source": "Moves management stage field",
+      "transformation": "Map through helix/prospect-stage."
+    },
+    {
+      "helix_attribute": "employer",
+      "source": "Account (employer affiliation) or a title and company field",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "Contact.Title",
+      "transformation": "Direct."
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Bulk API 2.0 query",
+      "description": "Default. SOQL by SystemModstamp high-water mark; queryAll to include deleted rows. Included with API-enabled editions."
+    },
+    {
+      "method": "Change Data Capture",
+      "description": "Near real-time change events for objects that need freshness. A limited number of objects is included; more needs an add-on. Check your contract."
+    },
+    {
+      "method": "Amazon AppFlow",
+      "description": "AWS-managed Salesforce to S3 flows, scheduled or event-triggered. Priced per flow run and data processed on the AWS side."
+    },
+    {
+      "method": "Data 360 zero copy (optional)",
+      "description": "Only if the institution already licenses Salesforce Data 360. Not required for HELIX."
+    }
+  ],
+  "validate": "Object and field names follow Salesforce's published Agentforce Education (formerly Education Cloud), EDA, NPSP, and standard object models, but orgs add custom fields and record types. VALIDATE every field against your org's describe output before building extracts; custom fields end in __c.",
+  "landing_zone": "docs/landing-zones/salesforce-landing-zone.md"
+}

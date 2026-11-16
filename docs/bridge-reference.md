@@ -1,6 +1,6 @@
 # HELIX Bridge: ERP Mapping Reference
 
-163 mapping templates as of v0.8.1. Generated from the files in `bridge/`, so the counts below are the real file counts.
+173 mapping templates as of v0.10.0. Generated from the files in `bridge/`, so the counts below are the real file counts.
 
 | System | Mappings | Modules |
 |---|---:|---|
@@ -8,6 +8,7 @@
 | **Ellucian Banner (on-prem)** | 35 | Student (SIS): 14, Human Resources: 2, Finance: 7, Advancement: 5, Financial Aid: 7 |
 | **Workday** | 54 | Student: 31, Financial Management: 11, Human Capital Management: 12 |
 | **Ellucian Colleague** | 4 | Student: 4 |
+| **Salesforce** | 10 | Agentforce Education, EDA, NPSP or Nonprofit Cloud |
 | **Outcomes (non-ERP)** | 8 | Handshake, Clearinghouse, state wage records, licensure results, Canvas |
 | **Banner SaaS (reverse)** | 8 | HELIX to Ethos write-back |
 
@@ -229,6 +230,25 @@ Direct PS code → HELIX code → Workday value lookups: `xref/ps-to-workday-hr/
 | Enrollment | `enrollment_mapping.json` |  | 15 |
 | Institution | `institution_mapping.json` | INSTITUTIONS, CORP / PERSON, DEFAULTS | 11 |
 | Student | `student_mapping.json` |  | 19 |
+
+## Salesforce (10 mappings)
+
+### `salesforce/` (10 mappings)
+
+Agentforce Education (formerly Education Cloud), the EDA managed package, and NPSP or Nonprofit Cloud. Landing zone: `docs/landing-zones/salesforce-landing-zone.md`.
+
+| HELIX Resource | Mapping File | Key Salesforce Objects | Attrs |
+|---|---|---|---:|
+| AcademicPeriod | `academic_period_mapping.json` | AcademicTerm, AcademicYear, AcademicSession | 9 |
+| AdmissionApplication | `admission_application_mapping.json` | IndividualApplication, ApplicationDecision, hed__Application__c | 14 |
+| Campaign | `campaign_mapping.json` | Campaign, CampaignMember | 10 |
+| Constituent | `constituent_mapping.json` | Contact, Account, npsp rollup fields on Contact | 15 |
+| EngagementActivity | `engagement_activity_mapping.json` | Task, Event, CampaignMember | 10 |
+| Enrollment | `enrollment_mapping.json` | CourseOfferingParticipant, CourseOffering, AcademicTerm | 8 |
+| Gift | `gift_mapping.json` | Opportunity (donation record types), npe01__OppPayment__c, npe03__Recurring_Donation__c | 14 |
+| Person | `person_mapping.json` | Contact, ContactProfile, Account | 11 |
+| StudentGroup | `student_group_mapping.json` | InvolvementGroup / InvolvementGroupMember, EducCharacteristicAssignment, hed__Affiliation__c | 9 |
+| StudentProgram | `student_program_mapping.json` | LearnerProgram, hed__Program_Enrollment__c, LearningProgram | 8 |
 
 ## Outcomes Sources Outside the ERP (8 mappings)
 

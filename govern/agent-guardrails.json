@@ -2,16 +2,16 @@
   "$schema": "https://helixedu.org/govern/agent-guardrails-schema.json",
   "title": "HELIX Govern: AI Agent & NLQ Guardrails",
   "description": "Governance framework for AI agents, chatbots, copilots, and natural language query interfaces consuming HELIX-conformant data. Ensures agents inherit the user's access level, enforce FERPA/GLBA controls, suppress small cells, redact PII in responses, and maintain audit trails. Companion to lakehouse-rbac-model.json (who can access what) and ferpa-suppression-policy.json (how to suppress small cells).",
-  "version": "0.1",
+  "version": "0.3",
   "scope": {
     "what_this_covers": "Any AI system that translates natural language into queries against HELIX data, or that has tool/function access to HELIX APIs or database connections. Includes: text-to-SQL agents, RAG systems grounded on institutional data, copilots embedded in SIS/ERP, enrollment chatbots, advising assistants, IR report generators, advancement prospect briefing tools, melt-prediction agents, and any agent built from the HELIX agent templates (agents/ directory).",
     "what_this_does_not_cover": "General-purpose AI assistants that do not access institutional data. Public-facing chatbots answering questions solely from the course catalog or institutional website (public-tier data with no FERPA/GLBA implications).",
     "regulatory_drivers": [
-      "FERPA (34 CFR Part 99) \u2014 education records require disclosure-basis enforcement regardless of the access mechanism (UI, API, or AI agent)",
-      "GLBA (16 CFR Part 314) \u2014 financial-aid data requires encryption, access control, and logging even when accessed through an AI intermediary",
-      "PTAC guidance \u2014 aggregate data can become personally identifiable when cell sizes are too small; agents generating aggregates must suppress",
-      "FTC Act Section 5 \u2014 unfair or deceptive AI practices; an agent that implies certainty about a prediction without disclosure is potentially deceptive",
-      "State privacy laws (where applicable) \u2014 CCPA, state student-privacy laws, state AI-transparency laws"
+      "FERPA (34 CFR Part 99) — education records require disclosure-basis enforcement regardless of the access mechanism (UI, API, or AI agent)",
+      "GLBA (16 CFR Part 314) — financial-aid data requires encryption, access control, and logging even when accessed through an AI intermediary",
+      "PTAC guidance — aggregate data can become personally identifiable when cell sizes are too small; agents generating aggregates must suppress",
+      "FTC Act Section 5 — unfair or deceptive AI practices; an agent that implies certainty about a prediction without disclosure is potentially deceptive",
+      "State privacy laws (where applicable) — CCPA, state student-privacy laws, state AI-transparency laws"
     ]
   },
   "core_principles": [
@@ -35,10 +35,10 @@
       "principle": "PII minimization in agent responses",
       "description": "Agent responses must contain the minimum PII necessary to answer the user's question. Raw PII (SSN, bank accounts, full names in bulk) must NEVER appear in agent chat responses even if the user has database-level access to that data. Chat interfaces are inherently less secure than purpose-built applications: chat logs may be stored, screens may be shared, and chat responses often lack field-level audit logging.",
       "exceptions": [
-        "Single-record lookups by an authorized user who initiated the query by student identifier (e.g., 'What is Jane Doe's enrollment status?') may include the specific student's name \u2014 the user already knows the identity and has legitimate interest.",
+        "Single-record lookups by an authorized user who initiated the query by student identifier (e.g., 'What is Jane Doe's enrollment status?') may include the specific student's name — the user already knows the identity and has legitimate interest.",
         "Aggregate responses with N >= suppression threshold may include category labels (e.g., 'Computer Science majors') but not individual names."
       ],
-      "prohibited": "Bulk PII in any response. 'List all students with their emails' must be refused even for authorized users \u2014 direct them to the secure data extract process."
+      "prohibited": "Bulk PII in any response. 'List all students with their emails' must be refused even for authorized users — direct them to the secure data extract process."
     },
     {
       "principle_id": "GP-04",
@@ -50,7 +50,7 @@
     {
       "principle_id": "GP-05",
       "principle": "Complete audit trail",
-      "description": "Every agent-generated query must be logged with sufficient detail for compliance review: user identity, timestamp, natural language input, generated SQL/API call, tables and columns accessed, rows returned (count only \u2014 not content), disclosure basis asserted, and whether suppression or PII redaction was applied. Retain logs for 7 years (aligned with GLBA log retention requirements).",
+      "description": "Every agent-generated query must be logged with sufficient detail for compliance review: user identity, timestamp, natural language input, generated SQL/API call, tables and columns accessed, rows returned (count only — not content), disclosure basis asserted, and whether suppression or PII redaction was applied. Retain logs for 7 years (aligned with GLBA log retention requirements).",
       "implementation": "The agent orchestrator writes to a dedicated audit table (helix_agent_audit_log) after every query execution, before returning results to the user."
     }
   ],
@@ -81,7 +81,7 @@
       {
         "classification": "internal",
         "agent_access": "Available to agents acting for any authenticated institutional user (employee, contractor acting as school official)",
-        "response_rules": "Responses may include internal data but must not be marked as shareable outside the institution. Agent should include a footer: 'Internal data \u2014 not for external distribution.'",
+        "response_rules": "Responses may include internal data but must not be marked as shareable outside the institution. Agent should include a footer: 'Internal data — not for external distribution.'",
         "identity_propagation_required": true,
         "disclosure_basis_required": false,
         "suppression_required": false,
@@ -115,8 +115,8 @@
         "pii_handling": {
           "in_response_text": {
             "single_record_lookup": "Include name if user queried by student identifier and has legitimate interest. Example: 'Jane Doe (ID: 12345) is currently enrolled full-time in the BS Computer Science program.'",
-            "multi_record_response": "Anonymize: replace names with student_id or sequence numbers. Example: 'Student A is at risk (GPA 1.8), Student B is at risk (GPA 1.9)...' \u2014 never 'Jane Doe is at risk.'",
-            "narrative_summary": "Aggregate: 'Of the 45 students in the fall cohort, 12 are flagged for academic risk.' \u2014 no individual identification."
+            "multi_record_response": "Anonymize: replace names with student_id or sequence numbers. Example: 'Student A is at risk (GPA 1.8), Student B is at risk (GPA 1.9)...' — never 'Jane Doe is at risk.'",
+            "narrative_summary": "Aggregate: 'Of the 45 students in the fall cohort, 12 are flagged for academic risk.' — no individual identification."
           },
           "in_tables_and_charts": "Replace names with student_id or anonymized codes. Never display a list of names in a table within chat.",
           "in_downloaded_files": "Apply full masking policy from classification-handling-rules.json. Treat any downloaded file as potentially leaving the institution's control."
@@ -166,7 +166,7 @@
       {
         "classification": "restricted",
         "agent_access": "Available ONLY to agents acting for named-authorized users. GLBA financial data requires GLBA authorization; HR compensation/benefits/payroll/performance requires HR restricted authorization.",
-        "response_rules": "Agent must NEVER include restricted data values in response text \u2014 even for authorized users. Instead, confirm existence: 'The student has a financial aid award on file for Fall 2026' (not 'The student's SAI is 1,234'). For authorized users who need actual restricted values, direct them to the secure purpose-built application (SIS, HRIS, financial aid system).",
+        "response_rules": "Agent must NEVER include restricted data values in response text — even for authorized users. Instead, confirm existence: 'The student has a financial aid award on file for Fall 2026' (not 'The student's SAI is 1,234'). For authorized users who need actual restricted values, direct them to the secure purpose-built application (SIS, HRIS, financial aid system).",
         "rationale": "Chat interfaces are inherently less secure than purpose-built applications. Chat logs may be retained by the LLM provider, screens may be shared or recorded, and chat responses lack the field-level audit logging and access controls of SIS/ERP systems. The risk of restricted data leakage through a chat interface exceeds the convenience benefit.",
         "identity_propagation_required": true,
         "disclosure_basis_required": true,
@@ -239,7 +239,7 @@
       "pattern": "Small-cell aggregate bypass (triangulation attack)",
       "severity": "high",
       "description": "Agent must not allow users to iteratively query progressively narrower or complementary slices to deduce suppressed values. If a cell is suppressed in one query, the agent must detect follow-up queries that could mathematically derive the suppressed value.",
-      "example": "Query 1: 'How many Native Hawaiian CS majors graduated?' \u2192 suppressed (N<5). Query 2: 'How many non-Native-Hawaiian CS majors graduated?' \u2192 47. Query 3: 'How many total CS majors graduated?' \u2192 49. User calculates: 49 - 47 = 2 Native Hawaiian graduates.",
+      "example": "Query 1: 'How many Native Hawaiian CS majors graduated?' → suppressed (N<5). Query 2: 'How many non-Native-Hawaiian CS majors graduated?' → 47. Query 3: 'How many total CS majors graduated?' → 49. User calculates: 49 - 47 = 2 Native Hawaiian graduates.",
       "enforcement": "Session-level suppression tracking. The agent maintains a set of suppressed dimension combinations for the session. If a subsequent query targets the complement of a suppressed combination, or requests a total from which the suppressed value could be derived, the agent warns and blocks.",
       "agent_response": "I've suppressed a value in this dimension to protect student privacy. I can't provide the complementary breakdown or total that would allow calculating the suppressed value. You can request this data at a higher level of aggregation.",
       "tracking_schema": {
@@ -288,7 +288,7 @@
     "text_to_sql": {
       "description": "Agent translates natural language into SQL and executes against the lakehouse. Most common for IR, enrollment analytics, and financial reporting use cases.",
       "guardrail_integration_points": [
-        "1. Identity propagation: OAuth token \u2192 database session role",
+        "1. Identity propagation: OAuth token → database session role",
         "2. Pre-execution validation: parse SQL, check tables/columns against RBAC",
         "3. Query rewriting: inject FERPA checks, suppression wrappers, column masking",
         "4. Post-execution filtering: row count check, PII scan, suppression verification",
@@ -315,16 +315,16 @@
         "6. Hallucination guard: agent must not generate student-specific claims that are not grounded in a retrieved chunk"
       ],
       "chunk_metadata_schema": {
-        "chunk_id": "string \u2014 unique identifier",
-        "source_document": "string \u2014 path or identifier of the source",
-        "helix_resource": "string \u2014 HELIX resource this chunk relates to (e.g., 'Student', 'FinAidAward')",
-        "classification": "string \u2014 public | internal | confidential | restricted",
-        "ferpa_education_record": "boolean \u2014 true if this chunk contains education record data",
-        "glba_covered": "boolean \u2014 true if this chunk contains GLBA-covered data",
-        "contains_pii": "boolean \u2014 true if this chunk contains personally identifiable information",
-        "student_ref": "string | null \u2014 if chunk is about a specific student, their helix_id (for FERPA restriction checking)",
+        "chunk_id": "string — unique identifier",
+        "source_document": "string — path or identifier of the source",
+        "helix_resource": "string — HELIX resource this chunk relates to (e.g., 'Student', 'FinAidAward')",
+        "classification": "string — public | internal | confidential | restricted",
+        "ferpa_education_record": "boolean — true if this chunk contains education record data",
+        "glba_covered": "boolean — true if this chunk contains GLBA-covered data",
+        "contains_pii": "boolean — true if this chunk contains personally identifiable information",
+        "student_ref": "string | null — if chunk is about a specific student, their helix_id (for FERPA restriction checking)",
         "ingestion_date": "ISO 8601",
-        "expiration_date": "ISO 8601 | null \u2014 for time-bounded research data"
+        "expiration_date": "ISO 8601 | null — for time-bounded research data"
       },
       "retrieval_filter_example": "# Python pseudocode for classified retrieval\nresults = vector_store.search(\n    query=user_question,\n    filter={\n        'classification': {'$in': user_allowed_tiers},  # e.g., ['public', 'internal', 'confidential']\n        '$or': [\n            {'contains_pii': False},\n            {'student_ref': {'$in': user_authorized_students}}  # for scoped access\n        ]\n    },\n    top_k=10\n)"
     },
@@ -355,7 +355,7 @@
     }
   },
   "output_filters": {
-    "description": "Filters applied to every agent response before it is rendered to the user. These are the last line of defense \u2014 even if a query returns data the user shouldn't see in a chat response, the output filters catch it.",
+    "description": "Filters applied to every agent response before it is rendered to the user. These are the last line of defense — even if a query returns data the user shouldn't see in a chat response, the output filters catch it.",
     "filters": [
       {
         "filter_id": "OF-01",
@@ -440,7 +440,7 @@
           "homeless_youth_flag",
           "foster_care_flag"
         ],
-        "action": "If any GLBA field label followed by a value is detected in the response, replace the value with '[on file]'. Example: 'SAI: 1,234' \u2192 'SAI: [on file]'."
+        "action": "If any GLBA field label followed by a value is detected in the response, replace the value with '[on file]'. Example: 'SAI: 1,234' → 'SAI: [on file]'."
       },
       {
         "filter_id": "OF-04",
@@ -464,7 +464,7 @@
     ]
   },
   "nlq_specific_guardrails": {
-    "description": "Additional rules specifically for natural language query (NLQ) interfaces \u2014 text-to-SQL, conversational BI tools, and ad-hoc query assistants. These supplement the core principles and output filters.",
+    "description": "Additional rules specifically for natural language query (NLQ) interfaces — text-to-SQL, conversational BI tools, and ad-hoc query assistants. These supplement the core principles and output filters.",
     "query_validation": {
       "pre_execution_checks": [
         {
@@ -500,7 +500,7 @@
       ]
     },
     "query_rewriting": {
-      "description": "The agent may (and should) rewrite generated SQL to automatically inject guardrails before execution. This is preferable to rejecting queries \u2014 it's a better user experience.",
+      "description": "The agent may (and should) rewrite generated SQL to automatically inject guardrails before execution. This is preferable to rejecting queries — it's a better user experience.",
       "injections": [
         {
           "injection": "FERPA restriction check",
@@ -546,17 +546,17 @@
     "agents": [
       {
         "agent": "helix-migration-companion.json",
-        "guardrail_notes": "This agent primarily provides guidance and documentation references \u2014 it doesn't directly query institutional data. Guardrails are minimal: no PII handling needed. If the agent generates sample SQL for the user to run, it should include comments noting where FERPA/suppression checks would be needed.",
+        "guardrail_notes": "This agent primarily provides guidance and documentation references — it doesn't directly query institutional data. Guardrails are minimal: no PII handling needed. If the agent generates sample SQL for the user to run, it should include comments noting where FERPA/suppression checks would be needed.",
         "required_guardrails": [
           "GP-05 (audit trail for usage tracking)"
         ]
       },
       {
         "agent": "enrollment-analytics-agent.json",
-        "guardrail_notes": "This agent generates enrollment queries, retention analysis, and melt predictions \u2014 all FERPA education records. Full guardrail suite required.",
+        "guardrail_notes": "This agent generates enrollment queries, retention analysis, and melt predictions — all FERPA education records. Full guardrail suite required.",
         "required_guardrails": [
           "GP-01 (role inheritance)",
-          "GP-02 (disclosure basis \u2014 99.31(a)(1))",
+          "GP-02 (disclosure basis — 99.31(a)(1))",
           "GP-03 (PII minimization)",
           "GP-04 (suppression in all aggregates)",
           "GP-05 (audit trail)",
@@ -581,14 +581,14 @@
         "guardrail_notes": "This agent handles donor records (confidential), gift data, and prospect information. No FERPA or GLBA, but donor privacy is a reputational risk.",
         "required_guardrails": [
           "GP-01 (role inheritance)",
-          "GP-03 (PII minimization \u2014 donor names in bulk)",
+          "GP-03 (PII minimization — donor names in bulk)",
           "GP-05 (audit trail)"
         ],
         "system_prompt_additions": "Never list more than 10 donors by name in a single response. For portfolio reviews, use donor_id unless the user specifies a known name. Flag any giving capacity or wealth screening data as sensitive."
       },
       {
         "agent": "banner-to-lakehouse-agent.json",
-        "guardrail_notes": "Similar to the enrollment analytics agent \u2014 full FERPA guardrails required. Additional concern: Banner PIDM values in responses could be used for cross-referencing.",
+        "guardrail_notes": "Similar to the enrollment analytics agent — full FERPA guardrails required. Additional concern: Banner PIDM values in responses could be used for cross-referencing.",
         "required_guardrails": [
           "GP-01",
           "GP-02",
@@ -779,12 +779,12 @@
       "action": "Test with each database role",
       "description": "Run the full agent test suite as each HELIX database role. Verify: deny-by-default works, masking applies correctly, RLS filters correctly, suppression fires at threshold, output filters catch PII, audit log captures all events.",
       "test_scenarios": [
-        "helix_analyst_standard asks for individual student records \u2192 should get aggregate only",
-        "helix_analyst_confidential asks for bulk student emails \u2192 should be blocked (PQP-01)",
-        "helix_analyst_restricted asks for SAI values \u2192 should work in DB but agent response shows '[on file]'",
-        "Any role asks for Native Hawaiian CS graduation count where N<5 \u2192 suppressed",
-        "Follow-up query attempting triangulation \u2192 blocked (PQP-04)",
-        "helix_research asks for identified student data \u2192 should get de-identified only"
+        "helix_analyst_standard asks for individual student records → should get aggregate only",
+        "helix_analyst_confidential asks for bulk student emails → should be blocked (PQP-01)",
+        "helix_analyst_restricted asks for SAI values → should work in DB but agent response shows '[on file]'",
+        "Any role asks for Native Hawaiian CS graduation count where N<5 → suppressed",
+        "Follow-up query attempting triangulation → blocked (PQP-04)",
+        "helix_research asks for identified student data → should get de-identified only"
       ]
     },
     {
@@ -807,8 +807,8 @@
   "references": [
     "FERPA, 20 U.S.C. 1232g; 34 CFR Part 99",
     "GLBA, 15 U.S.C. 6801-6809; 16 CFR Part 314 (Safeguards Rule)",
-    "PTAC (Privacy Technical Assistance Center) \u2014 'Data De-identification: An Overview of Basic Terms' and 'Disclosure Avoidance 101'",
-    "NCES Statistical Standards \u2014 Program 4.1 (Disclosure Limitation)",
+    "PTAC (Privacy Technical Assistance Center) — 'Data De-identification: An Overview of Basic Terms' and 'Disclosure Avoidance 101'",
+    "NCES Statistical Standards — Program 4.1 (Disclosure Limitation)",
     "HELIX Govern: classification-handling-rules.json",
     "HELIX Govern: ferpa-disclosure-framework.json",
     "HELIX Govern: glba-safeguards-framework.json",
@@ -816,6 +816,38 @@
     "HELIX Govern: lakehouse-rbac-model.json",
     "HELIX Govern: access-control-matrix.json",
     "NIST AI Risk Management Framework (AI RMF 1.0)",
-    "Executive Order 14110 on Safe, Secure, and Trustworthy AI (Oct 2023)"
-  ]
+    "Executive Order 14110 on Safe, Secure, and Trustworthy AI (Oct 2023)",
+    "govern/context-governance-policy.json",
+    "docs/context/context-route.md",
+    "templates/context/gold-metrics.yaml"
+  ],
+  "context_grounding": {
+    "description": "How agents use the HELIX context layer (docs/context/context-route.md, govern/context-governance-policy.json). Added in v0.10.0.",
+    "rules": [
+      {
+        "id": "CG-01",
+        "rule": "Answer institutional metrics from the gold metric definitions in templates/context/gold-metrics.yaml (or the institution's signed copy). Name the metric id in the answer. If the definition isn't signed (approved_by empty), say the answer uses a draft definition."
+      },
+      {
+        "id": "CG-02",
+        "rule": "Prefer gold tables for questions that match a gold metric. Go to silver only for questions gold doesn't cover, and follow the resource's skill file for joins and required filters."
+      },
+      {
+        "id": "CG-03",
+        "rule": "Treat column definitions marked helix.definition_status = pattern as unconfirmed. Say so if the answer depends on one."
+      },
+      {
+        "id": "CG-04",
+        "rule": "Context never overrides access. The agent queries with the caller's identity; if a table or column isn't visible to the caller, the agent doesn't describe its contents from context either."
+      },
+      {
+        "id": "CG-05",
+        "rule": "Cross-system questions (student plus aid plus HR plus CRM) are answered from the lakehouse, where every system is joined on one HELIX identity, not by combining answers from separate vendor assistants."
+      },
+      {
+        "id": "CG-06",
+        "rule": "When context from a learning service (for example shared join paths in AWS Context) conflicts with an approved HELIX definition, use the approved definition and flag the conflict for the steward."
+      }
+    ]
+  }
 }

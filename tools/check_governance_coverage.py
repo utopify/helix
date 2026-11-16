@@ -145,7 +145,7 @@ def main():
                 if cs not in code_systems:
                     problems.append(f"binding: {key}.{attr} points at unknown code set {cs}")
     mapped = set()
-    for system in ("peoplesoft", "banner", "workday", "colleague", "banner-saas", "outcomes"):
+    for system in ("peoplesoft", "banner", "workday", "colleague", "banner-saas", "outcomes", "salesforce"):
         for dp, dirs, fs in os.walk(os.path.join(ROOT, "bridge", system)):
             dirs[:] = [d for d in dirs if not d.startswith(".")]
             for f in fs:

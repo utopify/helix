@@ -295,7 +295,7 @@ Load order matters here: the Academic Period, Course, Course Section, and Studen
 
 **Find your customizations first.** Before mock 1, build a customization register: every PeopleSoft object that differs from the PUM image at your level, with usage, owner, and a decision (retire, rebuild in Workday, convert to the lakehouse, keep as data, or add a crosswalk row). PeopleCode and custom pages don't move to Workday as code; the register is how each one becomes a Workday design item or gets retired. See `docs/conversion/peoplesoft-customizations.md` and `agents/customization-discovery-agent.json`.
 
-**On AWS:** DMS from a reporting copy into S3, HELIX silver in S3 Tables, EIB files written from gold, tie-outs in Athena, and the Workday Data Cloud zero-copy integration for HR and finance reads after cutover. See `docs/aws-services-guide.md`.
+**On AWS:** DMS from a reporting copy into S3, HELIX silver in S3 Tables, EIB files written from gold, tie-outs in Athena, and after cutover a Workday landing zone on RaaS and Web Services (`docs/landing-zones/workday-landing-zone.md`). Workday Data Cloud zero-copy is optional, not required. See `docs/aws-services-guide.md`.
 
 **Balances vs detail.** For most objects, convert current state and point-in-time balances, and keep the full detail in the HELIX lakehouse. Workday is your system of record going forward; the lakehouse is your system of history.
 

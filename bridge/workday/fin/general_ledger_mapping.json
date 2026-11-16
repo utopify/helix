@@ -1,11 +1,11 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: Workday Financial Management \u2192 GeneralLedger",
+  "title": "HELIX Bridge: Workday Financial Management → GeneralLedger",
   "source_system": "workday",
   "module": "Financial Management - General Ledger",
   "target_resource": "GLTransaction",
   "version": "0.1",
-  "architecture_notes": "Workday Financials uses worktags rather than chartfields. Every financial transaction is coded with a combination of worktags: Ledger Account, Fund, Cost Center, Revenue Category, Spend Category, Grant, Program, Gift, etc. Worktags are hierarchical and institution-configurable. Data extraction via: RaaS (custom financial reports), Workday Prism Analytics, Workday REST API (Financial Management), or Workday Data Cloud (zero-copy with AWS).",
+  "architecture_notes": "Workday Financials uses worktags rather than chartfields. Every financial transaction is coded with a combination of worktags: Ledger Account, Fund, Cost Center, Revenue Category, Spend Category, Grant, Program, Gift, etc. Worktags are hierarchical and institution-configurable. Data extraction via: RaaS (custom financial reports), Workday Web Services or REST API (Financial Management), or outbound EIBs. Workday Data Cloud zero-copy is an optional, separately priced add-on; Prism brings data into Workday rather than out.",
   "source_objects": [
     {
       "object": "Journal Entry",
@@ -62,7 +62,7 @@
     {
       "helix_attribute": "account",
       "source": "Journal Line.Ledger_Account",
-      "transformation": "Map Workday ledger account to HELIX account code via XREF. E.g., WD '6200 - Travel' \u2192 HELIX 'EXP-TRAVEL-DOM'."
+      "transformation": "Map Workday ledger account to HELIX account code via XREF. E.g., WD '6200 - Travel' → HELIX 'EXP-TRAVEL-DOM'."
     },
     {
       "helix_attribute": "account_description",
@@ -72,22 +72,22 @@
     {
       "helix_attribute": "account_type",
       "source": "Ledger Account.Ledger_Account_Type",
-      "transformation": "Map: 'Asset'\u2192'asset', 'Liability'\u2192'liability', 'Equity'\u2192'equity', 'Revenue'\u2192'revenue', 'Expense'\u2192'expense'."
+      "transformation": "Map: 'Asset'→'asset', 'Liability'→'liability', 'Equity'→'equity', 'Revenue'→'revenue', 'Expense'→'expense'."
     },
     {
       "helix_attribute": "fund_code",
       "source": "Journal Line.Fund (worktag)",
-      "transformation": "Map Workday Fund worktag to HELIX fund category. E.g., WD 'FD100 - General Operating' \u2192 HELIX 'unrestricted_general'."
+      "transformation": "Map Workday Fund worktag to HELIX fund category. E.g., WD 'FD100 - General Operating' → HELIX 'unrestricted_general'."
     },
     {
       "helix_attribute": "department",
       "source": "Journal Line.Cost_Center (worktag)",
-      "transformation": "Map Workday Cost Center to HELIX org code. E.g., WD 'CC-CS - Computer Science' \u2192 HELIX 'CS'."
+      "transformation": "Map Workday Cost Center to HELIX org code. E.g., WD 'CC-CS - Computer Science' → HELIX 'CS'."
     },
     {
       "helix_attribute": "program_code",
       "source": "Journal Line.Revenue_Category or Spend_Category (worktag)",
-      "transformation": "Map Workday Revenue/Spend Category to HELIX functional classification. E.g., WD 'Instruction' \u2192 HELIX 'instruction'."
+      "transformation": "Map Workday Revenue/Spend Category to HELIX functional classification. E.g., WD 'Instruction' → HELIX 'instruction'."
     },
     {
       "helix_attribute": "project_id",
@@ -117,7 +117,7 @@
     {
       "helix_attribute": "journal_status",
       "source": "Journal Entry.Journal_Status",
-      "transformation": "Map: 'Draft'\u2192'not_edited', 'Submitted'\u2192'valid', 'Approved'\u2192'valid', 'Posted'\u2192'posted', 'Reversed'\u2192'reversed'."
+      "transformation": "Map: 'Draft'→'not_edited', 'Submitted'→'valid', 'Approved'→'valid', 'Posted'→'posted', 'Reversed'→'reversed'."
     },
     {
       "helix_attribute": "ledger",
@@ -141,16 +141,16 @@
       "description": "Build custom financial reports (Journal Lines, Trial Balance, Budget vs Actuals) in Workday Report Writer. Expose as REST endpoints for scheduled extraction."
     },
     {
-      "method": "Workday Prism Analytics",
-      "description": "Export financial datasets for bulk analytics. Combine Workday data with external sources."
+      "method": "Workday Prism Analytics (add-on, inbound)",
+      "description": "Brings outside data into Workday for reporting there. Not an extraction path for a lakehouse."
     },
     {
       "method": "Workday REST API - Financial Management",
       "description": "Use /journalEntries, /ledgerAccounts, /balances endpoints. Supports paging and filtering."
     },
     {
-      "method": "Workday Data Cloud",
-      "description": "Zero-copy access to governed financial data directly from AWS services. No ETL pipeline required."
+      "method": "Workday Data Cloud (optional add-on)",
+      "description": "Zero-copy access to Workday financial data over Apache Iceberg, separately priced. Financial data was targeted for general availability in 27R1. Not required for HELIX; RaaS and Web Services are the default."
     }
   ]
 }

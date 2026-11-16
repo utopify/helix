@@ -62,8 +62,8 @@ HELIX is not a single spec. It's an ecosystem of interconnected layers, each ser
 |-------|-----------|-------------|
 | **HELIX Core** | 64 foundational resource definitions (JSON Schema), 67 terminology code sets, and a comprehensive glossary | Data architects, data engineers, analytics teams |
 | **HELIX Connect** | OpenAPI 3.1 spec with 51 REST endpoints for real-time and bulk data exchange | Integration engineers, application developers |
-| **HELIX Govern** | 17 governance artifacts: roles, quality rules (22), maturity model, domain taxonomy, GLBA/FERPA frameworks, RBAC, agent guardrails | CDOs, data stewards, compliance officers |
-| **HELIX Bridge** | ERP mapping templates: PeopleSoft (54), Banner (35), Workday (54), Colleague (4), Outcomes sources outside the ERP (8), plus a reverse HELIX-to-Banner-SaaS bridge (8), 163 total, and 33 PeopleSoft-to-Workday crosswalks | Implementation teams, system integrators |
+| **HELIX Govern** | 18 governance artifacts (including the context governance policy): roles, quality rules (22), maturity model, domain taxonomy, GLBA/FERPA frameworks, RBAC, agent guardrails | CDOs, data stewards, compliance officers |
+| **HELIX Bridge** | ERP mapping templates: PeopleSoft (54), Banner (35), Workday (54), Colleague (4), Salesforce (10), Outcomes sources outside the ERP (8), plus a reverse HELIX-to-Banner-SaaS bridge (8), 173 total, and 33 PeopleSoft-to-Workday crosswalks | Implementation teams, system integrators |
 
 ---
 
@@ -121,7 +121,7 @@ Column-level mapping templates from 4 major ERP systems, plus a reverse write-ba
 | **Ellucian Colleague** | Multi-valued (UniData/UniVerse) | 4 mappings | Core SIS resources |
 | **Banner SaaS (reverse)** | Cloud (Ethos API / BIA / Data Connect) | **8 reverse mappings** (HELIX → Ethos) | Write-back into Ellucian Platform; no direct DB |
 
-PeopleSoft and Workday are the two deepest Bridges with 54 mappings each and near-perfect parity across all three modules: SIS 100%, FIN 96%, HCM 100%. Every PeopleSoft resource has a matching Workday target and vice versa. PeopleSoft mappings include full PS table/record references (69 FIN source tables, 60 HCM source tables) so data engineers know exactly which PS tables to query. Workday mappings include source object inventories and 4 documented extraction methods (RaaS, REST API, Prism, Data Cloud).
+PeopleSoft and Workday are the two deepest Bridges with 54 mappings each and near-perfect parity across all three modules: SIS 100%, FIN 96%, HCM 100%. Every PeopleSoft resource has a matching Workday target and vice versa. PeopleSoft mappings include full PS table/record references (69 FIN source tables, 60 HCM source tables) so data engineers know exactly which PS tables to query. Workday mappings include source object inventories and extraction guidance: RaaS and Web Services by default, with Prism and Workday Data Cloud as optional add-ons (see `docs/landing-zones/workday-landing-zone.md`).
 
 ### PeopleSoft to Workday: the cornerstone path
 
@@ -181,13 +181,14 @@ Ready-to-use AI agent templates that work with any LLM platform:
 
 | Agent | What It Does | Best For |
 |-------|-------------|----------|
-| **[HELIX Migration Companion](../agents/helix-migration-companion.json)** | Interactive guide to the entire HELIX framework with a menu of 11 options. Combines all specialist knowledge into one conversational entry point. | Anyone starting with HELIX. Drop into ChatGPT, Gemini, Claude, Grok, Amazon Q, or Bedrock. |
+| **[HELIX Migration Companion](../agents/helix-migration-companion.json)** | Interactive guide to the entire HELIX framework with a menu of 12 options. Combines all specialist knowledge into one conversational entry point. | Anyone starting with HELIX. Drop into ChatGPT, Gemini, Claude, Grok, Amazon Q, or Bedrock. |
 | [PS-to-Workday HCM Agent](../agents/ps-to-workday-hcm-agent.json) | JOB rows to business processes, EMPLID to Universal ID, job profiles, comp, payroll parallel, benefits | HR and payroll teams migrating PeopleSoft HCM to Workday |
 | [PS-to-Workday FIN Agent](../agents/ps-to-workday-fin-agent.json) | Chartfield-to-worktag mapping, GLBA guardrails, reconciliation | Finance teams migrating PeopleSoft to Workday |
 | [PS-to-Workday Student Agent](../agents/ps-to-workday-sis-agent.json) | Identity, program of study, academic history, FERPA carryover | Registrar and student systems teams migrating Campus Solutions to Workday Student |
 | [Enrollment Analytics Agent](../agents/enrollment-analytics-agent.json) | Funnel analysis, marketing ROI, melt prediction, interventions | Enrollment management and student success |
 | [Advancement & Donor Agent](../agents/advancement-donor-agent.json) | Stewardship acceleration, prospect identification, event briefings | Advancement and fundraising teams |
 | [Banner-to-Lakehouse Agent](../agents/banner-to-lakehouse-agent.json) | PIDM handling, STV lookups, dbt model generation | Banner institutions building data lakes |
+| [Context Steward Agent](../agents/context-steward-agent.json) | Defines custom and historical tables, keeps silver and gold context current, drafts gold metrics | Data stewards, IR, and data custodians making the lakehouse AI-ready |
 | [Customization Discovery Agent](../agents/customization-discovery-agent.json) | Vanilla vs production comparison, customization register, conversion with AWS DMS Schema Conversion, AWS Transform, and Amazon Bedrock | Teams preparing for PeopleSoft to Workday or Banner on-prem to Banner SaaS |
 
 Every agent knows the AWS services HELIX conversions run on; see the [AWS Services Guide](aws-services-guide.md).
@@ -286,6 +287,7 @@ helix/
 |   |   +-- financial-aid/             <-- Financial Aid (7)
 |   |   +-- ONPREM_EXTRACTION.md       <-- On-prem Oracle extraction playbook
 |   +-- banner-saas/                   <-- Reverse bridge: HELIX -> Banner SaaS/Ethos (8)
+|   +-- salesforce/                    <-- Agentforce Education, EDA, NPSP (10)
 |   +-- outcomes/                      <-- Non-ERP outcomes sources: Handshake, NSC, wage records, licensure, Canvas (8)
 |   +-- workday/                       <-- Workday mappings (54)
 |   |   +-- sis/                       <-- Student Information System (31)
@@ -302,6 +304,7 @@ helix/
 |   |   +-- worktag-conversion-rules.json <-- Chartfield -> worktag + HCM/Student field rules
 |   |   +-- reconciliation/            <-- 22 PS -> Workday tie-outs (FIN, HCM, Student, Aid)
 |   +-- customization-discovery/       <-- 22 inventory queries, register, Bedrock prompts, sample
+|   +-- context/                       <-- Gold metrics, generated context pack, profiling, review sheet
 |   +-- dbt/                           <-- dbt starter project (27 files)
 |   |   +-- dbt_project.yml            <-- Project configuration
 |   |   +-- profiles.yml.example       <-- Snowflake/Redshift/Databricks/BigQuery
@@ -331,11 +334,15 @@ helix/
 |   +-- advancement-donor-agent.json
 |   +-- banner-to-lakehouse-agent.json
 |   +-- customization-discovery-agent.json <-- Find and convert PS and Banner customizations
+|   +-- context-steward-agent.json     <-- Definitions, metadata, ontology, gold metrics
 +-- tools/
 |   +-- validate.py                    <-- Schema validation (JSON/NDJSON/CSV)
 |   +-- check_governance_coverage.py   <-- Fails if any resource lacks access rules
 |   +-- diff_customizations.py         <-- Vanilla vs production: builds the customization register
 |   +-- inventory_source_files.py      <-- Fingerprints SQR, COBOL, Pro*C, and scripts on servers
+|   +-- build_context_pack.py          <-- Context for every silver table and gold metric
+|   +-- draft_custom_table_context.py  <-- Matches custom table columns to HELIX
+|   +-- apply_glue_context.py          <-- Publishes approved context to the Glue Data Catalog
 +-- docs/
     +-- helix-reference.md             <-- This file: the full inventory
     +-- helix-executive-summary.md     <-- One-pager for CIOs and leadership
@@ -351,6 +358,9 @@ helix/
     +-- lakehouse-architecture-guide.md     <-- Medallion, FERPA/GLBA
     +-- aws-services-guide.md               <-- AWS services by phase and path
     +-- conversion/                         <-- Customization discovery: method, PeopleSoft, Banner
+    +-- own-your-intelligence.md            <-- Why agents point at your lakehouse, not vendor platforms
+    +-- landing-zones/                      <-- Workday and Salesforce, no add-on required
+    +-- context/                            <-- The Context Route: definitions, metadata, ontology
 ```
 
 ---
@@ -369,4 +379,4 @@ The double helix is a fitting metaphor. Two strands, data and governance, wound 
 
 ---
 
-*HELIX v0.9.0, September 2026. Licensed under Apache 2.0.*
+*HELIX v0.10.0, November 2026. Licensed under Apache 2.0.*

@@ -1,11 +1,11 @@
 {
   "$schema": "https://helixedu.org/bridge/mapping-schema.json",
-  "title": "HELIX Bridge: Workday Student \u2192 Student",
+  "title": "HELIX Bridge: Workday Student → Student",
   "description": "Maps Workday Student business objects to the HELIX Student resource. Workday is cloud-native; data is accessed via RaaS (Report-as-a-Service), Workday REST API, or Prism Analytics rather than direct database tables.",
   "source_system": "workday",
   "target_resource": "Student",
   "version": "0.1",
-  "architecture_notes": "Workday Student uses a unified person model shared with HCM. A student is a 'Person' with a 'Student' role. Data is extracted via: (1) RaaS custom reports exposed as REST endpoints, (2) Workday REST API /students endpoint, (3) Prism Analytics datasets for bulk/lake ingestion, (4) Workday Data Cloud zero-copy integration with AWS (announced June 2026) for direct governed access without ETL.",
+  "architecture_notes": "Workday Student uses a unified person model shared with HCM. A student is a 'Person' with a 'Student' role. Data is extracted via: (1) RaaS custom reports exposed as REST endpoints, (2) Workday REST API /students endpoint, (3) outbound EIBs or Studio integrations to SFTP, and, only if the institution licenses it, (4) Workday Data Cloud (zero-copy over Iceberg; integration with AWS announced June 2026, Student data targeted for general availability in 27R1). Prism Analytics brings outside data into Workday; it isn't an extraction path. Default HELIX path: RaaS plus Web Services (docs/landing-zones/workday-landing-zone.md) for direct governed access without ETL.",
   "source_objects": [
     {
       "object": "Person",
@@ -90,13 +90,13 @@
     {
       "helix_attribute": "gender",
       "source": "Person.Gender",
-      "transformation": "Map Workday gender reference IDs to HELIX: 'Male'\u2192'male', 'Female'\u2192'female', 'Not_Declared'\u2192'unknown'. Workday supports configurable gender identity options.",
+      "transformation": "Map Workday gender reference IDs to HELIX: 'Male'→'male', 'Female'→'female', 'Not_Declared'→'unknown'. Workday supports configurable gender identity options.",
       "notes": "Workday tenants may have custom gender identity values configured. Map the reference ID, not the display label."
     },
     {
       "helix_attribute": "status",
       "source": "Academic Affiliation.Academic_Status",
-      "transformation": "Map Workday academic status to HELIX: 'Active'\u2192'enrolled', 'Inactive'\u2192'withdrawn', 'Graduated'\u2192'graduated', 'Leave_of_Absence'\u2192'leave_of_absence', 'Admitted'\u2192'admitted'. Use the current (most recent effective-dated) affiliation.",
+      "transformation": "Map Workday academic status to HELIX: 'Active'→'enrolled', 'Inactive'→'withdrawn', 'Graduated'→'graduated', 'Leave_of_Absence'→'leave_of_absence', 'Admitted'→'admitted'. Use the current (most recent effective-dated) affiliation.",
       "notes": "Workday tracks status at the Academic Affiliation level. A student may have multiple affiliations (undergrad, grad). Use the primary or most recent."
     },
     {
@@ -108,7 +108,7 @@
     {
       "helix_attribute": "citizenship_country",
       "source": "Citizenship_Status.Country",
-      "transformation": "Map Workday country reference ID to ISO 3166-1 alpha-2. Workday uses ISO 3166-1 alpha-3 internally (e.g., 'USA'\u2192'US')."
+      "transformation": "Map Workday country reference ID to ISO 3166-1 alpha-2. Workday uses ISO 3166-1 alpha-3 internally (e.g., 'USA'→'US')."
     },
     {
       "helix_attribute": "first_generation_flag",
@@ -144,14 +144,14 @@
       "notes": "Requires API Client configuration and OAuth 2.0 setup in Workday."
     },
     {
-      "method": "Workday Prism Analytics",
-      "description": "Export datasets from Prism Analytics for bulk ingestion into a data lake. Prism can combine Workday data with external sources.",
+      "method": "Workday Prism Analytics (add-on, inbound)",
+      "description": "Prism brings outside data into Workday for reporting there. It isn't needed to land Workday data in a lakehouse. Datasets published in Prism become reachable from outside Workday only through Workday Data Cloud.",
       "notes": "Good for analytics-first use cases but adds a layer of abstraction."
     },
     {
-      "method": "Workday Data Cloud (Zero-Copy with AWS)",
-      "description": "Announced June 2026. Bi-directional zero-copy access to Workday's governed data layer directly from AWS services (Athena, Redshift, SageMaker). No ETL pipeline required. Data stays governed in Workday.",
-      "notes": "Early access as of mid-2026, GA expected later in 2026. This is the most HELIX-aligned extraction path \u2014 governed data, no movement, lake-ready."
+      "method": "Workday Data Cloud (optional add-on)",
+      "description": "Separately priced Workday package (platform fee plus Flex Credits) offering bi-directional zero-copy access over Apache Iceberg and Live Data Query. Integration with AWS announced June 2026 in early access. Useful if already licensed; not required for HELIX.",
+      "notes": "Early access as of mid-2026, GA expected later in 2026. This is the most HELIX-aligned extraction path — governed data, no movement, lake-ready."
     }
   ]
 }

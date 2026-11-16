@@ -1,5 +1,35 @@
 # HELIX Changelog
 
+## v0.10.0 (November 2026): Own your intelligence layer
+
+HELIX now says plainly where AI agents should point: at the institution's own lakehouse and context layer, not at each vendor's platform. This release adds the Context Route for defining silver, gold, and historical or custom tables; Workday and Salesforce landing zones that need no add-on; a Salesforce bridge; and a ninth agent.
+
+**Added**
+- `docs/own-your-intelligence.md`: the position and the honest trade-offs. Vendor add-ons (Workday Prism and Data Cloud, Salesforce Data 360 and Agentforce) are optional and strongest inside their own application; the lakehouse answers cross-system questions and keeps definitions in files the institution owns. Also lists the real costs of owning the layer.
+- `docs/landing-zones/`: Workday (RaaS and Web Services by default, one report per HELIX resource, ISU security, restricted prefixes, gold tables that need Workday plus other systems) and Salesforce (Bulk API 2.0 plus Change Data Capture or Amazon AppFlow, describe-first extraction, Contact identity resolution, CRM gold tables).
+- `bridge/salesforce/`: 10 mappings (Person, AdmissionApplication, StudentProgram, Enrollment, AcademicPeriod, EngagementActivity, Campaign, StudentGroup, Constituent, Gift) covering Agentforce Education standard objects, EDA, and NPSP or Nonprofit Cloud. Every attribute checked against the HELIX schemas; every file carries a VALIDATE note.
+- `docs/context/context-route.md`: seven steps (pick, profile, match, draft, review, publish, connect AWS Context) for historical and custom tables, plus generated context for silver and gold. Builds on what's available now (Glue descriptions and parameters, Glue business context and skill assets in preview, Amazon S3 annotations, the open-source Context Ontology Accelerator) and is ready for AWS Context, which AWS announced in June 2026 and lists as coming soon. Public announcements only.
+- `templates/context/`: 14 gold metric definitions for owners to adapt and sign (`gold-metrics.yaml`); a safe profiling query; a steward review sheet and schema; Bedrock prompts for definitions and new metrics; an S3 annotation template; and a fictional Banner sample.
+- `templates/context/generated/`: catalog context for all 64 silver tables (1,122 columns), 64 resource skill files, 14 gold metric skill files, and the HELIX ontology (OWL classes and properties, SKOS concept schemes for all 67 code sets).
+- `tools/build_context_pack.py` (generates the pack), `tools/draft_custom_table_context.py` (matches custom table columns to HELIX from bridge source columns, the data dictionary, and Banner prefix rules, and proposes classifications), `tools/apply_glue_context.py` (publishes approved context to the Glue Data Catalog or emits Spark SQL; dry run by default; refuses unapproved rows and lowered classifications). All tested on the repo and the sample.
+- `govern/context-governance-policy.json`: 10 rules (CTX-001 to CTX-010). AI drafts; stewards approve; classification never goes down without the trustee; context never carries data; vendor semantic layers are inputs, not the source.
+- `agents/context-steward-agent.json`: the ninth agent.
+
+**Changed**
+- Corrected guidance that treated Workday Data Cloud as the default read path. Workday Data Cloud is a separately priced package (Workday's integration with AWS was announced in June 2026 in early access), and Prism brings data into Workday rather than out. RaaS and Web Services are now the default everywhere: the AWS services guide, the cornerstone guide, the adventure guide, the reference guide, the Workday bridge README and mappings, and the three PeopleSoft to Workday agents.
+- `govern/agent-guardrails.json` (v0.3): context grounding rules CG-01 to CG-06 (answer metrics from signed gold definitions, prefer gold, flag unconfirmed definitions, context never overrides access, cross-system questions go to the lakehouse).
+- `docs/aws-services-guide.md`: new section 9 on the context layer; Salesforce and AppFlow added to extraction.
+- All agents: the ownership principle, landing zones, and the Context Route. The Companion has menu option 11 and routes to the context steward. All agents at v0.10.0.
+- `tools/check_governance_coverage.py` now scans `bridge/salesforce/`.
+- Bridge: 163 to 173 mappings. Govern: 17 to 18 artifacts. Agents: 8 to 9.
+- Updated: root README (two new goals), Getting Started (goal E), docs, templates, agents, bridge, and govern READMEs, the reference guide, bridge reference, governance overview, lakehouse guide, executive summary, CONTRIBUTING.
+
+**Known gap**
+- 394 of 1,122 silver columns (35 percent) have no written definition in HELIX Core. The context pack fills them from the column name and marks them `helix.definition_status = pattern`. Writing real definitions for them is the next Core task.
+
+**Still to confirm locally**
+- Salesforce object and field names vary by org; Workday report fields vary by tenant; Glue business context, skill assets, and S3 annotation API details should be checked in your account while they're in preview or newly released.
+
 ## v0.9.0 (October 2026): AWS knowledge and customization discovery
 
 Two additions: every agent now knows the AWS services HELIX conversions run on, and there's a full method and toolkit for finding PeopleSoft and Banner customizations and converting the ones worth keeping.

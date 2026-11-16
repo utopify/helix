@@ -16,6 +16,7 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 6. [Where Amazon Translate fits](#6-where-amazon-translate-fits)
 7. [Running the HELIX agents on AWS](#7-running-the-helix-agents-on-aws)
 8. [Things that trip people up](#8-things-that-trip-people-up)
+9. [The context layer: definitions agents can trust](#9-the-context-layer-definitions-agents-can-trust)
 
 ---
 
@@ -24,7 +25,8 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 | Layer | Default choice | Why |
 |-------|---------------|-----|
 | Pull from Oracle (PeopleSoft, Banner on-prem) | AWS DMS, full load plus CDC, from a reporting copy | Handles Oracle change data capture without touching production |
-| Pull from Workday | Workday Data Cloud zero-copy integration with AWS, RaaS or Web Services through AWS Glue | Zero-copy covers HR and finance; Student still needs RaaS or the API |
+| Pull from Workday | RaaS and Web Services through AWS Glue or Lambda (`landing-zones/workday-landing-zone.md`) | Included with Workday. Workday Data Cloud zero-copy is an optional add-on |
+| Pull from Salesforce | Bulk API 2.0 plus Change Data Capture or Amazon AppFlow (`landing-zones/salesforce-landing-zone.md`) | Included with the org. Data 360 zero copy is an optional add-on |
 | Pull from Banner SaaS | Ellucian Data Connect into Amazon RDS for PostgreSQL, then AWS Glue | SaaS has no direct database access |
 | Bronze | Amazon S3, one prefix per source system | Cheap, immutable, replayable |
 | Silver (HELIX) | Amazon S3 Tables (managed Apache Iceberg) | Iceberg with compaction and snapshot cleanup handled for you |
@@ -44,11 +46,12 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 |---------|------------------------|---------------|
 | **AWS DMS** | Full load and ongoing change data capture from Oracle (PeopleSoft and Banner on-prem) into S3. Writes Parquet. | Point it at a reporting copy or standby, not production. Supplemental logging must be on for CDC. Large LOBs (PeopleCode text, long comments) need LOB settings tuned. |
 | **AWS Glue (JDBC jobs)** | Scheduled pulls where CDC is overkill: setup tables, small validation tables, monthly snapshots. | Glue reads through a VPC connection; plan network access to the campus data center first. |
-| **Workday Data Cloud integration with AWS** | Announced June 2026: bi-directional, zero-copy access to Workday's governed HR and finance data from AWS services, with no pipelines to build. | Covers HR and finance. Workday Student data still comes through RaaS reports or Workday Web Services. Confirm what your tenant is licensed for. |
-| **Workday RaaS and Web Services through Glue or Lambda** | Pull Workday Student and anything zero-copy doesn't cover. | Report-based extracts depend on the report definition. Version-control the report definitions with the pipeline. |
+| **Workday Data Cloud integration with AWS (optional add-on)** | Announced June 2026, in early access: bi-directional zero-copy access to Workday data from AWS services. Workday Data Cloud is a separately priced Workday package (platform fee plus Flex Credits). | Covers HR and finance. Workday Student data still comes through RaaS reports or Workday Web Services. Confirm what your tenant is licensed for. |
+| **Workday RaaS and Web Services through Glue or Lambda** | The default for HCM, Financials, and Student. Included with the Workday subscription. | Report-based extracts depend on the report definition. Version-control the report definitions with the pipeline. |
 | **Third-party Glue connectors (AWS Marketplace)** | Prebuilt connectors exist for Workday and other SaaS sources, for example from CData. | Third-party licensing and support. Check FERPA and GLBA terms before routing student or aid data through them. |
 | **Ellucian Data Connect to Amazon RDS for PostgreSQL** | The supported read path out of Banner SaaS (see `docs/banner-saas-landing-architecture.md`). | Treat the PostgreSQL copy as operational staging, not the lakehouse. |
 | **AWS DataSync** | Copies file-based source code off campus servers: SQR, COBOL, Pro*C, shell scripts, `PS_HOME` and Banner job server directories. | This is where a lot of undocumented customization lives. Copy it before anyone decommissions a server. |
+| **Amazon AppFlow** | Managed Salesforce to S3 flows, scheduled or event-triggered. | Priced per flow run and data processed. Bulk API through Glue is the code-first alternative. |
 | **AWS Transfer Family** | Managed SFTP for files that already move by SFTP: ISIR batches, Clearinghouse returns, EIB loads into Workday. | Land straight into a restricted bronze prefix with its own KMS key. |
 
 ### Store
@@ -92,6 +95,8 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 | **AWS IAM Identity Center** | Campus SSO into the AWS console, SageMaker Unified Studio, and Quick Sight. |
 | **AWS Secrets Manager** | Database and API credentials for every extract. Nothing in code. |
 | **AWS Clean Rooms** | Joins with outside parties (state agencies, research partners) without either side handing over row-level data. Fits FERPA studies disclosures under 99.31(a)(6). |
+| **Glue Data Catalog business context and semantic search (preview)** | Business descriptions, glossary terms, and custom metadata on tables and columns, searchable by people and agents. HELIX generates them for all 64 silver tables (`templates/context/generated/`). |
+| **Amazon S3 annotations** | Queryable context attached to S3 objects (source, extract, register row, classification), flowing into an Iceberg table. Use on bronze. |
 | **Amazon DataZone / SageMaker Catalog** | Business catalog and data sharing requests, using the HELIX data dictionary as the glossary. |
 
 ### Analyze and use
@@ -107,6 +112,8 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 | **Amazon Comprehend** | Finds PII in free text (advising notes, appeal reasons, comments) before it reaches an analytics zone. |
 | **Amazon Textract** | Pulls data from scanned documents in imaging systems (transcripts, verification documents) when conversion includes them. |
 | **Amazon Translate** | Multilingual content. See [section 6](#6-where-amazon-translate-fits). |
+| **AWS Context (coming soon)** | Organizational knowledge graph over the catalog with steward review, agentic search, MCP tools, and the caller's IAM and Lake Formation permissions. See [section 9](#9-the-context-layer-definitions-agents-can-trust). |
+| **Context Ontology Accelerator (open source)** | Drafts and serves an ontology through MCP; load the HELIX ontology as a starting point. |
 
 ---
 
@@ -135,7 +142,7 @@ The HELIX data model, bridges, and governance stay platform-neutral. This guide 
 3. **Silver:** HELIX resources in S3 Tables. This is the conversion hub: PeopleSoft lands in HELIX shape, the crosswalks translate codes, and EIB files for Workday come out of gold.
 4. **Load Workday:** write EIB files from gold to S3, deliver through AWS Transfer Family or Workday's integration endpoints.
 5. **Reconcile:** run the 22 tie-outs in `templates/ps-to-workday/reconciliation/` in Athena, comparing PeopleSoft silver to Workday silver.
-6. **After cutover:** read HR and finance through the Workday Data Cloud zero-copy integration; Workday Student through RaaS or Web Services.
+6. **After cutover:** keep landing Workday through RaaS and Web Services (`landing-zones/workday-landing-zone.md`). If the institution licenses Workday Data Cloud, zero-copy is one more way to fill bronze; keep definitions in your own context layer either way.
 7. **Keep PeopleSoft history** in the lakehouse. Most schools never load more than a few years into Workday.
 
 ### Any ERP to analytics only (keep the ERP)
@@ -208,6 +215,26 @@ Use **custom terminology** so HELIX and campus terms come out consistently. Tran
 - **DMS against production.** Run it against a standby or reporting copy. CDC on a busy registration day will be noticed.
 - **One KMS key for everything.** GLBA needs its own key and its own access path.
 - **Converting dead code.** Customizations that haven't run in years are common in long-lived PeopleSoft and Banner installs. Check run history before converting anything.
-- **Treating zero-copy as a full extract.** Workday's AWS integration covers governed HR and finance data. Plan Student separately.
+- **Assuming you need an add-on.** Workday Data Cloud and Salesforce Data 360 are optional. RaaS, Web Services, Bulk API, and CDC land everything HELIX needs. See `own-your-intelligence.md`.
 
-*HELIX v0.9.0, October 2026*
+---
+
+## 9. The context layer: definitions agents can trust
+
+Pointing an agent at a lakehouse isn't enough; it also needs to know what the tables mean, how to join them, and what rules apply. HELIX calls that the context layer. The full route is in [`context/context-route.md`](context/context-route.md); the principle is in [`own-your-intelligence.md`](own-your-intelligence.md).
+
+| Need | AWS service | Status (Nov 2026) | HELIX file |
+|------|------------|-------------------|-----------|
+| Table and column definitions, classification parameters | Glue Data Catalog descriptions, comments, table parameters | Generally available | `generated/glue-business-context.json`, `tools/apply_glue_context.py` |
+| Glossary terms and custom metadata, semantic search | Glue Data Catalog business context and semantic search | Preview | same file |
+| How to use each table (grain, joins, filters, rules) | Glue Data Catalog skill assets | Preview | `generated/skills/`, `generated/gold-skills/` |
+| Context on raw objects in bronze | Amazon S3 annotations | Generally available | `templates/context/s3-annotation-template.json` |
+| A reviewed ontology agents can query | Context Ontology Accelerator (Neptune, OpenSearch Serverless, Bedrock) | Open source | `generated/helix-ontology.ttl` |
+| An organizational knowledge graph with agentic search and inherited permissions | AWS Context | Announced, coming soon | Everything above, already in the catalog it integrates with |
+| Agent runtime and policy | Amazon Bedrock AgentCore, Bedrock Guardrails | Generally available | `govern/agent-guardrails.json` |
+
+For historical and custom tables (Banner Z tables, PeopleSoft custom records, a legacy warehouse), profile with Athena, match with `tools/draft_custom_table_context.py`, draft definitions in Bedrock, have a steward approve them, and publish with `tools/apply_glue_context.py`. Rules: `govern/context-governance-policy.json`.
+
+Use public AWS announcements only when planning around services that aren't generally available yet.
+
+*HELIX v0.10.0, November 2026*

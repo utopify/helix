@@ -1,0 +1,91 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Salesforce → Campaign",
+  "source_system": "salesforce",
+  "module": "Campaigns",
+  "target_resource": "Campaign",
+  "version": "0.1",
+  "architecture_notes": "Salesforce Campaign covers both marketing and fundraising. Map fundraising campaigns to HELIX Campaign; recruiting events stay as campaign records used by EngagementActivity. Use record types or Campaign.Type to tell them apart.",
+  "source_objects": [
+    {
+      "object": "Campaign",
+      "description": "Salesforce campaigns: recruiting events, appeals, giving days, comprehensive campaign components."
+    },
+    {
+      "object": "CampaignMember",
+      "description": "Members and response status."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Campaign.Id."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Institution's HELIX registration."
+    },
+    {
+      "helix_attribute": "name",
+      "source": "Campaign.Name",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "campaign_type",
+      "source": "Campaign.Type / record type",
+      "transformation": "Map through HELIX campaign types (annual_fund, giving_day, capital, and so on)."
+    },
+    {
+      "helix_attribute": "goal_amount",
+      "source": "Campaign.ExpectedRevenue or a goal field",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "raised_amount",
+      "source": "Campaign.AmountWonOpportunities",
+      "transformation": "Decimal. Recompute from HELIX Gift in gold under CASE rules."
+    },
+    {
+      "helix_attribute": "donor_count",
+      "source": "Distinct donors on won opportunities",
+      "transformation": "Recompute in gold."
+    },
+    {
+      "helix_attribute": "start_date",
+      "source": "Campaign.StartDate",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "end_date",
+      "source": "Campaign.EndDate",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "Campaign.Status",
+      "transformation": "Map to planning, silent_phase, public_phase, completed, extended."
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Bulk API 2.0 query",
+      "description": "Default. SOQL by SystemModstamp high-water mark; queryAll to include deleted rows. Included with API-enabled editions."
+    },
+    {
+      "method": "Change Data Capture",
+      "description": "Near real-time change events for objects that need freshness. A limited number of objects is included; more needs an add-on. Check your contract."
+    },
+    {
+      "method": "Amazon AppFlow",
+      "description": "AWS-managed Salesforce to S3 flows, scheduled or event-triggered. Priced per flow run and data processed on the AWS side."
+    },
+    {
+      "method": "Data 360 zero copy (optional)",
+      "description": "Only if the institution already licenses Salesforce Data 360. Not required for HELIX."
+    }
+  ],
+  "validate": "Object and field names follow Salesforce's published Agentforce Education (formerly Education Cloud), EDA, NPSP, and standard object models, but orgs add custom fields and record types. VALIDATE every field against your org's describe output before building extracts; custom fields end in __c.",
+  "landing_zone": "docs/landing-zones/salesforce-landing-zone.md"
+}

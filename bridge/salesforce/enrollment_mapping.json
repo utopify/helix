@@ -1,0 +1,89 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Salesforce → Enrollment",
+  "source_system": "salesforce",
+  "module": "Terms and courses",
+  "target_resource": "Enrollment",
+  "version": "0.1",
+  "architecture_notes": "Course enrollment usually belongs to the SIS. Land Salesforce course participation when Agentforce Education runs academic operations or for advising and early-alert use, and reconcile to the SIS in silver.",
+  "source_objects": [
+    {
+      "object": "CourseOfferingParticipant",
+      "description": "Agentforce Education: a student's enrollment in a course offering."
+    },
+    {
+      "object": "CourseOffering",
+      "description": "The section."
+    },
+    {
+      "object": "AcademicTerm",
+      "description": "Term."
+    },
+    {
+      "object": "hed__Course_Enrollment__c",
+      "description": "EDA course connection (student role)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + CourseOfferingParticipant.Id or hed__Course_Enrollment__c.Id."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "Participant Contact / hed__Contact__c",
+      "transformation": "Resolve to HELIX Student."
+    },
+    {
+      "helix_attribute": "course_section_ref",
+      "source": "CourseOffering / hed__Course_Offering__c",
+      "transformation": "Resolve to HELIX CourseSection through the SIS section key carried on the offering. VALIDATE that key field."
+    },
+    {
+      "helix_attribute": "academic_period_ref",
+      "source": "AcademicTerm on the offering / hed__Term__c",
+      "transformation": "Resolve to HELIX AcademicPeriod."
+    },
+    {
+      "helix_attribute": "enrollment_status",
+      "source": "Participation status / hed__Status__c",
+      "transformation": "Map through helix/enrollment-status."
+    },
+    {
+      "helix_attribute": "credit_hours_attempted",
+      "source": "Credits on the participant or offering / hed__Credits_Attempted__c",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "credit_hours_earned",
+      "source": "hed__Credits_Earned__c or result object",
+      "transformation": "Decimal."
+    },
+    {
+      "helix_attribute": "grade",
+      "source": "CourseOfferingPtcpResult grade / hed__Grade__c",
+      "transformation": "Final grade as recorded. Confidential."
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Bulk API 2.0 query",
+      "description": "Default. SOQL by SystemModstamp high-water mark; queryAll to include deleted rows. Included with API-enabled editions."
+    },
+    {
+      "method": "Change Data Capture",
+      "description": "Near real-time change events for objects that need freshness. A limited number of objects is included; more needs an add-on. Check your contract."
+    },
+    {
+      "method": "Amazon AppFlow",
+      "description": "AWS-managed Salesforce to S3 flows, scheduled or event-triggered. Priced per flow run and data processed on the AWS side."
+    },
+    {
+      "method": "Data 360 zero copy (optional)",
+      "description": "Only if the institution already licenses Salesforce Data 360. Not required for HELIX."
+    }
+  ],
+  "validate": "Object and field names follow Salesforce's published Agentforce Education (formerly Education Cloud), EDA, NPSP, and standard object models, but orgs add custom fields and record types. VALIDATE every field against your org's describe output before building extracts; custom fields end in __c.",
+  "landing_zone": "docs/landing-zones/salesforce-landing-zone.md"
+}

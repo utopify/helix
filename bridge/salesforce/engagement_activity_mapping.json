@@ -1,0 +1,99 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Salesforce → EngagementActivity",
+  "source_system": "salesforce",
+  "module": "Engagement (recruiting, advising, advancement)",
+  "target_resource": "EngagementActivity",
+  "version": "0.1",
+  "architecture_notes": "HELIX EngagementActivity is keyed to Constituent. For recruiting touches on prospects, create a Constituent with constituent_type prospect for the Person, or record the activity as a local extension until the person enrolls. Decide this once in the stewardship policy. Never land email or call body text in silver; it's free text about people.",
+  "source_objects": [
+    {
+      "object": "Task",
+      "description": "Calls, emails, and to-dos. WhoId points to the Contact or Lead; WhatId to a related record."
+    },
+    {
+      "object": "Event",
+      "description": "Meetings and visits."
+    },
+    {
+      "object": "CampaignMember",
+      "description": "Event registration and attendance through campaign membership status."
+    },
+    {
+      "object": "EmailMessage / marketing engagement objects",
+      "description": "Email engagement where the org stores it."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + Task.Id, Event.Id, or CampaignMember.Id."
+    },
+    {
+      "helix_attribute": "constituent_ref",
+      "source": "Task.WhoId / Event.WhoId / CampaignMember.ContactId",
+      "transformation": "Resolve the Contact to HELIX Person, then its Constituent (create a prospect constituent if policy allows)."
+    },
+    {
+      "helix_attribute": "activity_type",
+      "source": "Task.Type, Event.Type, Task.TaskSubtype; CampaignMember.Status",
+      "transformation": "Map: Call to phone_call, Email to email_reply or email_open, Meeting to development_meeting or campus_visit by owner team, Attended to event_attendance, Registered to event_registration."
+    },
+    {
+      "helix_attribute": "activity_date",
+      "source": "Task.ActivityDate / Event.StartDateTime / CampaignMember.FirstRespondedDate",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "event_name",
+      "source": "Campaign.Name for CampaignMember rows; Event.Subject",
+      "transformation": "Direct. Subject lines can contain names; trim to the event name only."
+    },
+    {
+      "helix_attribute": "event_type",
+      "source": "Campaign.Type",
+      "transformation": "Map through HELIX event types."
+    },
+    {
+      "helix_attribute": "channel",
+      "source": "Derived from source object and type",
+      "transformation": "in_person, email, phone, web, and so on."
+    },
+    {
+      "helix_attribute": "location",
+      "source": "Event.Location",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "notes",
+      "source": "Not landed",
+      "transformation": "Leave null in silver. Description fields stay in restricted bronze if kept at all."
+    },
+    {
+      "helix_attribute": "officer_ref",
+      "source": "Task.OwnerId / Event.OwnerId",
+      "transformation": "Resolve the User to HELIX Employee."
+    }
+  ],
+  "extraction_methods": [
+    {
+      "method": "Bulk API 2.0 query",
+      "description": "Default. SOQL by SystemModstamp high-water mark; queryAll to include deleted rows. Included with API-enabled editions."
+    },
+    {
+      "method": "Change Data Capture",
+      "description": "Near real-time change events for objects that need freshness. A limited number of objects is included; more needs an add-on. Check your contract."
+    },
+    {
+      "method": "Amazon AppFlow",
+      "description": "AWS-managed Salesforce to S3 flows, scheduled or event-triggered. Priced per flow run and data processed on the AWS side."
+    },
+    {
+      "method": "Data 360 zero copy (optional)",
+      "description": "Only if the institution already licenses Salesforce Data 360. Not required for HELIX."
+    }
+  ],
+  "validate": "Object and field names follow Salesforce's published Agentforce Education (formerly Education Cloud), EDA, NPSP, and standard object models, but orgs add custom fields and record types. VALIDATE every field against your org's describe output before building extracts; custom fields end in __c.",
+  "landing_zone": "docs/landing-zones/salesforce-landing-zone.md"
+}

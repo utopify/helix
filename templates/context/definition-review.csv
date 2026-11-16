@@ -1,0 +1,1 @@
+review_id,source_system,source_table,column_name,data_type,profile_summary,register_id,candidate_1,candidate_1_score,candidate_1_reason,candidate_2,candidate_2_score,candidate_3,candidate_3_score,proposed_classification,classification_reason,drafted_definition,drafted_by,steward_definition,steward_classification,helix_link,status,steward,reviewed_date,notes

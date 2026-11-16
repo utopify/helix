@@ -16,6 +16,15 @@ The executable half of the HELIX cornerstone path:
 - **`reconciliation/`**: 22 PS to Workday tie-outs (6 FIN, 6 HCM, 6 Student, 4 Aid) with run order, tolerances, parallel-run cadence, and sign-off roles. Includes payroll parallel compare, GPA recompute, and a zero-miss FERPA restriction carryover gate.
 
 
+### `context/`: Context Toolkit *New in v0.10.0*
+
+Definitions agents can trust:
+- **`gold-metrics.yaml`**: 14 standard metric definitions for owners to adapt and sign
+- **`generated/`**: catalog context, 64 resource skills, 14 gold metric skills, and the HELIX ontology, built by `tools/build_context_pack.py`
+- **`profile-table.sql`**, **`definition-review.csv`**, and **`prompts/`** for defining custom and historical tables
+
+Method: `docs/context/context-route.md`.
+
 ### `customization-discovery/`: Customization Discovery Toolkit *New in v0.9.0*
 
 Find every PeopleSoft and Banner customization and decide what happens to each:

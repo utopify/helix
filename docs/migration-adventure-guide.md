@@ -361,7 +361,7 @@ All Colleague dates are stored as integers (days since 12/31/1967). Every date f
 | Enrollment | `bridge/workday/sis/enrollment_mapping.json` | Student Course Registration, Student Course Grade |
 | AcademicPeriod | `bridge/workday/sis/academic_period_mapping.json` | Academic Period, Academic Calendar |
 
-**Extraction methods:** RaaS, REST API, Prism Analytics, or Workday Data Cloud (zero-copy with AWS).
+**Extraction methods:** RaaS and Web Services by default (included with Workday). Workday Data Cloud zero-copy is an optional add-on. See `docs/landing-zones/workday-landing-zone.md`.
 
 *Additional Workday resource mappings are planned.*
 

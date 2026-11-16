@@ -72,7 +72,7 @@
 |--------------|---------------------|--------|
 | PeopleSoft CS | PS_PERSONAL_DATA, PS_NAMES, PS_STDNT_ENRL, PS_STDNT_AWARDS, etc. | Parquet files partitioned by extract date |
 | Banner | SPRIDEN, SPBPERS, SFRSTCR, STVTERM, etc. | Parquet files partitioned by extract date |
-| Workday | RaaS report output, REST API payloads, Prism datasets | JSON → Parquet, partitioned by extract date |
+| Workday | RaaS report output, Web Services and REST payloads, outbound EIB files (see `landing-zones/workday-landing-zone.md`) | JSON → Parquet, partitioned by extract date |
 | Colleague | PERSON, STUDENTS, STUDENT.ACAD.CRED MV file extracts | Parquet (MV fields exploded to rows) |
 | Slate (CRM) | Application records, inquiry records, event registrations | Parquet or JSON |
 | Advancement CRM | Constituent, gift, event records from Raiser's Edge / Blackbaud | Parquet |
@@ -189,6 +189,12 @@ s3://institution-datalake/silver/
 2. **Metric definitions documented** — every gold metric (retention rate, graduation rate, yield rate) has a version-controlled definition in the HELIX semantic layer.
 3. **Access controlled by role** — gold tables enforce HELIX Govern data classification via table/column-level permissions.
 4. **Anonymized gold for research** — sensitive gold tables have anonymized counterparts (k-anonymity, suppression) for broader access.
+
+---
+
+### Context Layer: Definitions Agents Can Trust
+
+Above gold sits the context layer: table and column definitions, signed gold metric definitions, join paths, usage rules, and an ontology, kept as files you own and published to the catalog your agents read. It's what lets an agent use gold correctly instead of guessing. See [`context/context-route.md`](context/context-route.md) and [`own-your-intelligence.md`](own-your-intelligence.md).
 
 ---
 

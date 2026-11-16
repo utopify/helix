@@ -1,0 +1,16 @@
+{
+  "helix_version": "0.10.0",
+  "silver_tables": 64,
+  "columns": 1122,
+  "columns_with_written_definitions": 728,
+  "columns_with_pattern_definitions": 394,
+  "skills": 64,
+  "gold_skills": 14,
+  "code_sets": 67,
+  "outputs": [
+    "glue-business-context.json",
+    "helix-ontology.ttl",
+    "skills/",
+    "gold-skills/"
+  ]
+}

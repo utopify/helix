@@ -1,6 +1,6 @@
 # HELIX Bridge
 
-163 mapping templates: 147 ERP-to-HELIX mappings across 4 major systems, 8 Outcomes mappings from sources outside the ERP, and an 8-mapping reverse bridge from HELIX into Banner SaaS. Every one of the 64 Core resources has at least one mapping.
+173 mapping templates: 157 source-to-HELIX mappings across 5 systems (PeopleSoft, Banner, Workday, Colleague, Salesforce), 8 Outcomes mappings from sources outside the ERP, and an 8-mapping reverse bridge from HELIX into Banner SaaS. Every one of the 64 Core resources has at least one mapping.
 
 | ERP | Mappings | Modules |
 |-----|----------|---------|
@@ -8,6 +8,7 @@
 | Banner (on-prem) | 35 | SIS (14), HR (2), Finance (7), Advancement (5), Financial Aid (7) |
 | Workday | 54 | SIS (31), FIN (11), HR (12) |
 | Colleague | 4 | SIS (4) |
+| Salesforce | 10 | Agentforce Education, EDA, NPSP or Nonprofit Cloud (`salesforce/`) |
 | Outcomes (non-ERP) | 8 | Handshake, Clearinghouse, state wage records, licensure results, Canvas (`outcomes/`) |
 | Banner SaaS (reverse) | 8 | HELIX to Ethos write-back |
 

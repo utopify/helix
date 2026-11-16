@@ -6,7 +6,7 @@
 - `fin/` — Financial Management (11 mappings)
 - `hr/` — Human Capital Management (12 mappings)
 
-All mappings use Workday-native terminology (worktags, business objects, supervisory organizations) with 4 documented extraction methods (RaaS, REST API, Prism, Data Cloud).
+All mappings use Workday-native terminology (worktags, business objects, supervisory organizations) Default extraction is RaaS plus Web Services, which come with the Workday subscription. Prism Analytics (brings data into Workday) and Workday Data Cloud (zero-copy, separately priced) are optional; see [`docs/landing-zones/workday-landing-zone.md`](../../docs/landing-zones/workday-landing-zone.md).
 
 ## Coming from PeopleSoft?
 

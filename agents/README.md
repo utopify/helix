@@ -1,6 +1,6 @@
 # HELIX Agents
 
-8 downloadable AI assistant templates (v0.9.0). Every agent knows the AWS services HELIX conversions run on (see `docs/aws-services-guide.md`). Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
+9 downloadable AI assistant templates (v0.10.0). Every agent also follows HELIX's position that AI agents should point at your own lakehouse and context layer, not at vendor platforms (`docs/own-your-intelligence.md`). Every agent knows the AWS services HELIX conversions run on (see `docs/aws-services-guide.md`). Compatible with ChatGPT, Gemini, Claude, Grok, Amazon Q, and Bedrock.
 
 **Start here**
 
@@ -15,6 +15,9 @@ Say **"help me start"** to the Migration Companion and it walks you through [STA
 
 **Customizations**
 - **customization-discovery-agent.json**: Compares PeopleSoft or Banner with a vanilla installation, builds the customization register, and converts what's worth keeping with AWS DMS Schema Conversion, AWS Transform, and Amazon Bedrock. *New in v0.9.0*
+
+**Context and definitions**
+- **context-steward-agent.json**: Defines custom and historical tables with a steward, keeps silver and gold context current, and drafts gold metric definitions, using the Glue Data Catalog, S3 annotations, the Context Ontology Accelerator, and AWS Context when it's available. *New in v0.10.0*
 
 **Other specialists**
 - **banner-to-lakehouse-agent.json** — Banner to data lake migration

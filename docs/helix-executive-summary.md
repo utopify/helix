@@ -30,7 +30,7 @@ HELIX is a free, open framework that gives every university a common data langua
 | Component | What It Does |
 |-----------|-------------|
 | **HELIX Core** | 64 standard data definitions across students, courses, financial aid, outcomes, HR, finance, and advancement, plus 67 code sets (enrollment statuses, degree levels, loan types, and so on) |
-| **HELIX Bridge** | 163 pre-built mappings, covering every data definition, from PeopleSoft, Banner, Workday, and Colleague, plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
+| **HELIX Bridge** | 173 pre-built mappings, including Workday and Salesforce landing zones that need no add-on,, covering every data definition, from PeopleSoft, Banner, Workday, and Colleague, plus direct PeopleSoft to Workday crosswalks and extraction playbooks |
 | **HELIX Govern** | Governance roles, data quality rules, a maturity model, and access controls for every data object (FERPA and GLBA ready) |
 | **HELIX Connect** | An API specification so systems can exchange data in the HELIX standard |
 | **HELIX Agents** | Seven AI assistant templates, including a guide that walks a new institution through getting started and specialists for each PeopleSoft to Workday track |

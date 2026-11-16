@@ -5,7 +5,7 @@
   "module": "Student - Foundational Data",
   "target_resource": "Person",
   "version": "0.1",
-  "architecture_notes": "In Workday Student, a student is a Worker-like entity built on the same Workday foundational person model used by HCM. The 'Student' record links to a universal person identity. Person identity is shared across Student, Worker (HCM), and external constituents \u2014 Workday's single-person model is a key advantage over PeopleSoft, where CS and HCM often maintain separate EMPLIDs. Extraction via RaaS custom reports on Student data source, Workday REST API (Student endpoints), Prism, or Data Cloud.",
+  "architecture_notes": "In Workday Student, a student is a Worker-like entity built on the same Workday foundational person model used by HCM. The 'Student' record links to a universal person identity. Person identity is shared across Student, Worker (HCM), and external constituents \u2014 Workday's single-person model is a key advantage over PeopleSoft, where CS and HCM often maintain separate EMPLIDs. Extraction via RaaS custom reports on Student data source, Workday REST API (Student endpoints), or outbound EIBs. Workday Data Cloud is an optional add-on.",
   "source_objects": [
     {
       "object": "Academic Person",

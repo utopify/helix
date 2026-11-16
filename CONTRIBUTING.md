@@ -100,8 +100,8 @@ helix/
 │   ├── colleague/         ← Ellucian Colleague mappings
 │   └── xref/              ← PeopleSoft to Workday crosswalks (HR, FIN, SIS)
 ├── templates/             ← intake profile, dbt starter, reconciliation, PeopleSoft to Workday toolkit
-├── agents/                ← Downloadable AI agent templates (8)
-├── tools/                 ← Validator, governance check, customization diff
+├── agents/                ← Downloadable AI agent templates (9)
+├── tools/                 ← Validator, governance check, customization diff, context pack builder and publisher
 └── docs/                  ← Documentation, including conversion/ and the AWS services guide
 
 **Adding or renaming a Core resource?** Add its row to `govern/access-control-matrix.json` and `govern/domain-taxonomy.json` in the same pull request, then run `python tools/check_governance_coverage.py`. Pull requests that leave a resource without access rules won't be merged.
