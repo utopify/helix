@@ -1,0 +1,61 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Fund",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "Fund",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FTVFUND",
+      "description": "Fund Code validation/master. Fund codes, titles, fund type, predecessor (parent) fund, effective dates, status."
+    },
+    {
+      "table": "FTVFTYP",
+      "description": "Fund Type validation. Fund type codes and descriptions (defines restriction and reporting category)."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FTVFUND_FUND_CODE."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "FTVFUND_FUND_CODE",
+      "transformation": "Direct map. Fund element value."
+    },
+    {
+      "helix_attribute": "fund_name",
+      "source": "FTVFUND_TITLE",
+      "transformation": "Fund title."
+    },
+    {
+      "helix_attribute": "fund_category",
+      "source": "FTVFUND_FTYP_CODE",
+      "transformation": "Fund type code from FTVFUND. Decode via FTVFTYP. Bind to helix/fund-type."
+    },
+    {
+      "helix_attribute": "restriction_type",
+      "source": "FTVFTYP_TITLE",
+      "transformation": "Derived from fund type \u2014 unrestricted/restricted classification. FLAG: institutions model restriction via fund type ranges; validate local convention."
+    },
+    {
+      "helix_attribute": "parent_fund",
+      "source": "FTVFUND_FUND_CODE_PRED",
+      "transformation": "Predecessor (parent) fund code for the fund hierarchy roll-up."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "FTVFUND_STATUS_IND",
+      "transformation": "Active/terminated status indicator."
+    },
+    {
+      "helix_attribute": "gasb_fund_type",
+      "source": "FTVFTYP_FUND_CLASS",
+      "transformation": "Fund class for GASB reporting. FLAG: exact column for GASB classification varies; may be a local NTYP attribute."
+    }
+  ]
+}

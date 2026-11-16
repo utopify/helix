@@ -1,0 +1,85 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 EngagementActivity",
+  "source_system": "banner",
+  "module": "Advancement",
+  "target_resource": "EngagementActivity",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "APRCONT",
+      "description": "Contact/Engagement. Prospect and constituent contacts \u2014 type, date, officer, purpose, outcome."
+    },
+    {
+      "table": "APRMEMO",
+      "description": "Contact Memo/Narrative. Free-text narrative attached to a contact."
+    },
+    {
+      "table": "STVCTYP",
+      "description": "Contact Type validation. Contact type codes."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + APRCONT PIDM + sequence."
+    },
+    {
+      "helix_attribute": "constituent_ref",
+      "source": "APRCONT_PIDM",
+      "transformation": "Constituent PIDM -> HELIX Constituent."
+    },
+    {
+      "helix_attribute": "activity_type",
+      "source": "APRCONT_CONT_CODE / STVCTYP",
+      "transformation": "Contact/engagement type. Decode via STVCTYP."
+    },
+    {
+      "helix_attribute": "activity_date",
+      "source": "APRCONT_CONT_DATE",
+      "transformation": "Contact date."
+    },
+    {
+      "helix_attribute": "event_name",
+      "source": "Configuration/None",
+      "transformation": "Event name if the contact is event-based (Banner event module BER* if licensed)."
+    },
+    {
+      "helix_attribute": "event_type",
+      "source": "Configuration/None",
+      "transformation": "Event type if applicable."
+    },
+    {
+      "helix_attribute": "channel",
+      "source": "APRCONT_CONTACT_MODE",
+      "transformation": "Contact mode/channel (visit/phone/email). FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "location",
+      "source": "APRCONT_LOCATION",
+      "transformation": "Contact location if recorded. FLAG: may be free-text in APRMEMO."
+    },
+    {
+      "helix_attribute": "notes",
+      "source": "APRMEMO_TEXT",
+      "transformation": "Narrative text from APRMEMO."
+    },
+    {
+      "helix_attribute": "engagement_points",
+      "source": "Derived",
+      "transformation": "Engagement scoring value (not native)."
+    },
+    {
+      "helix_attribute": "linked_gift_ref",
+      "source": "APRCONT related AGBGIFT",
+      "transformation": "Linked gift if the contact resulted in a gift."
+    },
+    {
+      "helix_attribute": "officer_ref",
+      "source": "APRCONT_CONT_PIDM (officer)",
+      "transformation": "Development officer PIDM who made the contact."
+    }
+  ]
+}

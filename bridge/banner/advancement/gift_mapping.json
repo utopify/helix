@@ -1,0 +1,149 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Gift",
+  "source_system": "banner",
+  "module": "Advancement",
+  "target_resource": "Gift",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "AGBGIFT",
+      "description": "Gift/Payment Header. Gift record \u2014 donor PIDM, gift date, amount, type, payment method, campaign/designation."
+    },
+    {
+      "table": "AGBPLDG",
+      "description": "Pledge Header. Pledge record \u2014 pledge amount, balance, schedule."
+    },
+    {
+      "table": "AFRDESG",
+      "description": "Designation validation. Gift designation codes."
+    },
+    {
+      "table": "APRCFAE",
+      "description": "Campaign/Fund/Appeal/Effort linkage. Ties gifts to campaign, designation, appeal."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + AGBGIFT_NO."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Institutional HELIX registration."
+    },
+    {
+      "helix_attribute": "constituent_ref",
+      "source": "AGBGIFT_PIDM",
+      "transformation": "Donor PIDM -> HELIX Constituent."
+    },
+    {
+      "helix_attribute": "gift_number",
+      "source": "AGBGIFT_NO",
+      "transformation": "Gift number."
+    },
+    {
+      "helix_attribute": "gift_type",
+      "source": "AGBGIFT_GIFT_CODE / AGBGIFT_GIFT_TYPE",
+      "transformation": "Gift vehicle/type. Bind to helix/gift-type."
+    },
+    {
+      "helix_attribute": "amount",
+      "source": "AGBGIFT_GIFT_AMT",
+      "transformation": "Gift amount."
+    },
+    {
+      "helix_attribute": "currency",
+      "source": "Configuration",
+      "transformation": "ISO 4217; Banner base currency."
+    },
+    {
+      "helix_attribute": "gift_date",
+      "source": "AGBGIFT_GIFT_DATE",
+      "transformation": "Gift date."
+    },
+    {
+      "helix_attribute": "receipt_date",
+      "source": "AGBGIFT_RECEIPT_DATE",
+      "transformation": "Receipt date. FLAG: confirm receipt-date column."
+    },
+    {
+      "helix_attribute": "designation",
+      "source": "APRCFAE_DESG_CODE / AFRDESG",
+      "transformation": "Designation. Decode via AFRDESG."
+    },
+    {
+      "helix_attribute": "campaign_ref",
+      "source": "APRCFAE_CAMP_CODE",
+      "transformation": "Campaign code -> HELIX Campaign."
+    },
+    {
+      "helix_attribute": "appeal_code",
+      "source": "APRCFAE_APPEAL_CODE",
+      "transformation": "Appeal/effort code."
+    },
+    {
+      "helix_attribute": "gift_source",
+      "source": "AGBGIFT_GIFT_SOURCE",
+      "transformation": "Source/channel of the gift. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "payment_method",
+      "source": "AGBGIFT_PAYMENT_TYPE",
+      "transformation": "Payment method (cash/check/credit/securities). FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "pledge_ref",
+      "source": "AGBGIFT_PLEDGE_NO",
+      "transformation": "Linked pledge number (AGBPLDG)."
+    },
+    {
+      "helix_attribute": "pledge_balance",
+      "source": "AGBPLDG_BALANCE",
+      "transformation": "Outstanding pledge balance."
+    },
+    {
+      "helix_attribute": "matching_company",
+      "source": "AGBGIFT_MATCH_PIDM",
+      "transformation": "Matching-gift company PIDM if this is a matching gift."
+    },
+    {
+      "helix_attribute": "matching_ratio",
+      "source": "Derived",
+      "transformation": "Employer match ratio if applicable."
+    },
+    {
+      "helix_attribute": "tax_deductible_amount",
+      "source": "AGBGIFT_GIFT_AMT - benefit",
+      "transformation": "Deductible amount net of quid-pro-quo benefit."
+    },
+    {
+      "helix_attribute": "anonymous_flag",
+      "source": "AGBGIFT_ANON_IND",
+      "transformation": "Anonymous gift indicator."
+    },
+    {
+      "helix_attribute": "soft_credit_constituents",
+      "source": "AGRSCRD",
+      "transformation": "Soft-credit records (multi-valued) by PIDM. FLAG: confirm soft-credit table."
+    },
+    {
+      "helix_attribute": "acknowledgment_status",
+      "source": "AGBGIFT_ACKN_IND",
+      "transformation": "Acknowledgment status. FLAG: confirm column."
+    },
+    {
+      "helix_attribute": "acknowledgment_date",
+      "source": "AGBGIFT_ACKN_DATE",
+      "transformation": "Acknowledgment date."
+    },
+    {
+      "helix_attribute": "stewardship_actions",
+      "source": "APRCONT (type=stewardship)",
+      "transformation": "Related stewardship contacts."
+    }
+  ]
+}

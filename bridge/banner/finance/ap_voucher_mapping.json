@@ -1,0 +1,114 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 APVoucher",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "APVoucher",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FABINVH",
+      "description": "Invoice/Credit Memo Header. Vendor invoice header \u2014 vendor, invoice date, amounts, status, payment due."
+    },
+    {
+      "table": "FABINVD",
+      "description": "Invoice/Credit Memo Detail. Invoice commodity/accounting detail (FOAPAL distribution)."
+    },
+    {
+      "table": "FABCHKD",
+      "description": "Check/Disbursement Detail. Payment/check detail for paid invoices."
+    },
+    {
+      "table": "FTVVEND",
+      "description": "Vendor validation/master. Vendor codes and names."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FABINVH_CODE."
+    },
+    {
+      "helix_attribute": "voucher_id",
+      "source": "FABINVH_CODE",
+      "transformation": "Banner invoice document code (the AP voucher)."
+    },
+    {
+      "helix_attribute": "business_unit",
+      "source": "FABINVH_COAS_CODE",
+      "transformation": "Chart of Accounts code."
+    },
+    {
+      "helix_attribute": "vendor_id",
+      "source": "FABINVH_VEND_PIDM",
+      "transformation": "Vendor PIDM. Resolve visible vendor code via SPRIDEN/FTVVEND."
+    },
+    {
+      "helix_attribute": "vendor_name",
+      "source": "SPRIDEN_LAST_NAME / FTVVEND",
+      "transformation": "Vendor name via vendor PIDM. FLAG: vendors keyed by PIDM in SPRIDEN with FTVVEND attributes."
+    },
+    {
+      "helix_attribute": "invoice_number",
+      "source": "FABINVH_VEND_INV_CODE",
+      "transformation": "Vendor's invoice number."
+    },
+    {
+      "helix_attribute": "invoice_date",
+      "source": "FABINVH_INV_DATE",
+      "transformation": "Invoice date."
+    },
+    {
+      "helix_attribute": "gross_amount",
+      "source": "FABINVH_APPR_AMT",
+      "transformation": "Approved/gross invoice amount."
+    },
+    {
+      "helix_attribute": "voucher_status",
+      "source": "FABINVH_COMPLETE_IND / FABINVH_APPROV_IND",
+      "transformation": "Completion/approval indicators. Bind to helix/payment-status."
+    },
+    {
+      "helix_attribute": "payment_date",
+      "source": "FABCHKD_ACTIVITY_DATE",
+      "transformation": "Check/disbursement date from FABCHKD."
+    },
+    {
+      "helix_attribute": "payment_method",
+      "source": "FABINVH_BANK_CODE",
+      "transformation": "Payment/bank method. FLAG: method modeled via bank code + check vs ACH indicator."
+    },
+    {
+      "helix_attribute": "line_account",
+      "source": "FABINVD_ACCT_CODE",
+      "transformation": "FOAPAL account on the invoice detail line."
+    },
+    {
+      "helix_attribute": "line_fund",
+      "source": "FABINVD_FUND_CODE",
+      "transformation": "FOAPAL fund on the invoice detail line."
+    },
+    {
+      "helix_attribute": "line_department",
+      "source": "FABINVD_ORGN_CODE",
+      "transformation": "FOAPAL organization on the invoice detail line."
+    },
+    {
+      "helix_attribute": "line_amount",
+      "source": "FABINVD_APPR_AMT",
+      "transformation": "Detail line approved amount."
+    },
+    {
+      "helix_attribute": "spend_category",
+      "source": "FABINVD_ACCT_CODE",
+      "transformation": "Derived from natural account (Banner has no native spend category; use account)."
+    },
+    {
+      "helix_attribute": "po_reference",
+      "source": "FABINVH_PO_CODE",
+      "transformation": "Referenced purchase order document code, if invoice is PO-based."
+    }
+  ]
+}

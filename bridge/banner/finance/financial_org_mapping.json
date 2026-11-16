@@ -1,0 +1,66 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 FinancialOrg",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "FinancialOrg",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FTVORGN",
+      "description": "Organization Code validation/master. Org codes, titles, predecessor (parent) org, financial manager, status, effective dates."
+    },
+    {
+      "table": "FTVFMGR",
+      "description": "Financial Manager validation. Financial manager codes tied to orgs."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FTVORGN_ORGN_CODE."
+    },
+    {
+      "helix_attribute": "org_code",
+      "source": "FTVORGN_ORGN_CODE",
+      "transformation": "Organization element value."
+    },
+    {
+      "helix_attribute": "org_name",
+      "source": "FTVORGN_TITLE",
+      "transformation": "Organization title."
+    },
+    {
+      "helix_attribute": "org_type",
+      "source": "Derived from hierarchy level",
+      "transformation": "Org level in the FOAPAL org hierarchy (data-enterable vs roll-up)."
+    },
+    {
+      "helix_attribute": "parent_org",
+      "source": "FTVORGN_ORGN_CODE_PRED",
+      "transformation": "Predecessor (parent) org code."
+    },
+    {
+      "helix_attribute": "company",
+      "source": "FTVORGN_COAS_CODE",
+      "transformation": "Chart of Accounts code (the entity/company)."
+    },
+    {
+      "helix_attribute": "manager",
+      "source": "FTVORGN_FMGR_CODE",
+      "transformation": "Financial manager code. Decode via FTVFMGR."
+    },
+    {
+      "helix_attribute": "is_active",
+      "source": "FTVORGN_STATUS_IND",
+      "transformation": "Active/terminated status."
+    },
+    {
+      "helix_attribute": "fund_type",
+      "source": "Configuration/None",
+      "transformation": "Banner org is not fund-typed; leave null or map local default fund association if used."
+    }
+  ]
+}

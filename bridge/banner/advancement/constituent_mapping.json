@@ -1,0 +1,153 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Constituent",
+  "source_system": "banner",
+  "module": "Advancement",
+  "target_resource": "Constituent",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "APBCONS",
+      "description": "Advancement Individual/Constituent Base. Core advancement record per PIDM \u2014 constituent type, preferred class year, activity status, donor category."
+    },
+    {
+      "table": "SPRIDEN",
+      "description": "Person Identification. Name/ID via shared PIDM (advancement constituents share the PIDM identity model)."
+    },
+    {
+      "table": "APRCATG",
+      "description": "Constituent Category. Multi-valued category/affinity assignments per constituent."
+    },
+    {
+      "table": "APBCONS_PREF_CLAS",
+      "description": "Preferred class year attribute on APBCONS."
+    },
+    {
+      "table": "APRDONR",
+      "description": "Donor Category. Donor type/segment assignments."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + APBCONS_PIDM."
+    },
+    {
+      "helix_attribute": "institution_id",
+      "source": "Configuration",
+      "transformation": "Institutional HELIX registration."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "APBCONS_PIDM",
+      "transformation": "Resolve to HELIX Person via shared PIDM."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "APBCONS_PIDM",
+      "transformation": "Link to HELIX Student if the constituent is also a student (same PIDM)."
+    },
+    {
+      "helix_attribute": "constituent_type",
+      "source": "APBCONS_CONS_TYPE / APRCATG",
+      "transformation": "Constituent type/category. Bind to helix/constituent-type."
+    },
+    {
+      "helix_attribute": "status",
+      "source": "APBCONS_ACTIVITY_STATUS_IND",
+      "transformation": "Active/inactive constituent status. FLAG: exact status column varies by version."
+    },
+    {
+      "helix_attribute": "class_year",
+      "source": "APBCONS_PREF_CLAS_CODE",
+      "transformation": "Preferred class year."
+    },
+    {
+      "helix_attribute": "degrees",
+      "source": "SHRDGMR (via PIDM)",
+      "transformation": "Degrees earned, joined from student history by PIDM."
+    },
+    {
+      "helix_attribute": "affinity_groups",
+      "source": "APRCATG_CATG_CODE",
+      "transformation": "Category/affinity group codes (multi-valued)."
+    },
+    {
+      "helix_attribute": "giving_capacity",
+      "source": "APRRATE / prospect rating",
+      "transformation": "Capacity/rating. FLAG: rating stored in prospect-management tables (APRRATE); confirm local usage."
+    },
+    {
+      "helix_attribute": "lifetime_giving",
+      "source": "Derived from AGBGIFT",
+      "transformation": "Sum of hard-credit gifts for the PIDM."
+    },
+    {
+      "helix_attribute": "last_gift_date",
+      "source": "MAX(AGBGIFT_GIFT_DATE)",
+      "transformation": "Most recent gift date."
+    },
+    {
+      "helix_attribute": "last_gift_amount",
+      "source": "AGBGIFT_GIFT_AMT (latest)",
+      "transformation": "Amount of most recent gift."
+    },
+    {
+      "helix_attribute": "consecutive_giving_years",
+      "source": "Derived",
+      "transformation": "Computed from gift-year history."
+    },
+    {
+      "helix_attribute": "largest_gift_amount",
+      "source": "MAX(AGBGIFT_GIFT_AMT)",
+      "transformation": "Largest single gift."
+    },
+    {
+      "helix_attribute": "donor_segment",
+      "source": "APRDONR_DONR_CODE",
+      "transformation": "Donor category/segment. Bind to helix/donor-segment."
+    },
+    {
+      "helix_attribute": "engagement_score",
+      "source": "Derived",
+      "transformation": "Computed engagement score (not native to Banner)."
+    },
+    {
+      "helix_attribute": "solicitation_codes",
+      "source": "APRSOLC",
+      "transformation": "Solicitation control/exclusion codes. FLAG: table name APRSOLC likely; confirm."
+    },
+    {
+      "helix_attribute": "assigned_officer",
+      "source": "APRPROS_PIDM (prospect manager)",
+      "transformation": "Assigned development officer from prospect management. FLAG: confirm prospect-manager table."
+    },
+    {
+      "helix_attribute": "prospect_stage",
+      "source": "APRPROS_STAGE",
+      "transformation": "Moves-management stage. Bind to helix/prospect-stage. FLAG: confirm prospect table/column."
+    },
+    {
+      "helix_attribute": "employer",
+      "source": "APREHIS (current)",
+      "transformation": "Current employer from employment history."
+    },
+    {
+      "helix_attribute": "job_title",
+      "source": "APREHIS_POSN",
+      "transformation": "Current job title from employment history."
+    },
+    {
+      "helix_attribute": "industry",
+      "source": "Derived",
+      "transformation": "Industry classification if tracked."
+    },
+    {
+      "helix_attribute": "communication_preferences",
+      "source": "GORPRAC / APRCATG exclusions",
+      "transformation": "Communication/contact preferences and exclusions."
+    }
+  ]
+}

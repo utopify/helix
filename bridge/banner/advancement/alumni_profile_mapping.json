@@ -1,0 +1,166 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner → AlumniProfile",
+  "source_system": "banner",
+  "module": "Advancement",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models.",
+  "source_tables": [
+    {
+      "table": "APBCONS",
+      "description": "Constituent base: preferred class year, constituent status. Anchors the profile."
+    },
+    {
+      "table": "APRCATG",
+      "description": "Constituent categories. Filter to alumni categories (ALUM, ALND, and local codes) to decide who gets a profile."
+    },
+    {
+      "table": "APRADEG",
+      "description": "Degrees on the advancement record, including degrees from other schools. Primary degree for this institution comes from here or from SHRDGMR."
+    },
+    {
+      "table": "APREHIS",
+      "description": "Employment history: employer (as a PIDM), position, dates, SIC code. The row without an end date is current."
+    },
+    {
+      "table": "APRACTY / STVACTC",
+      "description": "Activities: volunteer roles, mentoring, boards, clubs. FLAG: activity codes are local."
+    },
+    {
+      "table": "AARMEMB",
+      "description": "Memberships, including alumni association membership and expiry."
+    },
+    {
+      "table": "GERATTD",
+      "description": "Event attendance from Banner General Events."
+    },
+    {
+      "table": "SPRADDR",
+      "description": "Preferred address for current location."
+    }
+  ],
+  "notes": "AlumniProfile is career and engagement data, not giving data. It links to Constituent through constituent_ref and never copies giving fields. Per ACM-SPECIAL-009, don't bulk-join AlumniProfile to solicitation lists without steward review. Not an education record (is_education_record = false), but stays confidential.",
+  "target_resource": "AlumniProfile",
+  "version": "0.1",
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + APBCONS_PIDM."
+    },
+    {
+      "helix_attribute": "person_ref",
+      "source": "APBCONS_PIDM",
+      "transformation": "Resolve to HELIX Person (shared PIDM)."
+    },
+    {
+      "helix_attribute": "student_ref",
+      "source": "APBCONS_PIDM",
+      "transformation": "Resolve to HELIX Student when the PIDM has a student record. Null for non-degree alumni without one."
+    },
+    {
+      "helix_attribute": "constituent_ref",
+      "source": "APBCONS_PIDM",
+      "transformation": "Resolve to HELIX Constituent. Link only; don't copy giving fields."
+    },
+    {
+      "helix_attribute": "primary_degree_ref",
+      "source": "SHRDGMR (awarded) or APRADEG (this institution)",
+      "transformation": "Resolve to HELIX Degree. Earliest undergraduate degree unless your advancement office defines primary differently."
+    },
+    {
+      "helix_attribute": "graduation_year",
+      "source": "APBCONS_PREF_CLAS",
+      "transformation": "Preferred class year, four digits. May differ from the actual graduation year by design."
+    },
+    {
+      "helix_attribute": "current_employer",
+      "source": "APREHIS_EMPR_PIDM -> SPRIDEN (non-person)",
+      "transformation": "Employer name from the current employment row (no end date)."
+    },
+    {
+      "helix_attribute": "current_job_title",
+      "source": "APREHIS_EMPL_POSITION",
+      "transformation": "Current row."
+    },
+    {
+      "helix_attribute": "current_industry",
+      "source": "APREHIS_SICC_CODE -> SIC validation",
+      "transformation": "SIC description. FLAG: confirm column and validation table."
+    },
+    {
+      "helix_attribute": "current_location_city",
+      "source": "SPRADDR_CITY (preferred address)",
+      "transformation": "Current address type per advancement address hierarchy."
+    },
+    {
+      "helix_attribute": "current_location_state",
+      "source": "SPRADDR_STAT_CODE",
+      "transformation": "Direct."
+    },
+    {
+      "helix_attribute": "current_location_country",
+      "source": "SPRADDR_NATN_CODE",
+      "transformation": "Convert to ISO alpha-2; null means US."
+    },
+    {
+      "helix_attribute": "career_level",
+      "source": "Derived from job title / not stored",
+      "transformation": "entry, mid, senior, executive, retired, unknown. Default unknown; don't guess from title without a reviewed rule."
+    },
+    {
+      "helix_attribute": "industry_sector",
+      "source": "SIC code -> sector rollup",
+      "transformation": "Roll SIC or NAICS into a small sector list (education, healthcare, technology, finance, government, nonprofit, other)."
+    },
+    {
+      "helix_attribute": "linkedin_url",
+      "source": "Not delivered",
+      "transformation": "Custom field or activity at some schools. FLAG."
+    },
+    {
+      "helix_attribute": "professional_certifications",
+      "source": "Not delivered",
+      "transformation": "Custom. Empty array if not tracked."
+    },
+    {
+      "helix_attribute": "career_progression_notes",
+      "source": "APREHIS history",
+      "transformation": "Optional summary of prior positions. Keep short; it's free text about a person."
+    },
+    {
+      "helix_attribute": "mentor_flag",
+      "source": "APRACTY mentor activity codes",
+      "transformation": "true if an active mentor activity exists."
+    },
+    {
+      "helix_attribute": "volunteer_flag",
+      "source": "APRACTY volunteer activity codes",
+      "transformation": "true if any active volunteer role exists."
+    },
+    {
+      "helix_attribute": "event_attendance_count",
+      "source": "COUNT(GERATTD) where attended",
+      "transformation": "Count of events attended. Choose a window (lifetime or last 5 years) and document it."
+    },
+    {
+      "helix_attribute": "last_engagement_date",
+      "source": "MAX of GERATTD date, APRACTY date, APRCONT date",
+      "transformation": "ISO date."
+    },
+    {
+      "helix_attribute": "alumni_association_member_flag",
+      "source": "AARMEMB (alumni association program, not expired)",
+      "transformation": "Boolean."
+    },
+    {
+      "helix_attribute": "geographic_chapter",
+      "source": "Chapter assignment / derived from address",
+      "transformation": "Local chapter codes or a region derived from ZIP. FLAG: storage varies."
+    },
+    {
+      "helix_attribute": "career_services_opt_in_flag",
+      "source": "Mail code / exclusion code",
+      "transformation": "true unless an exclusion or opt-out code blocks career contact. FLAG: local codes."
+    }
+  ]
+}

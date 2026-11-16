@@ -1,0 +1,134 @@
+{
+  "$schema": "https://helixedu.org/bridge/mapping-schema.json",
+  "title": "HELIX Bridge: Banner \u2192 Grant",
+  "source_system": "banner",
+  "module": "Finance",
+  "target_resource": "Grant",
+  "version": "0.1",
+  "saas_vs_onprem": "Banner SaaS (Ellucian Cloud) uses the same underlying Oracle schema. Access methods differ: on-prem uses direct Oracle SQL; SaaS uses Ellucian Data Connect (EDC), Ethos Integration API, or Banner Integration API (BIA). Table/column names are identical across both deployment models. For SaaS reads, map these logical columns to the equivalent Ethos resource fields; for SaaS write-back use the reverse bridge in bridge/banner-saas/.",
+  "source_tables": [
+    {
+      "table": "FRBGRNT",
+      "description": "Grant Master. Grant code, title, sponsor (agency PIDM), PI, start/end dates, amounts, status, indirect cost rate."
+    },
+    {
+      "table": "FRRGRPH",
+      "description": "Grant Personnel. Grant-associated personnel (PI, co-PI) by PIDM and role."
+    },
+    {
+      "table": "FRVGRNT",
+      "description": "Grant validation. Grant status/type validation codes."
+    },
+    {
+      "table": "FTVAGCY",
+      "description": "Agency validation. Sponsor agency codes and names."
+    }
+  ],
+  "attribute_mappings": [
+    {
+      "helix_attribute": "helix_id",
+      "source": "Generated UUID",
+      "transformation": "Deterministic UUID from institution_id + FRBGRNT_CODE."
+    },
+    {
+      "helix_attribute": "grant_id",
+      "source": "FRBGRNT_CODE",
+      "transformation": "Grant code."
+    },
+    {
+      "helix_attribute": "grant_name",
+      "source": "FRBGRNT_TITLE",
+      "transformation": "Grant title."
+    },
+    {
+      "helix_attribute": "sponsor_id",
+      "source": "FRBGRNT_AGENCY_PIDM",
+      "transformation": "Sponsoring agency PIDM. Decode via FTVAGCY/SPRIDEN."
+    },
+    {
+      "helix_attribute": "sponsor_name",
+      "source": "FTVAGCY_NAME / SPRIDEN",
+      "transformation": "Agency name."
+    },
+    {
+      "helix_attribute": "sponsor_type",
+      "source": "FRBGRNT_SPONSOR_ACCT / FTVAGCY",
+      "transformation": "Sponsor category (federal/state/private). FLAG: sponsor type classification column varies; often derived from agency."
+    },
+    {
+      "helix_attribute": "sponsor_award_number",
+      "source": "FRBGRNT_AGENCY_GRANT_NB",
+      "transformation": "Sponsor's award/grant number."
+    },
+    {
+      "helix_attribute": "cfda_number",
+      "source": "FRBGRNT_CFDA_CODE",
+      "transformation": "CFDA (Assistance Listing) number for federal awards."
+    },
+    {
+      "helix_attribute": "principal_investigator",
+      "source": "FRRGRPH_PIDM (role=PI)",
+      "transformation": "PI PIDM from grant personnel where role is Principal Investigator."
+    },
+    {
+      "helix_attribute": "project_start_date",
+      "source": "FRBGRNT_PROJECT_START_DATE",
+      "transformation": "Project start date."
+    },
+    {
+      "helix_attribute": "project_end_date",
+      "source": "FRBGRNT_PROJECT_END_DATE",
+      "transformation": "Project end date."
+    },
+    {
+      "helix_attribute": "total_award_amount",
+      "source": "FRBGRNT_AMT",
+      "transformation": "Total awarded amount. FLAG: award vs budget amount columns vary; confirm FRBGRNT_AMT semantics."
+    },
+    {
+      "helix_attribute": "total_budget",
+      "source": "FRBBUDG / derived",
+      "transformation": "Total budget (may live in grant budget table FRBBUDG)."
+    },
+    {
+      "helix_attribute": "direct_costs_budget",
+      "source": "Derived / FRBBUDG",
+      "transformation": "Direct cost budget total."
+    },
+    {
+      "helix_attribute": "indirect_costs_budget",
+      "source": "Derived / FRBBUDG",
+      "transformation": "Indirect (F&A) cost budget total."
+    },
+    {
+      "helix_attribute": "idc_rate",
+      "source": "FRBGRNT_INDIRECT_COST_RATE",
+      "transformation": "Indirect cost (F&A) rate. FLAG: IDC rate may be stored on FRRPROP/FRBINDR in some versions."
+    },
+    {
+      "helix_attribute": "cost_sharing_amount",
+      "source": "Derived",
+      "transformation": "Cost share/match amount if tracked."
+    },
+    {
+      "helix_attribute": "grant_status",
+      "source": "FRBGRNT_STATUS_IND / FRVGRNT",
+      "transformation": "Grant status. Bind to helix/grant-status."
+    },
+    {
+      "helix_attribute": "billing_type",
+      "source": "FRBGRNT_BILL_FORMAT_IND",
+      "transformation": "Billing format/type for sponsored billing."
+    },
+    {
+      "helix_attribute": "department",
+      "source": "FRBGRNT_ORGN_CODE",
+      "transformation": "Owning organization."
+    },
+    {
+      "helix_attribute": "fund_code",
+      "source": "FRBGRNT_FUND_CODE",
+      "transformation": "Associated fund code."
+    }
+  ]
+}
